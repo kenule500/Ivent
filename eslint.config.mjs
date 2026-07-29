@@ -1,0 +1,24 @@
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
+
+export default defineConfig([
+  // Spread the Next.js recommended configs (they are arrays)
+  ...nextVitals,
+  ...nextTs,
+
+  // Apply global ignores (these override default ignores)
+  globalIgnores([
+    ".next/**",
+    "out/**",
+    "build/**",
+    "next-env.d.ts",
+  ]),
+
+  // Add your custom rules as a separate config object
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "error"
+    }
+  }
+]);
