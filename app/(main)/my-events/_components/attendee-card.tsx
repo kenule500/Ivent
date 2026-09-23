@@ -1,13 +1,14 @@
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { api } from "@/convex/_generated/api";
-import { useConvexMutation } from "@/hooks/use-convex-query";
+import { useConvexMutation } from "@/hooks/useConvexQuery";
 import { format } from "date-fns";
 import { CheckCircle, Circle, Loader2 } from "lucide-react";
 import { toast } from "sonner";
+import { Doc } from "@/convex/_generated/dataModel";
 
 // Attendee Card Component
-export function AttendeeCard({ registration }) {
+export function AttendeeCard({ registration }: { registration: Doc<"registrations"> }) {
   const { mutate: checkInAttendee, isLoading } = useConvexMutation(
     api.registrations.checkInAttendee
   );
@@ -21,7 +22,8 @@ export function AttendeeCard({ registration }) {
         toast.error(result.message);
       }
     } catch (error) {
-      toast.error(error.message || "Failed to check in attendee");
+      const errorMessage = error instanceof Error ? error.message : "Failed to check in attendee";
+      toast.error(errorMessage);
     }
   };
 

@@ -10,6 +10,17 @@ export default defineSchema({
         email: v.string(),
         image: v.optional(v.string()),
 
+        role: v.optional(v.union(v.literal("user"), v.literal("admin"), v.literal("super_admin"))),
+        banned: v.optional(v.boolean()),
+
+        preferences: v.optional(
+            v.object({
+                emailOnNewEvent: v.boolean(),
+                emailOnNewRegistration: v.boolean(),
+                emailOnNewAdminInvite: v.boolean(),
+                emailOnNewUser: v.boolean(),
+            })
+        ),
         //onboarding
         hasCompletedOnboarding: v.boolean(),
 
@@ -102,5 +113,76 @@ export default defineSchema({
     .index("by_event", ["eventId"])
     .index("by_user", ["userId"])
     .index("by_event_user", ["eventId", "userId"])
-    .index("by_qrCode", ["qrCode"])
+    .index("by_qrCode", ["qrCode"]),
+
+    // convex/schema.ts (Add this table)
+    adminInvites: defineTable({
+        email: v.string(),
+        inviteCode: v.string(),
+        
+        // Status enum instead of just "used" boolean
+        status: v.union(
+            v.literal("pending"),
+            v.literal("accepted"),
+            v.literal("expired"),
+            v.literal("revoked")
+        ),
+        
+        // Who created it
+        createdBy: v.id("users"),
+        createdAt: v.number(),
+        
+        // Expiry timestamp
+        expiresAt: v.number(),
+        
+        // Who accepted it (if accepted)
+        acceptedBy: v.optional(v.id("users")),
+        acceptedAt: v.optional(v.number()),
+        
+        // Who revoked it (if revoked)
+        revokedBy: v.optional(v.id("users")),
+        revokedAt: v.optional(v.number()),
+        })
+        .index("by_email", ["email"])
+        .index("by_inviteCode", ["inviteCode"])
+        .index("by_status", ["status"]),
+    
+    auditLogs: defineTable({
+        // Who performed the action
+        actorId: v.id("users"),
+        actorName: v.string(),
+        actorEmail: v.string(),
+        
+        // What they did
+        action: v.union(
+            v.literal("event.deleted"),
+            v.literal("user.banned"),
+            v.literal("user.unbanned"),
+            v.literal("user.role_changed"),
+            v.literal("invite.created"),
+            v.literal("invite.revoked"),
+            v.literal("invite.resent"),
+            v.literal("invite.deleted"),
+            v.literal("registration.cancelled")
+        ),
+        
+        // What they acted on
+        targetType: v.union(
+            v.literal("event"),
+            v.literal("user"),
+            v.literal("invite"),
+            v.literal("registration")
+        ),
+        targetId: v.string(),
+        targetLabel: v.string(), // e.g. event title, user email, invite code
+        
+        // Optional extra context
+        metadata: v.optional(v.any()),
+        
+        // When
+        createdAt: v.number(),
+        })
+        .index("by_createdAt", ["createdAt"])
+        .index("by_actor", ["actorId"])
+        .index("by_action", ["action"]),
 })

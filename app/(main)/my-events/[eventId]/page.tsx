@@ -1,8 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { useParams, useRouter } from "next/navigation";
-import { notFound } from "next/navigation";
+import { useParams, useRouter, notFound } from "next/navigation";
 import Image from "next/image";
 import { format } from "date-fns";
 import {
@@ -19,13 +18,14 @@ import {
   Download,
   Search,
   Eye,
+  UserX,
 } from "lucide-react";
 import { useConvexQuery, useConvexMutation } from "@/hooks/useConvexQuery";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent } from "@/components/ui/card";
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -71,7 +71,8 @@ export default function EventDashboardPage() {
       toast.success("Event deleted successfully");
       router.push("/my-events");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Failed to delete event";
+      const errorMessage =
+        error instanceof Error ? error.message : "Failed to delete event";
       toast.error(errorMessage);
     }
   };
@@ -143,22 +144,23 @@ export default function EventDashboardPage() {
   });
 
   return (
-    <div className="min-h-screen pb-20 px-4">
-      <div className="max-w-7xl mx-auto">
+    <div className="min-h-screen pb-20 px-4 pt-6">
+      <div className="max-w-7xl mx-auto space-y-6">
         {/* Navigation */}
-        <div className="mb-6">
+        <div>
           <Button
             variant="ghost"
             onClick={() => router.push("/my-events")}
-            className="gap-2 -ml-2"
+            className="gap-2 -ml-2 text-muted-foreground hover:text-foreground"
           >
             <ArrowLeft className="w-4 h-4" />
             Back to My Events
           </Button>
         </div>
 
+        {/* Event Banner */}
         {event.coverImage && (
-          <div className="relative h-[350px] rounded-2xl overflow-hidden mb-6">
+          <div className="relative h-[280px] md:h-[350px] w-full rounded-2xl overflow-hidden border border-border/40 shadow-sm">
             <Image
               src={event.coverImage}
               alt={event.title}
@@ -170,20 +172,20 @@ export default function EventDashboardPage() {
         )}
 
         {/* Event Header */}
-        <div className="flex flex-col gap-5 sm:flex-row items-start justify-between mb-4">
-          <div className="flex-1">
-            <h1 className="text-3xl font-bold mb-3">{event.title}</h1>
-            <div className="flex flex-wrap items-center gap-4 text-sm text-muted-foreground">
-              <Badge variant="outline">
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-center justify-between">
+          <div className="space-y-2">
+            <h1 className="text-3xl font-bold tracking-tight">{event.title}</h1>
+            <div className="flex flex-wrap items-center gap-3 text-sm text-muted-foreground">
+              <Badge variant="secondary" className="px-2.5 py-0.5">
                 {getCategoryIcon(event.category)}{" "}
                 {getCategoryLabel(event.category)}
               </Badge>
-              <div className="flex items-center gap-1">
-                <Calendar className="w-4 h-4" />
+              <div className="flex items-center gap-1.5">
+                <Calendar className="w-4 h-4 text-muted-foreground" />
                 <span>{format(event.startDate, "PPP")}</span>
               </div>
-              <div className="flex items-center gap-1">
-                <MapPin className="w-4 h-4" />
+              <div className="flex items-center gap-1.5">
+                <MapPin className="w-4 h-4 text-muted-foreground" />
                 <span>
                   {event.locationType === "online"
                     ? "Online"
@@ -193,22 +195,22 @@ export default function EventDashboardPage() {
             </div>
           </div>
 
-          <div className="flex gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto">
             <Button
               variant="outline"
               size="sm"
               onClick={() => router.push(`/events/${event.slug}`)}
-              className="gap-2 flex-1"
+              className="gap-2 flex-1 sm:flex-none"
             >
               <Eye className="w-4 h-4" />
-              View
+              View Event
             </Button>
             <Button
               variant="outline"
               size="sm"
               onClick={handleDelete}
               disabled={isDeleting}
-              className="text-red-500 hover:text-red-600 gap-2 flex-1"
+              className="text-red-500 hover:text-red-600 hover:bg-red-500/10 gap-2 flex-1 sm:flex-none"
             >
               <Trash2 className="w-4 h-4" />
               {isDeleting ? "Deleting..." : "Delete"}
@@ -220,83 +222,76 @@ export default function EventDashboardPage() {
         {stats.isEventToday && !stats.isEventPast && (
           <Button
             size="lg"
-            // variant="outline"
-            className="mb-8 w-full gap-2 h-10 bg-linear-to-r from-orange-500 via-pink-500 to-red-500 text-white hover:scale-[1.02]"
+            className="w-full gap-2 h-12 text-base font-semibold bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 text-white shadow-md hover:opacity-95 transition-all"
             onClick={() => setShowQRScanner(true)}
           >
-            <QrCode className="w-6 h-6" />
+            <QrCode className="w-5 h-5" />
             Scan QR Code to Check-In
           </Button>
         )}
 
         {/* Stats Grid */}
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 mb-4">
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-purple-100 rounded-lg">
-                <Users className="w-6 h-6 text-purple-600" />
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+          <Card className="bg-card/50 border-border/50">
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="p-3 bg-purple-500/10 text-purple-500 rounded-xl">
+                <Users className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold tracking-tight">
                   {stats.totalRegistrations}/{stats.capacity}
                 </p>
-                <p className="text-sm text-muted-foreground">Capacity</p>
+                <p className="text-xs text-muted-foreground">Capacity</p>
               </div>
             </CardContent>
           </Card>
 
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-green-100 rounded-lg">
-                <CheckCircle className="w-6 h-6 text-green-600" />
+          <Card className="bg-card/50 border-border/50">
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="p-3 bg-emerald-500/10 text-emerald-500 rounded-xl">
+                <CheckCircle className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold">{stats.checkedInCount}</p>
-                <p className="text-sm text-muted-foreground">Checked In</p>
+                <p className="text-2xl font-bold tracking-tight">
+                  {stats.checkedInCount}
+                </p>
+                <p className="text-xs text-muted-foreground">Checked In</p>
               </div>
             </CardContent>
           </Card>
 
-          {event.ticketType === "paid" ? (
-            <Card className="py-0">
-              <CardContent className="p-6 flex items-center gap-3">
-                <div className="p-3 bg-blue-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-blue-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">₹{stats.totalRevenue}</p>
-                  <p className="text-sm text-muted-foreground">Revenue</p>
-                </div>
-              </CardContent>
-            </Card>
-          ) : (
-            <Card className="py-0">
-              <CardContent className="p-6 flex items-center gap-3">
-                <div className="p-3 bg-orange-100 rounded-lg">
-                  <TrendingUp className="w-6 h-6 text-orange-600" />
-                </div>
-                <div>
-                  <p className="text-2xl font-bold">{stats.checkInRate}%</p>
-                  <p className="text-sm text-muted-foreground">Check-in Rate</p>
-                </div>
-              </CardContent>
-            </Card>
-          )}
-
-          <Card className="py-0">
-            <CardContent className="p-6 flex items-center gap-3">
-              <div className="p-3 bg-amber-100 rounded-lg">
-                <Clock className="w-6 h-6 text-amber-600" />
+          <Card className="bg-card/50 border-border/50">
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="p-3 bg-blue-500/10 text-blue-500 rounded-xl">
+                <TrendingUp className="w-5 h-5" />
               </div>
               <div>
-                <p className="text-2xl font-bold">
+                <p className="text-2xl font-bold tracking-tight">
+                  {event.ticketType === "paid"
+                    ? `₹${stats.totalRevenue}`
+                    : `${stats.checkInRate}%`}
+                </p>
+                <p className="text-xs text-muted-foreground">
+                  {event.ticketType === "paid" ? "Revenue" : "Check-in Rate"}
+                </p>
+              </div>
+            </CardContent>
+          </Card>
+
+          <Card className="bg-card/50 border-border/50">
+            <CardContent className="p-5 flex items-center gap-4">
+              <div className="p-3 bg-amber-500/10 text-amber-500 rounded-xl">
+                <Clock className="w-5 h-5" />
+              </div>
+              <div>
+                <p className="text-2xl font-bold tracking-tight">
                   {stats.isEventPast
                     ? "Ended"
                     : stats.hoursUntilEvent > 24
                       ? `${Math.floor(stats.hoursUntilEvent / 24)}d`
                       : `${stats.hoursUntilEvent}h`}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs text-muted-foreground">
                   {stats.isEventPast ? "Event Over" : "Time Left"}
                 </p>
               </div>
@@ -304,60 +299,85 @@ export default function EventDashboardPage() {
           </Card>
         </div>
 
-        {/* Attendee Management */}
-        <h2 className="text-2xl font-bold mb-4">Attendee Management</h2>
-
-        {/* Tabs */}
-        <Tabs value={activeTab} onValueChange={setActiveTab}>
-          <TabsList className="mb-4">
-            <TabsTrigger value="all">
-              All ({stats.totalRegistrations})
-            </TabsTrigger>
-            <TabsTrigger value="checked-in">
-              Checked In ({stats.checkedInCount})
-            </TabsTrigger>
-            <TabsTrigger value="pending">
-              Pending ({stats.pendingCount})
-            </TabsTrigger>
-          </TabsList>
-
-          {/* Search and Actions */}
-          <div className="flex gap-3 mb-4">
-            <div className="relative flex-1">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-muted-foreground" />
-              <Input
-                placeholder="Search by name, email, or QR code..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="pl-10"
-              />
+        {/* Attendee Management Block */}
+        <div className="space-y-4">
+          <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+            <div>
+              <h2 className="text-2xl font-bold tracking-tight">
+                Attendee Management
+              </h2>
+              <p className="text-sm text-muted-foreground">
+                View and manage attendee registrations for this event.
+              </p>
             </div>
             <Button
               variant="outline"
+              size="sm"
               onClick={handleExportCSV}
-              className="gap-2"
+              className="gap-2 shrink-0 self-start sm:self-center"
             >
               <Download className="w-4 h-4" />
               Export CSV
             </Button>
           </div>
 
-          {/* Attendee List */}
-          <TabsContent value={activeTab} className="space-y-3 mt-0">
-            {filteredRegistrations && filteredRegistrations.length > 0 ? (
-              filteredRegistrations.map((registration) => (
-                <AttendeeCard
-                  key={registration._id}
-                  registration={registration}
+          <Tabs
+            value={activeTab}
+            onValueChange={setActiveTab}
+            className="w-full block space-y-4"
+          >
+            {/* Filter controls bar */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-4">
+              <TabsList className="grid grid-cols-3 w-full sm:w-[360px] h-10">
+                <TabsTrigger value="all" className="text-xs">
+                  All ({stats.totalRegistrations})
+                </TabsTrigger>
+                <TabsTrigger value="checked-in" className="text-xs">
+                  Checked In ({stats.checkedInCount})
+                </TabsTrigger>
+                <TabsTrigger value="pending" className="text-xs">
+                  Pending ({stats.pendingCount})
+                </TabsTrigger>
+              </TabsList>
+
+              <div className="relative w-full sm:max-w-xs">
+                <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted-foreground" />
+                <Input
+                  placeholder="Search name, email, or QR code..."
+                  value={searchQuery}
+                  onChange={(e) => setSearchQuery(e.target.value)}
+                  className="pl-9 h-10 text-xs"
                 />
-              ))
-            ) : (
-              <div className="text-center py-12 text-muted-foreground">
-                No attendees found
               </div>
-            )}
-          </TabsContent>
-        </Tabs>
+            </div>
+
+            {/* Content area */}
+            <TabsContent value={activeTab} className="mt-0 space-y-3">
+              {filteredRegistrations && filteredRegistrations.length > 0 ? (
+                filteredRegistrations.map((registration) => (
+                  <AttendeeCard
+                    key={registration._id}
+                    registration={registration}
+                  />
+                ))
+              ) : (
+                <Card className="border-dashed border-border/60 bg-card/30">
+                  <CardContent className="py-16 flex flex-col items-center justify-center text-center space-y-3">
+                    <div className="w-12 h-12 rounded-full bg-muted/60 flex items-center justify-center text-muted-foreground">
+                      <UserX className="w-6 h-6" />
+                    </div>
+                    <div className="space-y-1">
+                      <p className="font-semibold text-base">No attendees found</p>
+                      <p className="text-xs text-muted-foreground">
+                        Try adjusting your search terms or active status filter.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              )}
+            </TabsContent>
+          </Tabs>
+        </div>
       </div>
 
       {/* QR Scanner Modal */}

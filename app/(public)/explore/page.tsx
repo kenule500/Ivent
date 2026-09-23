@@ -25,15 +25,16 @@ const ExplorePage = () => {
     const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
     const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(api.explore.getFeaturedEvents, { limit: 4 })
     
+    const locationArgs = {
+        city: currentUser?.location?.city || "Port Harcourt",
+        state: currentUser?.location?.state || "Rivers",
+        limit: 4
+    };
     const { data: localEvents, isLoading: loadingLocal } = useConvexQuery(
         api.explore.getEventsByLocation,
-        {
-            city: currentUser?.location?.city || "Port Harcourt",
-            state: currentUser?.location?.state || "Rivers",
-            limit: 4
-        }
+        locationArgs
     )
-    
+
     const { data: popularEvents, isLoading: loadingPopular } = useConvexQuery(api.explore.getPopularEvents, { limit: 6 })
     const { data: categoryCounts } = useConvexQuery(api.explore.getCategoryCounts)
 
@@ -73,7 +74,7 @@ const ExplorePage = () => {
             {/* Featured Carousel */}
             <div className="mb-16">
                 {loadingFeatured ? (
-                    <div className="h-[400px] flex items-center justify-center border-2 border-dashed border-muted rounded-xl">
+                    <div className="h-100 flex items-center justify-center border-2 border-dashed border-muted rounded-xl">
                         <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
                     </div>
                 ) : featuredEvents && featuredEvents.length > 0 ? (
@@ -87,7 +88,7 @@ const ExplorePage = () => {
                             {featuredEvents.map((event: Doc<"events">) => (
                                 <CarouselItem key={event._id}>
                                     <div
-                                        className="relative h-[400px] rounded-xl overflow-hidden cursor-pointer"
+                                        className="relative h-100px rounded-xl overflow-hidden cursor-pointer"
                                         onClick={() => handleEventClick(event.slug)}
                                     >
                                         {event.coverImage ? (
@@ -104,7 +105,7 @@ const ExplorePage = () => {
                                                 style={{ backgroundColor: event.themeColor || "#333333" }}
                                             />
                                         )}
-                                        <div className="absolute inset-0 bg-gradient-to-r from-black/60 to-black/30" />
+                                        <div className="absolute inset-0 bg-linear-to-r from-black/60 to-black/30" />
                                         <div className="relative h-full flex flex-col justify-end p-8 md:p-12">
                                             <Badge className="w-fit mb-4" variant="secondary">
                                                 {[event.city, event.state || event.country].filter(Boolean).join(", ")}

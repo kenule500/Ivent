@@ -2,9 +2,10 @@
 
 import { useState, useEffect } from "react";
 import { QrCode, Loader2 } from "lucide-react";
-import { useConvexMutation } from "@/hooks/use-convex-query";
+import { useConvexMutation } from "@/hooks/useConvexQuery";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
+import type { Html5QrcodeScanner } from "html5-qrcode";
 
 import {
   Dialog,
@@ -14,15 +15,20 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 
-export default function QRScannerModal({ isOpen, onClose }) {
+interface QRScannerModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+}
+
+export default function QRScannerModal({ isOpen, onClose }: QRScannerModalProps) {
   const [scannerReady, setScannerReady] = useState(false);
-  const [error, setError] = useState(null);
+  const [error, setError] = useState<string | null>(null);
 
   const { mutate: checkInAttendee } = useConvexMutation(
     api.registrations.checkInAttendee
   );
 
-  const handleCheckIn = async (qrCode) => {
+  const handleCheckIn = async (qrCode: string) => {
     try {
       const result = await checkInAttendee({ qrCode });
 
@@ -33,13 +39,14 @@ export default function QRScannerModal({ isOpen, onClose }) {
         toast.error(result.message || "Check-in failed");
       }
     } catch (error) {
-      toast.error(error.message || "Invalid QR code");
+      const errorMessage = error instanceof Error ? error.message : "Invalid QR code";
+      toast.error(errorMessage);
     }
   };
 
   // Initialize QR Scanner
   useEffect(() => {
-    let scanner = null;
+    let scanner: Html5QrcodeScanner | null = null;
     let mounted = true;
 
     const initScanner = async () => {
@@ -79,7 +86,7 @@ export default function QRScannerModal({ isOpen, onClose }) {
           /* verbose= */ false
         );
 
-        const onScanSuccess = (decodedText) => {
+        const onScanSuccess = (decodedText: string) => {
           console.log("QR Code detected:", decodedText);
           if (scanner) {
             scanner.clear().catch(console.error);
@@ -87,7 +94,7 @@ export default function QRScannerModal({ isOpen, onClose }) {
           handleCheckIn(decodedText);
         };
 
-        const onScanError = (error) => {
+        const onScanError = (error: string) => {
           // Only log actual errors, not "no QR code found" messages
           if (error && !error.includes("NotFoundException")) {
             console.debug("Scan error:", error);
@@ -100,7 +107,8 @@ export default function QRScannerModal({ isOpen, onClose }) {
         console.log("Scanner rendered successfully");
       } catch (error) {
         console.error("Failed to initialize scanner:", error);
-        setError(`Failed to start camera: ${error.message}`);
+        const errorMessage = error instanceof Error ? error.message : "Failed to start camera";
+        setError(errorMessage);
         toast.error("Camera failed. Please use manual entry.");
       }
     };

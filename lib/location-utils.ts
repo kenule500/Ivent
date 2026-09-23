@@ -18,38 +18,45 @@ export function parseLocationSlug(slug: string): LocationResult {
     return { city: null, state: null, isValid: false };
   }
 
-  // Parse city (first part)
-  const cityName = parts[0].charAt(0).toUpperCase() + parts[0].slice(1);
-
-  // Parse state (remaining parts joined)
-  const stateName = parts
-    .slice(1)
-    .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
-    .join(" ");
-
-  // Get all Nigerian states (ISO country code "NG")
+  // Get all Nigerian states to validate against
   const nigerianStates = State.getStatesOfCountry("NG");
 
-  // Validate state exists
-  const stateObj = nigerianStates.find(
-    (s) => s.name.toLowerCase() === stateName.toLowerCase()
-  );
+  // Try to find a valid state at the end of the slug.
+  // We check the last 1 part (e.g., "rivers") and last 2 parts (e.g., "cross-river")
+  for (let i = 1; i <= 2; i++) {
+    if (parts.length > i) {
+      const potentialStateParts = parts.slice(-i);
+      const potentialStateSlug = potentialStateParts.join("-");
+      
+      // Check if this matches a real Nigerian state (case-insensitive, hyphenated)
+      const matchedState = nigerianStates.find(
+        (s) => s.name.toLowerCase().replace(/\s+/g, "-") === potentialStateSlug
+      );
 
-  if (!stateObj) {
-    return { city: null, state: null, isValid: false };
+      if (matchedState) {
+        // We found a valid state! Everything before it is the city.
+        const cityParts = parts.slice(0, -i);
+        const cityName = cityParts
+          .map((p) => p.charAt(0).toUpperCase() + p.slice(1))
+          .join(" ");
+        
+        const stateName = matchedState.name; // Use the official library name
+
+        // Validate that this city actually exists in this state
+        const cities = City.getCitiesOfState("NG", matchedState.isoCode);
+        const cityExists = cities.some(
+          (c) => c.name.toLowerCase() === cityName.toLowerCase()
+        );
+
+        if (cityExists) {
+          return { city: cityName, state: stateName, isValid: true };
+        }
+      }
+    }
   }
 
-  // Validate city exists in that state
-  const cities = City.getCitiesOfState("NG", stateObj.isoCode);
-  const cityExists = cities.some(
-    (c) => c.name.toLowerCase() === cityName.toLowerCase()
-  );
-
-  if (!cityExists) {
-    return { city: null, state: null, isValid: false };
-  }
-
-  return { city: cityName, state: stateName, isValid: true };
+  // If no valid city-state combination was found
+  return { city: null, state: null, isValid: false };
 }
 
 export function createLocationSlug(city: string, state: string) {

@@ -1,5 +1,5 @@
 import { Cerebras } from "@cerebras/cerebras_cloud_sdk";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 // 1. Define a strict, linter-approved interface for the Cerebras response shape
 interface CerebrasCompletion {
@@ -10,18 +10,21 @@ interface CerebrasCompletion {
   }>;
 }
 
-// Safeguard API key configuration
-const apiKey = process.env.CEREBRAS_API_KEY;
-if (!apiKey) {
-  throw new Error("Missing CEREBRAS_API_KEY environment variable");
+// Initialize the official Cerebras client (lazy load to avoid build errors)
+let client: Cerebras | null = null;
+
+function getClient(): Cerebras {
+  const apiKey = process.env.CEREBRAS_API_KEY;
+  if (!apiKey) {
+    throw new Error("Missing CEREBRAS_API_KEY environment variable");
+  }
+  if (!client) {
+    client = new Cerebras({ apiKey });
+  }
+  return client;
 }
 
-// Initialize the official Cerebras client
-const client = new Cerebras({
-  apiKey: apiKey,
-});
-
-export async function POST(req: NextResponse) {
+export async function POST(req: NextRequest) {
   try {
     const { prompt } = await req.json();
 
@@ -70,7 +73,7 @@ export async function POST(req: NextResponse) {
     };
 
     // Make the ultra-fast completion call
-    const response = await client.chat.completions.create(params);
+    const response = await getClient().chat.completions.create(params);
 
     // 2. Safe Double-Casting to bypass both "unknown" and "no-explicit-any" ESLint checks
     const text = (response as unknown as CerebrasCompletion).choices?.[0]?.message?.content;

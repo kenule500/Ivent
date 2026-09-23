@@ -3,13 +3,13 @@
 
 import { useState, useMemo } from "react";
 import { useRouter } from "next/navigation";
-import { useForm, Controller } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
 import { State, City } from "country-state-city";
 import { CalendarIcon, Loader2, Sparkles } from "lucide-react";
-import { useConvexMutation, useConvexQuery } from '@/hooks/useConvexQuery'
+import { useConvexMutation, useConvexQuery } from '@/hooks/useConvexQuery';
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useAuth } from "@clerk/nextjs";
@@ -17,18 +17,16 @@ import { combineDateTime } from "@/lib/utils";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import UnsplashImagePicker from "@/components/unsplash-image-picker";
 import UpgradeModal from "@/components/upgrade-modal";
 import { CATEGORIES } from "@/lib/data";
 import AIEventCreator from "./_components/ai-event-creator";
-import Image from "next/image";
 import { Badge } from "@/components/ui/badge";
 import { Popover, PopoverTrigger,PopoverContent,} from "@/components/ui/popover";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
-
-// ... Keep your UI imports exactly as they are
+import ImagePicker from "@/components/ImagePicker";
+import { SmartImage } from "@/components/SmartImage";
 
 // HH:MM in 24h format validator
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -37,7 +35,6 @@ const eventSchema = z.object({
   title: z.string().min(5, "Title must be at least 5 characters"),
   description: z.string().min(20, "Description must be at least 20 characters"),
   category: z.string().min(1, "Please select a category"),
-  // Fix 1: Wrap parameter keys inside an object literal configuration block correctly
   startDate: z.date({ message: "Start date is required" }),
   endDate: z.date({ message: "End date is required" }),
   startTime: z.string().regex(timeRegex, "Start time must be HH:MM"),
@@ -47,13 +44,12 @@ const eventSchema = z.object({
   address: z.string().optional(),
   city: z.string().min(1, "City is required"),
   state: z.string().optional(),
-  capacity: z.coerce.number().min(1, "Capacity must be at least 1"), // z.coerce manages string inputs smoothly
+  capacity: z.coerce.number().min(1, "Capacity must be at least 1"),
   ticketType: z.enum(["free", "paid"]).default("free"),
   ticketPrice: z.number().optional(),
   coverImage: z.string().optional(),
   themeColor: z.string().default("#1e3a8a"),
 });
-
 
 export default function CreateEventPage() {
   const router = useRouter();
@@ -69,13 +65,11 @@ export default function CreateEventPage() {
     api.events.createEvent
   );
 
-  // Type the react-hook-form implementation structure safely
   const {
     register,
     handleSubmit,
     watch,
     setValue,
-    control,
     formState: { errors },
   } = useForm<z.input<typeof eventSchema>>({
     resolver: zodResolver(eventSchema),
@@ -92,7 +86,6 @@ export default function CreateEventPage() {
     },
   });
 
-  // ... keep your useMemo hooks / watch methods untouched
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
   const selectedState = watch("state");
@@ -108,14 +101,13 @@ export default function CreateEventPage() {
     return City.getCitiesOfState("NG", st.isoCode);
   }, [selectedState, userStates]);
 
-  // Color presets - show all for Pro, only default for FreeS
+  // Color presets - show all for Pro, only default for Free
   const colorPresets = [
     "#1e3a8a", // Default color (always available)
     ...(hasPro ? ["#4c1d95", "#065f46", "#92400e", "#7f1d1d", "#831843"] : []),
   ];
 
   const handleColorClick = (color: string) => {
-    // If not default color and user doesn't have Pro
     if (color !== "#1e3a8a" && !hasPro) {
       setUpgradeReason("color");
       setShowUpgradeModal(true);
@@ -124,18 +116,13 @@ export default function CreateEventPage() {
     setValue("themeColor", color);
   };
 
-
-
-  // Fix 2: Bind structural type interface parameters directly onto the data input signature
   const onSubmit = async (data: z.input<typeof eventSchema>) => {
     try {
-      // 1. Guard check ensures they are defined
       if (!data.startDate || !data.endDate) {
         toast.error("Please pick your calendar dates explicitly first.");
         return;
       }
 
-      // 2. Wrap them with new Date() to prove to TypeScript they are not undefined
       const start = combineDateTime(new Date(data.startDate), data.startTime || "00:00");
       const end = combineDateTime(new Date(data.endDate), data.endTime || "00:00");
 
@@ -148,17 +135,14 @@ export default function CreateEventPage() {
         return;
       }
 
-      // Fix 3: Handle singular naming typo ('freeEventCreated') and check for undefined safely
       const currentCreatedCount = currentUser?.freeEventsCreated ?? 0;
 
-      // Check event limit for Free users
       if (!hasPro && currentCreatedCount >= 1) {
         setUpgradeReason("limit");
         setShowUpgradeModal(true);
         return;
       }
 
-      // Check if trying to use custom color without Pro
       if (data.themeColor !== "#1e3a8a" && !hasPro) {
         setUpgradeReason("color");
         setShowUpgradeModal(true);
@@ -166,34 +150,26 @@ export default function CreateEventPage() {
       }
 
       await createEvent({
-      title: data.title,
-      description: data.description,
-      category: data.category,
-      tags: [data.category],
-      startDate: start.getTime(),
-      endDate: end.getTime(),
-      timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
-      
-      // 1. Fallback to default literal string to satisfy '"physical" | "online"'
-      locationType: data.locationType || "physical", 
-      
-      venue: data.venue || undefined,
-      address: data.address || undefined,
-      city: data.city,
-      state: data.state || undefined,
-      country: "Nigeria",
-      
-      // 2. Cast the unknown form capacity value cleanly to a number
-      capacity: Number(data.capacity), 
-      
-      // 3. Fallback to default literal string to satisfy '"free" | "paid"'
-      ticketType: data.ticketType || "free", 
-      
-      ticketPrice: data.ticketPrice || undefined,
-      coverImage: data.coverImage || undefined,
-      themeColor: data.themeColor,
-      hasPro,
-    });
+        title: data.title,
+        description: data.description,
+        category: data.category,
+        tags: [data.category],
+        startDate: start.getTime(),
+        endDate: end.getTime(),
+        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        locationType: data.locationType || "physical",
+        venue: data.venue || undefined,
+        address: data.address || undefined,
+        city: data.city,
+        state: data.state || undefined,
+        country: "Nigeria",
+        capacity: Number(data.capacity),
+        ticketType: data.ticketType || "free",
+        ticketPrice: data.ticketPrice || undefined,
+        coverImage: data.coverImage || undefined,
+        themeColor: data.themeColor,
+        hasPro,
+      });
 
       toast.success("Event created successfully! 🎉");
       router.push("/my-events");
@@ -203,13 +179,12 @@ export default function CreateEventPage() {
     }
   };
 
-    // Define the shape of the data returned by your AI generator
   interface AIGeneratedEventData {
     title: string;
     description: string;
     category: string;
     suggestedCapacity: number;
-    suggestedTicketType: "free" | "paid"; // Matches your Zod schema's literal options
+    suggestedTicketType: "free" | "paid";
   }
 
   const handleAIGenerate = (generatedData: AIGeneratedEventData) => {
@@ -247,13 +222,12 @@ export default function CreateEventPage() {
             onClick={() => setShowImagePicker(true)}
           >
             {coverImage ? (
-              <Image
+              <SmartImage
                 src={coverImage}
                 alt="Cover"
                 className="w-full h-full object-cover"
-                width={500} // Adjust width as needed
-                height={500} // Adjust height as needed
-                priority // Optional: prioritize loading this image
+                width={500}
+                height={500}
               />
             ) : (
               <span className="opacity-60 text-sm">
@@ -339,9 +313,7 @@ export default function CreateEventPage() {
               <Label className="text-sm">Start</Label>
               <div className="grid grid-cols-[1fr_auto] gap-2">
                 <Popover>
-                  {/* 1. Styled PopoverTrigger directly to remove Button tree dependency */}
                   <PopoverTrigger className="w-full h-10 px-4 py-2 inline-flex items-center justify-between whitespace-nowrap rounded-md text-sm font-medium border border-input bg-background shadow-sm hover:bg-accent hover:text-accent-foreground transition-colors">
-                    {/* 2. Passed fallback new Date() or checked value to satisfy date-fns format type */}
                     {startDate ? format(new Date(startDate), "PPP") : "Pick date"}
                     <CalendarIcon className="w-4 h-4 opacity-60" />
                   </PopoverTrigger>
@@ -405,24 +377,21 @@ export default function CreateEventPage() {
           {/* Category */}
           <div className="space-y-2">
             <Label className="text-sm">Category</Label>
-            <Controller
-              control={control}
-              name="category"
-              render={({ field }) => (
-                <Select value={field.value} onValueChange={field.onChange}>
-                  <SelectTrigger className="w-full">
-                    <SelectValue placeholder="Select category" />
-                  </SelectTrigger>
-                  <SelectContent>
-                    {CATEGORIES.map((cat) => (
-                      <SelectItem key={cat.id} value={cat.id}>
-                        {cat.icon} {cat.label}
-                      </SelectItem>
-                    ))}
-                  </SelectContent>
-                </Select>
-              )}
-            />
+            <Select 
+              value={watch("category") || ""} 
+              onValueChange={(val) => setValue("category", val || "")}
+            >
+              <SelectTrigger className="w-full">
+                <SelectValue placeholder="Select category" />
+              </SelectTrigger>
+              <SelectContent>
+                {CATEGORIES.map((cat) => (
+                  <SelectItem key={cat.id} value={cat.id}>
+                    {cat.icon} {cat.label}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             {errors.category && (
               <p className="text-sm text-red-400">{errors.category.message}</p>
             )}
@@ -432,57 +401,45 @@ export default function CreateEventPage() {
           <div className="space-y-3">
             <Label className="text-sm">Location</Label>
             <div className="grid grid-cols-2 gap-4">
-              <Controller
-                control={control}
-                name="state"
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={(val) => {
-                      field.onChange(val);
-                      setValue("city", "");
-                    }}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue placeholder="Select state" />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {userStates.map((s) => (
-                        <SelectItem key={s.isoCode} value={s.name}>
-                          {s.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <Select
+                value={watch("state") || ""}
+                onValueChange={(val) => {
+                  setValue("state", val || "");
+                  setValue("city", "");
+                }}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue placeholder="Select state" />
+                </SelectTrigger>
+                <SelectContent>
+                  {userStates.map((s) => (
+                    <SelectItem key={s.isoCode} value={s.name}>
+                      {s.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
 
-              <Controller
-                control={control}
-                name="city"
-                render={({ field }) => (
-                  <Select
-                    value={field.value}
-                    onValueChange={field.onChange}
-                    disabled={!selectedState}
-                  >
-                    <SelectTrigger className="w-full">
-                      <SelectValue
-                        placeholder={
-                          selectedState ? "Select city" : "Select state first"
-                        }
-                      />
-                    </SelectTrigger>
-                    <SelectContent>
-                      {cities.map((c) => (
-                        <SelectItem key={c.name} value={c.name}>
-                          {c.name}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
-                )}
-              />
+              <Select
+                value={watch("city") || ""}
+                onValueChange={(val) => setValue("city", val || "")}
+                disabled={!selectedState}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue
+                    placeholder={
+                      selectedState ? "Select city" : "Select state first"
+                    }
+                  />
+                </SelectTrigger>
+                <SelectContent>
+                  {cities.map((c) => (
+                    <SelectItem key={c.name} value={c.name}>
+                      {c.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
             </div>
 
             <div className="space-y-2 mt-6">
@@ -579,7 +536,7 @@ export default function CreateEventPage() {
 
       {/* Unsplash Picker */}
       {showImagePicker && (
-        <UnsplashImagePicker
+        <ImagePicker
           isOpen={showImagePicker}
           onClose={() => setShowImagePicker(false)}
           onSelect={(url) => {

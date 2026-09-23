@@ -1,18 +1,17 @@
 import React from 'react'
 import { Card, CardContent } from './ui/card'
-import { Doc, Id } from "@/convex/_generated/dataModel" // 1. Added 'Id' for typing the event ID
+import { Doc, Id } from "@/convex/_generated/dataModel"
 import { getCategoryIcon, getCategoryLabel } from '@/lib/data'
 import { MapPin, Users, Calendar, Eye, QrCode, Trash2, X } from 'lucide-react'
-import { format } from 'date-fns' // 2. Fixed import: was 'path', now 'date-fns'
+import { format } from 'date-fns'
 import { Badge } from './ui/badge'
 import { Button } from './ui/button'
-import Image from 'next/image' // 3. Added missing Next.js Image import
+import Image from 'next/image'
 
-// Define proper TypeScript types for props
 interface EventCardProps {
   event: Doc<"events">
-  onClick?: (e?: unknown) => void // 4. Updated to accept the event object
-  onDelete?: (id: Id<"events">) => void // 5. Updated to accept the event ID
+  onClick?: (e?: unknown) => void
+  onDelete?: (id: Id<"events">) => void
   variant?: "grid" | "list"
   action?: "event" | "ticket" | null
   className?: string
@@ -47,7 +46,7 @@ export default function EventCard({
             ) : (
               <div
                 className="absolute inset-0 flex items-center justify-center text-3xl"
-                style={{ backgroundColor: event.themeColor || "#333333" }} // Fallback color
+                style={{ backgroundColor: event.themeColor || "#333333" }}
               >
                 {getCategoryIcon(event.category)}
               </div>
@@ -78,70 +77,77 @@ export default function EventCard({
     );
   }
 
-  // Grid variant (default - original design)
+  // Grid variant (updated with flex-col layout to make flex-1 fill space)
   return (
     <Card
-      className={`overflow-hidden group pt-0 ${onClick ? "cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50" : ""} ${className}`}
+      className={`overflow-hidden group pt-0 h-full flex flex-col justify-between ${
+        onClick ? "cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50" : ""
+      } ${className}`}
       onClick={onClick}
     >
-      <div className="relative h-48 overflow-hidden">
-        {event.coverImage ? (
-          <Image
-            src={event.coverImage}
-            alt={event.title}
-            fill // Using 'fill' instead of width/height for better responsive behavior
-            className="object-cover group-hover:scale-105 transition-transform"
-            priority
-          />
-        ) : (
-          <div
-            className="w-full h-full flex items-center justify-center text-4xl"
-            style={{ backgroundColor: event.themeColor || "#333333" }} // Fallback color
-          >
-            {getCategoryIcon(event.category)}
+      <div>
+        <div className="relative h-48 overflow-hidden">
+          {event.coverImage ? (
+            <Image
+              src={event.coverImage}
+              alt={event.title}
+              fill
+              className="object-cover group-hover:scale-105 transition-transform"
+              priority
+            />
+          ) : (
+            <div
+              className="w-full h-full flex items-center justify-center text-4xl"
+              style={{ backgroundColor: event.themeColor || "#333333" }}
+            >
+              {getCategoryIcon(event.category)}
+            </div>
+          )}
+          <div className="absolute top-3 right-3">
+            <Badge variant="secondary">
+              {event.ticketType === "free" ? "Free" : "Paid"}
+            </Badge>
           </div>
-        )}
-        <div className="absolute top-3 right-3">
-          <Badge variant="secondary">
-            {event.ticketType === "free" ? "Free" : "Paid"}
-          </Badge>
         </div>
       </div>
 
-      <CardContent className="space-y-3">
-        <div>
-          <Badge variant="outline" className="mb-2">
-            {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
-          </Badge>
-          <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-purple-400 transition-colors">
-            {event.title}
-          </h3>
+      {/* CardContent fills remaining space */}
+      <CardContent className="p-4 flex-1 flex flex-col justify-between space-y-3">
+        <div className="space-y-3">
+          <div>
+            <Badge variant="outline" className="mb-2">
+              {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
+            </Badge>
+            <h3 className="font-semibold text-lg line-clamp-2 group-hover:text-purple-400 transition-colors">
+              {event.title}
+            </h3>
+          </div>
+
+          <div className="space-y-2 text-sm text-muted-foreground">
+            <div className="flex items-center gap-2">
+              <Calendar className="w-4 h-4" />
+              <span>{format(event.startDate, "PPP")}</span>
+            </div>
+            <div className="flex items-center gap-2">
+              <MapPin className="w-4 h-4" />
+              <span className="line-clamp-1">
+                {event.locationType === "online"
+                  ? "Online Event"
+                  : `${event.city}, ${event.state || event.country}`}
+              </span>
+            </div>
+            <div className="flex items-center gap-2">
+              <Users className="w-4 h-4" />
+              <span>
+                {event.registrationCount} / {event.capacity} registered
+              </span>
+            </div>
+          </div>
         </div>
 
-        <div className="space-y-2 text-sm text-muted-foreground">
-          <div className="flex items-center gap-2">
-            <Calendar className="w-4 h-4" />
-            <span>{format(event.startDate, "PPP")}</span>
-          </div>
-          <div className="flex items-center gap-2">
-            <MapPin className="w-4 h-4" />
-            <span className="line-clamp-1">
-              {event.locationType === "online"
-                ? "Online Event"
-                : `${event.city}, ${event.state || event.country}`}
-            </span>
-          </div>
-          <div className="flex items-center gap-2">
-            <Users className="w-4 h-4" />
-            <span>
-              {event.registrationCount} / {event.capacity} registered
-            </span>
-          </div>
-        </div>
-
+        {/* Action buttons naturally pushed to bottom */}
         {action && (
           <div className="flex gap-2 pt-2">
-            {/* Primary button */}
             <Button
               variant="outline"
               size="sm"
@@ -164,7 +170,6 @@ export default function EventCard({
               )}
             </Button>
 
-            {/* Secondary button - delete / cancel */}
             {onDelete && (
               <Button
                 variant="outline"
