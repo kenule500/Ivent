@@ -45,6 +45,10 @@ export default function AIEventCreator({ onEventGenerated }: AIEventCreatorProps
         body: JSON.stringify({ prompt }),
       });
 
+      if (!response.ok) {
+        throw new Error(`Generate request failed with status ${response.status}`);
+      }
+
       const data = await response.json();
       onEventGenerated(data);
       toast.success("Event details generated! Review and customize below.");

@@ -83,7 +83,7 @@
         "T2.3",
         "T4.1"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": [
         "TEST-005"
       ]
@@ -112,7 +112,7 @@
         "T2.3",
         "T4.1"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": [
         "TEST-005"
       ]

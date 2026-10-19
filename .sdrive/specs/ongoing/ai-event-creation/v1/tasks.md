@@ -44,6 +44,6 @@
 
 ## P4 — Fix review findings
 
-- [ ] **T4.1** Handle non-OK responses in AIEventCreator.
+- [x] **T4.1** Handle non-OK responses in AIEventCreator.
   - Linked: FR-006, NFR-002, AC-005
   - Check response.ok before parsing, show an error toast, keep the dialog open, and do not call onEventGenerated.

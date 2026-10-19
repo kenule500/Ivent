@@ -147,7 +147,7 @@
           "linkedAcceptanceCriteria": [
             "AC-005"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     }
