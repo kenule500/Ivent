@@ -6,23 +6,31 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "completed",
+          "phase": "ongoing",
           "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "approved",
-            "review": "rejected"
+            "review": "pending"
           },
           "history": [
             {
               "event": "feature_documented_retroactively",
               "by": "onboarding",
               "timestamp": "2026-10-18T13:58:00.158Z"
+            },
+            {
+              "event": "feature_amended",
+              "reason": "Tests and review found AC-002 empty-state and AC-006 organizer-CTA defects; reopen to apply fixes",
+              "actor": "kenule500",
+              "timestamp": "2026-10-19T16:50:54.498Z"
             }
           ]
         }
-      ]
+      ],
+      "branch": "feature/event-discovery-and-registration",
+      "base": "main"
     },
     {
       "name": "event-management-and-check-in",
