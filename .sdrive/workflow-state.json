@@ -54,23 +54,31 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "completed",
+          "phase": "ongoing",
           "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "approved",
-            "review": "rejected"
+            "review": "pending"
           },
           "history": [
             {
               "event": "feature_documented_retroactively",
               "by": "onboarding",
               "timestamp": "2026-10-18T13:58:00.158Z"
+            },
+            {
+              "event": "feature_amended",
+              "reason": "Review found verifier cannot scan convex/ and critical dependency advisories; reopen to apply fixes",
+              "actor": "kenule500",
+              "timestamp": "2026-10-19T16:53:16.748Z"
             }
           ]
         }
-      ]
+      ],
+      "branch": "feature/admin-console-and-governance",
+      "base": "main"
     },
     {
       "name": "ai-event-creation",
