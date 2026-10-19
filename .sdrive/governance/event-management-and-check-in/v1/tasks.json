@@ -206,7 +206,7 @@
           "linkedAcceptanceCriteria": [
             "AC-007"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     }

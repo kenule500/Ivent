@@ -147,7 +147,14 @@ export const checkInAttendee = secureMutation({
       .unique();
 
     if (!registration || registration.status !== "confirmed") {
-      throw new Error("Invalid or cancelled QR code");
+      // Return a failure result instead of throwing: the rate-limit token is
+      // written in this transaction, and a thrown mutation would roll it back,
+      // letting an attacker guess codes without ever hitting the limit.
+      return {
+        success: false,
+        message: "Invalid or cancelled QR code",
+        registration: null,
+      };
     }
 
     const event = await ctx.db.get(registration.eventId);

@@ -1,7 +1,7 @@
 {
   "feature": "event-management-and-check-in",
   "status": "fail",
-  "checkedAt": "2026-10-19T10:41:10.091Z",
+  "checkedAt": "2026-10-19T17:05:12.820Z",
   "summary": {
     "matched": 14,
     "missing": 15,

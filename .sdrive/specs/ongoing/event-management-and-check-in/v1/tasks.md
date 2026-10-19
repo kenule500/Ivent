@@ -61,6 +61,6 @@
 
 ## P5 — Fix review findings
 
-- [ ] **T5.1** Count failed check-in attempts against the rate limit.
+- [x] **T5.1** Count failed check-in attempts against the rate limit.
   - Linked: FR-007, NFR-001, NFR-002, AC-007
   - Ensure rejected QR guesses still consume the check-in budget instead of rolling the token back with the failed mutation.
