@@ -30,23 +30,31 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "completed",
+          "phase": "ongoing",
           "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "approved",
-            "review": "rejected"
+            "review": "pending"
           },
           "history": [
             {
               "event": "feature_documented_retroactively",
               "by": "onboarding",
               "timestamp": "2026-10-18T13:58:00.158Z"
+            },
+            {
+              "event": "feature_amended",
+              "reason": "Tests and review found AC-007 check-in rate-limit bypass; reopen to apply fixes",
+              "actor": "kenule500",
+              "timestamp": "2026-10-19T16:52:14.033Z"
             }
           ]
         }
-      ]
+      ],
+      "branch": "feature/event-management-and-check-in",
+      "base": "main"
     },
     {
       "name": "admin-console-and-governance",
