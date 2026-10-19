@@ -1,0 +1,11 @@
+{
+  "servers": {
+    "specdrive": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\mcp\\server.js"
+      ]
+    }
+  }
+}

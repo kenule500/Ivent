@@ -1,0 +1,118 @@
+{
+  "feature": "admin-console-and-governance",
+  "version": 1,
+  "architecture": {
+    "approach": "The /admin segment is a client console guarded by AdminGuard and, authoritatively, by requireAdmin in every admin Convex function. Clerk supplies identity, Convex stores roles and data, Resend sends invite email from an action, and a daily cron expires pending invites.",
+    "components": [
+      { "name": "app/admin/layout.tsx", "action": "reuse", "description": "Sidebar and drawer shell with guard wiring." },
+      { "name": "components/AdminGuard.tsx", "action": "reuse", "description": "Client role gate and redirect." },
+      { "name": "components/AdminSidebar.tsx", "action": "reuse", "description": "Admin navigation." },
+      { "name": "app/admin/page.tsx", "action": "reuse", "description": "Clerk sign-in for admins." },
+      { "name": "app/admin/signup/page.tsx", "action": "reuse", "description": "Invite-code admin signup." },
+      { "name": "app/admin/dashboard/page.tsx", "action": "reuse", "description": "Platform totals." },
+      { "name": "app/admin/users/page.tsx", "action": "reuse", "description": "User table, ban and role actions." },
+      { "name": "app/admin/events/page.tsx", "action": "reuse", "description": "Event table, details, and delete." },
+      { "name": "app/admin/registrations/page.tsx", "action": "reuse", "description": "Registration table and cancel action." },
+      { "name": "app/admin/invites/page.tsx", "action": "reuse", "description": "Invite generation and lifecycle UI." },
+      { "name": "app/admin/audit/page.tsx", "action": "reuse", "description": "Audit search, filter, and stats." },
+      { "name": "app/admin/analytics/page.tsx", "action": "reuse", "description": "Analytics charts and summary cards." },
+      { "name": "app/admin/settings/page.tsx", "action": "reuse", "description": "Admin profile and email preferences." },
+      { "name": "convex/admin.ts", "action": "reuse", "description": "Totals, users, events, registrations, invites." },
+      { "name": "convex/audit.ts", "action": "reuse", "description": "logAdminAction and audit queries." },
+      { "name": "convex/analytics.ts", "action": "reuse", "description": "Growth, trend, category, top, city, summary." },
+      { "name": "convex/settings.ts", "action": "reuse", "description": "Admin profile and preference update." },
+      { "name": "convex/emails.ts", "action": "reuse", "description": "Resend invite email action." },
+      { "name": "convex/crons.ts", "action": "reuse", "description": "Daily expiry of pending invites." },
+      { "name": "convex/helpers.ts", "action": "reuse", "description": "requireAdmin and authenticated user resolution." },
+      { "name": "components/admin", "action": "reuse", "description": "Tables, stat cards, pagination, modals, charts." }
+    ],
+    "referencedRequirementIds": [
+      "FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006",
+      "FR-007", "FR-008", "FR-009", "FR-010", "FR-011",
+      "NFR-001", "NFR-002", "NFR-003", "NFR-004", "NFR-005"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "users",
+        "action": "no_change",
+        "fields": [
+          { "name": "role", "type": "user|admin|super_admin", "action": "no_change" },
+          { "name": "banned", "type": "boolean", "action": "no_change" },
+          { "name": "preferences", "type": "{emailOnNewEvent,emailOnNewRegistration,emailOnNewAdminInvite,emailOnNewUser}", "action": "no_change" },
+          { "name": "updatedAt", "type": "number", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "adminInvites",
+        "action": "no_change",
+        "fields": [
+          { "name": "email", "type": "string", "action": "no_change" },
+          { "name": "inviteCode", "type": "string", "action": "no_change" },
+          { "name": "status", "type": "pending|accepted|expired|revoked", "action": "no_change" },
+          { "name": "createdBy", "type": "Id<users>", "action": "no_change" },
+          { "name": "createdAt", "type": "number", "action": "no_change" },
+          { "name": "expiresAt", "type": "number", "action": "no_change" },
+          { "name": "acceptedBy", "type": "Id<users>|null", "action": "no_change" },
+          { "name": "acceptedAt", "type": "number|null", "action": "no_change" },
+          { "name": "revokedBy", "type": "Id<users>|null", "action": "no_change" },
+          { "name": "revokedAt", "type": "number|null", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "auditLogs",
+        "action": "no_change",
+        "fields": [
+          { "name": "actorId", "type": "Id<users>", "action": "no_change" },
+          { "name": "actorName", "type": "string", "action": "no_change" },
+          { "name": "actorEmail", "type": "string", "action": "no_change" },
+          { "name": "action", "type": "AuditAction", "action": "no_change" },
+          { "name": "targetType", "type": "event|user|invite|registration", "action": "no_change" },
+          { "name": "targetId", "type": "string", "action": "no_change" },
+          { "name": "targetLabel", "type": "string", "action": "no_change" },
+          { "name": "metadata", "type": "any|null", "action": "no_change" },
+          { "name": "createdAt", "type": "number", "action": "no_change" }
+        ]
+      }
+    ],
+    "flowDescription": "Admin signs in through Clerk; AdminGuard redirects non-admins; each Convex admin function calls requireAdmin. Super admins create invites (rate-limited, seven-day expiry) and send them with Resend; invited users verify the code at signup and are promoted to admin. Mutations write auditLogs. Analytics and totals are read on demand; a daily cron expires pending invites."
+  },
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "description": "requireAdmin resolves the user by tokenIdentifier and rejects anything that is not admin or super_admin; every admin function calls it."
+    },
+    {
+      "requirementId": "NFR-002",
+      "description": "generateInviteCode uses a fixed-window rate limit of 10/60s and sets expiresAt to seven days."
+    },
+    {
+      "requirementId": "NFR-003",
+      "description": "User bans, role changes, event deletion, and invite create/revoke/resend/delete call logAdminAction."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-004",
+      "strategy": "List queries cap at 100 rows and filter in memory; the admin shell collapses to a drawer on small screens."
+    }
+  ],
+  "dependencies": [
+    { "name": "Clerk", "type": "service", "action": "no_change", "notes": "Admin identity." },
+    { "name": "Convex", "type": "service", "action": "no_change", "notes": "Data, cron, and rate limiter." },
+    { "name": "Resend", "type": "service", "action": "no_change", "notes": "Invite email." },
+    { "name": "Recharts", "type": "library", "action": "no_change", "notes": "Analytics charts." },
+    { "name": "date-fns", "type": "library", "action": "no_change", "notes": "Date display." }
+  ],
+  "risks": [
+    {
+      "description": "Admin registration cancellation uses the attendee mutation and fails for other users, without an audit entry.",
+      "mitigation": "Introduce an admin-authorized cancel mutation that logs registration.cancelled."
+    },
+    {
+      "description": "User search only covers the first 100 rows.",
+      "mitigation": "Add indexed pagination or a bounded server-side search."
+    }
+  ]
+}

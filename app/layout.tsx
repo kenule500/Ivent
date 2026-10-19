@@ -37,3 +37,8 @@ export default function RootLayout({
     </html>
   );
 }
+
+
+// 1/ check the layers you have in each part 
+//  a- check and make clean code 
+// b - recheck each time the time in network

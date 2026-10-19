@@ -1,0 +1,337 @@
+{
+  "feature": "event-discovery-and-registration",
+  "status": "fail",
+  "checkedAt": "2026-10-19T10:40:56.504Z",
+  "summary": {
+    "matched": 12,
+    "missing": 33,
+    "renamed": 4,
+    "extra": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "app/(public)/explore/page.tsx",
+        "action": "reuse",
+        "file": "app/(public)/explore/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/explore/[slug]/page.tsx",
+        "action": "reuse",
+        "file": "app/(public)/explore/[slug]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "action": "reuse",
+        "file": "app/(public)/events/[slug]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "reuse",
+        "file": "app/(public)/events/[slug]/_components/register-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "reuse",
+        "file": "app/(main)/my-tickets/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/onboarding-modal.tsx",
+        "action": "reuse",
+        "file": "components/onboarding-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "lib/data.ts",
+        "action": "reuse",
+        "file": "lib/data.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/location-utils.ts",
+        "action": "reuse",
+        "file": "lib/location-utils.ts"
+      },
+      {
+        "type": "dependency",
+        "name": "react-qr-code",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "embla-carousel-react",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "date-fns",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "country-state-city",
+        "action": "no_change"
+      }
+    ],
+    "missing": [
+      {
+        "type": "entity",
+        "name": "events",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "slug",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "title",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "description",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "category",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "startDate",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "endDate",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "locationType",
+        "fieldType": "physical|online",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "city",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "state",
+        "fieldType": "string|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "country",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "capacity",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketType",
+        "fieldType": "free|paid",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketPrice",
+        "fieldType": "number|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "registrationCount",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "coverImage",
+        "fieldType": "string|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "themeColor",
+        "fieldType": "string|null",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "eventId",
+        "fieldType": "Id<events>",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "userId",
+        "fieldType": "Id<users>",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "attendeeName",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "attendeeEmail",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "qrCode",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedIn",
+        "fieldType": "boolean",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedInAt",
+        "fieldType": "number|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "status",
+        "fieldType": "confirmed|cancelled",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "registeredAt",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "users",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "location",
+        "fieldType": "{city,state,country}|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "interests",
+        "fieldType": "string[]|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "hasCompletedOnboarding",
+        "fieldType": "boolean",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Clerk",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Convex",
+        "action": "no_change"
+      }
+    ],
+    "renamed": [
+      {
+        "type": "component",
+        "name": "convex/explore.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/search.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/users.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      }
+    ],
+    "extra": []
+  }
+}

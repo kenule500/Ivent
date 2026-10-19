@@ -1,0 +1,155 @@
+{
+  "feature": "ai-event-creation",
+  "version": 1,
+  "phases": [
+    {
+      "phaseId": "P1",
+      "name": "Server endpoint",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Build the generate-event route and prompt validation",
+          "description": "Parse the body and reject an absent prompt with 400.",
+          "linkedRequirements": [
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.2",
+          "title": "Call the provider and return the structured draft",
+          "description": "Constrained system prompt, JSON response format, and the five-field output.",
+          "linkedRequirements": [
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.3",
+          "title": "Handle the key and provider failures",
+          "description": "Lazy client from CEREBRAS_API_KEY and 500 responses on missing key, provider error, or parse error.",
+          "linkedRequirements": [
+            "FR-003",
+            "FR-004",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002",
+            "AC-003"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P2",
+      "name": "Client dialog",
+      "dependencies": [
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Build the prompt dialog",
+          "description": "Trigger, textarea, Cancel and Generate actions, loading state, and the request.",
+          "linkedRequirements": [
+            "FR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.2",
+          "title": "Fill the create-event form from the draft",
+          "description": "Map title, description, category, capacity, and ticket type without saving.",
+          "linkedRequirements": [
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.3",
+          "title": "Surface failures",
+          "description": "Show an error toast and keep the dialog open when the request throws.",
+          "linkedRequirements": [
+            "FR-006",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P3",
+      "name": "Verification",
+      "dependencies": [
+        "P2"
+      ],
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Run ESLint",
+          "description": "Run npm run lint. Passes with 0 errors and 14 warnings after ignoring .sdrive/** and convex/_generated/** and deferring the carousel's initial select.",
+          "linkedRequirements": [
+            "NFR-003"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T3.2",
+          "title": "Run TypeScript checking",
+          "description": "Run npx tsc --noEmit and resolve new type errors.",
+          "linkedRequirements": [
+            "NFR-003"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T3.3",
+          "title": "Run SpecDrive governance validation",
+          "description": "Validate config, workflow state, and feature governance JSON against the schemas.",
+          "linkedRequirements": [
+            "NFR-003"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P4",
+      "name": "Fix review findings",
+      "dependencies": [
+        "P3"
+      ],
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Handle non-OK responses in AIEventCreator",
+          "description": "Check response.ok before parsing, show an error toast, keep the dialog open, and do not call onEventGenerated.",
+          "linkedRequirements": [
+            "FR-006",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": false
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,133 @@
+{
+  "feature": "ai-event-creation",
+  "version": 1,
+  "rows": [
+    {
+      "requirementId": "FR-001",
+      "acceptanceCriteriaIds": [
+        "AC-001"
+      ],
+      "planSection": "Architecture > Client dialog",
+      "taskIds": [
+        "T2.1"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-001"
+      ]
+    },
+    {
+      "requirementId": "FR-002",
+      "acceptanceCriteriaIds": [
+        "AC-002"
+      ],
+      "planSection": "Architecture > Server endpoint",
+      "taskIds": [
+        "T1.1",
+        "T1.2"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-002"
+      ]
+    },
+    {
+      "requirementId": "FR-003",
+      "acceptanceCriteriaIds": [
+        "AC-002"
+      ],
+      "planSection": "Architecture > Server endpoint",
+      "taskIds": [
+        "T1.3"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-002"
+      ]
+    },
+    {
+      "requirementId": "FR-004",
+      "acceptanceCriteriaIds": [
+        "AC-003"
+      ],
+      "planSection": "Security",
+      "taskIds": [
+        "T1.3"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-003"
+      ]
+    },
+    {
+      "requirementId": "FR-005",
+      "acceptanceCriteriaIds": [
+        "AC-004"
+      ],
+      "planSection": "Flow",
+      "taskIds": [
+        "T2.2"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-004"
+      ]
+    },
+    {
+      "requirementId": "FR-006",
+      "acceptanceCriteriaIds": [
+        "AC-005"
+      ],
+      "planSection": "Flow > Failure handling",
+      "taskIds": [
+        "T2.3",
+        "T4.1"
+      ],
+      "status": "in_progress",
+      "testIds": [
+        "TEST-005"
+      ]
+    },
+    {
+      "requirementId": "NFR-001",
+      "acceptanceCriteriaIds": [
+        "AC-003"
+      ],
+      "planSection": "Security",
+      "taskIds": [
+        "T1.3"
+      ],
+      "status": "complete",
+      "testIds": [
+        "TEST-003"
+      ]
+    },
+    {
+      "requirementId": "NFR-002",
+      "acceptanceCriteriaIds": [
+        "AC-005"
+      ],
+      "planSection": "Flow > Failure handling",
+      "taskIds": [
+        "T2.3",
+        "T4.1"
+      ],
+      "status": "in_progress",
+      "testIds": [
+        "TEST-005"
+      ]
+    },
+    {
+      "requirementId": "NFR-003",
+      "acceptanceCriteriaIds": [],
+      "planSection": "Verification",
+      "taskIds": [
+        "T3.1",
+        "T3.2",
+        "T3.3"
+      ],
+      "status": "complete",
+      "testIds": []
+    }
+  ]
+}

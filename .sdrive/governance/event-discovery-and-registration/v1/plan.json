@@ -1,0 +1,171 @@
+{
+  "feature": "event-discovery-and-registration",
+  "version": 1,
+  "architecture": {
+    "approach": "Next.js App Router client pages read discovery and registration data from Convex through thin hooks. Convex owns discovery queries, registration state, QR generation, and ownership checks; Clerk supplies the identity resolved by secureQuery/secureMutation.",
+    "components": [
+      {
+        "name": "app/(public)/explore/page.tsx",
+        "action": "reuse",
+        "description": "Aggregates featured, nearby, popular events and category counts."
+      },
+      {
+        "name": "app/(public)/explore/[slug]/page.tsx",
+        "action": "reuse",
+        "description": "Resolves category and location slugs with pagination."
+      },
+      {
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "action": "reuse",
+        "description": "Public event detail and call-to-action states."
+      },
+      {
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "reuse",
+        "description": "Registration form and success state."
+      },
+      {
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "reuse",
+        "description": "Upcoming and past tickets, QR dialog, cancellation."
+      },
+      {
+        "name": "components/onboarding-modal.tsx",
+        "action": "reuse",
+        "description": "Interests and Nigerian location onboarding."
+      },
+      {
+        "name": "convex/explore.ts",
+        "action": "reuse",
+        "description": "Featured, location, category, popular, and count queries."
+      },
+      {
+        "name": "convex/search.ts",
+        "action": "reuse",
+        "description": "Title search over the search_title index."
+      },
+      {
+        "name": "convex/registrations.ts",
+        "action": "reuse",
+        "description": "Register, check, list, cancel, attendee list, check-in."
+      },
+      {
+        "name": "convex/users.ts",
+        "action": "reuse",
+        "description": "Current user, store, and onboarding completion."
+      },
+      {
+        "name": "lib/data.ts",
+        "action": "reuse",
+        "description": "The 12 event categories."
+      },
+      {
+        "name": "lib/location-utils.ts",
+        "action": "reuse",
+        "description": "Builds and parses city-state location slugs."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "FR-010",
+      "FR-011",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "events",
+        "action": "no_change",
+        "fields": [
+          { "name": "slug", "type": "string", "action": "no_change" },
+          { "name": "title", "type": "string", "action": "no_change" },
+          { "name": "description", "type": "string", "action": "no_change" },
+          { "name": "category", "type": "string", "action": "no_change" },
+          { "name": "startDate", "type": "number", "action": "no_change" },
+          { "name": "endDate", "type": "number", "action": "no_change" },
+          { "name": "locationType", "type": "physical|online", "action": "no_change" },
+          { "name": "city", "type": "string", "action": "no_change" },
+          { "name": "state", "type": "string|null", "action": "no_change" },
+          { "name": "country", "type": "string", "action": "no_change" },
+          { "name": "capacity", "type": "number", "action": "no_change" },
+          { "name": "ticketType", "type": "free|paid", "action": "no_change" },
+          { "name": "ticketPrice", "type": "number|null", "action": "no_change" },
+          { "name": "registrationCount", "type": "number", "action": "no_change" },
+          { "name": "coverImage", "type": "string|null", "action": "no_change" },
+          { "name": "themeColor", "type": "string|null", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "registrations",
+        "action": "no_change",
+        "fields": [
+          { "name": "eventId", "type": "Id<events>", "action": "no_change" },
+          { "name": "userId", "type": "Id<users>", "action": "no_change" },
+          { "name": "attendeeName", "type": "string", "action": "no_change" },
+          { "name": "attendeeEmail", "type": "string", "action": "no_change" },
+          { "name": "qrCode", "type": "string", "action": "no_change" },
+          { "name": "checkedIn", "type": "boolean", "action": "no_change" },
+          { "name": "checkedInAt", "type": "number|null", "action": "no_change" },
+          { "name": "status", "type": "confirmed|cancelled", "action": "no_change" },
+          { "name": "registeredAt", "type": "number", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "users",
+        "action": "no_change",
+        "fields": [
+          { "name": "location", "type": "{city,state,country}|null", "action": "no_change" },
+          { "name": "interests", "type": "string[]|null", "action": "no_change" },
+          { "name": "hasCompletedOnboarding", "type": "boolean", "action": "no_change" }
+        ]
+      }
+    ],
+    "flowDescription": "Explore queries feed public cards; an event slug resolves a detail page; registration authenticates through Clerk, writes a registration with a generated QR code, and increments the event count; My Tickets lists registrations and renders the QR; cancellation flips status and decrements the count."
+  },
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-002",
+      "description": "Registration and cancellation resolve the user from the Clerk token and check ownership in Convex; the organizer attendee list also checks organizerId."
+    },
+    {
+      "requirementId": "NFR-003",
+      "description": "Name and email are required by the form and constrained by the Convex mutation validators."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "strategy": "Discovery queries take a bounded window before sorting, and category/location pages return ten records per page."
+    }
+  ],
+  "dependencies": [
+    { "name": "Clerk", "type": "service", "action": "no_change", "notes": "Already used for authentication." },
+    { "name": "Convex", "type": "service", "action": "no_change", "notes": "Already the data layer." },
+    { "name": "react-qr-code", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "embla-carousel-react", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "date-fns", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "country-state-city", "type": "library", "action": "no_change", "notes": "Already installed." }
+  ],
+  "risks": [
+    {
+      "description": "Capacity could be oversold by concurrent registrations.",
+      "mitigation": "The mutation re-reads the event and re-checks capacity inside the transaction."
+    },
+    {
+      "description": "Title-only search limits discovery.",
+      "mitigation": "Category and location routes remain the primary browse paths."
+    }
+  ]
+}

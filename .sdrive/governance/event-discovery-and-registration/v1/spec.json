@@ -1,0 +1,282 @@
+{
+  "feature": "event-discovery-and-registration",
+  "title": "Event Discovery and Registration",
+  "version": 1,
+  "overview": {
+    "problemStatement": "Attendees need to find relevant events and register without friction, while every registration must produce a ticket that can be verified at the door.",
+    "proposedSolution": "Public explore surfaces (featured, nearby, popular, category and location routes, title search), a slug-based public event page, a Clerk-authenticated registration flow that issues a QR ticket, and a My Tickets page where attendees view or cancel registrations.",
+    "targetAudience": "Event attendees in Nigeria, including signed-out visitors who browse and signed-in attendees who register and manage tickets.",
+    "assumptions": [
+      "retroactive: true - documented from the existing implementation during brownfield onboarding; it is not a forward-looking product decision.",
+      "Paid tickets are settled offline at the venue; no payment processor is integrated.",
+      "The default country is Nigeria and prices are displayed in naira.",
+      "Currency, tax, and refund policy are not modelled."
+    ],
+    "outOfScope": [
+      "Online payment collection and refunds.",
+      "Waitlists when an event is full.",
+      "Recurring events and multi-session programmes.",
+      "Native mobile applications."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Browse featured, nearby, and popular events",
+      "role": "attendee",
+      "want": "one explore page that shows featured, nearby, popular events, and category counts",
+      "benefit": "I can find something worth attending without knowing what to search for",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given upcoming events exist, when I open /explore, then I see a featured carousel (up to 4), events near my saved city/state (default Port Harcourt, Rivers), popular events (up to 6), and a category grid with counts."
+        },
+        {
+          "id": "AC-002",
+          "text": "Given data is loading or empty, when I open /explore, then each section shows its own loading or empty state and the page still renders the remaining sections."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Browse by category or location",
+      "role": "attendee",
+      "want": "a category or city page with pagination",
+      "benefit": "I can narrow the catalogue to what interests me",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given I select a category or view all nearby events, when /explore/[slug] loads, then the slug resolves as a category id or a city-state location slug and shows up to 10 upcoming events with pagination."
+        },
+        {
+          "id": "AC-004",
+          "text": "Given a slug matches neither a category nor a valid location, then the route renders not-found instead of an empty list."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Inspect an event before registering",
+      "role": "attendee",
+      "want": "a public event page with full details and the correct call to action",
+      "benefit": "I can decide whether to attend",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given a valid event slug, when I open /events/[slug], then I see title, description, date/time, location, organizer, price, and registration count vs capacity; an unknown slug renders not-found."
+        },
+        {
+          "id": "AC-006",
+          "text": "Given the event state, the sidebar CTA is View Ticket when registered, disabled Event Ended when past, disabled Event Full when full, Manage Event for the organizer, and Register otherwise."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Register and receive a QR ticket",
+      "role": "signed-in attendee",
+      "want": "to register with my name and email and receive a QR ticket",
+      "benefit": "I can prove my registration at the door",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-007",
+          "text": "Given I am signed out, when I press Register for Event, then I am told to sign in and no registration is created."
+        },
+        {
+          "id": "AC-008",
+          "text": "Given I am signed in and submit a non-empty name and email, then a confirmed registration is stored with a unique EVT-... QR code and the event registration count increases by one."
+        },
+        {
+          "id": "AC-009",
+          "text": "Given the event is full registration is rejected, given I am already confirmed a duplicate is rejected, and given my earlier registration was cancelled it is reactivated and the count increments."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Manage my tickets",
+      "role": "attendee",
+      "want": "to see upcoming and past tickets and cancel one",
+      "benefit": "my plans stay current",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-010",
+          "text": "Given I have registrations, when I open /my-tickets, then upcoming confirmed and past/cancelled tickets are listed separately and selecting a ticket shows its QR code and ticket ID."
+        },
+        {
+          "id": "AC-011",
+          "text": "Given I own a confirmed registration, when I cancel it, then its status becomes cancelled and the event count decreases; another user's registration cannot be cancelled."
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "Personalise my event feed",
+      "role": "new attendee",
+      "want": "to choose my city and interests",
+      "benefit": "the surfaces I use show relevant events",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-012",
+          "text": "Given I visit an attendee page for the first time, onboarding asks for at least three interests and a Nigerian state and city, and completion persists hasCompletedOnboarding, location, and interests."
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Search events by title",
+      "role": "attendee",
+      "want": "to type a title and see matching upcoming events",
+      "benefit": "I can jump straight to an event",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-013",
+          "text": "Given a query of at least two characters, search returns at most five upcoming events whose titles match; shorter or blank queries return an empty list."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The explore page MUST aggregate featured events, events near the attendee's saved location, popular events, and per-category counts.",
+      "linkedAcceptanceCriteria": ["AC-001", "AC-002"]
+    },
+    {
+      "id": "FR-002",
+      "text": "The explore routes MUST resolve category ids and location slugs and MUST paginate results at ten per page.",
+      "linkedAcceptanceCriteria": ["AC-003", "AC-004"]
+    },
+    {
+      "id": "FR-003",
+      "text": "The public event page MUST resolve an event by slug and expose its full details.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "FR-004",
+      "text": "The public event page MUST select its call to action from registration, past, capacity, organizer, and default states.",
+      "linkedAcceptanceCriteria": ["AC-006"]
+    },
+    {
+      "id": "FR-005",
+      "text": "Registration MUST require an authenticated Clerk user.",
+      "linkedAcceptanceCriteria": ["AC-007"]
+    },
+    {
+      "id": "FR-006",
+      "text": "Registration MUST store the attendee name and email, issue a unique QR code, and increment the event registration count.",
+      "linkedAcceptanceCriteria": ["AC-008"]
+    },
+    {
+      "id": "FR-007",
+      "text": "Registration MUST reject full events and confirmed duplicates, and MUST reactivate a cancelled registration.",
+      "linkedAcceptanceCriteria": ["AC-009"]
+    },
+    {
+      "id": "FR-008",
+      "text": "My Tickets MUST list upcoming and past/cancelled registrations and display each QR ticket.",
+      "linkedAcceptanceCriteria": ["AC-010"]
+    },
+    {
+      "id": "FR-009",
+      "text": "An attendee MUST be able to cancel only their own confirmed registration.",
+      "linkedAcceptanceCriteria": ["AC-011"]
+    },
+    {
+      "id": "FR-010",
+      "text": "Attendee onboarding MUST capture at least three interests plus a state and city and persist them.",
+      "linkedAcceptanceCriteria": ["AC-012"]
+    },
+    {
+      "id": "FR-011",
+      "text": "Event search MUST match titles for queries of at least two characters and return only upcoming events.",
+      "linkedAcceptanceCriteria": ["AC-013"]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Discovery and ticket surfaces MUST remain usable at a 360px viewport and MUST expose loading and empty states.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Ownership and role checks MUST be enforced in Convex functions, not only in the client.",
+      "linkedAcceptanceCriteria": ["AC-011"]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Registration input MUST be validated for a required name and email before the mutation runs.",
+      "linkedAcceptanceCriteria": ["AC-008"]
+    },
+    {
+      "id": "NFR-004",
+      "text": "The feature MUST pass ESLint, TypeScript checking, and SpecDrive governance validation before it is considered complete.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "The event is at capacity.",
+      "expectedBehavior": "Registration is rejected with a full-event message and the CTA is disabled."
+    },
+    {
+      "id": "EC-002",
+      "description": "The user already has a confirmed registration.",
+      "expectedBehavior": "A duplicate is rejected and the page shows View Ticket."
+    },
+    {
+      "id": "EC-003",
+      "description": "The user previously cancelled their registration.",
+      "expectedBehavior": "Registering reactivates the existing row and increments the count once."
+    },
+    {
+      "id": "EC-004",
+      "description": "The event has ended.",
+      "expectedBehavior": "The registration CTA is disabled and Event Ended is shown."
+    },
+    {
+      "id": "EC-005",
+      "description": "The event slug is unknown.",
+      "expectedBehavior": "The not-found route is rendered."
+    },
+    {
+      "id": "EC-006",
+      "description": "A signed-out visitor presses register.",
+      "expectedBehavior": "A sign-in message is shown and no mutation runs."
+    },
+    {
+      "id": "EC-007",
+      "description": "No events exist yet.",
+      "expectedBehavior": "Each section shows an empty state and the page offers a create-event action."
+    }
+  ],
+  "dependencies": [
+    { "name": "Clerk", "type": "service", "notes": "Authentication and session identity." },
+    { "name": "Convex", "type": "service", "notes": "Database, queries, mutations, and storage." },
+    { "name": "Next.js", "type": "library", "notes": "App Router pages and client navigation." },
+    { "name": "React", "type": "library", "notes": "Client components and state." },
+    { "name": "react-qr-code", "type": "library", "notes": "Renders the ticket QR image." },
+    { "name": "embla-carousel-react", "type": "library", "notes": "Featured events carousel." },
+    { "name": "date-fns", "type": "library", "notes": "Event date formatting." },
+    { "name": "country-state-city", "type": "library", "notes": "Nigerian states and cities for onboarding." }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "Concurrent registrations could oversell capacity.",
+      "mitigation": "The registration mutation re-reads the event and re-checks capacity inside the transaction."
+    },
+    {
+      "id": "RISK-002",
+      "description": "QR codes are visible ticket identifiers and could be guessed.",
+      "mitigation": "Check-in is rate-limited per organizer and codes include a random UUID segment."
+    },
+    {
+      "id": "RISK-003",
+      "description": "Title-only search misses events whose names do not contain the query.",
+      "mitigation": "Category and location routes remain the primary discovery path."
+    }
+  ]
+}

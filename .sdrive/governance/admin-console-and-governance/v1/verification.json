@@ -1,0 +1,355 @@
+{
+  "feature": "admin-console-and-governance",
+  "status": "fail",
+  "checkedAt": "2026-10-19T10:41:11.144Z",
+  "summary": {
+    "matched": 14,
+    "missing": 30,
+    "renamed": 8,
+    "extra": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "app/admin/layout.tsx",
+        "action": "reuse",
+        "file": "app/admin/layout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminGuard.tsx",
+        "action": "reuse",
+        "file": "components/AdminGuard.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminSidebar.tsx",
+        "action": "reuse",
+        "file": "components/AdminSidebar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/signup/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/signup/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/dashboard/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/dashboard/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/users/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/users/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/events/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/events/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/registrations/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/registrations/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/invites/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/invites/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/audit/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/audit/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/analytics/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/analytics/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/settings/page.tsx",
+        "action": "reuse",
+        "file": "app/admin/settings/page.tsx"
+      },
+      {
+        "type": "dependency",
+        "name": "date-fns",
+        "action": "no_change"
+      }
+    ],
+    "missing": [
+      {
+        "type": "entity",
+        "name": "users",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "role",
+        "fieldType": "user|admin|super_admin",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "banned",
+        "fieldType": "boolean",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "preferences",
+        "fieldType": "{emailOnNewEvent,emailOnNewRegistration,emailOnNewAdminInvite,emailOnNewUser}",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "updatedAt",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "adminInvites",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "email",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "inviteCode",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "status",
+        "fieldType": "pending|accepted|expired|revoked",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "createdBy",
+        "fieldType": "Id<users>",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "expiresAt",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "acceptedBy",
+        "fieldType": "Id<users>|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "acceptedAt",
+        "fieldType": "number|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "revokedBy",
+        "fieldType": "Id<users>|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "adminInvites",
+        "name": "revokedAt",
+        "fieldType": "number|null",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "auditLogs",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorId",
+        "fieldType": "Id<users>",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorName",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorEmail",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "action",
+        "fieldType": "AuditAction",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetType",
+        "fieldType": "event|user|invite|registration",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetId",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetLabel",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "metadata",
+        "fieldType": "any|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Clerk",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Convex",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Resend",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "Recharts",
+        "action": "no_change"
+      }
+    ],
+    "renamed": [
+      {
+        "type": "component",
+        "name": "convex/admin.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/audit.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/analytics.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/settings.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/emails.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/crons.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/helpers.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin",
+        "action": "reuse",
+        "to": "components/admin/analytics-charts.tsx",
+        "file": "components/admin/analytics-charts.tsx"
+      }
+    ],
+    "extra": []
+  }
+}

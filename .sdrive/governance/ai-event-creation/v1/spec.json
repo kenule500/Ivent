@@ -1,0 +1,202 @@
+{
+  "feature": "ai-event-creation",
+  "title": "AI Event Creation",
+  "version": 1,
+  "overview": {
+    "problemStatement": "An organizer with only a rough idea must fill in a long create-event form, which is slow and often produces thin descriptions.",
+    "proposedSolution": "A Generate with AI dialog sends a free-text prompt to a Next.js route handler that calls the Cerebras SDK and returns a structured draft (title, description, category, suggested capacity, suggested ticket type) that fills the form for editing before save.",
+    "targetAudience": "Event organizers on the create-event page.",
+    "assumptions": [
+      "retroactive: true - documented from the existing implementation during brownfield onboarding; it is not a forward-looking product decision.",
+      "AI output is a draft only; nothing is persisted until the organizer submits the normal create-event form.",
+      "The Cerebras key lives in the server environment as CEREBRAS_API_KEY.",
+      "@google/generative-ai is installed but is not used by this flow."
+    ],
+    "outOfScope": [
+      "Generating images, prices, venues, or dates.",
+      "Conversation or multi-turn refinement.",
+      "Saving a server-side draft."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Generate event details from a prompt",
+      "role": "organizer",
+      "want": "to describe my idea and get a filled draft",
+      "benefit": "I can start from something concrete",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given the dialog is open, when I submit a non-empty prompt, a loading state shows, the request goes to POST /api/generate-event, and the returned title, description, category, suggested capacity, and suggested ticket type fill the form."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Rely on a stable server contract",
+      "role": "client",
+      "want": "a defined request and response shape",
+      "benefit": "the form can map the result deterministically",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-002",
+          "text": "Given a body without a prompt, the endpoint responds 400 with an error; given a valid prompt, it responds with JSON containing title, description, category, suggestedCapacity, and suggestedTicketType."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Keep the provider key server-side",
+      "role": "operator",
+      "want": "the provider key kept on the server",
+      "benefit": "it cannot be scraped from the browser",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given the route runs, it reads CEREBRAS_API_KEY from the server environment, and no provider key appears in client bundles or responses; a missing key produces a clear server error."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Review before saving",
+      "role": "organizer",
+      "want": "to edit the generated draft",
+      "benefit": "the AI cannot publish an inaccurate event on its own",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-004",
+          "text": "Given generated values, they only populate form fields, and the event is created only when I submit the validated form, with all fields still editable."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Fail safely",
+      "role": "organizer",
+      "want": "a failed generation to be visible",
+      "benefit": "I am not left with a silently broken form",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given a network or JSON parsing failure, an error toast is shown, the dialog stays open, and the form is not populated."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The create-event page MUST offer a prompt dialog that requests generated event data.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "FR-002",
+      "text": "POST /api/generate-event MUST reject a missing prompt with 400 and MUST return the five-field JSON draft for a valid prompt.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "FR-003",
+      "text": "The endpoint MUST return a 500 with an error message when the provider call or JSON parsing fails.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "FR-004",
+      "text": "The provider key MUST be read from the server environment only.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "FR-005",
+      "text": "Generated values MUST fill the form without persisting an event.",
+      "linkedAcceptanceCriteria": ["AC-004"]
+    },
+    {
+      "id": "FR-006",
+      "text": "The client MUST surface a request failure with a toast.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Provider credentials MUST NOT be exposed to the browser.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "NFR-002",
+      "text": "AI generation MUST remain optional; a failure MUST NOT prevent manual event creation.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "NFR-003",
+      "text": "The feature MUST pass ESLint, TypeScript checking, and SpecDrive governance validation.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "The prompt is empty.",
+      "expectedBehavior": "The client disables Generate and the server returns 400."
+    },
+    {
+      "id": "EC-002",
+      "description": "CEREBRAS_API_KEY is missing.",
+      "expectedBehavior": "The lazy client throws a clear error and the route returns 500."
+    },
+    {
+      "id": "EC-003",
+      "description": "The provider errors or returns an empty completion.",
+      "expectedBehavior": "The route returns 500 with the provider message."
+    },
+    {
+      "id": "EC-004",
+      "description": "The model returns non-JSON.",
+      "expectedBehavior": "JSON.parse fails and the route returns 500."
+    },
+    {
+      "id": "EC-005",
+      "description": "The model returns an unknown category.",
+      "expectedBehavior": "The value is written into the form as-is; the select may not match it."
+    },
+    {
+      "id": "EC-006",
+      "description": "The endpoint returns a non-2xx JSON error.",
+      "expectedBehavior": "The client currently treats the body as generated data because response.ok is not checked."
+    },
+    {
+      "id": "EC-007",
+      "description": "The organizer closes the dialog.",
+      "expectedBehavior": "No request is made."
+    }
+  ],
+  "dependencies": [
+    { "name": "@cerebras/cerebras_cloud_sdk", "type": "library", "notes": "Server-side completion call." },
+    { "name": "Next.js route handlers", "type": "library", "notes": "POST /api/generate-event." },
+    { "name": "react-hook-form", "type": "library", "notes": "Receives the generated form values." },
+    { "name": "sonner", "type": "library", "notes": "Success and failure toasts." }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "The route has no authentication or rate limiting, so it is publicly callable and can spend provider credits.",
+      "mitigation": "Require a session and apply a per-user rate limit before exposing the feature broadly."
+    },
+    {
+      "id": "RISK-002",
+      "description": "Model output is not validated against a schema before it is returned or applied.",
+      "mitigation": "Validate the response with Zod and reject unexpected categories or types."
+    },
+    {
+      "id": "RISK-003",
+      "description": "The client ignores the HTTP status, so error bodies can be applied as drafts.",
+      "mitigation": "Check response.ok and surface the error without calling onEventGenerated."
+    },
+    {
+      "id": "RISK-004",
+      "description": "The hard-coded model name and provider behaviour can change.",
+      "mitigation": "Move the model to configuration and monitor provider changes."
+    }
+  ]
+}

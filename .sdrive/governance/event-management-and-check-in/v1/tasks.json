@@ -1,0 +1,214 @@
+{
+  "feature": "event-management-and-check-in",
+  "version": 1,
+  "phases": [
+    {
+      "phaseId": "P1",
+      "name": "Create an event",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Build the validated create-event form",
+          "description": "Zod schema, date/time combination, and end-after-start validation.",
+          "linkedRequirements": [
+            "FR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.2",
+          "title": "Implement the create-event mutation",
+          "description": "Timestamped slug, organizer fields, zero registrations, and a three-per-minute rate limit.",
+          "linkedRequirements": [
+            "FR-002",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.3",
+          "title": "Enforce free and Pro limits",
+          "description": "One free event, default-only theme color, upgrade dialog, and Clerk billing check.",
+          "linkedRequirements": [
+            "FR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.4",
+          "title": "Add cover-image upload",
+          "description": "Convex upload URL plus storage-id, HTTPS, and data-URL persistence and resolution.",
+          "linkedRequirements": [
+            "FR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P2",
+      "name": "Manage events",
+      "dependencies": [
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Build My Events with cascading delete",
+          "description": "Organizer-scoped query, confirmation dialog, registration and storage cleanup.",
+          "linkedRequirements": [
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.2",
+          "title": "Build the per-event dashboard",
+          "description": "Confirmed, checked-in, and pending counts; capacity; check-in rate; estimated revenue; time-to-event; organizer authorization.",
+          "linkedRequirements": [
+            "FR-006",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P3",
+      "name": "Check in and export",
+      "dependencies": [
+        "P2"
+      ],
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Add the QR scanner",
+          "description": "Camera scanning through html5-qrcode and result handling.",
+          "linkedRequirements": [
+            "FR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T3.2",
+          "title": "Implement the check-in mutation",
+          "description": "QR resolution, organizer check, invalid/cancelled rejection, idempotency, and a ten-per-minute rate limit.",
+          "linkedRequirements": [
+            "FR-007",
+            "NFR-001",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T3.3",
+          "title": "Add attendee tabs and search",
+          "description": "All, checked-in, and pending tabs with name, email, or QR matching.",
+          "linkedRequirements": [
+            "FR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T3.4",
+          "title": "Add CSV export",
+          "description": "Six-column CSV download and a no-data message.",
+          "linkedRequirements": [
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P4",
+      "name": "Verification",
+      "dependencies": [
+        "P2",
+        "P3"
+      ],
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Run ESLint",
+          "description": "Run npm run lint. Passes with 0 errors and 14 warnings after ignoring .sdrive/** and convex/_generated/** and deferring the carousel's initial select.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T4.2",
+          "title": "Run TypeScript checking",
+          "description": "Run npx tsc --noEmit and resolve new type errors.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T4.3",
+          "title": "Run SpecDrive governance validation",
+          "description": "Validate config, workflow state, and feature governance JSON against the schemas.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P5",
+      "name": "Fix review findings",
+      "dependencies": [
+        "P4"
+      ],
+      "tasks": [
+        {
+          "id": "T5.1",
+          "title": "Count failed check-in attempts against the rate limit",
+          "description": "Ensure rejected QR guesses still consume the check-in budget instead of rolling the token back with the failed mutation.",
+          "linkedRequirements": [
+            "FR-007",
+            "NFR-001",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007"
+          ],
+          "completed": false
+        }
+      ]
+    }
+  ]
+}

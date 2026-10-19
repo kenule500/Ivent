@@ -1,0 +1,317 @@
+{
+  "feature": "admin-console-and-governance",
+  "title": "Admin Console and Governance",
+  "version": 1,
+  "overview": {
+    "problemStatement": "Operators need a restricted back office to manage users, events, registrations, and admin access, and to attribute every administrative change.",
+    "proposedSolution": "A role-gated /admin area with Clerk sign-in, invite-only signup, a client guard plus server requireAdmin, platform totals, user/event/registration management, a rate-limited invitation lifecycle with Resend email and daily expiry, an append-only audit log, analytics queries, and admin email preferences.",
+    "targetAudience": "Ivent staff holding the admin or super_admin role.",
+    "assumptions": [
+      "retroactive: true - documented from the existing implementation during brownfield onboarding; it is not a forward-looking product decision.",
+      "super_admin is the only role that may change roles and manage invites; admin can view and moderate non-admin users.",
+      "Invite emails are sent by the client after the invite record is generated.",
+      "Analytics are computed on read over full collections; no warehouse exists."
+    ],
+    "outOfScope": [
+      "Editing an event from the admin console.",
+      "Granular per-permission roles beyond user, admin, and super_admin.",
+      "Exporting audit logs or analytics."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Restrict the back office to administrators",
+      "role": "operator",
+      "want": "the admin area restricted",
+      "benefit": "ordinary users cannot read or change platform data",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given a signed-out visitor or a user, /admin/* redirects to /admin and the guard renders no protected content; given admin or super_admin the console renders; every admin Convex function also calls requireAdmin."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "See platform totals",
+      "role": "admin",
+      "want": "a dashboard",
+      "benefit": "I can see the size of the platform at a glance",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-002",
+          "text": "Given I open /admin/dashboard, I see total users, total events, total registrations, and upcoming event counts, with a loading state and an access-denied state on error."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Moderate users",
+      "role": "admin",
+      "want": "to search users and control bans and roles",
+      "benefit": "abusive accounts and staffing changes are handled",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given the users page, I can search by name or email and see role and ban state; I can ban or unban a non-admin, banning another admin is rejected, and only a super_admin can change a role."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Oversee events",
+      "role": "admin",
+      "want": "to inspect and delete any event",
+      "benefit": "policy violations can be removed",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-004",
+          "text": "Given the events page, events are listed and searchable by title; deleting one requires confirmation, removes its registrations, and writes an event.deleted audit entry."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Oversee registrations",
+      "role": "admin",
+      "want": "to review registrations and cancel a ticket",
+      "benefit": "attendance can be corrected",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given the registrations page, rows show attendee, event, and status, and a confirmed row offers a cancel action with confirmation."
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "Invite new administrators",
+      "role": "super admin",
+      "want": "to invite admins by email",
+      "benefit": "access is granted deliberately",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-006",
+          "text": "Given a super admin submits an email, a pending invite with a seven-day expiry is created or refreshed, generation is limited to ten per minute, and the invites page can send the code through Resend."
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Accept an invite",
+      "role": "invited person",
+      "want": "to sign up with my code",
+      "benefit": "I become an admin",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-007",
+          "text": "Given a signed-in user submits an email and matching pending, unexpired code, the invite becomes accepted and the user role becomes admin; missing, accepted, revoked, expired, or mismatched codes are rejected."
+        }
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Manage the invite lifecycle",
+      "role": "super admin",
+      "want": "to revoke, delete, resend, and expire invites",
+      "benefit": "access does not linger",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-008",
+          "text": "Given a pending or expired invite, a super admin can revoke, delete, or resend a new code and expiry; accepted invites cannot be revoked, deleted, or resent; the daily cron marks pending invites past expiry as expired."
+        }
+      ]
+    },
+    {
+      "id": "US-009",
+      "title": "Audit administrative actions",
+      "role": "admin",
+      "want": "an audit trail",
+      "benefit": "changes are attributable",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-009",
+          "text": "Given an administrative mutation, an auditLogs entry records actor, action, target, label, optional metadata, and time; the audit page supports text search and action filtering and shows total, 24-hour, and 7-day counts."
+        }
+      ]
+    },
+    {
+      "id": "US-010",
+      "title": "Read analytics",
+      "role": "admin",
+      "want": "analytics",
+      "benefit": "growth and demand are visible",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-010",
+          "text": "Given the analytics page, user growth, event growth, registration trend, events by category, top events, events by city, and summary metrics are available for the selected window."
+        }
+      ]
+    },
+    {
+      "id": "US-011",
+      "title": "Control admin email preferences",
+      "role": "admin",
+      "want": "to choose which notification emails I receive",
+      "benefit": "my inbox stays useful",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-011",
+          "text": "Given the settings page, I can view and update emailOnNewEvent, emailOnNewRegistration, emailOnNewAdminInvite, and emailOnNewUser, and they persist on my user record."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The admin area MUST be restricted to admin and super_admin on both the client and the Convex server.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "FR-002",
+      "text": "The dashboard MUST report total users, events, registrations, and upcoming events.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "FR-003",
+      "text": "User management MUST support search, ban and unban, and role change with the documented role rules.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "FR-004",
+      "text": "Event management MUST support listing, search, cascading delete, and audit logging.",
+      "linkedAcceptanceCriteria": ["AC-004"]
+    },
+    {
+      "id": "FR-005",
+      "text": "Registration management MUST list registrations and expose a confirmed-row cancel action.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "FR-006",
+      "text": "Invite generation MUST be super-admin-only, rate-limited, seven-day expiring, and emailable.",
+      "linkedAcceptanceCriteria": ["AC-006"]
+    },
+    {
+      "id": "FR-007",
+      "text": "Invite acceptance MUST validate status, expiry, and code before promoting the user to admin.",
+      "linkedAcceptanceCriteria": ["AC-007"]
+    },
+    {
+      "id": "FR-008",
+      "text": "Invite lifecycle MUST support revoke, delete, resend, and daily expiry.",
+      "linkedAcceptanceCriteria": ["AC-008"]
+    },
+    {
+      "id": "FR-009",
+      "text": "Administrative mutations MUST write audit entries, and the audit page MUST support search, filter, and summary counts.",
+      "linkedAcceptanceCriteria": ["AC-009"]
+    },
+    {
+      "id": "FR-010",
+      "text": "Analytics MUST expose growth, trend, category, top-event, city, and summary queries.",
+      "linkedAcceptanceCriteria": ["AC-010"]
+    },
+    {
+      "id": "FR-011",
+      "text": "Admin settings MUST persist the four email preferences.",
+      "linkedAcceptanceCriteria": ["AC-011"]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Every admin Convex function MUST call requireAdmin; the client guard is defense in depth only.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Invite generation MUST be rate-limited and invites MUST expire after seven days.",
+      "linkedAcceptanceCriteria": ["AC-006"]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Administrative mutations that change users, events, invites, or registrations MUST create an audit entry.",
+      "linkedAcceptanceCriteria": ["AC-004", "AC-009"]
+    },
+    {
+      "id": "NFR-004",
+      "text": "Admin screens MUST remain usable at a 360px viewport with loading and empty states.",
+      "linkedAcceptanceCriteria": ["AC-002", "AC-005"]
+    },
+    {
+      "id": "NFR-005",
+      "text": "The feature MUST pass ESLint, TypeScript checking, and SpecDrive governance validation.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "A non-admin calls an admin function.",
+      "expectedBehavior": "Admin access required is thrown."
+    },
+    {
+      "id": "EC-002",
+      "description": "An admin tries to ban another admin.",
+      "expectedBehavior": "The ban is rejected."
+    },
+    {
+      "id": "EC-003",
+      "description": "A non-super-admin tries to change a role or manage invites.",
+      "expectedBehavior": "The action is rejected with a super-admin-only error."
+    },
+    {
+      "id": "EC-004",
+      "description": "An invite is accepted, revoked, or expired.",
+      "expectedBehavior": "The conflicting action is rejected with the specific reason."
+    },
+    {
+      "id": "EC-005",
+      "description": "The invite email fails to send.",
+      "expectedBehavior": "The invite record remains and the error is surfaced to the caller."
+    },
+    {
+      "id": "EC-006",
+      "description": "There are no users, events, registrations, or audit entries.",
+      "expectedBehavior": "The relevant empty state renders."
+    },
+    {
+      "id": "EC-007",
+      "description": "An admin cancels another user's registration.",
+      "expectedBehavior": "The attendee ownership check currently rejects it; see RISK-001."
+    }
+  ],
+  "dependencies": [
+    { "name": "Clerk", "type": "service", "notes": "Admin sign-in and identity." },
+    { "name": "Convex", "type": "service", "notes": "Data, cron, rate limiter." },
+    { "name": "Resend", "type": "service", "notes": "Invite email delivery." },
+    { "name": "Recharts", "type": "library", "notes": "Analytics charts." },
+    { "name": "date-fns", "type": "library", "notes": "Date formatting." },
+    { "name": "lucide-react", "type": "library", "notes": "Admin icons." }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "The admin registrations page calls the attendee cancelRegistration mutation, which enforces registration.userId === ctx.user._id, so an admin cannot cancel another user's ticket and no registration.cancelled audit entry is written.",
+      "mitigation": "Add an admin-authorized cancellation mutation that logs registration.cancelled, and route the admin UI through it."
+    },
+    {
+      "id": "RISK-002",
+      "description": "getAllUsers searches only the first 100 users returned, so search can miss accounts as the user base grows.",
+      "mitigation": "Add a bounded indexed search or server-side pagination."
+    },
+    {
+      "id": "RISK-003",
+      "description": "requireAdmin re-queries the user on every admin call.",
+      "mitigation": "Acceptable at current scale; revisit if admin traffic grows."
+    },
+    {
+      "id": "RISK-004",
+      "description": "Analytics reads whole collections per query.",
+      "mitigation": "Introduce precomputed aggregates if collections grow large."
+    }
+  ]
+}

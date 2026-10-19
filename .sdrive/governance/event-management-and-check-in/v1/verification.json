@@ -1,0 +1,225 @@
+{
+  "feature": "event-management-and-check-in",
+  "status": "fail",
+  "checkedAt": "2026-10-19T10:41:10.091Z",
+  "summary": {
+    "matched": 14,
+    "missing": 15,
+    "renamed": 4,
+    "extra": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "reuse",
+        "file": "app/(main)/create-event/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ImagePicker.tsx",
+        "action": "reuse",
+        "file": "components/ImagePicker.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/upgrade-modal.tsx",
+        "action": "reuse",
+        "file": "components/upgrade-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/page.tsx",
+        "action": "reuse",
+        "file": "app/(main)/my-events/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/page.tsx",
+        "action": "reuse",
+        "file": "app/(main)/my-events/[eventId]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/_components/qr-scanner-modal.tsx",
+        "action": "reuse",
+        "file": "app/(main)/my-events/_components/qr-scanner-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/_components/attendee-card.tsx",
+        "action": "reuse",
+        "file": "app/(main)/my-events/_components/attendee-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/event-card.tsx",
+        "action": "reuse",
+        "file": "components/event-card.tsx"
+      },
+      {
+        "type": "dependency",
+        "name": "react-hook-form",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "zod",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "@hookform/resolvers",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "html5-qrcode",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "date-fns",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "country-state-city",
+        "action": "no_change"
+      }
+    ],
+    "missing": [
+      {
+        "type": "entity",
+        "name": "events",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "slug",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "organizerId",
+        "fieldType": "Id<users>",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "organizerName",
+        "fieldType": "string",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "capacity",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketType",
+        "fieldType": "free|paid",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketPrice",
+        "fieldType": "number|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "registrationCount",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "coverImage",
+        "fieldType": "string|null",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "themeColor",
+        "fieldType": "string|null",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "users",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "freeEventsCreated",
+        "fieldType": "number",
+        "action": "no_change"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedIn",
+        "fieldType": "boolean",
+        "action": "no_change"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedInAt",
+        "fieldType": "number|null",
+        "action": "no_change"
+      }
+    ],
+    "renamed": [
+      {
+        "type": "component",
+        "name": "convex/events.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/dashboard.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/rateLimiter.ts",
+        "action": "reuse",
+        "to": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      }
+    ],
+    "extra": []
+  }
+}

@@ -1,0 +1,153 @@
+{
+  "feature": "event-management-and-check-in",
+  "version": 1,
+  "architecture": {
+    "approach": "Organizer pages are Next.js client components. Creation uses react-hook-form + Zod and submits to events.createEvent, which owns free/Pro rules, slug generation, and rate limiting. Images upload to Convex storage. The dashboard reads Convex stats and registrations; check-in scans with html5-qrcode and calls registrations.checkInAttendee.",
+    "components": [
+      {
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "reuse",
+        "description": "Create-event form, date/time combining, Pro prompts, submission."
+      },
+      {
+        "name": "components/ImagePicker.tsx",
+        "action": "reuse",
+        "description": "Uploads a file to Convex storage or selects a URL."
+      },
+      {
+        "name": "components/upgrade-modal.tsx",
+        "action": "reuse",
+        "description": "Clerk checkout prompt for Pro limits."
+      },
+      {
+        "name": "app/(main)/my-events/page.tsx",
+        "action": "reuse",
+        "description": "Organizer event list and delete action."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/page.tsx",
+        "action": "reuse",
+        "description": "Dashboard, tabs, search, CSV export, scanner entry point."
+      },
+      {
+        "name": "app/(main)/my-events/_components/qr-scanner-modal.tsx",
+        "action": "reuse",
+        "description": "Camera scanner that emits a QR value."
+      },
+      {
+        "name": "app/(main)/my-events/_components/attendee-card.tsx",
+        "action": "reuse",
+        "description": "Attendee row presentation."
+      },
+      {
+        "name": "components/event-card.tsx",
+        "action": "reuse",
+        "description": "Event card with manage and delete actions."
+      },
+      {
+        "name": "convex/events.ts",
+        "action": "reuse",
+        "description": "Create, upload URL, by-slug, my events, delete."
+      },
+      {
+        "name": "convex/dashboard.ts",
+        "action": "reuse",
+        "description": "Event statistics and organizer check."
+      },
+      {
+        "name": "convex/registrations.ts",
+        "action": "reuse",
+        "description": "Attendee list, check-in, registration rules."
+      },
+      {
+        "name": "convex/rateLimiter.ts",
+        "action": "reuse",
+        "description": "Create-event and check-in token buckets."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "events",
+        "action": "no_change",
+        "fields": [
+          { "name": "slug", "type": "string", "action": "no_change" },
+          { "name": "organizerId", "type": "Id<users>", "action": "no_change" },
+          { "name": "organizerName", "type": "string", "action": "no_change" },
+          { "name": "capacity", "type": "number", "action": "no_change" },
+          { "name": "ticketType", "type": "free|paid", "action": "no_change" },
+          { "name": "ticketPrice", "type": "number|null", "action": "no_change" },
+          { "name": "registrationCount", "type": "number", "action": "no_change" },
+          { "name": "coverImage", "type": "string|null", "action": "no_change" },
+          { "name": "themeColor", "type": "string|null", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "users",
+        "action": "no_change",
+        "fields": [
+          { "name": "freeEventsCreated", "type": "number", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "registrations",
+        "action": "no_change",
+        "fields": [
+          { "name": "checkedIn", "type": "boolean", "action": "no_change" },
+          { "name": "checkedInAt", "type": "number|null", "action": "no_change" }
+        ]
+      }
+    ],
+    "flowDescription": "Organizer submits the validated form; createEvent checks the free limit and Pro flag, writes the event with a timestamped slug, and increments freeEventsCreated. The dashboard reads stats and registrations. Check-in resolves a QR code to a registration, verifies the organizer, and records checkedIn/checkedInAt once."
+  },
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "description": "Dashboard, attendee list, delete, and check-in compare event.organizerId with the authenticated user id inside Convex."
+    },
+    {
+      "requirementId": "NFR-002",
+      "description": "createEvent uses a 3/minute token bucket and checkInAttendee a 10/minute token bucket keyed by user id."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-003",
+      "strategy": "Queries use by_organizer and by_event indexes; attendee filtering runs client-side over one event's list."
+    }
+  ],
+  "dependencies": [
+    { "name": "react-hook-form", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "zod", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "@hookform/resolvers", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "html5-qrcode", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "date-fns", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "country-state-city", "type": "library", "action": "no_change", "notes": "Already installed." }
+  ],
+  "risks": [
+    {
+      "description": "The free-event counter and delete reclaim rule are not symmetric.",
+      "mitigation": "Confirm the intended rule and align create/delete accounting before changing the feature."
+    },
+    {
+      "description": "Revenue is estimated from confirmed tickets while payment is offline.",
+      "mitigation": "Keep the estimate labelled and out of reconciliation."
+    }
+  ]
+}

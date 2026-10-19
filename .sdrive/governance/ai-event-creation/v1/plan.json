@@ -1,0 +1,78 @@
+{
+  "feature": "ai-event-creation",
+  "version": 1,
+  "architecture": {
+    "approach": "A client dialog posts a prompt to app/api/generate-event/route.ts. The route lazily builds a Cerebras client from CEREBRAS_API_KEY, requests JSON output, parses the draft, and returns it. The create-event page maps the draft into react-hook-form fields; the normal createEvent mutation remains the only write.",
+    "components": [
+      {
+        "name": "app/api/generate-event/route.ts",
+        "action": "reuse",
+        "description": "Validates the prompt, calls Cerebras, and returns the draft or an error."
+      },
+      {
+        "name": "app/(main)/create-event/_components/ai-event-creator.tsx",
+        "action": "reuse",
+        "description": "Dialog, prompt state, request, and success/error toasts."
+      },
+      {
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "reuse",
+        "description": "Maps the generated draft into form fields via handleAIGenerate."
+      },
+      {
+        "name": "components/ui/dialog.tsx",
+        "action": "reuse",
+        "description": "Dialog primitives."
+      },
+      {
+        "name": "components/ui/textarea.tsx",
+        "action": "reuse",
+        "description": "Prompt input."
+      },
+      {
+        "name": "components/ui/button.tsx",
+        "action": "reuse",
+        "description": "Trigger, Cancel, and Generate actions."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006",
+      "NFR-001", "NFR-002", "NFR-003"
+    ]
+  },
+  "dataModel": {
+    "entities": [],
+    "flowDescription": "The organizer writes a prompt, the client posts it to the route, the route validates it, calls Cerebras with a JSON response format, parses the completion, and returns the five-field draft. The form fills and the organizer still submits the normal validated create-event mutation to persist anything."
+  },
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "description": "CEREBRAS_API_KEY is read only inside the route handler and is never returned to the client or imported by a client component."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-002",
+      "strategy": "The dialog disables Generate and shows a spinner while the single provider call runs; manual event creation remains available."
+    }
+  ],
+  "dependencies": [
+    { "name": "@cerebras/cerebras_cloud_sdk", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "react-hook-form", "type": "library", "action": "no_change", "notes": "Already installed." },
+    { "name": "sonner", "type": "library", "action": "no_change", "notes": "Already installed." }
+  ],
+  "risks": [
+    {
+      "description": "The route has no authentication or rate limiting.",
+      "mitigation": "Require a session and add a per-user limit."
+    },
+    {
+      "description": "Model output is not schema-validated.",
+      "mitigation": "Validate with Zod before applying the draft."
+    },
+    {
+      "description": "The client ignores the HTTP status.",
+      "mitigation": "Check response.ok and skip onEventGenerated on errors."
+    }
+  ]
+}

@@ -1,0 +1,220 @@
+{
+  "feature": "event-discovery-and-registration",
+  "version": 1,
+  "phases": [
+    {
+      "phaseId": "P1",
+      "name": "Discovery surfaces",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Build the explore aggregation page",
+          "description": "Featured carousel, nearby events, popular events, category counts, and per-section loading and empty states.",
+          "linkedRequirements": [
+            "FR-001",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-002"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.2",
+          "title": "Add category and location explore routes",
+          "description": "Resolve a slug as a category id or city-state location, paginate at ten, and render not-found for unknown slugs.",
+          "linkedRequirements": [
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.3",
+          "title": "Build the public event page with CTA states",
+          "description": "Event detail layout, share action, and registered/past/full/organizer/default call-to-action selection.",
+          "linkedRequirements": [
+            "FR-003",
+            "FR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005",
+            "AC-006"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T1.4",
+          "title": "Add title search",
+          "description": "Search upcoming events by title for queries of at least two characters, limited to five results.",
+          "linkedRequirements": [
+            "FR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-013"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P2",
+      "name": "Registration and tickets",
+      "dependencies": [
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Gate registration behind sign-in",
+          "description": "Signed-out users are prompted to sign in; signed-in users get the name and email registration dialog.",
+          "linkedRequirements": [
+            "FR-005",
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-008"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.2",
+          "title": "Implement the registration mutation",
+          "description": "Capacity check, duplicate check, cancelled reactivation, QR generation, and registration-count increment.",
+          "linkedRequirements": [
+            "FR-006",
+            "FR-007",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008",
+            "AC-009"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.3",
+          "title": "Build My Tickets with QR display",
+          "description": "Split upcoming and past registrations and render the QR dialog with the ticket id.",
+          "linkedRequirements": [
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-010"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T2.4",
+          "title": "Add attendee cancellation",
+          "description": "Ownership check, status change to cancelled, and registration-count decrement.",
+          "linkedRequirements": [
+            "FR-009",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-011"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P3",
+      "name": "Personalisation",
+      "dependencies": [
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Implement attendee onboarding",
+          "description": "Capture at least three interests plus a Nigerian state and city, persist them, and trigger on attendee pages.",
+          "linkedRequirements": [
+            "FR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-012"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P4",
+      "name": "Verification",
+      "dependencies": [
+        "P2",
+        "P3"
+      ],
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Run ESLint",
+          "description": "Run npm run lint. Passes with 0 errors and 14 warnings after ignoring .sdrive/** and convex/_generated/** and deferring the carousel's initial select.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T4.2",
+          "title": "Run TypeScript checking",
+          "description": "Run npx tsc --noEmit and resolve new type errors.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        },
+        {
+          "id": "T4.3",
+          "title": "Run SpecDrive governance validation",
+          "description": "Validate config, workflow state, and feature governance JSON against the schemas.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "completed": true
+        }
+      ]
+    },
+    {
+      "phaseId": "P5",
+      "name": "Fix review findings",
+      "dependencies": [
+        "P4"
+      ],
+      "tasks": [
+        {
+          "id": "T5.1",
+          "title": "Add per-section empty states to Explore",
+          "description": "Render an empty state for the featured carousel and the Events Near Events section when their lists are empty, without hiding the rest of the page.",
+          "linkedRequirements": [
+            "FR-001",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.2",
+          "title": "Use the resolved Convex user id for the organizer CTA",
+          "description": "Compare event.organizerId with the current user Convex _id rather than the Clerk user.id so organizers see Manage Event.",
+          "linkedRequirements": [
+            "FR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": false
+        }
+      ]
+    }
+  ]
+}

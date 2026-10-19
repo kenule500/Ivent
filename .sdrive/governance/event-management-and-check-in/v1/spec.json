@@ -1,0 +1,269 @@
+{
+  "feature": "event-management-and-check-in",
+  "title": "Event Management and Check-In",
+  "version": 1,
+  "overview": {
+    "problemStatement": "Organizers need to publish an event, monitor registrations, admit attendees at the door, and delete an event without leaving orphan records behind.",
+    "proposedSolution": "A validated create-event form with Convex-hosted cover images and Clerk-billing Pro gating, a My Events list, a per-event dashboard with attendance statistics, in-browser QR check-in, attendee search and tabs, CSV export, and cascading deletion.",
+    "targetAudience": "Event organizers using the web app, from free accounts limited to one event to Pro accounts with unlimited events and custom colors.",
+    "assumptions": [
+      "retroactive: true - documented from the existing implementation during brownfield onboarding; it is not a forward-looking product decision.",
+      "Pro entitlement is read from Clerk billing via has({ plan: \"pro\" }).",
+      "Paid tickets are collected offline; dashboard revenue is an estimate.",
+      "Check-in happens on the organizer's device at the venue."
+    ],
+    "outOfScope": [
+      "Editing an event after creation.",
+      "Refunds, payment reconciliation, and tax.",
+      "Offline check-in or printed attendee lists."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Create a validated event",
+      "role": "organizer",
+      "want": "a validated create-event form",
+      "benefit": "I cannot publish an incomplete or nonsensical event",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given the form, title is at least 5 characters, description at least 20, category and city are required, capacity is at least 1, times match HH:MM, venue is a URL when provided, and end date/time must be after start."
+        },
+        {
+          "id": "AC-002",
+          "text": "Given a valid submission, the event is stored with a unique slug (<title-slug>-<timestamp>), organizer id and name, zero registrations, and creation is limited to three per minute."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Understand free and Pro limits",
+      "role": "free organizer",
+      "want": "clear upgrade prompts",
+      "benefit": "I understand what Pro unlocks",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given a free account that already created one event, a second creation opens the upgrade dialog and is blocked; a non-default theme color also opens it; a Pro account bypasses both checks."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Attach a cover image",
+      "role": "organizer",
+      "want": "to attach a cover image",
+      "benefit": "the event page looks complete",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-004",
+          "text": "Given I pick an image, it is uploaded through a Convex storage upload URL and the stored value is a storage id, HTTPS URL, or data URL that the event page resolves to a displayable URL."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Manage and delete my events",
+      "role": "organizer",
+      "want": "a list of my events and a safe delete",
+      "benefit": "I can maintain my catalogue",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given I open /my-events, only my events are listed; deleting one requires confirmation, removes its registrations, deletes a stored cover image, and reclaims a free-event credit for free-ticket events."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Read attendance statistics",
+      "role": "organizer",
+      "want": "a dashboard for one event",
+      "benefit": "I can judge how the event is going",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-006",
+          "text": "Given I open /my-events/[eventId] as the organizer, I see confirmed registrations, checked-in and pending counts, capacity, check-in rate, estimated paid revenue, hours until the event, and whether it is today or past; a non-organizer is rejected."
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "Check attendees in by QR",
+      "role": "organizer",
+      "want": "to scan a ticket QR code",
+      "benefit": "I can admit attendees quickly and prevent reuse",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-007",
+          "text": "Given a valid confirmed ticket for my event, scanning marks it checked in; unknown or cancelled codes are rejected, a second scan reports already checked in, non-organizers are rejected, and check-ins are limited to ten per minute."
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Export the attendee list",
+      "role": "organizer",
+      "want": "to export attendees",
+      "benefit": "I have an offline record for the door",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-008",
+          "text": "Given an event with registrations, export downloads a CSV with name, email, registration time, checked-in flag, check-in time, and QR code; with no registrations it reports that there is nothing to export."
+        }
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Search and filter attendees",
+      "role": "organizer",
+      "want": "to search and filter attendees",
+      "benefit": "I can find one person quickly",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-009",
+          "text": "Given the attendee list, tabs separate all, checked-in, and pending registrations, and the search box matches attendee name, email, or QR code."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The create-event form MUST enforce the documented validation rules.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "FR-002",
+      "text": "A valid submission MUST persist the event with a unique slug and zero registrations under a per-organizer rate limit.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "FR-003",
+      "text": "Free accounts MUST be blocked from a second event and from non-default theme colors, with Pro bypassing both.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "FR-004",
+      "text": "Cover images MUST be uploaded to Convex storage and resolved to a displayable URL.",
+      "linkedAcceptanceCriteria": ["AC-004"]
+    },
+    {
+      "id": "FR-005",
+      "text": "My Events MUST list only the organizer's events and MUST cascade deletion through registrations and stored images.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "FR-006",
+      "text": "The event dashboard MUST compute attendance and revenue statistics and MUST reject non-organizers.",
+      "linkedAcceptanceCriteria": ["AC-006"]
+    },
+    {
+      "id": "FR-007",
+      "text": "QR check-in MUST validate the ticket, require the event organizer, reject invalid or cancelled tickets, be idempotent, and be rate-limited.",
+      "linkedAcceptanceCriteria": ["AC-007"]
+    },
+    {
+      "id": "FR-008",
+      "text": "The attendee list MUST export to CSV.",
+      "linkedAcceptanceCriteria": ["AC-008"]
+    },
+    {
+      "id": "FR-009",
+      "text": "The attendee list MUST support status tabs and name, email, or QR search.",
+      "linkedAcceptanceCriteria": ["AC-009"]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Organizer-only operations MUST be enforced in Convex, not only in the UI.",
+      "linkedAcceptanceCriteria": ["AC-006", "AC-007"]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Event creation and check-in MUST be rate-limited per organizer.",
+      "linkedAcceptanceCriteria": ["AC-002", "AC-007"]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Management screens MUST remain usable at a 360px viewport with loading and empty states.",
+      "linkedAcceptanceCriteria": ["AC-005", "AC-009"]
+    },
+    {
+      "id": "NFR-004",
+      "text": "The feature MUST pass ESLint, TypeScript checking, and SpecDrive governance validation.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "A free account has already created one event.",
+      "expectedBehavior": "The upgrade dialog opens and no event is inserted."
+    },
+    {
+      "id": "EC-002",
+      "description": "A free account selects a custom theme color.",
+      "expectedBehavior": "The upgrade dialog opens and the color is not applied."
+    },
+    {
+      "id": "EC-003",
+      "description": "The end date/time is not after the start.",
+      "expectedBehavior": "Submission is blocked with a toast."
+    },
+    {
+      "id": "EC-004",
+      "description": "The scanned QR is unknown or cancelled.",
+      "expectedBehavior": "An error is shown and no check-in is written."
+    },
+    {
+      "id": "EC-005",
+      "description": "The ticket was already checked in.",
+      "expectedBehavior": "Already checked in is reported and no second write occurs."
+    },
+    {
+      "id": "EC-006",
+      "description": "A non-organizer opens the dashboard or scans a ticket.",
+      "expectedBehavior": "An authorization error is returned."
+    },
+    {
+      "id": "EC-007",
+      "description": "The organizer deletes an event.",
+      "expectedBehavior": "Its registrations and stored cover image are removed."
+    },
+    {
+      "id": "EC-008",
+      "description": "The organizer exports with zero registrations.",
+      "expectedBehavior": "A no-registrations message is shown and no file is produced."
+    }
+  ],
+  "dependencies": [
+    { "name": "Convex", "type": "service", "notes": "Database, storage, rate limiter." },
+    { "name": "Clerk", "type": "service", "notes": "Authentication and Pro billing entitlement." },
+    { "name": "react-hook-form", "type": "library", "notes": "Create-event form state." },
+    { "name": "zod", "type": "library", "notes": "Create-event schema validation." },
+    { "name": "@hookform/resolvers", "type": "library", "notes": "Connects zod to react-hook-form." },
+    { "name": "html5-qrcode", "type": "library", "notes": "Camera QR scanning for check-in." },
+    { "name": "date-fns", "type": "library", "notes": "Date formatting and comparison." },
+    { "name": "country-state-city", "type": "library", "notes": "Nigerian state and city pickers." }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "freeEventsCreated is incremented for every created event but reclaimed only for free-ticket events, so the free limit can drift.",
+      "mitigation": "Confirm the intended rule and align create/delete accounting before relying on the limit."
+    },
+    {
+      "id": "RISK-002",
+      "description": "Dashboard revenue is estimated from confirmed tickets while payment is collected offline.",
+      "mitigation": "Label revenue as an estimate; do not use it for reconciliation."
+    },
+    {
+      "id": "RISK-003",
+      "description": "A forwarded QR screenshot can be checked in before the real attendee arrives.",
+      "mitigation": "Idempotent check-in prevents double entry; add identity verification at the door if required."
+    }
+  ]
+}

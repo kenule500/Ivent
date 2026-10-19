@@ -1,0 +1,69 @@
+{
+  "feature": "ai-event-creation",
+  "status": "pass",
+  "checkedAt": "2026-10-19T10:41:13.798Z",
+  "summary": {
+    "matched": 9,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "app/api/generate-event/route.ts",
+        "action": "reuse",
+        "file": "app/api/generate-event/route.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/create-event/_components/ai-event-creator.tsx",
+        "action": "reuse",
+        "file": "app/(main)/create-event/_components/ai-event-creator.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "reuse",
+        "file": "app/(main)/create-event/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/dialog.tsx",
+        "action": "reuse",
+        "file": "components/ui/dialog.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/textarea.tsx",
+        "action": "reuse",
+        "file": "components/ui/textarea.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/button.tsx",
+        "action": "reuse",
+        "file": "components/ui/button.tsx"
+      },
+      {
+        "type": "dependency",
+        "name": "@cerebras/cerebras_cloud_sdk",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "react-hook-form",
+        "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "sonner",
+        "action": "no_change"
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": []
+  }
+}
