@@ -60,9 +60,9 @@
 
 ## P5 — Fix review findings
 
-- [ ] **T5.1** Add per-section empty states to Explore.
+- [x] **T5.1** Add per-section empty states to Explore.
   - Linked: FR-001, NFR-001, AC-002
   - Render an empty state for the featured carousel and the Events Near Events section when their lists are empty, without hiding the rest of the page.
-- [ ] **T5.2** Use the resolved Convex user id for the organizer CTA.
+- [x] **T5.2** Use the resolved Convex user id for the organizer CTA.
   - Linked: FR-004, AC-006
   - Compare event.organizerId with the current user Convex _id rather than the Clerk user.id so organizers see Manage Event.

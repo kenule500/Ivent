@@ -200,7 +200,7 @@
           "linkedAcceptanceCriteria": [
             "AC-002"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.2",
@@ -212,7 +212,7 @@
           "linkedAcceptanceCriteria": [
             "AC-006"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     }

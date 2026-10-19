@@ -142,12 +142,15 @@ const ExplorePage = () => {
                         <CarouselPrevious className="left-4" />
                         <CarouselNext className="right-4" />
                     </Carousel>
-                ) : null}
+                ) : (
+                    <Card className="p-8 text-center">
+                        <p className="text-muted-foreground">No featured events yet.</p>
+                    </Card>
+                )}
             </div>
 
             {/* Local Events */}
-            {localEvents && localEvents.length > 0 && (
-                <div className="mb-16">
+            <div className="mb-16">
                 <div className="flex items-center justify-between mb-6">
                     <div>
                     <h2 className="text-3xl font-bold mb-1">Events Near You</h2>
@@ -164,18 +167,29 @@ const ExplorePage = () => {
                     </Button>
                 </div>
 
-                <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {localEvents.map((event) => (
-                    <EventCard
-                        key={event._id}
-                        event={event}
-                        variant="grid"
-                        onClick={() => handleEventClick(event.slug)}
-                    />
-                    ))}
-                </div>
-                </div>
-            )}
+                {loadingLocal ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {[...Array(4)].map((_, i) => (
+                            <Card key={i} className="h-48 animate-pulse bg-muted" />
+                        ))}
+                    </div>
+                ) : localEvents && localEvents.length > 0 ? (
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                        {localEvents.map((event) => (
+                        <EventCard
+                            key={event._id}
+                            event={event}
+                            variant="grid"
+                            onClick={() => handleEventClick(event.slug)}
+                        />
+                        ))}
+                    </div>
+                ) : (
+                    <Card className="p-8 text-center">
+                        <p className="text-muted-foreground">No events near you yet.</p>
+                    </Card>
+                )}
+            </div>
 
             {/* Browse by Category */}
             <div className="mb-16">

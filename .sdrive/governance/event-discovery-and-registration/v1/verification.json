@@ -1,7 +1,7 @@
 {
   "feature": "event-discovery-and-registration",
   "status": "fail",
-  "checkedAt": "2026-10-19T10:40:56.504Z",
+  "checkedAt": "2026-10-19T17:00:01.185Z",
   "summary": {
     "matched": 12,
     "missing": 33,

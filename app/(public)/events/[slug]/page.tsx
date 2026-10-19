@@ -57,6 +57,9 @@ export default function EventDetailPage() {
     event?._id ? { eventId: event._id } : "skip"
   );
 
+  // Resolve the Convex user so organizer checks compare ids from the same system
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+
   const handleShare = async () => {
     const url = window.location.href;
     if (navigator.share) {
@@ -99,7 +102,7 @@ export default function EventDetailPage() {
 
   const isEventFull = event.registrationCount >= event.capacity;
   const isEventPast = event.endDate < Date.now();
-  const isOrganizer = user?.id === event.organizerId;
+  const isOrganizer = currentUser?._id === event.organizerId;
 
   return (
     <div
