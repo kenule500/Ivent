@@ -1,0 +1,147 @@
+{
+  "features": [
+    {
+      "name": "event-discovery-and-registration",
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "review",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "rejected"
+          },
+          "history": [
+            {
+              "event": "feature_documented_retroactively",
+              "by": "onboarding",
+              "timestamp": "2026-10-18T13:58:00.158Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "event-management-and-check-in",
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "review",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "rejected"
+          },
+          "history": [
+            {
+              "event": "feature_documented_retroactively",
+              "by": "onboarding",
+              "timestamp": "2026-10-18T13:58:00.158Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "admin-console-and-governance",
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "review",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "rejected"
+          },
+          "history": [
+            {
+              "event": "feature_documented_retroactively",
+              "by": "onboarding",
+              "timestamp": "2026-10-18T13:58:00.158Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ai-event-creation",
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "review",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "feature_documented_retroactively",
+              "by": "onboarding",
+              "timestamp": "2026-10-18T13:58:00.158Z"
+            },
+            {
+              "event": "feature_amended",
+              "reason": "Review found AIEventCreator ignores non-OK responses (AC-005); reopen to apply fixes",
+              "actor": "kenule500",
+              "timestamp": "2026-10-19T16:54:01.919Z"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "onboarding": {
+    "mode": "brownfield",
+    "date": "2026-10-18T13:58:00.158Z",
+    "detectedSystems": {
+      "openspec": {
+        "detected": false,
+        "specs": 0,
+        "changes": 0,
+        "archived": 0
+      },
+      "speckit": {
+        "detected": false,
+        "specs": 0,
+        "hasConstitution": false
+      }
+    },
+    "missing": [
+      "Automated tests: no test framework, test script, or test files",
+      "CI: no .github/workflows or .gitlab-ci.yml",
+      "CONTRIBUTING.md: no contributor guide",
+      "Formatter: no Prettier configuration",
+      "Skills: .sdrive/skills has no entries"
+    ],
+    "deferred": [
+      "Automated tests: deferred until a test framework is chosen",
+      "CI: deferred until a pipeline is designed",
+      "Skills: deferred because no project-specific standards were discovered",
+      "Formatter: deferred; existing style is not enforced by a config",
+      "Retroactive specs for user profiles/settings, seed data, and the theme system are deferred to a future /sdrive:propose"
+    ],
+    "retroactiveFeatures": [
+      "event-discovery-and-registration",
+      "event-management-and-check-in",
+      "admin-console-and-governance",
+      "ai-event-creation"
+    ],
+    "verifiedFeatures": [],
+    "migrated": [],
+    "skipped": [],
+    "notes": "Brownfield onboarding completed on 2026-10-18. A baseline constitution (v1.0.0) was generated from repository facts, with a security baseline that expands only the controls that apply to a Next.js + Convex + Clerk stack. Four retroactive specs document shipped behaviour; they are marked retroactive in their spec.md frontmatter, in overview.assumptions, and in this onboarding block, and they are not approved product decisions. The raw scan remains in .sdrive/onboarding/inventory.json and report.md. Two framework inconsistencies were found: (1) onboard.js writes onboarding.projectBrief, which workflow-state.schema.json rejects, so that key was removed and the brief is preserved in .sdrive/product/overview.md and .sdrive/onboarding/decisions.md; (2) the retroactive marker is kept out of governance JSON because spec.schema.json sets additionalProperties:false, and the validator is run via .sdrive/onboarding/validate.js because the root node_modules resolves Ajv 6 while SpecDrive requires Ajv 8. Current quality gate: npx tsc --noEmit passes and npm run lint passes with 0 errors and 14 warnings after the follow-up fix (ignore .sdrive/** and convex/_generated/** in the flat config; defer the carousel's initial select), so all verification tasks and quality NFRs are complete. The product overview was approved on 2026-10-18 through the onboarding interview: it is organizer-first and global, and the Nigeria-first implementation (NG pickers, naira pricing, seed cities) is recorded as an implementation gap rather than the product boundary."
+  }
+}
