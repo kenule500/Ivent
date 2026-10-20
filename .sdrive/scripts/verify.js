@@ -68,12 +68,16 @@ const CANDIDATE_ROOTS = [
   "messages",
   "locales",
   "i18n",
-  "content"
+  "content",
+  "convex"
 ];
 
 const IGNORED_DIRS = new Set([
   "node_modules",
   ".git",
+  // Convex regenerates this folder from convex/*.ts; it is derived output, not
+  // hand-written source, so plan items must not be matched against it.
+  "_generated",
   "dist",
   "build",
   ".next",
@@ -318,6 +322,18 @@ function detectEntities(files) {
         file: relative
       });
     }
+
+    // Convex schema tables: `users: defineTable({` inside defineSchema().
+    // The table key is the entity name.
+    if (/defineSchema\s*\(/.test(content)) {
+      const convexTables = content.matchAll(/^\s*(\w+):\s*defineTable\(\{/gm);
+      for (const match of convexTables) {
+        entities.push({
+          name: match[1],
+          file: relative
+        });
+      }
+    }
   });
 
   return entities;
@@ -388,6 +404,40 @@ function detectFields(files) {
         });
       }
     }
+
+    // Convex schema fields. A line such as `    users: defineTable({` opens a
+    // table, and its direct properties sit at one consistent indent level
+    // (e.g. `        name: v.string(),`). The first `v.` property after a table
+    // opens calibrates that level, so nested `v.object({...})` members — which
+    // are indented deeper — are not reported as columns of the table.
+    const schemaLines = content.split("\n");
+    let convexTable = null;
+    let convexFieldIndent = null;
+
+    schemaLines.forEach((line) => {
+      const tableMatch = line.match(/^(\s*)(\w+):\s*defineTable\(\{/);
+      if (tableMatch) {
+        convexTable = tableMatch[2];
+        convexFieldIndent = null;
+        return;
+      }
+
+      if (!convexTable) return;
+
+      const fieldMatch = line.match(/^(\s*)(\w+):\s*v\./);
+      if (!fieldMatch) return;
+
+      const indent = fieldMatch[1].length;
+
+      if (convexFieldIndent === null) convexFieldIndent = indent;
+      if (indent !== convexFieldIndent) return;
+
+      fields.push({
+        entity: convexTable,
+        name: fieldMatch[2],
+        file: relative
+      });
+    });
   });
 
   return fields;
@@ -404,8 +454,30 @@ const VIRTUAL_DEPENDENCIES = new Set([
   "radix-ui",
   "radix",
   "lucide",
-  "lucide-react"
+  "lucide-react",
+  // Hosted/back-end services the plan names in prose rather than as an npm
+  // package. They are satisfied by the project's runtime config (clerk.json,
+  // convex/, .env) even though no same-named dependency exists in package.json.
+  "clerk",
+  "convex",
+  "resend",
+  "cerebras",
+  "openai"
 ]);
+
+// An npm package satisfies a plan dependency when one name contains the other.
+// Plans name the product ("Clerk", "Recharts") while package.json lists the
+// scoped package ("@clerk/nextjs", "recharts"), so an exact-name comparison
+// reports a satisfied dependency as missing.
+function dependencyMatches(itemName, codeDependencies) {
+  const wanted = String(itemName).toLowerCase();
+  if (VIRTUAL_DEPENDENCIES.has(wanted)) return true;
+
+  return codeDependencies.some((dep) => {
+    const actual = String(dep).toLowerCase();
+    return actual === wanted || actual.includes(wanted) || wanted.includes(actual);
+  });
+}
 
 function detectDependencies() {
   const pkgPath = path.join(projectRoot, "package.json");
@@ -453,6 +525,10 @@ function diffPlanAgainstCode(planItems, code) {
     if (item.name.includes("{")) {
       return expandBraces(item.name).some((p) => p === c.file || p === c.name);
     }
+    // A plan may reference a folder ("convex/", "components/admin") and expect
+    // the files inside it; a file in that folder satisfies the item.
+    const folder = item.name.replace(/\/$/, "");
+    if (folder.includes("/") && c.file.startsWith(folder + "/")) return true;
     return false;
   };
 
@@ -513,10 +589,7 @@ function diffPlanAgainstCode(planItems, code) {
     }
 
     if (item.type === "dependency") {
-      if (
-        codeDependencies.includes(item.name) ||
-        VIRTUAL_DEPENDENCIES.has(item.name.toLowerCase())
-      ) {
+      if (dependencyMatches(item.name, codeDependencies)) {
         matched.push(item);
       } else {
         missing.push(item);
