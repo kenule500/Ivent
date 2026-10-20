@@ -1,11 +1,11 @@
 {
   "feature": "admin-console-and-governance",
-  "status": "fail",
-  "checkedAt": "2026-10-19T10:41:11.144Z",
+  "status": "pass",
+  "checkedAt": "2026-10-19T17:06:32.653Z",
   "summary": {
-    "matched": 14,
-    "missing": 30,
-    "renamed": 8,
+    "matched": 52,
+    "missing": 0,
+    "renamed": 0,
     "extra": 0
   },
   "items": {
@@ -89,187 +89,254 @@
         "file": "app/admin/settings/page.tsx"
       },
       {
-        "type": "dependency",
-        "name": "date-fns",
-        "action": "no_change"
-      }
-    ],
-    "missing": [
+        "type": "component",
+        "name": "convex/admin.ts",
+        "action": "reuse",
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/audit.ts",
+        "action": "reuse",
+        "file": "convex/audit.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analytics.ts",
+        "action": "reuse",
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/settings.ts",
+        "action": "reuse",
+        "file": "convex/settings.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emails.ts",
+        "action": "reuse",
+        "file": "convex/emails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/crons.ts",
+        "action": "reuse",
+        "file": "convex/crons.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/helpers.ts",
+        "action": "reuse",
+        "file": "convex/helpers.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/admin",
+        "action": "reuse",
+        "file": "components/admin/analytics-charts.tsx"
+      },
       {
         "type": "entity",
         "name": "users",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "users",
         "name": "role",
         "fieldType": "user|admin|super_admin",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "users",
         "name": "banned",
         "fieldType": "boolean",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "users",
         "name": "preferences",
         "fieldType": "{emailOnNewEvent,emailOnNewRegistration,emailOnNewAdminInvite,emailOnNewUser}",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "users",
         "name": "updatedAt",
         "fieldType": "number",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "entity",
         "name": "adminInvites",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "email",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "inviteCode",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "status",
         "fieldType": "pending|accepted|expired|revoked",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "createdBy",
         "fieldType": "Id<users>",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "createdAt",
         "fieldType": "number",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "expiresAt",
         "fieldType": "number",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "acceptedBy",
         "fieldType": "Id<users>|null",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "acceptedAt",
         "fieldType": "number|null",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "revokedBy",
         "fieldType": "Id<users>|null",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "adminInvites",
         "name": "revokedAt",
         "fieldType": "number|null",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "entity",
         "name": "auditLogs",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "actorId",
         "fieldType": "Id<users>",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "actorName",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "actorEmail",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "action",
         "fieldType": "AuditAction",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "targetType",
         "fieldType": "event|user|invite|registration",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "targetId",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "targetLabel",
         "fieldType": "string",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "metadata",
         "fieldType": "any|null",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "field",
         "entity": "auditLogs",
         "name": "createdAt",
         "fieldType": "number",
-        "action": "no_change"
+        "action": "no_change",
+        "file": "convex/schema.ts"
       },
       {
         "type": "dependency",
@@ -290,66 +357,15 @@
         "type": "dependency",
         "name": "Recharts",
         "action": "no_change"
+      },
+      {
+        "type": "dependency",
+        "name": "date-fns",
+        "action": "no_change"
       }
     ],
-    "renamed": [
-      {
-        "type": "component",
-        "name": "convex/admin.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/audit.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/analytics.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/settings.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/emails.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/crons.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/helpers.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "components/admin",
-        "action": "reuse",
-        "to": "components/admin/analytics-charts.tsx",
-        "file": "components/admin/analytics-charts.tsx"
-      }
-    ],
+    "missing": [],
+    "renamed": [],
     "extra": []
   }
 }

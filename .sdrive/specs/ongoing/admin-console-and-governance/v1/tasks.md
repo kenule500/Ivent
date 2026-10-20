@@ -71,9 +71,9 @@
 
 ## P6 — Fix review findings
 
-- [ ] **T6.1** Extend spec-to-code verification to convex/.
+- [x] **T6.1** Extend spec-to-code verification to convex/.
   - Linked: NFR-005
   - Add convex/ to the verifier source roots and resolve Convex schema fields so verify reports pass for Convex-backed features.
-- [ ] **T6.2** Upgrade dependencies with critical or high advisories.
+- [x] **T6.2** Upgrade dependencies with critical or high advisories.
   - Linked: NFR-003
   - Upgrade next, undici, proxy-addr, shell-quote, image-size, js-yaml, fast-uri and related transitive packages, then re-run npm audit until no critical or high production advisories remain.
