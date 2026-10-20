@@ -248,12 +248,66 @@ function renderProjectInfo(project) {
   const sidebar = document.getElementById("sidebar-project");
   if (sidebar) sidebar.textContent = name;
 
-  const topbar = document.getElementById("topbar-project");
-  if (topbar) topbar.textContent = name;
-
   if (project && project.name) {
     document.title = `${project.name} · SpecDrive Dashboard`;
   }
+}
+
+/* ============================================================
+   PROJECT SWITCHER
+   ============================================================ */
+async function renderProjectSwitcher() {
+  const select = document.getElementById("project-switcher");
+  if (!select) return;
+
+  let data;
+  try {
+    data = await fetchJson("/api/projects");
+  } catch (error) {
+    return;
+  }
+
+  const projects = (data && data.projects) || [];
+  if (!projects.length) return;
+
+  select.innerHTML = projects
+    .map(
+      (project) =>
+        `<option value="${escapeHtml(project.path)}"${project.active ? " selected" : ""}>${escapeHtml(project.label)}</option>`
+    )
+    .join("");
+
+  select.title = "Switch the project this dashboard is showing";
+  select.disabled = projects.length < 2;
+  select.dataset.bound = "true";
+}
+
+function setupProjectSwitcher() {
+  const select = document.getElementById("project-switcher");
+  if (!select) return;
+
+  select.addEventListener("change", async () => {
+    const target = select.value;
+    select.disabled = true;
+
+    try {
+      const response = await fetch("/api/switch-project", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ path: target })
+      });
+
+      if (!response.ok) {
+        const data = await response.json().catch(() => ({}));
+        throw new Error(data.error || "Could not switch project");
+      }
+
+      window.location.reload();
+    } catch (error) {
+      select.disabled = false;
+      alert(error.message);
+    }
+  });
 }
 
 /* ============================================================
@@ -3354,7 +3408,7 @@ function applyTheme(theme) {
 /* The button advertises the theme it switches TO, not the one you are in, so the
    label always describes the action a click will take. */
 function syncThemeToggle(theme) {
-  const current = theme || document.documentElement.getAttribute("data-theme") || "light";
+  const current = theme || document.documentElement.getAttribute("data-theme") || "dark";
   const button = document.getElementById("theme-toggle");
   if (!button) return;
 
@@ -3373,41 +3427,19 @@ function setupThemeToggle() {
   const button = document.getElementById("theme-toggle");
   if (button) {
     button.addEventListener("click", () => {
-      const current = document.documentElement.getAttribute("data-theme") || "light";
+      const current = document.documentElement.getAttribute("data-theme") || "dark";
       applyTheme(current === "dark" ? "light" : "dark");
     });
   }
 
-  // Keep in step when the theme changes elsewhere: another tab, or the OS
-  // switching while the user has not made an explicit choice yet.
+  // Keep in step when the theme changes in another tab. The OS preference is
+  // intentionally not watched: dark is the default, and an explicit choice wins.
   window.addEventListener("storage", (event) => {
     if (event.key === THEME_KEY && (event.newValue === "light" || event.newValue === "dark")) {
       document.documentElement.setAttribute("data-theme", event.newValue);
       syncThemeToggle(event.newValue);
     }
   });
-
-  if (window.matchMedia) {
-    const query = window.matchMedia("(prefers-color-scheme: dark)");
-    const followSystem = (event) => {
-      let saved = null;
-      try {
-        saved = window.localStorage.getItem(THEME_KEY);
-      } catch (error) {
-        /* ignore */
-      }
-      if (saved === "light" || saved === "dark") return;
-
-      document.documentElement.setAttribute("data-theme", event.matches ? "dark" : "light");
-      syncThemeToggle();
-    };
-
-    if (typeof query.addEventListener === "function") {
-      query.addEventListener("change", followSystem);
-    } else if (typeof query.addListener === "function") {
-      query.addListener(followSystem);
-    }
-  }
 
   syncThemeToggle();
 }
@@ -3549,8 +3581,10 @@ async function main() {
   // data, and running it first means the button shows the right label straight
   // away instead of the static "Theme" placeholder until the panels resolve.
   setupThemeToggle();
+  setupProjectSwitcher();
 
   await loadAndRenderShell();
+  await renderProjectSwitcher();
 
   // Bind each control to the single event it actually emits. A <select> fires
   // BOTH `input` and `change`, so binding both caused renderFeatures() to run

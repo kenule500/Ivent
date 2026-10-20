@@ -2,11 +2,12 @@
 
 const http = require("http");
 const fs = require("fs");
+const os = require("os");
 const path = require("path");
 const { execFile } = require("child_process");
 
-const projectRoot = process.cwd();
-const sdriveRoot = path.join(projectRoot, ".sdrive");
+let projectRoot = process.cwd();
+let sdriveRoot = path.join(projectRoot, ".sdrive");
 
 // git runs asynchronously on purpose. execFileSync blocks the event loop, and this
 // machine spawns git in 1-2 seconds, so building the header froze the entire server -
@@ -1154,6 +1155,129 @@ function requireRules(relative) {
   }
 
   return null;
+}
+
+const PROJECTS_CACHE_MS = 2000;
+let projectsMemo = { at: 0, roots: [] };
+
+function isSdriveProject(root) {
+  return fs.existsSync(path.join(root, ".sdrive", "config.json"));
+}
+
+// A dashboard can move between projects without restarting. Discovery is
+// deliberately local and explicit: the current project, SDRIVE_PROJECTS, an
+// optional ~/.sdrive/projects.json, and immediately sibling projects. The
+// endpoint never accepts an arbitrary path that was not offered by discovery.
+function discoverProjectRoots() {
+  if (projectsMemo.roots.length && Date.now() - projectsMemo.at < PROJECTS_CACHE_MS) {
+    return projectsMemo.roots;
+  }
+
+  const roots = new Set();
+
+  const add = (candidate) => {
+    if (typeof candidate !== "string" || !candidate.trim()) return;
+    const resolved = path.resolve(candidate.trim());
+    if (isSdriveProject(resolved)) roots.add(resolved);
+  };
+
+  add(projectRoot);
+
+  const configured = process.env.SDRIVE_PROJECTS || "";
+  for (const candidate of configured.split(path.delimiter)) add(candidate);
+
+  const registryPath = path.join(os.homedir(), ".sdrive", "projects.json");
+  if (fs.existsSync(registryPath)) {
+    try {
+      const registry = JSON.parse(fs.readFileSync(registryPath, "utf8"));
+      const entries = Array.isArray(registry) ? registry : registry.projects || [];
+      for (const entry of entries) add(typeof entry === "string" ? entry : entry.path);
+    } catch (error) {
+      // A malformed registry must not break the dashboard.
+    }
+  }
+
+  const parent = path.dirname(projectRoot);
+  try {
+    const entries = fs.readdirSync(parent, { withFileTypes: true }).slice(0, 200);
+    for (const entry of entries) {
+      if (entry.isDirectory()) add(path.join(parent, entry.name));
+    }
+  } catch (error) {
+    // The parent may not be readable; the current project still works.
+  }
+
+  const list = [...roots];
+  projectsMemo = { at: Date.now(), roots: list };
+  return list;
+}
+
+function apiProjects() {
+  const roots = discoverProjectRoots();
+  const nameCounts = new Map();
+
+  for (const root of roots) {
+    const name = path.basename(root);
+    nameCounts.set(name, (nameCounts.get(name) || 0) + 1);
+  }
+
+  return {
+    active: path.resolve(projectRoot),
+    projects: roots
+      .map((root) => {
+        const name = path.basename(root);
+        return {
+          name,
+          path: root,
+          label: nameCounts.get(name) > 1 ? `${name} — ${path.dirname(root)}` : name,
+          active: path.resolve(root) === path.resolve(projectRoot)
+        };
+      })
+      .sort((a, b) => Number(b.active) - Number(a.active) || a.label.localeCompare(b.label))
+  };
+}
+
+function switchProject(target) {
+  const resolved = path.resolve(String(target || ""));
+
+  if (!discoverProjectRoots().includes(resolved)) {
+    return {
+      ok: false,
+      error: "That project is not in the dashboard's project list. Add it to SDRIVE_PROJECTS or ~/.sdrive/projects.json."
+    };
+  }
+
+  projectRoot = resolved;
+  sdriveRoot = path.join(projectRoot, ".sdrive");
+  projectsMemo = { at: 0, roots: [] };
+
+  // Every cached answer was built from the previous project's files.
+  gitCache.clear();
+  healthMemo = { at: 0, value: null };
+  stampMemo = { at: 0, value: null };
+
+  return { ok: true, project: path.basename(projectRoot) };
+}
+
+function readJsonBody(req) {
+  return new Promise((resolve) => {
+    let body = "";
+
+    req.on("data", (chunk) => {
+      body += chunk;
+      if (body.length > 1024 * 1024) req.destroy();
+    });
+
+    req.on("end", () => {
+      try {
+        resolve(JSON.parse(body || "{}"));
+      } catch (error) {
+        resolve(null);
+      }
+    });
+
+    req.on("error", () => resolve(null));
+  });
 }
 
 // Reuses commands/archive.js instead of reimplementing the rules, so this score and
@@ -2429,6 +2553,27 @@ async function routeRequest(req, res) {
 
     if (url === "/api/health") {
       return res.end(JSON.stringify(apiHealth()));
+    }
+
+    if (url === "/api/projects") {
+      return res.end(JSON.stringify(apiProjects()));
+    }
+
+    if (url === "/api/switch-project") {
+      if (req.method !== "POST") {
+        res.writeHead(405);
+        return res.end(JSON.stringify({ error: "Use POST" }));
+      }
+
+      const body = await readJsonBody(req);
+      if (!body || typeof body.path !== "string") {
+        res.writeHead(400);
+        return res.end(JSON.stringify({ error: "A project path is required" }));
+      }
+
+      const result = switchProject(body.path);
+      res.writeHead(result.ok ? 200 : 400);
+      return res.end(JSON.stringify(result));
     }
 
     if (url === "/api/validate") {

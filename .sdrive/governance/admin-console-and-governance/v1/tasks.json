@@ -254,7 +254,7 @@
             "NFR-005"
           ],
           "linkedAcceptanceCriteria": [],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.2",
@@ -264,7 +264,7 @@
             "NFR-003"
           ],
           "linkedAcceptanceCriteria": [],
-          "completed": false
+          "completed": true
         }
       ]
     }
