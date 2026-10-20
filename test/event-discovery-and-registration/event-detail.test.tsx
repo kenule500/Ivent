@@ -6,6 +6,7 @@ const mocks = vi.hoisted(() => ({
   params: { slug: "tech-summit-123" } as Record<string, string>,
   push: vi.fn(),
   user: null as null | { id: string; fullName?: string },
+  currentUser: null as null | { _id: string; fullName?: string },
   event: null as Record<string, unknown> | null,
   registration: null as Record<string, unknown> | null,
   toastError: vi.fn(),
@@ -28,6 +29,9 @@ vi.mock("@/hooks/useConvexQuery", () => ({
     if (ref.__apiName === "registrations.checkRegistration") {
       return { data: mocks.registration, isLoading: false };
     }
+    if (ref.__apiName === "users.getCurrentUser") {
+      return { data: mocks.currentUser, isLoading: false };
+    }
     return { data: undefined, isLoading: false };
   },
 }));
@@ -35,6 +39,7 @@ vi.mock("@/convex/_generated/api", () => ({
   api: {
     events: { getEventBySlug: { __apiName: "events.getEventBySlug" } },
     registrations: { checkRegistration: { __apiName: "registrations.checkRegistration" } },
+    users: { getCurrentUser: { __apiName: "users.getCurrentUser" } },
   },
 }));
 vi.mock("sonner", () => ({
@@ -79,6 +84,7 @@ function makeEvent(overrides: Record<string, unknown> = {}) {
 beforeEach(() => {
   mocks.params = { slug: "tech-summit-123" };
   mocks.user = null;
+  mocks.currentUser = null;
   mocks.event = makeEvent();
   mocks.registration = null;
   mocks.toastError.mockReset();
@@ -133,11 +139,25 @@ describe("AC-006: sidebar call to action", () => {
 
   test("AC-006: the organizer sees Manage Event", () => {
     mocks.user = { id: "user_2abcClerkId" };
+    mocks.currentUser = { _id: "jd7convexUserId" };
     mocks.event = makeEvent({ organizerId: "jd7convexUserId" });
 
     render(<EventDetailPage />);
 
     expect(screen.getByRole("button", { name: /manage event/i })).toBeInTheDocument();
+  });
+
+  test("AC-006: a Clerk id that matches the organizer id does not grant the organizer action", () => {
+    // The organizer id is a Convex document id, so comparing it against the
+    // Clerk user id must never be treated as ownership.
+    mocks.user = { id: "jd7convexUserId" };
+    mocks.currentUser = { _id: "jd7someOtherUserId" };
+    mocks.event = makeEvent({ organizerId: "jd7convexUserId" });
+
+    render(<EventDetailPage />);
+
+    expect(screen.queryByRole("button", { name: /manage event/i })).not.toBeInTheDocument();
+    expect(screen.getByRole("button", { name: /register for event/i })).toBeInTheDocument();
   });
 
   test("AC-006: everyone else sees Register for Event", () => {
