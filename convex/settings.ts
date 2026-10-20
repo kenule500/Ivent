@@ -10,8 +10,15 @@ export const getMyProfile = query({
   args: {},
   handler: async (ctx) => {
     const admin = await requireAdmin(ctx);
+    // Only fields the settings screen renders (NFR-013): never spread the user
+    // document, which also carries tokenIdentifier and other internal values.
     return {
-      ...admin,
+      _id: admin._id,
+      name: admin.name,
+      email: admin.email,
+      image: admin.image ?? null,
+      role: admin.role ?? "user",
+      createdAt: admin.createdAt ?? admin._creationTime,
       preferences: admin.preferences ?? {
         emailOnNewEvent: true,
         emailOnNewRegistration: true,

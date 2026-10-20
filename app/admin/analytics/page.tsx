@@ -37,9 +37,8 @@ import {
   validateRange,
   type AnalyticsFilters,
 } from "@/lib/analytics-filters";
-import { DEFAULT_CURRENCY, formatCurrency, formatNumber, formatPercent } from "@/lib/format";
-
-const CURRENCY = DEFAULT_CURRENCY;
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/format";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 
 export default function AdminAnalyticsPage() {
   return (
@@ -60,6 +59,7 @@ function AnalyticsWorkspace() {
   const pathname = usePathname();
   const searchParams = useSearchParams();
   const pulse = useMutation(api.analytics.pulse);
+  const { currency: CURRENCY } = usePlatformSettings();
 
   const parsed = React.useMemo(
     () => parseFilterSearchParams(new URLSearchParams(searchParams.toString())),

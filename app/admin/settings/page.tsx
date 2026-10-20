@@ -152,7 +152,7 @@ export default function AdminSettingsPage() {
             <CardContent className="space-y-6">
               <div className="flex items-center gap-4">
                 <Avatar className="h-16 w-16">
-                  <AvatarImage src={profile.image} alt={profile.name} />
+                  <AvatarImage src={profile.image ?? undefined} alt={profile.name} />
                   <AvatarFallback className="bg-purple-500/10 text-purple-500 text-xl">
                     {profile.name.charAt(0).toUpperCase()}
                   </AvatarFallback>
@@ -262,13 +262,6 @@ export default function AdminSettingsPage() {
                 }
               />
               <InfoRow icon={Shield} label="Role" value={role.label} />
-              <InfoRow
-                icon={Bell}
-                label="Onboarding"
-                value={
-                  profile.hasCompletedOnboarding ? "Completed" : "Pending"
-                }
-              />
             </CardContent>
           </Card>
 

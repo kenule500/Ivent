@@ -19,11 +19,12 @@ import {
   formatDateTime,
   formatNumber,
   formatRelativeTime,
-  DEFAULT_CURRENCY,
 } from "@/lib/format";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 
 export default function SystemHealthPage() {
   const { data, isLoading } = useConvexQuery(api.health.getOverview, {});
+  const { currency } = usePlatformSettings();
 
   const timezone = data?.timezone ?? "UTC";
   const asOf = data?.asOf;
@@ -53,7 +54,7 @@ export default function SystemHealthPage() {
         title="System health"
         description={`Operational signals with their measurement windows.${
           asOf
-            ? ` As of ${formatDateTime(asOf, { currency: DEFAULT_CURRENCY, timezone })} (${timezone}).`
+            ? ` As of ${formatDateTime(asOf, { currency, timezone })} (${timezone}).`
             : ""
         }`}
         breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "System health" }]}

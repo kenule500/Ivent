@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { query } from "./_generated/server";
 import { Doc } from "./_generated/dataModel";
 import { requireAdmin, clampPage, clampPageSize } from "./helpers";
+import { assertFeatureEnabled } from "./platformData";
 import {
   dayKeyFor,
   dayKeysBetween,
@@ -25,6 +26,7 @@ export const listEvents = query({
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    await assertFeatureEnabled(ctx, "reports");
 
     const page = clampPage(args.page);
     const pageSize = clampPageSize(args.pageSize);
@@ -82,6 +84,7 @@ export const getEventReport = query({
   args: { eventId: v.id("events") },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
+    await assertFeatureEnabled(ctx, "reports");
 
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");

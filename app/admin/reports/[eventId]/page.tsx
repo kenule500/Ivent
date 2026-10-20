@@ -7,6 +7,7 @@ import { ArrowLeft, Printer } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import type { Id } from "@/convex/_generated/dataModel";
 import { useConvexQuery } from "@/hooks/useConvexQuery";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 import { PageHeader } from "@/components/admin/page-header";
 import { PanelErrorBoundary, PanelState } from "@/components/admin/panel-state";
 import { ChartCard } from "@/components/admin/chart-card";
@@ -21,12 +22,10 @@ import {
   formatDateTime,
   formatNumber,
   formatPercent,
-  DEFAULT_CURRENCY,
 } from "@/lib/format";
 
-const CURRENCY = DEFAULT_CURRENCY;
-
 export default function EventReportPage() {
+  const { currency: CURRENCY } = usePlatformSettings();
   const params = useParams<{ eventId: string }>();
   const eventId = params?.eventId;
   const { data, isLoading } = useConvexQuery(

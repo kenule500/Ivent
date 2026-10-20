@@ -1,6 +1,7 @@
 import { query } from "./_generated/server";
 import { requireAdmin } from "./helpers";
 import { getPlatformTimezone } from "./analyticsFilters";
+import { assertFeatureEnabled } from "./platformData";
 
 /**
  * System health signals (FR-036, FR-037, NFR-006).
@@ -16,6 +17,7 @@ export const getOverview = query({
   args: {},
   handler: async (ctx) => {
     await requireAdmin(ctx);
+    await assertFeatureEnabled(ctx, "systemHealth");
 
     const now = Date.now();
     const dayAgo = now - DAY_MS;

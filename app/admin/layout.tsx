@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import AdminGuard from "@/components/AdminGuard";
 import AdminSidebar from "@/components/AdminSidebar";
 import { CommandPalette } from "@/components/admin/command-palette";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 import { Menu, Search, Shield } from "lucide-react";
 
 export default function AdminLayout({
@@ -13,6 +14,28 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
+
+  // Don't show sidebar on login or signup pages
+  const isAuthPage = pathname === "/admin" || pathname === "/admin/signup";
+
+  if (isAuthPage) {
+    return <>{children}</>;
+  }
+
+  return (
+    <AdminGuard>
+      <AdminShell>{children}</AdminShell>
+    </AdminGuard>
+  );
+}
+
+/**
+ * Admin chrome lives inside the guard so role/flag queries only run for
+ * verified administrators.
+ */
+function AdminShell({ children }: { children: React.ReactNode }) {
+  const pathname = usePathname();
+  const { featureFlags } = usePlatformSettings();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const sidebarTriggerRef = useRef<HTMLButtonElement>(null);
@@ -41,6 +64,7 @@ export default function AdminLayout({
   // Ctrl/Cmd+K opens the palette, but never steals the shortcut from a text field.
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent) => {
+      if (!featureFlags.commandPalette) return;
       if (event.key.toLowerCase() !== "k" || !(event.metaKey || event.ctrlKey)) {
         return;
       }
@@ -63,35 +87,28 @@ export default function AdminLayout({
 
     window.addEventListener("keydown", onKeyDown);
     return () => window.removeEventListener("keydown", onKeyDown);
-  }, [paletteOpen, closePalette]);
-
-  // Don't show sidebar on login or signup pages
-  const isAuthPage = pathname === "/admin" || pathname === "/admin/signup";
-
-  if (isAuthPage) {
-    return <>{children}</>;
-  }
+  }, [featureFlags.commandPalette, paletteOpen, closePalette]);
 
   return (
-    <AdminGuard>
-      <div className="min-h-screen">
-        {/* Mobile top bar */}
-        <header className="sticky top-0 z-30 md:hidden flex items-center gap-2 px-4 py-3 border-b bg-background/95 backdrop-blur">
-          <button
-            ref={sidebarTriggerRef}
-            onClick={() => setSidebarOpen(true)}
-            className="p-2 hover:bg-muted rounded-lg transition-colors"
-            aria-label="Open sidebar"
-            aria-expanded={sidebarOpen}
-          >
-            <Menu className="w-5 h-5" />
-          </button>
-          <div className="flex items-center gap-2">
-            <div className="w-7 h-7 rounded-lg bg-purple-500 flex items-center justify-center">
-              <Shield className="w-4 h-4 text-white" />
-            </div>
-            <span className="text-sm font-semibold">Admin Panel</span>
+    <div className="min-h-screen">
+      {/* Mobile top bar */}
+      <header className="sticky top-0 z-30 md:hidden flex items-center gap-2 px-4 py-3 border-b bg-background/95 backdrop-blur">
+        <button
+          ref={sidebarTriggerRef}
+          onClick={() => setSidebarOpen(true)}
+          className="p-2 hover:bg-muted rounded-lg transition-colors"
+          aria-label="Open sidebar"
+          aria-expanded={sidebarOpen}
+        >
+          <Menu className="w-5 h-5" />
+        </button>
+        <div className="flex items-center gap-2">
+          <div className="w-7 h-7 rounded-lg bg-purple-500 flex items-center justify-center">
+            <Shield className="w-4 h-4 text-white" />
           </div>
+          <span className="text-sm font-semibold">Admin Panel</span>
+        </div>
+        {featureFlags.commandPalette && (
           <button
             ref={paletteTriggerRef}
             onClick={() => setPaletteOpen(true)}
@@ -101,12 +118,18 @@ export default function AdminLayout({
             <Search className="size-3.5" aria-hidden="true" />
             Search
           </button>
-        </header>
+        )}
+      </header>
 
-        {/* Sidebar */}
-        <AdminSidebar isOpen={sidebarOpen} onClose={closeSidebar} />
+      {/* Sidebar */}
+      <AdminSidebar
+        isOpen={sidebarOpen}
+        onClose={closeSidebar}
+        enabledFlags={featureFlags}
+      />
 
-        {/* Desktop palette affordance */}
+      {/* Desktop palette affordance */}
+      {featureFlags.commandPalette && (
         <button
           onClick={() => setPaletteOpen(true)}
           className="fixed bottom-5 right-5 z-20 hidden items-center gap-2 rounded-full border bg-background/95 px-3 py-2 text-xs text-muted-foreground shadow-sm backdrop-blur hover:text-foreground md:flex"
@@ -116,12 +139,14 @@ export default function AdminLayout({
           <span>Search</span>
           <kbd className="rounded border px-1 py-0.5 text-[0.6rem]">⌘K</kbd>
         </button>
+      )}
 
-        {paletteOpen && <CommandPalette onOpenChange={closePalette} />}
+      {paletteOpen && (
+        <CommandPalette onOpenChange={closePalette} enabledFlags={featureFlags} />
+      )}
 
-        {/* Main content */}
-        <main className="md:ml-64 p-4 sm:p-6 md:p-8">{children}</main>
-      </div>
-    </AdminGuard>
+      {/* Main content */}
+      <main className="md:ml-64 p-4 sm:p-6 md:p-8">{children}</main>
+    </div>
   );
 }

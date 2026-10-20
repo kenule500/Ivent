@@ -154,43 +154,43 @@ Depends on: P1, P3.
 
 Depends on: P1, P2.
 
-- [ ] **T5.1** Add platform settings queries with a safe singleton read.
+- [x] **T5.1** Add platform settings queries with a safe singleton read.
   - Linked: FR-023, FR-024, NFR-002, NFR-004, NFR-015, AC-021, AC-022
   - Create convex/platform.ts: getSettings reads by_key("global") and falls back to USD/UTC defaults when absent, updateSettings requires super_admin, validates country through country-state-city, currency and timezone through Intl.supportedValuesOf with fallback lists, and writes settings.updated with a shallow before/after diff. getPublicStatus returns only the maintenance flag and message.
-- [ ] **T5.2** Build the platform settings page.
+- [x] **T5.2** Build the platform settings page.
   - Linked: FR-023, FR-024, FR-025, NFR-004, AC-021, AC-022, AC-023
   - Create app/admin/platform/page.tsx with a Zod-validated form for default country, currency, timezone, and the five feature flags, a read-only view for non-super-admins, and typed confirmation before enabling maintenance mode.
-- [ ] **T5.3** Add the maintenance render gate outside the admin segment.
+- [x] **T5.3** Add the maintenance render gate outside the admin segment.
   - Linked: FR-025, AC-023
   - Create components/maintenance-gate.tsx, mount it in AdminAwareLayout around non-admin routes, subscribe to getPublicStatus, render the notice for signed-out and non-admin visitors, let admins bypass through the existing role query, and leave proxy.ts and Clerk middleware untouched.
-- [ ] **T5.4** Enforce feature flags in navigation and on the server.
+- [x] **T5.4** Enforce feature flags in navigation and on the server.
   - Linked: FR-026, AC-021
   - Filter flagged destinations through platform settings in the sidebar, render a "not enabled" state for a direct URL hit, and have each flagged module's server query reject with a typed not-enabled error.
-- [ ] **T5.5** Adopt platform defaults in every formatter and panel label.
+- [x] **T5.5** Adopt platform defaults in every formatter and panel label.
   - Linked: FR-027, FR-041, FR-044, FR-045, AC-019, AC-021
   - Add the client platform-settings hook and pass currency and timezone into lib/format.ts everywhere, remove any remaining hard-coded naira or Nigeria assumptions from admin screens, and surface the active timezone on time-bucketed cards and reports.
-- [ ] **T5.6** Extract the shared Resend helper and email delivery log.
+- [x] **T5.6** Extract the shared Resend helper and email delivery log.
   - Linked: FR-036, NFR-015, AC-026, AC-030
   - Refactor convex/emails.ts into a shared send helper that writes an emailEvents row per attempt and supports the plain-text announcement template, preserving the existing invite behaviour, and keep cron heartbeats writing on both success and failure.
-- [ ] **T5.7** Add broadcast audience resolution and sending.
+- [x] **T5.7** Add broadcast audience resolution and sending.
   - Linked: FR-028, FR-029, FR-030, NFR-002, NFR-003, NFR-015, AC-024, AC-025, AC-026
   - Create convex/announcements.ts: resolveAudience counts and returns up to five masked samples for all users, organizers, one event's confirmed registrations de-duplicated by email, and admins; send requires super_admin, a matching typed confirmation, and the broadcast bucket, creates the record as sending, sends in batches of 50, writes one delivery row per recipient, updates counts and a sent or partial status, and writes announcement.sent.
-- [ ] **T5.8** Build the broadcast composer.
+- [x] **T5.8** Build the broadcast composer.
   - Linked: FR-028, FR-029, NFR-004, NFR-009, AC-024, AC-025
   - Create the announcements page composer: audience selector with a resolved recipient count, masked sample preview, subject and body preview, send disabled at zero recipients, and typed confirmation before sending.
-- [ ] **T5.9** Add the announcements history list.
+- [x] **T5.9** Add the announcements history list.
   - Linked: FR-030, FR-031, AC-026
   - Render announcements with status, audience, recipient, sent and failed counts, author, and timestamp, so a partial failure is never presented as a success.
-- [ ] **T5.10** Add feedback submission and the public feedback page.
+- [x] **T5.10** Add feedback submission and the public feedback page.
   - Linked: FR-032, NFR-003, NFR-004, NFR-005, AC-027
   - Create convex/feedback.ts#submit requiring a signed-in identity, a validated type, a 10-2000 character message, an existing event when supplied, duplicate suppression per user, type, and event within 10 minutes, and the feedback bucket. Create app/(public)/feedback/page.tsx with an optional eventId parameter and a Report this event link, rendering all user content as text with no file uploads.
-- [ ] **T5.11** Add the feedback inbox queries, mutations, and audited deletion.
+- [x] **T5.11** Add the feedback inbox queries, mutations, and audited deletion.
   - Linked: FR-033, FR-034, NFR-015, NFR-016, AC-028
   - Add feedback.list with status, type, and priority filters plus counts, and feedback.update appending immutable notes, stamping resolvedBy and resolvedAt on terminal states, writing feedback.updated on every change, and writing feedback.deleted before an explicit deletion. Records are never auto-purged.
-- [ ] **T5.12** Build the feedback inbox interface.
+- [x] **T5.12** Build the feedback inbox interface.
   - Linked: FR-033, FR-035, NFR-005, NFR-011, AC-028, AC-029
   - Create app/admin/feedback/page.tsx with filterable list, detail view, note composer, status and priority controls, target navigation, the target removed label when the event is gone, and text-only rendering of user content.
-- [ ] **T5.13** Remove attendee concepts from admin settings.
+- [x] **T5.13** Remove attendee concepts from admin settings.
   - Linked: FR-038, AC-033, AC-034
   - Delete the Onboarding InfoRow from app/admin/settings/page.tsx without reflowing the two-column layout, narrow the admin projection in convex/settings.ts so onboarding, interests, and attendee location are never returned, and render a truthful degraded state instead of inventing Pending.
 

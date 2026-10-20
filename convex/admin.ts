@@ -2,6 +2,7 @@
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
 import { requireAdmin, consumeRateLimit } from "./helpers";
+import { assertFeatureEnabled } from "./platformData";
 import { Id } from "./_generated/dataModel";
 import { logAdminAction } from "./audit";
 import { rateLimiter } from "./rateLimiter";
@@ -63,6 +64,7 @@ export const searchPalette = mutation({
   args: { query: v.string() },
   handler: async (ctx, args) => {
     const admin = await requireAdmin(ctx);
+    await assertFeatureEnabled(ctx, "commandPalette");
     const query = args.query.trim();
 
     if (query.length < 2) {

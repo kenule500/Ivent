@@ -22,14 +22,13 @@ import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Progress } from "@/components/ui/progress";
 import { Badge } from "@/components/ui/badge";
 import {
-  DEFAULT_CURRENCY,
   formatCurrency,
   formatDateTime,
   formatNumber,
   formatPercent,
   formatRelativeTime,
-  DEFAULT_TIMEZONE,
 } from "@/lib/format";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 
 const WINDOW_DAYS = 30;
 
@@ -63,6 +62,7 @@ export default function AdminDashboard() {
 }
 
 function TrendsPanel() {
+  const { currency, timezone } = usePlatformSettings();
   const { data, isLoading } = useConvexQuery(api.commandCenter.getTrends, {
     days: WINDOW_DAYS,
   });
@@ -110,7 +110,7 @@ function TrendsPanel() {
           windowLabel={windowLabel}
           formatValue={(value) =>
             formatCurrency(value, {
-              currency: DEFAULT_CURRENCY,
+              currency,
               locale: undefined,
             })
           }
@@ -120,7 +120,7 @@ function TrendsPanel() {
       </div>
       {data && (
         <p className="mt-2 text-[0.7rem] text-muted-foreground">
-          As of {formatDateTime(data.asOf, { currency: DEFAULT_CURRENCY, timezone: DEFAULT_TIMEZONE })}
+          As of {formatDateTime(data.asOf, { currency, timezone })}
         </p>
       )}
     </PanelState>

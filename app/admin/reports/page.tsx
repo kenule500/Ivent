@@ -19,10 +19,12 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { formatDate, formatNumber } from "@/lib/format";
+import { usePlatformSettings } from "@/hooks/usePlatformSettings";
 
 const PAGE_SIZE = 20;
 
 export default function ReportsPage() {
+  const { currency } = usePlatformSettings();
   const [search, setSearch] = React.useState("");
   const [page, setPage] = React.useState(1);
 
@@ -99,7 +101,7 @@ export default function ReportsPage() {
                   <TableCell className="hidden whitespace-nowrap text-sm text-muted-foreground sm:table-cell">
                     {data
                       ? formatDate(row.startDate, {
-                          currency: "USD",
+                          currency,
                           timezone: data.timezone,
                         })
                       : "—"}

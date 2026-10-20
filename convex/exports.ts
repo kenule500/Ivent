@@ -26,16 +26,13 @@ import {
  * that the corresponding screen already shows are exported.
  */
 
-const EXPORT_MODULES = [
-  "users",
-  "events",
-  "registrations",
-  "audit",
-  "analytics",
-  "report",
-] as const;
-
-type ExportModule = (typeof EXPORT_MODULES)[number];
+type ExportModule =
+  | "users"
+  | "events"
+  | "registrations"
+  | "audit"
+  | "analytics"
+  | "report";
 
 export type ExportResponse =
   | { ok: true; filename: string; csv: string; rowCount: number }

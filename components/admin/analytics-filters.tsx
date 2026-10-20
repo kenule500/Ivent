@@ -21,7 +21,6 @@ import {
   presetForFilters,
   removeFilterValue,
   type AnalyticsFilters,
-  type RangePreset,
 } from "@/lib/analytics-filters";
 import { DEFAULT_CURRENCY, formatDate } from "@/lib/format";
 import { cn } from "@/lib/utils";
