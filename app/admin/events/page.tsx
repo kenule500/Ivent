@@ -7,6 +7,7 @@ import { Input } from "@/components/ui/input";
 import { Search, Calendar, Ticket, TrendingUp } from "lucide-react";
 import { StatCard, EventsTable } from "@/components/admin";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 export default function AdminEventsPage() {
   const [search, setSearch] = useState("");
@@ -45,6 +46,7 @@ export default function AdminEventsPage() {
         title="Event Management"
         description="Manage all platform events."
         breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Events" }]}
+        actions={<ExportButton module="events" search={search || undefined} />}
       />
 
       {/* Stats Cards */}

@@ -12,6 +12,7 @@ import {
 } from "lucide-react";
 import { StatCard, UsersTable } from "@/components/admin";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
@@ -32,6 +33,7 @@ export default function AdminUsersPage() {
         title="User Management"
         description="Manage all platform users and their permissions."
         breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Users" }]}
+        actions={<ExportButton module="users" search={search || undefined} />}
       />
 
       {/* Stats Cards */}

@@ -443,7 +443,7 @@
           "linkedAcceptanceCriteria": [
             "AC-018"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.2",
@@ -460,7 +460,7 @@
             "AC-016",
             "AC-017"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.3",
@@ -473,7 +473,7 @@
           "linkedAcceptanceCriteria": [
             "AC-016"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.4",
@@ -485,7 +485,7 @@
           "linkedAcceptanceCriteria": [
             "AC-019"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.5",
@@ -499,7 +499,7 @@
           "linkedAcceptanceCriteria": [
             "AC-019"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.6",
@@ -511,7 +511,7 @@
           "linkedAcceptanceCriteria": [
             "AC-020"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.7",
@@ -526,7 +526,7 @@
             "AC-030",
             "AC-031"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.8",
@@ -544,7 +544,7 @@
             "AC-031",
             "AC-032"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },

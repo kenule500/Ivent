@@ -318,4 +318,10 @@ export default defineSchema({
         error: v.optional(v.string()),
         processed: v.number(),
     }).index("by_name", ["name"]),
+
+    // Rate-limit rejections, used only as a count signal in system health
+    rateLimitRejections: defineTable({
+        bucket: v.string(),
+        createdAt: v.number(),
+    }).index("by_createdAt", ["createdAt"]),
 })

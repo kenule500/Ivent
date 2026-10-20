@@ -1,7 +1,7 @@
 // convex/admin.ts
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { requireAdmin, enforceRateLimit } from "./helpers";
+import { requireAdmin, consumeRateLimit } from "./helpers";
 import { Id } from "./_generated/dataModel";
 import { logAdminAction } from "./audit";
 import { rateLimiter } from "./rateLimiter";
@@ -66,10 +66,18 @@ export const searchPalette = mutation({
     const query = args.query.trim();
 
     if (query.length < 2) {
-      return { users: [], events: [], registrations: [] };
+      return { error: null, users: [], events: [], registrations: [] };
     }
 
-    await enforceRateLimit(ctx, "adminSearch", admin._id);
+    const limit = await consumeRateLimit(ctx, "adminSearch", admin._id);
+    if (!limit.ok) {
+      return {
+        error: limit.message,
+        users: [],
+        events: [],
+        registrations: [],
+      };
+    }
 
     const lower = query.toLowerCase();
 
@@ -115,6 +123,7 @@ export const searchPalette = mutation({
       }));
 
     return {
+      error: null,
       users,
       events: events.map((event) => ({
         id: event._id,

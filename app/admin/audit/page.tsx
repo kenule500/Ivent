@@ -45,6 +45,7 @@ import {
 } from "lucide-react";
 import { Pagination } from "@/components/admin/pagination";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -148,6 +149,7 @@ export default function AdminAuditPage() {
         title="Audit Log"
         description="Complete history of admin actions across the platform."
         breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Audit log" }]}
+        actions={<ExportButton module="audit" search={search || undefined} />}
       />
 
       {/* Stats */}

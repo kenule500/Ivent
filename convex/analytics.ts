@@ -1,7 +1,7 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
 import { Doc, Id } from "./_generated/dataModel";
-import { requireAdmin, enforceRateLimit } from "./helpers";
+import { requireAdmin, consumeRateLimit } from "./helpers";
 import {
   analyticsFilterValidator,
   estimateRevenue,
@@ -192,8 +192,8 @@ export const pulse = mutation({
   args: {},
   handler: async (ctx) => {
     const admin = await requireAdmin(ctx);
-    await enforceRateLimit(ctx, "analytics", admin._id);
-    return { ok: true };
+    const limit = await consumeRateLimit(ctx, "analytics", admin._id);
+    return limit.ok ? { ok: true } : { ok: false, message: limit.message };
   },
 });
 

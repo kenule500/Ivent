@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/select";
 import {
   Search,
-  Download,
   Trash2,
   CheckCircle2,
   XCircle,
@@ -45,6 +44,7 @@ import { Id } from "@/convex/_generated/dataModel";
 import { CancelRegistrationModal } from "@/components/admin/cancel-registration-modal";
 import { Pagination } from "@/components/admin/pagination";
 import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -142,42 +142,6 @@ export default function AdminRegistrationsPage() {
     }
   };
 
-  const handleExport = () => {
-    if (!filteredRegistrations) return;
-
-    const header = [
-      "Attendee Name",
-      "Attendee Email",
-      "Event",
-      "Status",
-      "QR Code",
-      "Registered At",
-      "Checked In",
-    ].join(",");
-
-    const rows = filteredRegistrations.map((reg) =>
-      [
-        reg.attendeeName,
-        reg.attendeeEmail,
-        events?.find((e) => e._id === reg.eventId)?.title || "Unknown",
-        reg.status,
-        reg.qrCode,
-        new Date(reg.registeredAt).toLocaleString(),
-        reg.checkedIn ? "Yes" : "No",
-      ].join(",")
-    );
-
-    const csvContent = [header, ...rows].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `registrations-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
   const hasActiveFilters = search || statusFilter !== "all";
 
   const clearFilters = () => {
@@ -202,10 +166,7 @@ export default function AdminRegistrationsPage() {
           description="Manage all event registrations across the platform."
           breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Registrations" }]}
           actions={
-            <Button onClick={handleExport} className="gap-2 shrink-0">
-              <Download className="w-4 h-4" />
-              Export CSV
-            </Button>
+            <ExportButton module="registrations" search={search || undefined} />
           }
         />
 

@@ -125,28 +125,28 @@ Depends on: P1, P2.
 
 Depends on: P1, P3.
 
-- [ ] **T4.1** Build the export trigger with progress and toasts.
+- [x] **T4.1** Build the export trigger with progress and toasts.
   - Linked: FR-018, FR-020, AC-018
   - Create components/admin/export-button.tsx: show progress while generating, reject repeat clicks, download the returned CSV as a Blob with text/csv;charset=utf-8, raise success or failure toasts, and name the failure reason without a stack trace.
-- [ ] **T4.2** Add the server-side CSV export mutation.
+- [x] **T4.2** Add the server-side CSV export mutation.
   - Linked: FR-018, FR-019, FR-020, NFR-013, NFR-015, AC-016, AC-017
   - Create convex/exports.ts#generate: authorize with requireAdmin, apply the same resolver as the visible view, accept only visible columns, enforce the 10000-row cap with a narrower-filter message, write export.generated with module and row count, consume the adminExport bucket, and return CSV text plus filename.
-- [ ] **T4.3** Wire export into every list and analytics view.
+- [x] **T4.3** Wire export into every list and analytics view.
   - Linked: FR-018, NFR-013, AC-016
   - Add the export action to users, events, registrations, audit, and analytics with visible-column definitions and the <module>-<yyyy-MM-dd>.csv filename, leaving moderation logic untouched.
-- [ ] **T4.4** Build the reports hub event list.
+- [x] **T4.4** Build the reports hub event list.
   - Linked: FR-021, AC-019
   - Add reports.listEvents with bounded search and pagination, and create app/admin/reports/page.tsx listing selectable events with date, organizer, and registration count.
-- [ ] **T4.5** Add the per-event report query and view.
+- [x] **T4.5** Add the per-event report query and view.
   - Linked: FR-021, FR-044, FR-045, AC-019
   - Add reports.getEventReport composing attendance (confirmed, checked in, no-show, cancelled), a check-in series, capacity utilisation, and paid-event revenue, then render it with an as-of timestamp, timezone-aware labels, and a zeros-plus-explanation state for events with no registrations.
-- [ ] **T4.6** Add report CSV export and the print stylesheet.
+- [x] **T4.6** Add report CSV export and the print stylesheet.
   - Linked: FR-022, AC-020
   - Reuse the export path for the report and add route-scoped print CSS that hides the sidebar, header, and actions while showing a masthead with platform name, event, date, and as-of timestamp. PDF is the browser's print-to-PDF.
-- [ ] **T4.7** Add health queries, cron heartbeats, and email event logging.
+- [x] **T4.7** Add health queries, cron heartbeats, and email event logging.
   - Linked: FR-036, FR-037, NFR-006, AC-030, AC-031
   - Create convex/health.ts#getOverview for cron recency and status, 24-hour and 7-day email failures, rate-limit rejections, open-feedback age, and Boolean-only configuration presence; write cronRuns heartbeats from convex/crons.ts and emailEvents from the shared send helper.
-- [ ] **T4.8** Build the system health page with per-card windows.
+- [x] **T4.8** Build the system health page with per-card windows.
   - Linked: FR-036, FR-037, FR-045, NFR-006, NFR-011, AC-030, AC-031, AC-032
   - Create app/admin/health/page.tsx with one card per signal, each stating its window and timestamp, isolated error and retry state, and configuration labels that never print a value.
 

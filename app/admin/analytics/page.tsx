@@ -16,6 +16,7 @@ import {
   AnalyticsFilterBar,
   type FilterOptions,
 } from "@/components/admin/analytics-filters";
+import { ExportButton } from "@/components/admin/export-button";
 import {
   BreakdownChart,
   CapacityChart,
@@ -155,6 +156,7 @@ function AnalyticsWorkspace() {
         title="Analytics"
         description="Filtered demand, conversion, retention, and revenue for one consistent window."
         breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Analytics" }]}
+        actions={<ExportButton module="analytics" filters={filters} />}
       />
 
       <AnalyticsFilterBar

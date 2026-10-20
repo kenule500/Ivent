@@ -137,3 +137,25 @@
 .perspective-1000 {
   perspective: 1000px;
 }
+/* Route-scoped print layout for per-event reports (T4.6). PDF is the browser's print-to-PDF. */
+@media print {
+  body:has(.report-page) aside,
+  body:has(.report-page) header,
+  body:has(.report-page) .no-print {
+    display: none !important;
+  }
+
+  body:has(.report-page) main {
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  body:has(.report-page) {
+    background: #fff !important;
+  }
+
+  body:has(.report-page) .report-page {
+    max-width: 100%;
+  }
+}
+

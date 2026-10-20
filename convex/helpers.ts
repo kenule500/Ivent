@@ -56,18 +56,35 @@ export type AdminRateLimitName =
 
 /**
  * Consume a rate-limit bucket for a key (usually the acting user id).
- * Throws a user-facing message with a retry hint so the UI can render it.
+ *
+ * Returns a result instead of throwing: a thrown mutation rolls back its own
+ * writes, which would discard the rejection record used by system health.
  */
-export async function enforceRateLimit(
+export async function consumeRateLimit(
   ctx: MutationCtx,
   name: AdminRateLimitName,
   key: string
-) {
+): Promise<
+  | { ok: true }
+  | { ok: false; message: string; retryAfterSeconds: number }
+> {
   const status = await rateLimiter.limit(ctx, name, { key });
-  if (!status.ok) {
-    const seconds = Math.max(1, Math.ceil((status.retryAfter ?? 1000) / 1000));
-    throw new Error(`Rate limit exceeded. Try again in ${seconds} seconds.`);
-  }
+  if (status.ok) return { ok: true };
+
+  await ctx.db.insert("rateLimitRejections", {
+    bucket: name,
+    createdAt: Date.now(),
+  });
+
+  const retryAfterSeconds = Math.max(
+    1,
+    Math.ceil((status.retryAfter ?? 1000) / 1000)
+  );
+  return {
+    ok: false,
+    message: `Rate limit exceeded. Try again in ${retryAfterSeconds} seconds.`,
+    retryAfterSeconds,
+  };
 }
 
 /**

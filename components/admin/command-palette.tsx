@@ -71,7 +71,17 @@ export function CommandPalette({ onOpenChange, enabledFlags }: CommandPalettePro
         setError(null);
         try {
           const result = await search({ query: term });
-          if (!cancelled) setData(result);
+          if (cancelled) return;
+          if (result.error) {
+            setData(null);
+            setError(result.error);
+          } else {
+            setData({
+              users: result.users,
+              events: result.events,
+              registrations: result.registrations,
+            });
+          }
         } catch (err) {
           if (!cancelled) {
             setData(null);

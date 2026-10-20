@@ -2,6 +2,7 @@
 
 import { v } from "convex/values";
 import { action } from "./_generated/server";
+import { internal } from "./_generated/api";
 import { Resend } from "resend";
 
 /**
@@ -38,7 +39,9 @@ export const sendInviteEmail = action({
       day: "numeric",
     });
 
-    const result = await resend.emails.send({
+    let result;
+    try {
+      result = await resend.emails.send({
       from: fromEmail,
       to: args.email,
       subject: "You've been invited as an admin to Ivent",
@@ -96,11 +99,34 @@ export const sendInviteEmail = action({
           </body>
         </html>
       `,
-    });
+      });
+    } catch (sendError) {
+      const message =
+        sendError instanceof Error ? sendError.message : "Unknown email error";
+      await ctx.runMutation(internal.emailLog.recordEmailEvent, {
+        template: "invite",
+        recipient: args.email,
+        status: "failed",
+        error: message,
+      });
+      throw sendError;
+    }
 
     if (result.error) {
+      await ctx.runMutation(internal.emailLog.recordEmailEvent, {
+        template: "invite",
+        recipient: args.email,
+        status: "failed",
+        error: result.error.message,
+      });
       throw new Error(`Resend error: ${result.error.message}`);
     }
+
+    await ctx.runMutation(internal.emailLog.recordEmailEvent, {
+      template: "invite",
+      recipient: args.email,
+      status: "sent",
+    });
 
     return { success: true, emailId: result.data?.id };
   },
