@@ -52,19 +52,21 @@ describe("AC-007: QR check-in", () => {
   test("AC-007: unknown and cancelled codes are rejected", async () => {
     const { t, registrationId } = await setup();
 
-    await expect(
-      t.withIdentity(organizerIdentity).mutation(api.registrations.checkInAttendee, {
-        qrCode: "EVT-UNKNOWN",
-      })
-    ).rejects.toThrow(/invalid or cancelled/i);
+    const unknown = await t.withIdentity(organizerIdentity).mutation(
+      api.registrations.checkInAttendee,
+      { qrCode: "EVT-UNKNOWN" }
+    );
+    expect(unknown.success).toBe(false);
+    expect(unknown.message).toMatch(/invalid or cancelled/i);
 
     await t.run((ctx) => ctx.db.patch(registrationId, { status: "cancelled" }));
 
-    await expect(
-      t.withIdentity(organizerIdentity).mutation(api.registrations.checkInAttendee, {
-        qrCode: "EVT-1-ABCD1234",
-      })
-    ).rejects.toThrow(/invalid or cancelled/i);
+    const cancelled = await t.withIdentity(organizerIdentity).mutation(
+      api.registrations.checkInAttendee,
+      { qrCode: "EVT-1-ABCD1234" }
+    );
+    expect(cancelled.success).toBe(false);
+    expect(cancelled.message).toMatch(/invalid or cancelled/i);
   });
 
   test("AC-007: a second scan reports that the attendee is already checked in", async () => {
@@ -116,15 +118,18 @@ describe("AC-007: QR check-in", () => {
     const { t } = await setup();
 
     for (let i = 0; i < 10; i++) {
-      await expect(
-        t.withIdentity(organizerIdentity).mutation(api.registrations.checkInAttendee, {
-          qrCode: `EVT-GUESS-${i}`,
-        })
-      ).rejects.toThrow(/invalid or cancelled/i);
+      const result = await t.withIdentity(organizerIdentity).mutation(
+        api.registrations.checkInAttendee,
+        { qrCode: `EVT-GUESS-${i}` }
+      );
+      expect(result.success).toBe(false);
+      expect(result.message).toMatch(/invalid or cancelled/i);
     }
 
-    // A rejected mutation rolls back its rate-limit token, so an attacker can
-    // keep guessing codes without ever hitting the limit.
+    // The failed scan must still consume its token: if the handler threw, the
+    // surrounding transaction would roll the token back and an attacker could
+    // keep guessing codes without ever hitting the limit. The eleventh scan
+    // proves the ten already spent tokens were committed.
     await expect(
       t.withIdentity(organizerIdentity).mutation(api.registrations.checkInAttendee, {
         qrCode: "EVT-GUESS-FINAL",
