@@ -1,377 +1,446 @@
 "use client";
 
-import { useConvexQuery } from "@/hooks/useConvexQuery";
-import { api } from "@/convex/_generated/api";
-import { format } from "date-fns";
+import { formatCurrency, formatNumber, formatPercent } from "@/lib/format";
 import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "@/components/ui/card";
+  Area,
+  AreaChart,
+  Bar,
+  BarChart,
+  CartesianGrid,
+  Line,
+  LineChart,
+  XAxis,
+  YAxis,
+} from "recharts";
 import {
   ChartConfig,
   ChartContainer,
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart";
-import {
-  AreaChart,
-  Area,
-  BarChart,
-  Bar,
-  LineChart,
-  Line,
-  XAxis,
-  YAxis,
-  CartesianGrid,
-  PieChart,
-  Pie,
-  Cell,
-} from "recharts";
-import { Loader2, TrendingUp, Users, Ticket, MapPin } from "lucide-react";
 
-// ============ GROWTH CHART (Users + Registrations over time) ============
+/**
+ * Presentational analytics charts (FR-015). Each component receives resolved
+ * data so loading, errors, and data-table alternatives stay in ChartCard.
+ */
 
-export function GrowthChart() {
-  const { data: userGrowth, isLoading: loadingUsers } = useConvexQuery(
-    api.analytics.getUserGrowth,
-    { days: 30 }
-  );
-  const { data: regTrend, isLoading: loadingRegs } = useConvexQuery(
-    api.analytics.getRegistrationTrend,
-    { days: 30 }
-  );
+export interface SeriesPoint {
+  key: string;
+  users: number;
+  events: number;
+  registrations: number;
+  revenue: number;
+  freeRevenue: number;
+  paidRevenue: number;
+}
 
-  if (loadingUsers || loadingRegs) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[350px]">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-        </CardContent>
-      </Card>
-    );
-  }
+const shortDate = (key: string) => key.slice(5);
 
-  // Merge by date
-  const merged =
-    userGrowth?.map((u, i) => ({
-      date: u.date,
-      users: u.count,
-      registrations: regTrend?.[i]?.count ?? 0,
-    })) ?? [];
+// ============ GROWTH ============
 
-  const config: ChartConfig = {
-    users: { label: "New Users", color: "hsl(217, 91%, 60%)" },
-    registrations: {
-      label: "Registrations",
-      color: "hsl(142, 71%, 45%)",
-    },
-  };
+interface GrowthTrendChartProps {
+  buckets: SeriesPoint[];
+  previous: SeriesPoint[] | null;
+  compare: boolean;
+}
+
+const growthConfig: ChartConfig = {
+  users: { label: "New users", color: "var(--chart-1)" },
+  registrations: { label: "Registrations", color: "var(--chart-2)" },
+  previousUsers: { label: "New users (previous)", color: "var(--chart-1)" },
+  previousRegistrations: {
+    label: "Registrations (previous)",
+    color: "var(--chart-2)",
+  },
+};
+
+export function GrowthTrendChart({ buckets, previous, compare }: GrowthTrendChartProps) {
+  const data = buckets.map((bucket, index) => ({
+    ...bucket,
+    previousUsers: previous?.[index]?.users ?? null,
+    previousRegistrations: previous?.[index]?.registrations ?? null,
+  }));
 
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-purple-500" />
-          Growth (Last 30 Days)
-        </CardTitle>
-        <CardDescription>New users and registrations per day</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={config} className="h-[300px] w-full">
-          <AreaChart data={merged}>
-            <defs>
-              <linearGradient id="fillUsers" x1="0" y1="0" x2="0" y2="1">
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-users)"
-                  stopOpacity={0.6}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-users)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-              <linearGradient
-                id="fillRegistrations"
-                x1="0"
-                y1="0"
-                x2="0"
-                y2="1"
-              >
-                <stop
-                  offset="5%"
-                  stopColor="var(--color-registrations)"
-                  stopOpacity={0.6}
-                />
-                <stop
-                  offset="95%"
-                  stopColor="var(--color-registrations)"
-                  stopOpacity={0.05}
-                />
-              </linearGradient>
-            </defs>
-            <CartesianGrid strokeDasharray="3 3" opacity={0.1} />
-            <XAxis
-              dataKey="date"
-              tickFormatter={(v) => format(new Date(v), "MMM d")}
-              tick={{ fontSize: 12 }}
+    <ChartContainer config={growthConfig} className="h-[260px] w-full">
+      <LineChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+        <XAxis dataKey="key" tickFormatter={shortDate} tickLine={false} minTickGap={24} />
+        <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Line
+          type="monotone"
+          dataKey="users"
+          stroke="var(--color-users)"
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="registrations"
+          stroke="var(--color-registrations)"
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+        {compare && (
+          <>
+            <Line
+              type="monotone"
+              dataKey="previousUsers"
+              stroke="var(--color-users)"
+              strokeDasharray="4 4"
+              strokeOpacity={0.45}
+              strokeWidth={1.5}
+              dot={false}
+              isAnimationActive={false}
             />
-            <YAxis tick={{ fontSize: 12 }} />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  labelFormatter={(v) => format(new Date(v), "PPP")}
-                />
+            <Line
+              type="monotone"
+              dataKey="previousRegistrations"
+              stroke="var(--color-registrations)"
+              strokeDasharray="4 4"
+              strokeOpacity={0.45}
+              strokeWidth={1.5}
+              dot={false}
+              isAnimationActive={false}
+            />
+          </>
+        )}
+      </LineChart>
+    </ChartContainer>
+  );
+}
+
+// ============ REVENUE ============
+
+interface RevenueChartProps {
+  buckets: SeriesPoint[];
+  previous: SeriesPoint[] | null;
+  compare: boolean;
+  currency: string;
+}
+
+const revenueConfig: ChartConfig = {
+  freeRevenue: { label: "Free registrations", color: "var(--chart-2)" },
+  paidRevenue: { label: "Paid tickets", color: "var(--chart-1)" },
+  previousRevenue: { label: "Previous period", color: "var(--chart-3)" },
+};
+
+export function RevenueChart({ buckets, previous, compare, currency }: RevenueChartProps) {
+  const data = buckets.map((bucket, index) => ({
+    ...bucket,
+    previousRevenue: previous?.[index]?.revenue ?? null,
+  }));
+
+  return (
+    <ChartContainer config={revenueConfig} className="h-[240px] w-full">
+      <AreaChart data={data} margin={{ left: 0, right: 8, top: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+        <XAxis dataKey="key" tickFormatter={shortDate} tickLine={false} minTickGap={24} />
+        <YAxis
+          tickLine={false}
+          axisLine={false}
+          width={52}
+          tickFormatter={(value) => formatCurrency(Number(value), { currency })}
+        />
+        <ChartTooltip
+          content={
+            <ChartTooltipContent
+              formatter={(value) =>
+                formatCurrency(Number(value), { currency })
               }
             />
-            <Area
-              type="monotone"
-              dataKey="users"
-              stroke="var(--color-users)"
-              fill="url(#fillUsers)"
-              strokeWidth={2}
-            />
-            <Area
-              type="monotone"
-              dataKey="registrations"
-              stroke="var(--color-registrations)"
-              fill="url(#fillRegistrations)"
-              strokeWidth={2}
-            />
-          </AreaChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
+          }
+        />
+        <Area
+          type="monotone"
+          dataKey="freeRevenue"
+          stackId="revenue"
+          stroke="var(--color-freeRevenue)"
+          fill="var(--color-freeRevenue)"
+          fillOpacity={0.5}
+          isAnimationActive={false}
+        />
+        <Area
+          type="monotone"
+          dataKey="paidRevenue"
+          stackId="revenue"
+          stroke="var(--color-paidRevenue)"
+          fill="var(--color-paidRevenue)"
+          fillOpacity={0.5}
+          isAnimationActive={false}
+        />
+        {compare && (
+          <Line
+            type="monotone"
+            dataKey="previousRevenue"
+            stroke="var(--color-previousRevenue)"
+            strokeDasharray="4 4"
+            dot={false}
+            isAnimationActive={false}
+          />
+        )}
+      </AreaChart>
+    </ChartContainer>
   );
 }
 
-// ============ CATEGORY PIE CHART ============
+// ============ FUNNEL ============
 
-const CATEGORY_COLORS = [
-  "hsl(262, 83%, 58%)",
-  "hsl(217, 91%, 60%)",
-  "hsl(142, 71%, 45%)",
-  "hsl(38, 92%, 50%)",
-  "hsl(0, 84%, 60%)",
-  "hsl(199, 89%, 48%)",
-  "hsl(280, 65%, 60%)",
-  "hsl(340, 82%, 52%)",
-];
+export interface FunnelStep {
+  key: string;
+  label: string;
+  value: number;
+  conversionFromPrevious: number;
+  conversionFromStart: number;
+}
 
-export function CategoryChart() {
-  const { data: categories, isLoading } = useConvexQuery(
-    api.analytics.getEventsByCategory
-  );
+interface FunnelChartProps {
+  steps: FunnelStep[];
+}
 
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[350px]">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const chartData =
-    categories?.map((c, i) => ({
-      category: c.category,
-      count: c.count,
-      fill: CATEGORY_COLORS[i % CATEGORY_COLORS.length],
-    })) ?? [];
-
-  const config: ChartConfig = chartData.reduce((acc, item) => {
-    acc[item.category] = { label: item.category, color: item.fill };
-    return acc;
-  }, {} as ChartConfig);
-
+export function FunnelChart({ steps }: FunnelChartProps) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <Ticket className="w-5 h-5 text-purple-500" />
-          Events by Category
-        </CardTitle>
-        <CardDescription>Distribution across categories</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={config} className="h-[300px] w-full">
-          <PieChart>
-            <ChartTooltip
-              content={<ChartTooltipContent nameKey="category" />}
+    <div className="space-y-3">
+      {steps.map((step) => (
+        <div key={step.key} className="space-y-1">
+          <div className="flex items-baseline justify-between gap-2 text-xs">
+            <span className="font-medium">{step.label}</span>
+            <span className="text-muted-foreground">
+              {formatNumber(step.value)} · {formatPercent(step.conversionFromPrevious)}{" "}
+              of previous
+            </span>
+          </div>
+          <div className="h-2.5 overflow-hidden rounded-full bg-muted" aria-hidden="true">
+            <div
+              className="h-full rounded-full bg-primary"
+              style={{ width: `${Math.min(step.conversionFromStart * 100, 100)}%` }}
             />
-            <Pie
-              data={chartData}
-              dataKey="count"
-              nameKey="category"
-              cx="50%"
-              cy="50%"
-              outerRadius={100}
-              innerRadius={50}
-              paddingAngle={2}
-            >
-              {chartData.map((entry, index) => (
-                <Cell key={index} fill={entry.fill} />
-              ))}
-            </Pie>
-          </PieChart>
-        </ChartContainer>
+          </div>
+        </div>
+      ))}
+    </div>
+  );
+}
 
-        {/* Legend */}
-        <div className="flex flex-wrap gap-3 mt-4">
-          {chartData.slice(0, 8).map((item) => (
-            <div key={item.category} className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: item.fill }}
-              />
-              <span className="text-sm capitalize">
-                {item.category} ({item.count})
+// ============ CHECK-IN TREND ============
+
+export interface CheckInPoint {
+  key: string;
+  confirmed: number;
+  checkedIn: number;
+}
+
+const checkInConfig: ChartConfig = {
+  confirmed: { label: "Confirmed", color: "var(--chart-2)" },
+  checkedIn: { label: "Checked in", color: "var(--chart-1)" },
+};
+
+export function CheckInTrendChart({ trend }: { trend: CheckInPoint[] }) {
+  return (
+    <ChartContainer config={checkInConfig} className="h-[220px] w-full">
+      <LineChart data={trend} margin={{ left: 0, right: 8, top: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+        <XAxis dataKey="key" tickFormatter={shortDate} tickLine={false} minTickGap={24} />
+        <YAxis tickLine={false} axisLine={false} width={36} allowDecimals={false} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Line
+          type="monotone"
+          dataKey="confirmed"
+          stroke="var(--color-confirmed)"
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+        <Line
+          type="monotone"
+          dataKey="checkedIn"
+          stroke="var(--color-checkedIn)"
+          strokeWidth={2}
+          dot={false}
+          isAnimationActive={false}
+        />
+      </LineChart>
+    </ChartContainer>
+  );
+}
+
+// ============ CAPACITY ============
+
+export interface CapacityBucket {
+  label: string;
+  count: number;
+}
+
+const capacityConfig: ChartConfig = {
+  count: { label: "Events", color: "var(--chart-3)" },
+};
+
+export function CapacityChart({ buckets }: { buckets: CapacityBucket[] }) {
+  return (
+    <ChartContainer config={capacityConfig} className="h-[220px] w-full">
+      <BarChart data={buckets} margin={{ left: 0, right: 8, top: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+        <XAxis dataKey="label" tickLine={false} tick={{ fontSize: 11 }} />
+        <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="count"
+          fill="var(--color-count)"
+          radius={[4, 4, 0, 0]}
+          isAnimationActive={false}
+        />
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+// ============ COHORTS ============
+
+export interface CohortRow {
+  key: string;
+  newCount: number;
+  returningCount: number;
+  total: number;
+}
+
+const cohortConfig: ChartConfig = {
+  newCount: { label: "New attendees", color: "var(--chart-1)" },
+  returningCount: { label: "Returning", color: "var(--chart-2)" },
+};
+
+export function CohortChart({ cohorts }: { cohorts: CohortRow[] }) {
+  return (
+    <ChartContainer config={cohortConfig} className="h-[240px] w-full">
+      <BarChart data={cohorts} margin={{ left: 0, right: 8, top: 8 }}>
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} vertical={false} />
+        <XAxis dataKey="key" tickLine={false} tick={{ fontSize: 11 }} />
+        <YAxis tickLine={false} axisLine={false} width={32} allowDecimals={false} />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="newCount"
+          stackId="attendees"
+          fill="var(--color-newCount)"
+          radius={[0, 0, 0, 0]}
+          isAnimationActive={false}
+        />
+        <Bar
+          dataKey="returningCount"
+          stackId="attendees"
+          fill="var(--color-returningCount)"
+          radius={[4, 4, 0, 0]}
+          isAnimationActive={false}
+        />
+      </BarChart>
+    </ChartContainer>
+  );
+}
+
+// ============ HEATMAP ============
+
+interface HeatmapChartProps {
+  weekdays: string[];
+  hours: number[];
+  matrix: number[][];
+  max: number;
+  timezone: string;
+}
+
+export function HeatmapChart({ weekdays, hours, matrix, max, timezone }: HeatmapChartProps) {
+  return (
+    <div className="space-y-2">
+      <div className="overflow-x-auto">
+        <div className="min-w-[620px]">
+          <div
+            className="grid items-center gap-1"
+            style={{ gridTemplateColumns: `2.5rem repeat(${hours.length}, minmax(0, 1fr))` }}
+          >
+            <span aria-hidden="true" />
+            {hours.map((hour) => (
+              <span
+                key={hour}
+                className="text-center text-[0.6rem] text-muted-foreground"
+                aria-hidden="true"
+              >
+                {hour % 3 === 0 ? hour : ""}
               </span>
-            </div>
+            ))}
+            {weekdays.map((weekday, row) => (
+              <div key={weekday} className="contents">
+                <span className="text-[0.65rem] text-muted-foreground">{weekday}</span>
+                {hours.map((hour) => {
+                  const value = matrix[row][hour];
+                  return (
+                    <span
+                      key={`${weekday}-${hour}`}
+                      title={`${weekday} ${hour}:00 — ${value} registration${value === 1 ? "" : "s"} (${timezone})`}
+                      className="aspect-square rounded-[2px] bg-primary"
+                      style={{ opacity: value === 0 ? 0.06 : 0.2 + 0.8 * (value / max) }}
+                    />
+                  );
+                })}
+              </div>
+            ))}
+          </div>
+        </div>
+      </div>
+      <div className="flex items-center gap-2 text-[0.65rem] text-muted-foreground">
+        <span>Fewer</span>
+        <div className="flex gap-0.5" aria-hidden="true">
+          {[0.15, 0.3, 0.5, 0.7, 1].map((opacity) => (
+            <span
+              key={opacity}
+              className="size-3 rounded-[2px] bg-primary"
+              style={{ opacity }}
+            />
           ))}
         </div>
-      </CardContent>
-    </Card>
+        <span>More · {formatNumber(max)} peak registrations</span>
+      </div>
+    </div>
   );
 }
 
-// ============ CITY CHART ============
+// ============ BREAKDOWN ============
 
-export function CityChart() {
-  const { data: cities, isLoading } = useConvexQuery(
-    api.analytics.getEventsByCity,
-    { limit: 8 }
-  );
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[350px]">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-        </CardContent>
-      </Card>
-    );
-  }
-
-  const config: ChartConfig = {
-    count: { label: "Events", color: "hsl(262, 83%, 58%)" },
-  };
-
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <MapPin className="w-5 h-5 text-purple-500" />
-          Events by City
-        </CardTitle>
-        <CardDescription>Top locations</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <ChartContainer config={config} className="h-[300px] w-full">
-          <BarChart
-            data={cities}
-            layout="vertical"
-            margin={{ left: 20, right: 20 }}
-          >
-            <CartesianGrid strokeDasharray="3 3" opacity={0.1} horizontal={false} />
-            <XAxis type="number" tick={{ fontSize: 12 }} />
-            <YAxis
-              dataKey="city"
-              type="category"
-              tick={{ fontSize: 12 }}
-              width={100}
-            />
-            <ChartTooltip content={<ChartTooltipContent />} />
-            <Bar
-              dataKey="count"
-              fill="var(--color-count)"
-              radius={[0, 6, 6, 0]}
-            />
-          </BarChart>
-        </ChartContainer>
-      </CardContent>
-    </Card>
-  );
+export interface BreakdownRow {
+  key: string;
+  label: string;
+  value: number;
 }
 
-// ============ TOP EVENTS ============
+const breakdownConfig: ChartConfig = {
+  value: { label: "Registrations", color: "var(--chart-4)" },
+};
 
-export function TopEvents() {
-  const { data: events, isLoading } = useConvexQuery(
-    api.analytics.getTopEvents,
-    { limit: 5 }
-  );
-
-  if (isLoading) {
-    return (
-      <Card>
-        <CardContent className="flex items-center justify-center h-[350px]">
-          <Loader2 className="w-6 h-6 animate-spin text-purple-500" />
-        </CardContent>
-      </Card>
-    );
-  }
-
+export function BreakdownChart({ rows }: { rows: BreakdownRow[] }) {
   return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2">
-          <TrendingUp className="w-5 h-5 text-purple-500" />
-          Top Events
-        </CardTitle>
-        <CardDescription>By registration count</CardDescription>
-      </CardHeader>
-      <CardContent>
-        <div className="space-y-4">
-          {events?.map((event, index) => {
-            const rate =
-              event.capacity > 0
-                ? Math.round((event.registrationCount / event.capacity) * 100)
-                : 0;
-
-            return (
-              <div
-                key={event._id}
-                className="flex items-center gap-4 p-3 rounded-lg hover:bg-muted/50 transition-colors"
-              >
-                <div
-                  className={`w-8 h-8 rounded-full flex items-center justify-center text-sm font-bold shrink-0 ${
-                    index === 0
-                      ? "bg-yellow-500/20 text-yellow-500"
-                      : index === 1
-                        ? "bg-gray-400/20 text-gray-400"
-                        : index === 2
-                          ? "bg-orange-700/20 text-orange-700"
-                          : "bg-muted text-muted-foreground"
-                  }`}
-                >
-                  {index + 1}
-                </div>
-                <div className="flex-1 min-w-0">
-                  <p className="text-sm font-medium truncate">{event.title}</p>
-                  <p className="text-xs text-muted-foreground">
-                    {event.city}, {event.state} • {event.category}
-                  </p>
-                </div>
-                <div className="text-right shrink-0">
-                  <p className="text-sm font-bold">{event.registrationCount}</p>
-                  <p className="text-xs text-muted-foreground">{rate}% full</p>
-                </div>
-              </div>
-            );
-          })}
-          {!events || events.length === 0 && (
-            <p className="text-center text-muted-foreground py-8">
-              No events yet
-            </p>
-          )}
-        </div>
-      </CardContent>
-    </Card>
+    <ChartContainer config={breakdownConfig} className="h-[240px] w-full">
+      <BarChart
+        data={rows.slice(0, 8)}
+        layout="vertical"
+        margin={{ left: 8, right: 16, top: 4, bottom: 4 }}
+      >
+        <CartesianGrid strokeDasharray="3 3" opacity={0.15} horizontal={false} />
+        <XAxis type="number" tickLine={false} allowDecimals={false} />
+        <YAxis
+          type="category"
+          dataKey="label"
+          tickLine={false}
+          axisLine={false}
+          width={110}
+          tick={{ fontSize: 11 }}
+        />
+        <ChartTooltip content={<ChartTooltipContent />} />
+        <Bar
+          dataKey="value"
+          fill="var(--color-value)"
+          radius={[0, 4, 4, 0]}
+          isAnimationActive={false}
+        />
+      </BarChart>
+    </ChartContainer>
   );
 }

@@ -251,6 +251,56 @@ export function timezoneDayBounds(timestamp: number, timezone: string) {
   return { start, end: start + DAY_MS };
 }
 
+/** `yyyy-MM-dd` for a timestamp in the given timezone (never toISOString). */
+export function dayKeyFor(timestamp: number, timezone: string) {
+  const parts = new Intl.DateTimeFormat("en-CA", {
+    timeZone: timezone,
+    year: "numeric",
+    month: "2-digit",
+    day: "2-digit",
+  }).formatToParts(new Date(timestamp));
+  const lookup = (type: Intl.DateTimeFormatPartTypes) =>
+    parts.find((part) => part.type === type)?.value ?? "";
+  return `${lookup("year")}-${lookup("month")}-${lookup("day")}`;
+}
+
+/**
+ * Ordered day keys covering a window in the platform timezone.
+ * The loop is bounded by MAX_RANGE_DAYS at the call site.
+ */
+export function dayKeysBetween(start: number, end: number, timezone: string) {
+  const keys: string[] = [];
+  const first = timezoneDayBounds(start, timezone).start;
+
+  for (let cursor = first; cursor <= end; cursor += DAY_MS) {
+    const key = dayKeyFor(cursor, timezone);
+    if (!keys.includes(key)) keys.push(key);
+    if (keys.length > MAX_RANGE_DAYS + 2) break;
+  }
+
+  return keys;
+}
+
+/** Local weekday (0 = Sunday) and hour in the platform timezone. */
+export function localWeekdayHour(timestamp: number, timezone: string) {
+  const date = new Date(timestamp);
+  const weekdayPart = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    weekday: "short",
+  }).format(date);
+  const hourPart = new Intl.DateTimeFormat("en-US", {
+    timeZone: timezone,
+    hour: "2-digit",
+    hour12: false,
+  }).format(date);
+
+  const weekdays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+  return {
+    weekday: Math.max(weekdays.indexOf(weekdayPart), 0),
+    hour: Number(hourPart) % 24,
+  };
+}
+
 /** Revenue contributed by a set of registrations, using each event's ticket price. */
 export function estimateRevenue(
   events: Doc<"events">[],

@@ -90,34 +90,34 @@ Depends on: P1.
 
 Depends on: P1, P2.
 
-- [ ] **T3.1** Add URL-encoded filter state with presets and custom ranges.
+- [x] **T3.1** Add URL-encoded filter state with presets and custom ranges.
   - Linked: FR-012, AC-008
   - Wire lib/analytics-filters.ts into the analytics page: 7/30/90/365 presets, react-day-picker custom range, URL encoding that survives reload and back/forward, and one filter set driving every card and chart.
-- [ ] **T3.2** Build the filter bar, chips, and range validation.
+- [x] **T3.2** Build the filter bar, chips, and range validation.
   - Linked: FR-011, FR-013, AC-009, AC-010
   - Add category, country, city, ticket type, organizer, registration status, and check-in controls; render active filters as removable chips plus Clear all; reject start-after-end and spans over 730 days inline while keeping the last valid query.
-- [ ] **T3.3** Add the summary query with previous-period comparison.
+- [x] **T3.3** Add the summary query with previous-period comparison.
   - Linked: FR-014, FR-017, AC-011
   - Replace the fixed-window analytics summary with a filter-aware getSummary that duplicates the range backwards by its exact length and returns current, previous, absolute delta, and a nullable percentage delta plus appliedFilters and rowCounts.
-- [ ] **T3.4** Add time-series and revenue-split charts.
+- [x] **T3.4** Add time-series and revenue-split charts.
   - Linked: FR-015, AC-013
   - Add filter-aware getTimeSeries for users, events, registrations, and revenue, including a free/paid revenue split, bucketed by the platform timezone and rendered as a ghost series when comparison is on.
-- [ ] **T3.5** Add the registration funnel, check-in trend, and capacity utilisation.
+- [x] **T3.5** Add the registration funnel, check-in trend, and capacity utilisation.
   - Linked: FR-015, AC-013
   - Add getFunnel for registered, confirmed, and checked-in steps with step conversion, a check-in rate over time, and a capacity-utilisation distribution for the filtered event set.
-- [ ] **T3.6** Add cohort and retention analysis.
+- [x] **T3.6** Add cohort and retention analysis.
   - Linked: FR-015, AC-014
   - Add getCohorts returning new versus returning attendees per cohort period, define "returning" as a first registration predating the cohort period, state that definition on the card, and show the minimum-data requirement instead of empty axes.
-- [ ] **T3.7** Add the weekday by hour registration heatmap.
+- [x] **T3.7** Add the weekday by hour registration heatmap.
   - Linked: FR-015, FR-044, AC-013
   - Add getHeatmap bucketing registrations by local weekday and hour in the platform timezone, with an accessible legend and the active timezone displayed on the card.
-- [ ] **T3.8** Add dimension breakdown charts.
+- [x] **T3.8** Add dimension breakdown charts.
   - Linked: FR-015, FR-017, AC-009, AC-013
   - Add getBreakdown for category, country, city, ticket type, status, and organizer, replacing the existing category and city charts while keeping filter context in every response.
-- [ ] **T3.9** Wrap every chart in a card with a data-table alternative.
+- [x] **T3.9** Wrap every chart in a card with a data-table alternative.
   - Linked: FR-016, NFR-009, NFR-011, AC-015
   - Create the chart card shell with title, one-line interpretation, skeleton, and empty state, plus components/admin/data-table-alt.tsx inside a figure with figcaption so each chart's numbers are keyboard-reachable as text.
-- [ ] **T3.10** Add the comparison toggle and delta rendering.
+- [x] **T3.10** Add the comparison toggle and delta rendering.
   - Linked: FR-014, FR-041, AC-011, AC-012
   - Add a session-persisted comparison toggle that hides deltas and ghost series when off, and render current, previous, absolute delta, percentage delta, and a non-colour direction indicator when on.
 
