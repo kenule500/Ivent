@@ -1,0 +1,713 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": 1,
+  "architecture": {
+    "approach": "Rebuild the existing /admin console in place across five independently shippable milestones. Foundations land first (schema, audit literals, authorization helpers, formatters, CSV serializer, one analytics filter contract, shared panel states, navigation config); then the shell and command center; then the analytics workspace; then read-only operations (export, reports, health); then governance and feedback. Every new Convex function declares validators and authorizes server-side; the client guard stays defense in depth. No new runtime dependency, no second chart or table system, and no admin HTTP API are introduced.",
+    "components": [
+      {
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "description": "Add platformSettings, announcements, announcementDeliveries, feedback, emailEvents, and cronRuns tables; extend auditLogs action and targetType unions; add users.by_createdAt, registrations.by_registeredAt, and registrations.by_event_status indexes."
+      },
+      {
+        "name": "convex/helpers.ts",
+        "action": "modify",
+        "description": "Add requireSuperAdmin next to requireAdmin, plus bounded search and pagination helpers reused by palette, feedback, and reports."
+      },
+      {
+        "name": "convex/audit.ts",
+        "action": "modify",
+        "description": "Extend action and target literals, and add date-range plus target filters to audit queries for the dashboard and audit log."
+      },
+      {
+        "name": "convex/rateLimiter.ts",
+        "action": "modify",
+        "description": "Add adminSearch, analytics, adminExport, broadcast, and feedbackWrite buckets. Existing buckets are untouched."
+      },
+      {
+        "name": "lib/format.ts",
+        "action": "create",
+        "description": "Currency, compact number, percentage, relative time, signed delta, and timezone-aware day bucketing helpers. Currency and timezone come from platform settings; a zero baseline renders \"new\" instead of Infinity."
+      },
+      {
+        "name": "lib/csv.ts",
+        "action": "create",
+        "description": "Pure serializer: quote every field, double internal quotes, neutralise leading = + - @ tab CR LF with a tab prefix per OWASP, and export MAX_EXPORT_ROWS = 10000."
+      },
+      {
+        "name": "lib/analytics-filters.ts",
+        "action": "create",
+        "description": "Client-side filter model, preset ranges, URL serialization and parsing, 730-day clamp, and the shared TypeScript type mirroring the Convex validator."
+      },
+      {
+        "name": "lib/admin-nav.ts",
+        "action": "create",
+        "description": "Single typed navigation configuration grouped as Overview, Audience, Events, Operations, Governance, and Personal, with optional feature flag keys."
+      },
+      {
+        "name": "components/admin/page-header.tsx",
+        "action": "create",
+        "description": "Shared title, description, breadcrumb, primary-action slot, and 360px wrapping layout."
+      },
+      {
+        "name": "components/admin/panel-state.tsx",
+        "action": "create",
+        "description": "Skeleton, empty, and error states with retry, plus a PanelErrorBoundary so one failing panel never blanks a page."
+      },
+      {
+        "name": "components/admin/command-palette.tsx",
+        "action": "create",
+        "description": "Dialog built from components/ui/dialog with a labelled input, grouped typed results, keyboard navigation, Ctrl/Cmd+K listener, 250 ms debounce, and two-character minimum."
+      },
+      {
+        "name": "components/admin/export-button.tsx",
+        "action": "create",
+        "description": "Client trigger with progress, repeat-click rejection, Blob download, and toast success or failure."
+      },
+      {
+        "name": "components/admin/filter-chips.tsx",
+        "action": "create",
+        "description": "Removable, keyboard-focusable active-filter chips plus a single Clear all action."
+      },
+      {
+        "name": "components/admin/data-table-alt.tsx",
+        "action": "create",
+        "description": "Keyboard-reachable table alternative rendered inside a figure with a figcaption for every chart."
+      },
+      {
+        "name": "components/admin/trend-card.tsx",
+        "action": "create",
+        "description": "Trend card with named comparison window, non-colour delta indicator, aria-label, and Recharts sparkline; wraps the existing stat-card visual language."
+      },
+      {
+        "name": "components/maintenance-gate.tsx",
+        "action": "create",
+        "description": "Client render gate outside /admin that subscribes to platform.getPublicStatus and renders the maintenance notice for non-admin visitors while admins bypass."
+      },
+      {
+        "name": "components/AdminSidebar.tsx",
+        "action": "modify",
+        "description": "Render lib/admin-nav groups, filter flagged items, apply aria-current, close the drawer on route change, and restore focus to the trigger."
+      },
+      {
+        "name": "components/AdminAwareLayout.tsx",
+        "action": "modify",
+        "description": "Mount the maintenance gate around non-admin routes without touching Clerk middleware."
+      },
+      {
+        "name": "app/admin/layout.tsx",
+        "action": "modify",
+        "description": "Mount the command palette once, add the page-header slot, and preserve the existing drawer focus behaviour."
+      },
+      {
+        "name": "app/admin/dashboard/page.tsx",
+        "action": "modify",
+        "description": "Recompose into four independently fetching panels: trend cards, action queue, today at a glance, and recent audit."
+      },
+      {
+        "name": "app/admin/analytics/page.tsx",
+        "action": "modify",
+        "description": "Add the filter bar, URL state, comparison toggle, six chart families, and per-chart data-table alternatives."
+      },
+      {
+        "name": "app/admin/users/page.tsx",
+        "action": "modify",
+        "description": "Add the shared page header and CSV export action only; moderation logic is untouched."
+      },
+      {
+        "name": "app/admin/events/page.tsx",
+        "action": "modify",
+        "description": "Add the shared page header and CSV export action only; moderation logic is untouched."
+      },
+      {
+        "name": "app/admin/registrations/page.tsx",
+        "action": "modify",
+        "description": "Add the shared page header and CSV export action only; moderation logic is untouched."
+      },
+      {
+        "name": "app/admin/audit/page.tsx",
+        "action": "modify",
+        "description": "Add the shared page header, date-range filters, and CSV export action."
+      },
+      {
+        "name": "app/admin/settings/page.tsx",
+        "action": "modify",
+        "description": "Delete the Onboarding InfoRow without reflowing the two-column layout, and render a degraded but truthful state when the narrowed query omits admin fields."
+      },
+      {
+        "name": "app/admin/platform/page.tsx",
+        "action": "create",
+        "description": "Super-admin platform settings form for default country, currency, timezone, feature flags, and maintenance mode with typed confirmation."
+      },
+      {
+        "name": "app/admin/reports/page.tsx",
+        "action": "create",
+        "description": "Reports hub with event selection and a per-event report: attendance, check-in series, capacity utilisation, revenue, as-of timestamp, CSV export, and print stylesheet."
+      },
+      {
+        "name": "app/admin/announcements/page.tsx",
+        "action": "create",
+        "description": "Broadcast composer with audience resolution, masked preview, typed confirmation, and the announcements list with sent and failed counts."
+      },
+      {
+        "name": "app/admin/feedback/page.tsx",
+        "action": "create",
+        "description": "Feedback inbox with status, type, and priority filters, detail view, internal notes, transitions, target link, and target removed state."
+      },
+      {
+        "name": "app/admin/health/page.tsx",
+        "action": "create",
+        "description": "System health cards for cron recency, email failures, rate-limit rejections, feedback age, and configuration presence, each stating its window."
+      },
+      {
+        "name": "app/(public)/feedback/page.tsx",
+        "action": "create",
+        "description": "Signed-in feedback and event report form with optional eventId parameter, Zod validation, and no file uploads."
+      },
+      {
+        "name": "convex/commandCenter.ts",
+        "action": "create",
+        "description": "getTrends, getActionQueue, and getToday queries powering the four dashboard panels."
+      },
+      {
+        "name": "convex/analyticsFilters.ts",
+        "action": "create",
+        "description": "One analyticsFilterValidator plus resolveAnalyticsScope, which narrows events and registrations through indexes and returns appliedFilters and rowCounts."
+      },
+      {
+        "name": "convex/analytics.ts",
+        "action": "modify",
+        "description": "Replace fixed 30-day queries with filter-aware getSummary, getTimeSeries, getBreakdown, getFunnel, getCohorts, and getHeatmap while keeping compatible query names."
+      },
+      {
+        "name": "convex/exports.ts",
+        "action": "create",
+        "description": "generate authorizes, applies the same filter resolver as the visible view, enforces the row cap, writes export.generated, and returns CSV text plus filename."
+      },
+      {
+        "name": "convex/platform.ts",
+        "action": "create",
+        "description": "getSettings, getPublicStatus, and updateSettings. updateSettings requires super_admin, validates country, currency, and timezone, and audits a before/after diff."
+      },
+      {
+        "name": "convex/announcements.ts",
+        "action": "create",
+        "description": "resolveAudience, send, and list. send requires super_admin plus typed confirmation, sends in batches of 50, records per-recipient outcomes, and sets partial status on failure."
+      },
+      {
+        "name": "convex/feedback.ts",
+        "action": "create",
+        "description": "submit (signed-in, rate-limited, duplicate suppressed), list, and update with immutable notes, terminal-state stamps, audited deletion, and retention until explicit deletion."
+      },
+      {
+        "name": "convex/health.ts",
+        "action": "create",
+        "description": "getOverview reporting cron runs, 24-hour and 7-day email failures, rate-limit rejections, open-feedback age, and Boolean-only configuration presence."
+      },
+      {
+        "name": "convex/emails.ts",
+        "action": "modify",
+        "description": "Extract a shared Resend send helper that writes emailEvents, and add the plain-text announcement template; invite behaviour is preserved."
+      },
+      {
+        "name": "convex/crons.ts",
+        "action": "modify",
+        "description": "Write cronRuns heartbeats on completion and failure; keep the invite-expiry job unchanged."
+      },
+      {
+        "name": "convex/settings.ts",
+        "action": "modify",
+        "description": "Narrow the admin projection to admin-relevant fields so attendee onboarding, interests, and attendee location are never returned."
+      },
+      {
+        "name": "convex/search.ts",
+        "action": "reuse",
+        "description": "Public event search stays untouched; the palette reuses its search_title index through an admin-authorized query."
+      },
+      {
+        "name": "components/ui/*",
+        "action": "reuse",
+        "description": "dialog, tabs, select, popover, calendar, table, badge, progress, tooltip, and chart cover the approved visual budget. No new UI package."
+      },
+      {
+        "name": "components/admin/pagination.tsx",
+        "action": "reuse",
+        "description": "Existing client pagination is adequate for the new list views."
+      },
+      {
+        "name": "components/admin/delete-modals.tsx",
+        "action": "reuse",
+        "description": "Existing confirmation modals remain; typed confirmation is added only for maintenance mode and broadcast send."
+      },
+      {
+        "name": "components/AdminGuard.tsx",
+        "action": "reuse",
+        "description": "Client role gate and redirect remain defense in depth."
+      },
+      {
+        "name": "hooks/useConvexQuery.ts",
+        "action": "reuse",
+        "description": "Query and mutation wrappers stay; errors surface into panel-level boundaries because Convex throws into the React tree."
+      },
+      {
+        "name": "lib/data.ts",
+        "action": "reuse",
+        "description": "CATEGORIES remains the single source for category filter options."
+      },
+      {
+        "name": "lib/location-utils.ts",
+        "action": "reuse",
+        "description": "Read-only: Nigeria-only frontstore helper. Admin country filtering must not depend on it; platform settings supply the default country."
+      },
+      {
+        "name": "proxy.ts",
+        "action": "reuse",
+        "description": "Clerk route protection and security headers stay unchanged; maintenance mode is a render gate, not a middleware rewrite."
+      },
+      {
+        "name": "app/admin/invites/page.tsx",
+        "action": "reuse",
+        "description": "No scope in this version beyond the shared header applied through the layout."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001", "FR-002", "FR-003", "FR-004", "FR-005", "FR-006",
+      "FR-007", "FR-008", "FR-009", "FR-010",
+      "FR-011", "FR-012", "FR-013", "FR-014", "FR-015", "FR-016", "FR-017",
+      "FR-018", "FR-019", "FR-020",
+      "FR-021", "FR-022",
+      "FR-023", "FR-024", "FR-025", "FR-026", "FR-027",
+      "FR-028", "FR-029", "FR-030", "FR-031",
+      "FR-032", "FR-033", "FR-034", "FR-035",
+      "FR-036", "FR-037",
+      "FR-038", "FR-039", "FR-040", "FR-041", "FR-042", "FR-043", "FR-044", "FR-045",
+      "NFR-001", "NFR-002", "NFR-003", "NFR-004", "NFR-005", "NFR-006", "NFR-007", "NFR-008",
+      "NFR-009", "NFR-010", "NFR-011", "NFR-012", "NFR-013", "NFR-014", "NFR-015", "NFR-016"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "platformSettings",
+        "action": "create",
+        "fields": [
+          { "name": "key", "type": "string (literal \"global\")", "action": "add" },
+          { "name": "defaultCountry", "type": "string", "action": "add" },
+          { "name": "defaultCurrency", "type": "string (ISO 4217)", "action": "add" },
+          { "name": "defaultTimezone", "type": "string (IANA)", "action": "add" },
+          { "name": "maintenanceMode", "type": "boolean", "action": "add" },
+          { "name": "maintenanceMessage", "type": "string|null", "nullable": true, "action": "add" },
+          { "name": "featureFlags", "type": "{commandPalette,reports,broadcasts,feedbackInbox,systemHealth: boolean}", "action": "add" },
+          { "name": "updatedBy", "type": "Id<users>", "action": "add" },
+          { "name": "updatedAt", "type": "number", "action": "add" },
+          { "name": "by_key", "type": "index on key", "action": "add" }
+        ]
+      },
+      {
+        "name": "announcements",
+        "action": "create",
+        "fields": [
+          { "name": "subject", "type": "string", "action": "add" },
+          { "name": "body", "type": "string", "action": "add" },
+          { "name": "audienceType", "type": "all|organizers|event|admins", "action": "add" },
+          { "name": "audienceEventId", "type": "Id<events>|null", "nullable": true, "action": "add" },
+          { "name": "recipientCount", "type": "number", "action": "add" },
+          { "name": "sentCount", "type": "number", "action": "add" },
+          { "name": "failedCount", "type": "number", "action": "add" },
+          { "name": "status", "type": "draft|sending|sent|partial|failed", "action": "add" },
+          { "name": "createdBy", "type": "Id<users>", "action": "add" },
+          { "name": "createdAt", "type": "number", "action": "add" },
+          { "name": "sentAt", "type": "number|null", "nullable": true, "action": "add" },
+          { "name": "by_createdAt", "type": "index on createdAt", "action": "add" },
+          { "name": "by_status", "type": "index on status", "action": "add" }
+        ]
+      },
+      {
+        "name": "announcementDeliveries",
+        "action": "create",
+        "fields": [
+          { "name": "announcementId", "type": "Id<announcements>", "action": "add" },
+          { "name": "email", "type": "string", "action": "add" },
+          { "name": "status", "type": "sent|failed", "action": "add" },
+          { "name": "error", "type": "string|null", "nullable": true, "action": "add" },
+          { "name": "createdAt", "type": "number", "action": "add" },
+          { "name": "by_announcement", "type": "index on announcementId", "action": "add" },
+          { "name": "by_status_createdAt", "type": "index on status + createdAt", "action": "add" }
+        ]
+      },
+      {
+        "name": "feedback",
+        "action": "create",
+        "fields": [
+          { "name": "type", "type": "bug|feature|abuse|other", "action": "add" },
+          { "name": "eventId", "type": "Id<events>|null", "nullable": true, "action": "add" },
+          { "name": "userId", "type": "Id<users>", "action": "add" },
+          { "name": "userEmail", "type": "string", "action": "add" },
+          { "name": "message", "type": "string (10-2000 chars)", "action": "add" },
+          { "name": "status", "type": "open|in_review|resolved|dismissed", "action": "add" },
+          { "name": "priority", "type": "low|normal|high", "action": "add" },
+          { "name": "adminNotes", "type": "array<{authorId,authorName,body,createdAt}>", "action": "add" },
+          { "name": "createdAt", "type": "number", "action": "add" },
+          { "name": "updatedAt", "type": "number", "action": "add" },
+          { "name": "resolvedBy", "type": "Id<users>|null", "nullable": true, "action": "add" },
+          { "name": "resolvedAt", "type": "number|null", "nullable": true, "action": "add" },
+          { "name": "by_status_createdAt", "type": "index on status + createdAt", "action": "add" },
+          { "name": "by_type", "type": "index on type", "action": "add" },
+          { "name": "by_event", "type": "index on eventId", "action": "add" },
+          { "name": "by_user", "type": "index on userId", "action": "add" }
+        ]
+      },
+      {
+        "name": "emailEvents",
+        "action": "create",
+        "fields": [
+          { "name": "template", "type": "invite|announcement", "action": "add" },
+          { "name": "recipient", "type": "string", "action": "add" },
+          { "name": "status", "type": "sent|failed", "action": "add" },
+          { "name": "error", "type": "string|null", "nullable": true, "action": "add" },
+          { "name": "createdAt", "type": "number", "action": "add" },
+          { "name": "by_createdAt", "type": "index on createdAt", "action": "add" },
+          { "name": "by_status_createdAt", "type": "index on status + createdAt", "action": "add" }
+        ]
+      },
+      {
+        "name": "cronRuns",
+        "action": "create",
+        "fields": [
+          { "name": "name", "type": "string", "action": "add" },
+          { "name": "lastRunAt", "type": "number", "action": "add" },
+          { "name": "status", "type": "success|failed", "action": "add" },
+          { "name": "error", "type": "string|null", "nullable": true, "action": "add" },
+          { "name": "processed", "type": "number", "action": "add" },
+          { "name": "by_name", "type": "index on name", "action": "add" }
+        ]
+      },
+      {
+        "name": "auditLogs",
+        "action": "update",
+        "fields": [
+          { "name": "action", "type": "AuditAction (adds settings.updated, announcement.sent, feedback.updated, feedback.deleted, export.generated, maintenance.changed)", "action": "modify" },
+          { "name": "targetType", "type": "event|user|invite|registration|settings|announcement|feedback|export", "action": "modify" },
+          { "name": "actorId", "type": "Id<users>", "action": "no_change" },
+          { "name": "actorName", "type": "string", "action": "no_change" },
+          { "name": "actorEmail", "type": "string", "action": "no_change" },
+          { "name": "targetId", "type": "string", "action": "no_change" },
+          { "name": "targetLabel", "type": "string", "action": "no_change" },
+          { "name": "metadata", "type": "any|null", "nullable": true, "action": "no_change" },
+          { "name": "createdAt", "type": "number", "action": "no_change" },
+          { "name": "by_createdAt", "type": "index on createdAt", "action": "no_change" }
+        ]
+      },
+      {
+        "name": "users",
+        "action": "update",
+        "fields": [
+          { "name": "role", "type": "user|admin|super_admin", "action": "no_change" },
+          { "name": "name", "type": "string|null", "nullable": true, "action": "no_change" },
+          { "name": "email", "type": "string", "action": "no_change" },
+          { "name": "createdAt", "type": "number", "action": "no_change" },
+          { "name": "by_createdAt", "type": "index on createdAt", "action": "add" }
+        ]
+      },
+      {
+        "name": "registrations",
+        "action": "update",
+        "fields": [
+          { "name": "eventId", "type": "Id<events>", "action": "no_change" },
+          { "name": "userId", "type": "Id<users>", "action": "no_change" },
+          { "name": "status", "type": "confirmed|cancelled", "action": "no_change" },
+          { "name": "checkedIn", "type": "boolean", "action": "no_change" },
+          { "name": "registeredAt", "type": "number", "action": "no_change" },
+          { "name": "by_registeredAt", "type": "index on registeredAt", "action": "add" },
+          { "name": "by_event_status", "type": "index on eventId + status", "action": "add" }
+        ]
+      },
+      {
+        "name": "events",
+        "action": "no_change",
+        "fields": [
+          { "name": "startDate", "type": "number", "action": "no_change" },
+          { "name": "category", "type": "string", "action": "no_change" },
+          { "name": "country", "type": "string", "action": "no_change" },
+          { "name": "city", "type": "string", "action": "no_change" },
+          { "name": "ticketType", "type": "free|paid", "action": "no_change" },
+          { "name": "organizerId", "type": "Id<users>", "action": "no_change" },
+          { "name": "capacity", "type": "number", "action": "no_change" },
+          { "name": "registrationCount", "type": "number", "action": "no_change" },
+          { "name": "by_startDate", "type": "index on startDate", "action": "no_change" },
+          { "name": "by_category", "type": "index on category", "action": "no_change" },
+          { "name": "by_organizer", "type": "index on organizerId", "action": "no_change" }
+        ]
+      }
+    ],
+    "flowDescription": "Schema deploys first with new tables, indexes, and union literals, then helpers, audit, and rate limits, then query modules, then UI. The platform settings singleton is created lazily on first save; reads fall back to defaults when the document is absent. Analytics loads events through by_startDate (or by_category for a single category) and registrations through by_registeredAt or by_event_status, resolves one scope per handler, and echoes applied filters plus row counts. Exports reuse that scope. Broadcasts expand an audience into a recipient set, write delivery rows per recipient, and update counts. Feedback is created by signed-in users and mutated only by admins, with every mutation audited. Cron heartbeats and email outcomes feed the health panel. No backfill is required."
+  },
+  "apiContracts": [
+    {
+      "method": "GET",
+      "path": "convex/commandCenter:getTrends",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-007", "FR-014", "NFR-001"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/commandCenter:getActionQueue",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-008", "NFR-001"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/commandCenter:getToday",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-009", "NFR-001"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/admin:getRecentAudit",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-009", "NFR-001"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/admin:searchPalette",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-004", "FR-005", "FR-006", "NFR-003"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getSummary",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-011", "FR-014", "FR-017", "NFR-008"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getTimeSeries",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-011", "FR-015", "FR-017", "NFR-008"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getBreakdown",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-011", "FR-015", "FR-017"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getFunnel",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-015", "FR-017"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getCohorts",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-015", "FR-017"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/analytics:getHeatmap",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-015", "FR-044"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/exports:generate",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-018", "FR-019", "FR-020", "NFR-013", "NFR-015"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/reports:listEvents",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-021"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/reports:getEventReport",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-021", "FR-022", "FR-044", "FR-045"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/health:getOverview",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-036", "FR-037", "NFR-006"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/platform:getSettings",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-023", "FR-026", "FR-027"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/platform:getPublicStatus",
+      "action": "create",
+      "authenticationRequired": false,
+      "linkedRequirements": ["FR-025"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/platform:updateSettings",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-023", "FR-024", "NFR-002", "NFR-004", "NFR-015"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/announcements:resolveAudience",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-028", "NFR-002"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/announcements:send",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-029", "FR-030", "NFR-002", "NFR-003", "NFR-015"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/announcements:list",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-031"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/feedback:submit",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-032", "NFR-003", "NFR-004"]
+    },
+    {
+      "method": "GET",
+      "path": "convex/feedback:list",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-033"]
+    },
+    {
+      "method": "POST",
+      "path": "convex/feedback:update",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": ["FR-033", "FR-034", "FR-035", "NFR-015", "NFR-016"]
+    }
+  ],
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "description": "Every new Convex function resolves the Clerk identity and calls requireAdmin; feedback.submit requires a signed-in identity. requireSuperAdmin gates platform settings writes and every announcement mutation. Client hiding in AdminGuard and the sidebar is secondary only."
+    },
+    {
+      "requirementId": "NFR-002",
+      "description": "platform.updateSettings, announcements.resolveAudience, and announcements.send check super_admin inside the function after loading the caller record, so a direct client call cannot bypass the read-only page."
+    },
+    {
+      "requirementId": "NFR-003",
+      "description": "New @convex-dev/rate-limiter buckets: adminSearch (per admin, per minute), analytics, adminExport, broadcast, feedbackWrite, and feedback submit. Rejections return a retry hint that the UI renders verbatim."
+    },
+    {
+      "requirementId": "NFR-004",
+      "description": "Every Convex function declares convex/values arguments, including the shared analyticsFilterValidator; every new form validates with Zod before submission. No free-form object is accepted."
+    },
+    {
+      "requirementId": "NFR-005",
+      "description": "No dangerouslySetInnerHTML is introduced. Feedback messages, admin notes, and announcement bodies render as text nodes. CSV values are quoted and formula-neutralised per OWASP."
+    },
+    {
+      "requirementId": "NFR-006",
+      "description": "health.getOverview reports Boolean(process.env.X) only and never returns a value. Settings and health screens display presence labels. No .env file is created or modified."
+    },
+    {
+      "requirementId": "NFR-007",
+      "description": "proxy.ts, next.config.ts headers, and the hosting TLS/HSTS configuration are unchanged by this feature; no route disables transport enforcement."
+    },
+    {
+      "requirementId": "NFR-015",
+      "description": "Every administrative mutation calls logAdminAction inside the same mutation: settings.updated with a shallow before/after diff, announcement.sent with audience and counts, feedback.updated/feedback.deleted with changed fields, export.generated with module and row count, and maintenance.changed with the new state."
+    },
+    {
+      "requirementId": "NFR-016",
+      "description": "Feedback and announcement records are never purged automatically; only an explicit admin deletion removes them, and that deletion writes feedback.deleted with actor, target, and reason before the document is removed."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-008",
+      "strategy": "Filtered windows are served by users.by_createdAt, registrations.by_registeredAt, registrations.by_event_status, events.by_startDate, events.by_category, and events.by_organizer; no filtered query collects a whole table. The three new indexes ship in the same schema deploy as the tables, and each filtered query's index usage is verified before the analytics flag is enabled. resolveAnalyticsScope runs once per handler and every aggregation derives from it. Results are bounded (palette 5 per group, queue 3 previews, exports 10,000 rows, lists 25) and panels fetch independently. Target: p95 <= 1.5 s analytics and <= 1 s dashboard at 50k events / 500k registrations; the fallback is a documented daily aggregate table, not heavier client work."
+    },
+    {
+      "requirementId": "NFR-011",
+      "strategy": "Each panel owns its loading state and renders a skeleton shaped like the final layout, so slow panels never block fast ones and layout shift is avoided."
+    }
+  ],
+  "dependencies": [
+    { "name": "Convex", "type": "service", "action": "no_change", "notes": "Data, cron, rate limiter, and the new indexes." },
+    { "name": "Clerk", "type": "service", "action": "no_change", "notes": "Identity and role claims." },
+    { "name": "Resend", "type": "service", "action": "no_change", "notes": "Invite email plus the new plain-text announcement template." },
+    { "name": "Recharts", "type": "library", "action": "no_change", "notes": "All new chart families; no second chart library." },
+    { "name": "date-fns", "type": "library", "action": "no_change", "notes": "Range math, presets, and relative time." },
+    { "name": "react-day-picker", "type": "library", "action": "no_change", "notes": "Custom range selection through components/ui/calendar." },
+    { "name": "lucide-react", "type": "library", "action": "no_change", "notes": "Navigation, delta, and state icons." },
+    { "name": "zod", "type": "library", "action": "no_change", "notes": "Platform settings and broadcast form validation." },
+    { "name": "@convex-dev/rate-limiter", "type": "library", "action": "no_change", "notes": "New buckets only; existing buckets untouched." },
+    { "name": "country-state-city", "type": "library", "action": "no_change", "notes": "Already installed; used to validate the platform default country." }
+  ],
+  "risks": [
+    {
+      "description": "Read-on-demand analytics will not scale indefinitely and filtered queries could degrade at 10x current volume.",
+      "mitigation": "Index ranges, bounded windows, a single scope resolution per handler, a 10,000-row export cap, and a documented trigger point for a daily aggregate table."
+    },
+    {
+      "description": "Broadcast email can damage sender reputation or spam users if enabled carelessly.",
+      "mitigation": "Broadcasts flag defaults off, super-admin only, masked preview with recipient count, typed confirmation, rate limit, batches of 50, and a per-recipient delivery log."
+    },
+    {
+      "description": "Adding literals to the auditLogs unions is a schema change that can reject old documents when deployed out of order.",
+      "mitigation": "Deploy schema first with an exhaustive validator, deploy code second, and backfill no existing rows."
+    },
+    {
+      "description": "CSV exports can leak personal data or execute spreadsheet formulas.",
+      "mitigation": "Admin-only, visible columns only, row cap, rate limit, audit entry per export, and OWASP-compliant quoting plus formula neutralisation."
+    },
+    {
+      "description": "Maintenance mode can lock out legitimate operators.",
+      "mitigation": "Admins bypass the gate through the existing role query, enabling requires typed confirmation, the change is audited, and a banner shows while active."
+    },
+    {
+      "description": "The public feedback form adds a new write surface.",
+      "mitigation": "Signed-in only, 10-2000 character message cap, event existence check, 10-minute duplicate suppression, rate limit, and no file uploads."
+    },
+    {
+      "description": "Timezone-aware bucketing changes existing chart values relative to the current UTC behaviour.",
+      "mitigation": "Display the active timezone on every affected card, document the behaviour change in the plan, and bucket through Intl.DateTimeFormat with the platform timeZone."
+    },
+    {
+      "description": "Palette search adds a query per keystroke and can overload the backend or the dialog.",
+      "mitigation": "Two-character minimum, 250 ms debounce, per-group caps of 5, an admin search rate limit, and inline retry instead of a blank panel."
+    },
+    {
+      "description": "The scope spans thirteen stories and can be compressed into one risky release.",
+      "mitigation": "Five independently shippable milestones (M0-M4) plus a verification phase; each milestone can be reviewed and released behind its flag."
+    }
+  ]
+}

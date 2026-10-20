@@ -1,0 +1,745 @@
+{
+  "feature": "admin-dashboard-update",
+  "title": "Admin Dashboard Update",
+  "version": 1,
+  "overview": {
+    "problemStatement": "The admin console stops at moderation: four dashboard counters, a fixed 30-day analytics window with four charts and no filters, a settings page that exposes attendee onboarding state, and no reporting, export, announcement, feedback, platform-configuration, or health surface. Operators cannot see what needs attention, slice demand by segment, produce a credible post-event report, broadcast to a segmented audience, triage user reports, or verify background jobs are healthy.",
+    "proposedSolution": "Rebuild /admin as an operator command center: a grouped shell with a shared page header and a Ctrl/Cmd+K command palette; a decision-ready dashboard with trend cards, an action queue, today-at-a-glance, and recent audit activity; an analytics workspace driven by one server-side filter object with period comparison, five new chart families, and data-table alternatives; and new modules for CSV export, reports, super-admin platform settings, broadcast announcements, a support and feedback inbox, and system health. Admin settings drops attendee-only fields. Every new mutation is role-checked, validated, audited, and rate-limited.",
+    "targetAudience": "Ivent admins and super admins. Secondary beneficiaries: organizers and sponsors who receive reports, and attendees who receive announcements.",
+    "assumptions": [
+      "The existing console from admin-console-and-governance v1 remains the base; this feature modifies it in place rather than replacing Clerk sign-in, invite acceptance, or the audit primitive.",
+      "hasCompletedOnboarding, interests, and location are attendee concepts; admins never complete attendee onboarding, so the value is structurally meaningless in an admin context.",
+      "Resend is the only email transport; no new vendor is introduced.",
+      "No new third-party UI package is required; components/ui, Recharts, date-fns, lucide-react, and react-day-picker cover the approved visual budget.",
+      "Read-on-demand analytics remains acceptable at current volumes; indexes and bounded ranges are added so filtered queries do not scan whole collections.",
+      "The product is global: currency, country, and timezone come from platform settings with USD and UTC defaults, and no screen may hard-code naira or NG.",
+      "Feedback and announcement records are internal operational data retained until an explicit, audited deletion."
+    ],
+    "outOfScope": [
+      "Online payments, refunds, payouts, and tax handling.",
+      "Editing event content from the admin console; events remain organizer-owned.",
+      "Granular per-permission roles beyond user, admin, and super_admin.",
+      "A warehouse, nightly aggregate pipeline, or external BI integration.",
+      "Native mobile applications.",
+      "Live chat or third-party helpdesk integration; the feedback inbox is internal only.",
+      "Draft, scheduled, recurring, or templated broadcasts.",
+      "SIEM export or external observability integration.",
+      "Public API or webhooks for admin data."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Navigate a grouped, consistent console",
+      "role": "admin",
+      "want": "navigation grouped by job and one consistent page header",
+      "benefit": "I can find the right tool quickly and every screen reads as one product",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given any /admin route, the sidebar groups destinations under Overview, Audience, Events, Operations, Governance, and Personal, marks the active item with aria-current, collapses to a drawer below md, and is generated from one configuration; after a route change the drawer closes and focus returns to its trigger."
+        },
+        {
+          "id": "AC-002",
+          "text": "Given any admin page, it renders a header with title, a one-sentence purpose, a breadcrumb, and an optional primary-action slot; at a 360px viewport the header wraps without horizontal scrolling."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Reach anything from the keyboard",
+      "role": "admin",
+      "want": "a command palette",
+      "benefit": "I can jump to a page, event, user, or registration without walking menus",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given I press Ctrl/Cmd+K anywhere inside /admin, a dialog opens with a labelled search input, trapped focus, and Esc closing it back to the invoking element; typing two or more characters returns grouped results for Pages, Users, Events, and Registrations that are keyboard-navigable, and Enter opens the highlighted destination."
+        },
+        {
+          "id": "AC-004",
+          "text": "Given fewer than two characters, the palette shows only static page actions; given no matches, it names the query in an empty state; given a query failure, it shows an inline retry affordance rather than a blank panel."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Open the console to a decision, not a data dump",
+      "role": "admin",
+      "want": "the dashboard to tell me what changed and what needs action",
+      "benefit": "opening /admin is decision-ready",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given /admin/dashboard, I see trend cards for users, events, registrations, and estimated revenue, each with the comparison window named, a delta, and a sparkline; a zero or missing baseline renders new or no change instead of NaN, Infinity, or 0%."
+        },
+        {
+          "id": "AC-006",
+          "text": "Given pending operational items such as invites expiring within 48 hours, events at or above capacity, feedback open longer than 48 hours, and failed email deliveries, I see an action queue with counts and a link to each module; with none, the queue shows a positive empty state rather than an empty box."
+        },
+        {
+          "id": "AC-007",
+          "text": "Given I open the dashboard, I see today's events with check-in progress, the ten most recent audit entries with actor and relative time, and quick actions; each block has its own loading, empty, and error state."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Filter analytics by time and dimension",
+      "role": "admin",
+      "want": "to slice analytics by time and dimensions",
+      "benefit": "I can answer questions about one segment instead of the whole platform",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-008",
+          "text": "Given the analytics page, I can pick a 7/30/90/365-day preset or a custom range; the range is encoded in the URL, survives reload and back/forward, and one filter set drives every summary card and chart on the page."
+        },
+        {
+          "id": "AC-009",
+          "text": "Given filters for category, country, city, ticket type, organizer, registration status, and check-in state, I can combine them; active filters render as removable chips plus Clear all, and both the result count and the empty state reflect the filtered dataset."
+        },
+        {
+          "id": "AC-010",
+          "text": "Given a custom range whose start is after its end, or a span longer than 730 days, the page rejects it with an inline message and keeps the last valid query."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Compare a period with its predecessor",
+      "role": "admin",
+      "want": "period-over-period comparison",
+      "benefit": "I can say whether growth is real",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-011",
+          "text": "Given comparison is enabled, every summary metric shows the current value, previous value, absolute delta, percentage delta, and a direction indicator that is not conveyed by colour alone; when the previous value is zero, the delta renders new instead of a percentage."
+        },
+        {
+          "id": "AC-012",
+          "text": "Given comparison is disabled, no delta or ghost series renders, and the toggle state is preserved for the session."
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "See the funnel, the door, and the money",
+      "role": "admin",
+      "want": "operational and demand charts",
+      "benefit": "I can see conversion and revenue rather than only signups",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-013",
+          "text": "Given the analytics page, I see a registration funnel from registered to confirmed to checked in with step conversion, check-in rate over time, capacity-utilisation distribution, revenue over time split by free and paid, and a weekday by hour registration heatmap."
+        },
+        {
+          "id": "AC-014",
+          "text": "Given cohort mode, I see new versus returning attendees per cohort period with the definition of returning stated on the card; given insufficient data, the card states the minimum required instead of rendering empty axes."
+        },
+        {
+          "id": "AC-015",
+          "text": "Every chart card has a title, a one-line interpretation, a loading skeleton, an empty state, and a keyboard-reachable data-table alternative that exposes the same numbers."
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Export what I am looking at",
+      "role": "admin",
+      "want": "to export the current view",
+      "benefit": "I can hand evidence to a sponsor, school, or teammate",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-016",
+          "text": "Given any list or analytics view with an export action, the CSV contains the columns visible in that view, respects the active filters, includes a header row, and is named module-yyyy-MM-dd.csv."
+        },
+        {
+          "id": "AC-017",
+          "text": "Given any cell whose value begins with equals, plus, minus, at, tab, carriage return, or line feed, every field is double-quoted, internal quotes are doubled, and the dangerous leading character is neutralised per OWASP CSV-injection guidance; given a result set above the configured cap, the export is refused with the cap stated and a suggestion to narrow filters."
+        },
+        {
+          "id": "AC-018",
+          "text": "Given an export starts, its trigger shows progress and rejects repeat clicks; completion or failure raises a toast, and a failure names the reason without exposing a stack trace."
+        }
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Produce a credible post-event report",
+      "role": "admin",
+      "want": "a per-event report",
+      "benefit": "organizers and sponsors receive an artifact they can trust",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-019",
+          "text": "Given /admin/reports, I can choose an event and see attendance for confirmed, checked in, no-show, and cancelled, plus check-in rate over time, capacity utilisation, and revenue for paid events, with the data timestamp shown."
+        },
+        {
+          "id": "AC-020",
+          "text": "Given a report, I can export it as CSV and print or save it as PDF through a print stylesheet that removes admin chrome; given an event with no registrations, the report renders zeros plus an explanatory empty state."
+        }
+      ]
+    },
+    {
+      "id": "US-009",
+      "title": "Configure the platform, not just my account",
+      "role": "super admin",
+      "want": "platform-level defaults and switches",
+      "benefit": "the console reflects a global product instead of a Nigeria-only one",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-021",
+          "text": "Given /admin/platform, a super admin can set default country, default currency as ISO 4217, default timezone as IANA, and toggle feature flags for command palette, reports, broadcasts, feedback inbox, and system health."
+        },
+        {
+          "id": "AC-022",
+          "text": "Given a super admin saves platform settings, the change persists in one settings document, writes a settings.updated audit entry containing before and after values, and affects formatting on the next render; a non-super-admin sees a read-only view and cannot reach the mutation."
+        },
+        {
+          "id": "AC-023",
+          "text": "Given maintenance mode is enabled, signed-out and non-admin visitors see a maintenance notice on public routes while admins retain access; enabling it requires typed confirmation and is audited."
+        }
+      ]
+    },
+    {
+      "id": "US-010",
+      "title": "Broadcast to a filtered audience",
+      "role": "super admin",
+      "want": "to email a filtered audience",
+      "benefit": "I can communicate without exporting addresses",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-024",
+          "text": "Given the broadcast composer, I choose an audience of all users, organizers with at least one event, attendees of a selected event, or admins, see the resolved recipient count before sending, and preview subject and body."
+        },
+        {
+          "id": "AC-025",
+          "text": "Given I send, the system requires typed confirmation, is rate-limited, sends through Resend in bounded batches, writes an announcement.sent audit entry with audience and count, and records per-recipient delivery outcomes."
+        },
+        {
+          "id": "AC-026",
+          "text": "Given delivery partially fails, the announcement shows sent and failed counts and its failures appear in system health; a partially failed send is never reported as a success."
+        }
+      ]
+    },
+    {
+      "id": "US-011",
+      "title": "Triage what users report",
+      "role": "admin",
+      "want": "a queue of feedback and abuse reports",
+      "benefit": "moderation is deliberate rather than reactive",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-027",
+          "text": "Given a signed-in non-admin submits feedback or reports an event from the public app, a validated record is created with type, optional target, message, and reporter; submission is rate-limited and duplicate submissions within the window are suppressed."
+        },
+        {
+          "id": "AC-028",
+          "text": "Given /admin/feedback, I can filter by status, type, and priority, open a record, add an internal note, move it through open to in review to resolved or dismissed, and see who changed it and when; every change writes an audit entry."
+        },
+        {
+          "id": "AC-029",
+          "text": "Given a record targets an event, I can open that event from the record; given the event was deleted, the record still renders with a target removed label."
+        }
+      ]
+    },
+    {
+      "id": "US-012",
+      "title": "Know whether the machinery is healthy",
+      "role": "admin",
+      "want": "a health panel",
+      "benefit": "failures are caught before users report them",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-030",
+          "text": "Given /admin/health, I see each cron job's last run and status, email delivery failures in 24 hours and 7 days, rate-limit rejections, and the age of open feedback; every signal states the window it covers."
+        },
+        {
+          "id": "AC-031",
+          "text": "Given a required server configuration value is missing, the panel lists it as unconfigured with the feature it affects, and never prints the value."
+        },
+        {
+          "id": "AC-032",
+          "text": "Given one health query fails, only that card shows an error with retry; the remaining cards stay usable."
+        }
+      ]
+    },
+    {
+      "id": "US-013",
+      "title": "Stop leaking attendee concepts into admin settings",
+      "role": "admin",
+      "want": "settings to show only admin-relevant information",
+      "benefit": "the console does not present attendee state as an admin task",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-033",
+          "text": "Given /admin/settings, the Onboarding row is absent and no other attendee-only field such as interests or attendee location is rendered; profile identity, role, member-since, security actions, and notification preferences remain."
+        },
+        {
+          "id": "AC-034",
+          "text": "Given the settings query returns a record without admin-relevant fields, the page renders a degraded but truthful state instead of inventing Pending."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The admin shell MUST render navigation from one configuration source grouped as Overview, Audience, Events, Operations, Governance, and Personal.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "FR-002",
+      "text": "The shell MUST mark the active route with aria-current, close the mobile drawer on route change, and restore focus to the drawer trigger.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "FR-003",
+      "text": "Every admin page MUST render a shared page header with title, description, breadcrumb, and a primary-action slot.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "FR-004",
+      "text": "The console MUST provide a command palette invoked by Ctrl/Cmd+K that searches pages, users, events, and registrations.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "FR-005",
+      "text": "Palette search MUST run server-side behind an admin check, enforce a two-character minimum, debounce input, cap results per group, and return a typed result union.",
+      "linkedAcceptanceCriteria": ["AC-003", "AC-004"]
+    },
+    {
+      "id": "FR-006",
+      "text": "The command palette MUST include deep-link quick actions permitted by the current role.",
+      "linkedAcceptanceCriteria": ["AC-003"]
+    },
+    {
+      "id": "FR-007",
+      "text": "The dashboard MUST show trend cards for users, events, registrations, and estimated revenue, each with the named comparison window, delta, and sparkline.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "FR-008",
+      "text": "The dashboard MUST derive an action queue from expiring invites, at-capacity events, stale open feedback, and failed email deliveries, each linking to its module.",
+      "linkedAcceptanceCriteria": ["AC-006"]
+    },
+    {
+      "id": "FR-009",
+      "text": "The dashboard MUST show today's events with check-in progress, the ten most recent audit entries, and role-appropriate quick actions.",
+      "linkedAcceptanceCriteria": ["AC-007"]
+    },
+    {
+      "id": "FR-010",
+      "text": "Every dashboard block MUST fetch independently so that one failure does not blank the page.",
+      "linkedAcceptanceCriteria": ["AC-007", "AC-032"]
+    },
+    {
+      "id": "FR-011",
+      "text": "Analytics MUST accept one shared filter object covering date range, categories, countries, cities, ticket types, organizer, registration status, and check-in state.",
+      "linkedAcceptanceCriteria": ["AC-008", "AC-009"]
+    },
+    {
+      "id": "FR-012",
+      "text": "Analytics MUST support preset and custom ranges, encode filters in the URL, and restore them on reload and history navigation.",
+      "linkedAcceptanceCriteria": ["AC-008"]
+    },
+    {
+      "id": "FR-013",
+      "text": "Analytics MUST reject invalid ranges where start is after end or the span exceeds 730 days, and retain the last valid query.",
+      "linkedAcceptanceCriteria": ["AC-010"]
+    },
+    {
+      "id": "FR-014",
+      "text": "Analytics MUST support previous-period comparison for every summary metric.",
+      "linkedAcceptanceCriteria": ["AC-011", "AC-012"]
+    },
+    {
+      "id": "FR-015",
+      "text": "The analytics workspace MUST expose registration funnel, check-in trend, capacity utilisation, revenue split, cohort retention, and weekday by hour heatmap datasets.",
+      "linkedAcceptanceCriteria": ["AC-013", "AC-014"]
+    },
+    {
+      "id": "FR-016",
+      "text": "Every chart MUST ship a data-table alternative exposing the same numbers.",
+      "linkedAcceptanceCriteria": ["AC-015"]
+    },
+    {
+      "id": "FR-017",
+      "text": "Every analytics response MUST echo the applied filter and the row counts used to produce it.",
+      "linkedAcceptanceCriteria": ["AC-009"]
+    },
+    {
+      "id": "FR-018",
+      "text": "Every list and report view MUST offer a CSV export of the current filtered dataset.",
+      "linkedAcceptanceCriteria": ["AC-016"]
+    },
+    {
+      "id": "FR-019",
+      "text": "CSV generation MUST quote every field, double internal quotes, and neutralise formula-injection prefixes in accordance with OWASP guidance.",
+      "linkedAcceptanceCriteria": ["AC-017"]
+    },
+    {
+      "id": "FR-020",
+      "text": "Exports MUST enforce a configurable row cap, be rate-limited per admin, and report progress, success, and failure.",
+      "linkedAcceptanceCriteria": ["AC-017", "AC-018"]
+    },
+    {
+      "id": "FR-021",
+      "text": "The reports hub MUST list events and render a per-event report with attendance, check-in, capacity, and revenue sections plus a data timestamp.",
+      "linkedAcceptanceCriteria": ["AC-019"]
+    },
+    {
+      "id": "FR-022",
+      "text": "Reports MUST be exportable as CSV and printable through a print stylesheet that hides admin chrome.",
+      "linkedAcceptanceCriteria": ["AC-020"]
+    },
+    {
+      "id": "FR-023",
+      "text": "Platform settings MUST persist default country, currency, timezone, feature flags, and maintenance mode in a single document.",
+      "linkedAcceptanceCriteria": ["AC-021"]
+    },
+    {
+      "id": "FR-024",
+      "text": "Platform settings writes MUST require super_admin and write a settings.updated audit entry with before and after values.",
+      "linkedAcceptanceCriteria": ["AC-022"]
+    },
+    {
+      "id": "FR-025",
+      "text": "Maintenance mode MUST block public routes for non-admins while preserving admin access, and MUST require typed confirmation to enable.",
+      "linkedAcceptanceCriteria": ["AC-023"]
+    },
+    {
+      "id": "FR-026",
+      "text": "Feature flags MUST hide a disabled module from navigation and reject its server queries.",
+      "linkedAcceptanceCriteria": ["AC-021"]
+    },
+    {
+      "id": "FR-027",
+      "text": "Currency, date, number, and timezone formatting MUST derive from platform settings rather than hard-coded naira, NG, or a browser-local guess.",
+      "linkedAcceptanceCriteria": ["AC-019", "AC-021"]
+    },
+    {
+      "id": "FR-028",
+      "text": "The broadcast composer MUST resolve and display recipient counts for all users, organizers, attendees of a selected event, and admins before sending.",
+      "linkedAcceptanceCriteria": ["AC-024"]
+    },
+    {
+      "id": "FR-029",
+      "text": "Broadcast sending MUST require super_admin, typed confirmation, rate limiting, bounded Resend batches, and a persisted announcement record.",
+      "linkedAcceptanceCriteria": ["AC-025"]
+    },
+    {
+      "id": "FR-030",
+      "text": "Broadcasts MUST record per-recipient delivery outcomes and expose sent and failed counts.",
+      "linkedAcceptanceCriteria": ["AC-026"]
+    },
+    {
+      "id": "FR-031",
+      "text": "The announcements list MUST show status, audience, recipient counts, author, and timestamp.",
+      "linkedAcceptanceCriteria": ["AC-026"]
+    },
+    {
+      "id": "FR-032",
+      "text": "The public app MUST let a signed-in non-admin submit feedback or report an event with validation, rate limiting, and duplicate suppression.",
+      "linkedAcceptanceCriteria": ["AC-027"]
+    },
+    {
+      "id": "FR-033",
+      "text": "The feedback inbox MUST support status, type, and priority filters, a detail view, internal notes, status transitions, and navigation to the target.",
+      "linkedAcceptanceCriteria": ["AC-028"]
+    },
+    {
+      "id": "FR-034",
+      "text": "Feedback mutations MUST require admin and write an audit entry for every status, priority, or note change.",
+      "linkedAcceptanceCriteria": ["AC-028"]
+    },
+    {
+      "id": "FR-035",
+      "text": "A feedback record whose target was deleted MUST remain readable and labelled as target removed.",
+      "linkedAcceptanceCriteria": ["AC-029"]
+    },
+    {
+      "id": "FR-036",
+      "text": "The health panel MUST report cron recency and status, 24-hour and 7-day email failures, rate-limit rejections, open-feedback age, and configuration presence.",
+      "linkedAcceptanceCriteria": ["AC-030"]
+    },
+    {
+      "id": "FR-037",
+      "text": "Health reporting MUST expose only presence or absence of configuration, never a value.",
+      "linkedAcceptanceCriteria": ["AC-031"]
+    },
+    {
+      "id": "FR-038",
+      "text": "Admin settings MUST NOT render hasCompletedOnboarding, interests, or attendee location.",
+      "linkedAcceptanceCriteria": ["AC-033", "AC-034"]
+    },
+    {
+      "id": "FR-039",
+      "text": "The audit schema MUST add action and target literals for settings, announcements, feedback, exports, and maintenance mode.",
+      "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"]
+    },
+    {
+      "id": "FR-040",
+      "text": "All new Convex functions MUST declare convex/values argument validators and enforce role checks server-side.",
+      "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"]
+    },
+    {
+      "id": "FR-041",
+      "text": "The console MUST provide shared formatters for currency, compact numbers, relative time, percentages, and signed deltas.",
+      "linkedAcceptanceCriteria": ["AC-005", "AC-011"]
+    },
+    {
+      "id": "FR-042",
+      "text": "The analytics and operational modules MUST add indexes so filtered windows are served by index ranges rather than full-collection scans.",
+      "linkedAcceptanceCriteria": ["AC-008", "AC-030"]
+    },
+    {
+      "id": "FR-043",
+      "text": "Each major admin panel MUST sit behind a local error boundary with retry.",
+      "linkedAcceptanceCriteria": ["AC-007", "AC-032"]
+    },
+    {
+      "id": "FR-044",
+      "text": "Day bucketing and report labels MUST use the platform timezone.",
+      "linkedAcceptanceCriteria": ["AC-019", "AC-030"]
+    },
+    {
+      "id": "FR-045",
+      "text": "Every aggregated panel MUST display an as-of timestamp and the window it covers.",
+      "linkedAcceptanceCriteria": ["AC-019", "AC-030"]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Every new Convex function MUST authenticate via Clerk and authorize with requireAdmin or a super-admin equivalent; client gating is defense in depth only.",
+      "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Platform settings, broadcasts, and maintenance mode MUST be enforced as super_admin-only on the server, not only hidden in the UI.",
+      "linkedAcceptanceCriteria": ["AC-022", "AC-025"]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Palette search, analytics queries, exports, broadcasts, feedback submission, and feedback mutations MUST be rate-limited through @convex-dev/rate-limiter and return a retry hint on rejection.",
+      "linkedAcceptanceCriteria": ["AC-017", "AC-025", "AC-027"]
+    },
+    {
+      "id": "NFR-004",
+      "text": "Every form MUST validate with Zod and every Convex function MUST declare convex/values validators; unvalidated free-form objects MUST NOT be accepted.",
+      "linkedAcceptanceCriteria": ["AC-021", "AC-024", "AC-027"]
+    },
+    {
+      "id": "NFR-005",
+      "text": "The feature MUST NOT introduce dangerouslySetInnerHTML; user-supplied feedback, notes, announcement bodies, and exported cells MUST be rendered or encoded as text.",
+      "linkedAcceptanceCriteria": ["AC-017", "AC-028"]
+    },
+    {
+      "id": "NFR-006",
+      "text": "Secrets MUST remain server-side; the health panel and settings UI MUST report presence only, and no .env file may be created or modified.",
+      "linkedAcceptanceCriteria": ["AC-031"]
+    },
+    {
+      "id": "NFR-007",
+      "text": "Production traffic MUST remain HTTPS-only with HSTS at the hosting layer; this feature MUST NOT weaken transport security.",
+      "linkedAcceptanceCriteria": ["AC-021"]
+    },
+    {
+      "id": "NFR-008",
+      "text": "Filtered analytics MUST return within 1.5 seconds p95 and the dashboard within 1 second p95 at 50,000 events and 500,000 registrations, using index ranges and bounded windows rather than collection scans.",
+      "linkedAcceptanceCriteria": ["AC-008", "AC-030"]
+    },
+    {
+      "id": "NFR-009",
+      "text": "Every new screen MUST meet WCAG 2.1 AA: visible focus, 4.5:1 text contrast, labelled controls, keyboard-complete palette and dialogs, chart data-table alternatives, and status messages announced without relying on colour.",
+      "linkedAcceptanceCriteria": ["AC-003", "AC-015"]
+    },
+    {
+      "id": "NFR-010",
+      "text": "Every new screen MUST be usable at 360px with no page-level horizontal scrolling; wide data tables MAY scroll inside their own container.",
+      "linkedAcceptanceCriteria": ["AC-002"]
+    },
+    {
+      "id": "NFR-011",
+      "text": "Every data-driven panel MUST provide loading, empty, and error states, with skeletons whose shape matches the final layout.",
+      "linkedAcceptanceCriteria": ["AC-007", "AC-015"]
+    },
+    {
+      "id": "NFR-012",
+      "text": "Motion MUST respect prefers-reduced-motion, and no animation may be required to understand a state change.",
+      "linkedAcceptanceCriteria": ["AC-005"]
+    },
+    {
+      "id": "NFR-013",
+      "text": "Exports MUST be capped at 10,000 rows by default, audited, rate-limited, and limited to the columns visible to the requesting admin.",
+      "linkedAcceptanceCriteria": ["AC-016", "AC-017"]
+    },
+    {
+      "id": "NFR-014",
+      "text": "TypeScript checking, ESLint with zero errors, and SpecDrive governance validation MUST pass before the feature is complete.",
+      "linkedAcceptanceCriteria": ["AC-001"]
+    },
+    {
+      "id": "NFR-015",
+      "text": "Every new administrative mutation MUST write an audit entry through logAdminAction, and failures MUST surface to the caller rather than being swallowed.",
+      "linkedAcceptanceCriteria": ["AC-022", "AC-028"]
+    },
+    {
+      "id": "NFR-016",
+      "text": "Feedback and announcement records MUST be retained until an explicit deletion, and every deletion MUST be audited.",
+      "linkedAcceptanceCriteria": ["AC-028"]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "The platform has zero users, events, and registrations.",
+      "expectedBehavior": "The action queue shows a positive empty state and each analytics card states the minimum data it needs."
+    },
+    {
+      "id": "EC-002",
+      "description": "The comparison period has zero for a metric.",
+      "expectedBehavior": "The delta renders new, with no division by zero."
+    },
+    {
+      "id": "EC-003",
+      "description": "A custom range starts after it ends or spans more than 730 days.",
+      "expectedBehavior": "Inline validation is shown and the last valid query is retained."
+    },
+    {
+      "id": "EC-004",
+      "description": "A filter combination returns zero rows.",
+      "expectedBehavior": "Per-chart empty states render, export is disabled, and filter chips remain removable."
+    },
+    {
+      "id": "EC-005",
+      "description": "An export exceeds the row cap.",
+      "expectedBehavior": "The export is refused with the cap and a narrower-filter suggestion."
+    },
+    {
+      "id": "EC-006",
+      "description": "A CSV cell begins with equals, plus, minus, at, tab, carriage return, or line feed.",
+      "expectedBehavior": "The field is quoted and the leading character is neutralised per OWASP guidance."
+    },
+    {
+      "id": "EC-007",
+      "description": "A non-super-admin opens platform settings or announcements.",
+      "expectedBehavior": "The view is read-only or redirects and the mutation is rejected server-side."
+    },
+    {
+      "id": "EC-008",
+      "description": "Maintenance mode is enabled while an admin is mid-session.",
+      "expectedBehavior": "Admins keep access and public visitors see the maintenance notice."
+    },
+    {
+      "id": "EC-009",
+      "description": "A broadcast audience resolves to zero recipients.",
+      "expectedBehavior": "Send is disabled and the reason is shown."
+    },
+    {
+      "id": "EC-010",
+      "description": "Resend fails for some broadcast recipients.",
+      "expectedBehavior": "A partial-failure state is shown, failures appear in health, and success is not falsely reported."
+    },
+    {
+      "id": "EC-011",
+      "description": "A feedback record targets an event that was deleted.",
+      "expectedBehavior": "The record remains readable and is labelled target removed."
+    },
+    {
+      "id": "EC-012",
+      "description": "A palette query fails.",
+      "expectedBehavior": "An inline retry is offered, the dialog stays open, and nothing crashes."
+    },
+    {
+      "id": "EC-013",
+      "description": "Two admins resolve the same feedback record concurrently.",
+      "expectedBehavior": "Both audit entries persist, the latest write wins, and the detail view refreshes."
+    },
+    {
+      "id": "EC-014",
+      "description": "An analytics query times out.",
+      "expectedBehavior": "Only that panel shows an error with retry."
+    },
+    {
+      "id": "EC-015",
+      "description": "A user has no name or avatar.",
+      "expectedBehavior": "An initials fallback and an email-based label render with no empty text node."
+    },
+    {
+      "id": "EC-016",
+      "description": "The platform settings document does not exist on first run.",
+      "expectedBehavior": "Defaults render and the document is created on first save."
+    },
+    {
+      "id": "EC-017",
+      "description": "A timezone other than UTC is selected.",
+      "expectedBehavior": "Day buckets, heatmap hours, and report labels follow it consistently and the active timezone is displayed."
+    },
+    {
+      "id": "EC-018",
+      "description": "A disabled feature flag is reached by direct URL.",
+      "expectedBehavior": "A not-enabled state renders and the server query rejects."
+    }
+  ],
+  "dependencies": [
+    { "name": "Convex", "type": "service", "notes": "Data, cron, rate limiter, and indexes." },
+    { "name": "Clerk", "type": "service", "notes": "Identity and roles." },
+    { "name": "Resend", "type": "service", "notes": "Invite and broadcast email." },
+    { "name": "Recharts", "type": "library", "notes": "All analytics charts." },
+    { "name": "date-fns", "type": "library", "notes": "Date math and formatting." },
+    { "name": "react-day-picker", "type": "library", "notes": "Custom range selection." },
+    { "name": "lucide-react", "type": "library", "notes": "Icons." },
+    { "name": "zod", "type": "library", "notes": "Form validation." },
+    { "name": "@convex-dev/rate-limiter", "type": "library", "notes": "Rate limits." },
+    { "name": "country-state-city", "type": "library", "notes": "Validates the platform default country." }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "Read-on-demand analytics will not scale indefinitely.",
+      "mitigation": "Add indexes, clamp ranges, cap exports, and record the aggregate-pipeline trigger point in the plan."
+    },
+    {
+      "id": "RISK-002",
+      "description": "Broadcast email can damage sender reputation or spam users.",
+      "mitigation": "Super-admin only, typed confirmation, preview, rate limit, bounded batches, and a delivery log."
+    },
+    {
+      "id": "RISK-003",
+      "description": "Adding literals to the auditLogs unions is a schema change that can reject old documents if deployed out of order.",
+      "mitigation": "Deploy schema first, keep the validator exhaustive, and backfill no existing rows."
+    },
+    {
+      "id": "RISK-004",
+      "description": "Exports can leak personal data.",
+      "mitigation": "Admin-only, visible columns only, row cap, rate limit, and an audit entry per export."
+    },
+    {
+      "id": "RISK-005",
+      "description": "Maintenance mode can lock out legitimate operators.",
+      "mitigation": "Admin bypass, typed confirmation, audit entry, and a visible banner while active."
+    },
+    {
+      "id": "RISK-006",
+      "description": "The feedback form adds a public write surface.",
+      "mitigation": "Signed-in only, length caps, rate limit, duplicate suppression, and no file uploads."
+    },
+    {
+      "id": "RISK-007",
+      "description": "Timezone-aware bucketing changes existing chart values.",
+      "mitigation": "Display the active timezone on every affected card and document the change in the plan."
+    },
+    {
+      "id": "RISK-008",
+      "description": "Palette search adds a query per keystroke.",
+      "mitigation": "Two-character minimum, 250 ms debounce, per-group caps, and a rate limit."
+    },
+    {
+      "id": "RISK-009",
+      "description": "The scope is large for one version.",
+      "mitigation": "Phase delivery into milestones M0 through M4 so each is independently shippable."
+    }
+  ]
+}
