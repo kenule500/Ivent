@@ -288,7 +288,8 @@ export default function AnnouncementsPage() {
                     isSending ||
                     !isSuperAdmin ||
                     !preview?.sendingEnabled ||
-                    previewLoading
+                    previewLoading ||
+                    (preview?.recipientCount ?? 0) === 0
                   }
                 >
                   {isSending ? (
@@ -339,6 +340,18 @@ export default function AnnouncementsPage() {
                 </ul>
               </div>
             )}
+
+            <div className="space-y-1 border-t pt-3">
+              <p className="text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                Email preview
+              </p>
+              <p className="text-sm font-medium">
+                {subject.trim() || "Your subject appears here"}
+              </p>
+              <p className="whitespace-pre-wrap text-xs text-muted-foreground">
+                {body.trim() || "Your message appears here."}
+              </p>
+            </div>
           </CardContent>
         </Card>
       </div>
@@ -395,6 +408,7 @@ export default function AnnouncementsPage() {
                         </Badge>
                       </td>
                       <td className="py-2 text-xs text-muted-foreground">
+                        {row.createdByName} ·{" "}
                         {formatRelativeTime(row.sentAt ?? row.createdAt)}
                       </td>
                     </tr>

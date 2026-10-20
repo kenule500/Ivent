@@ -218,6 +218,13 @@ export function CommandPalette({ onOpenChange, enabledFlags }: CommandPalettePro
               onKeyDown={handleKeyDown}
               placeholder="Search pages, users, events, registrations…"
               aria-label="Search admin console"
+              role="combobox"
+              aria-expanded="true"
+              aria-controls="palette-results"
+              aria-autocomplete="list"
+              aria-activedescendant={
+                results.length ? `palette-option-${safeIndex}` : undefined
+              }
               className="pl-8"
             />
             {loading && (
@@ -246,7 +253,12 @@ export function CommandPalette({ onOpenChange, enabledFlags }: CommandPalettePro
               No matches for “{query.trim()}”.
             </p>
           ) : (
-            <ul role="listbox" aria-label="Search results" className="space-y-1">
+            <ul
+              id="palette-results"
+              role="listbox"
+              aria-label="Search results"
+              className="space-y-1"
+            >
               {results.map((result, index) => {
                 const previous = results[index - 1];
                 const showGroup = !previous || previous.group !== result.group;
@@ -266,7 +278,11 @@ export function CommandPalette({ onOpenChange, enabledFlags }: CommandPalettePro
                         {result.group}
                       </li>
                     )}
-                    <li role="option" aria-selected={isActive}>
+                    <li
+                      role="option"
+                      id={`palette-option-${index}`}
+                      aria-selected={isActive}
+                    >
                       <button
                         type="button"
                         onClick={() => go(result)}

@@ -11,7 +11,7 @@ import { sendEmail } from "./emailService";
  * recipient and the announcement is finalised once all batches finish.
  */
 
-const BATCH_SIZE = 20;
+const BATCH_SIZE = 50;
 
 function escapeHtml(value: string) {
   return value

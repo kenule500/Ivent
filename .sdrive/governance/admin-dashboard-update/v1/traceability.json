@@ -571,7 +571,7 @@
         "T1.2",
         "T6.5"
       ],
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-002",
@@ -586,7 +586,7 @@
         "T5.7",
         "T6.5"
       ],
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-003",
@@ -656,7 +656,7 @@
       "taskIds": [
         "T6.5"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-008",
@@ -683,7 +683,7 @@
         "T5.8",
         "T6.4"
       ],
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-010",
@@ -696,7 +696,7 @@
         "T2.2",
         "T6.4"
       ],
-      "status": "in_progress"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-011",
@@ -724,7 +724,7 @@
       "taskIds": [
         "T6.4"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-013",
@@ -751,7 +751,7 @@
         "T6.2",
         "T6.3"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-015",

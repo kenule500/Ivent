@@ -83,7 +83,7 @@
           "gates": {
             "specification": "approved",
             "planning": "approved",
-            "implementation": "pending",
+            "implementation": "in_progress",
             "review": "pending"
           },
           "history": [
@@ -111,6 +111,11 @@
               "event": "implementation_started",
               "by": "sdrive:apply",
               "timestamp": "2026-10-20T16:20:00.000Z"
+            },
+            {
+              "event": "implementation_completed",
+              "by": "sdrive:apply",
+              "timestamp": "2026-10-20T18:17:06.044Z"
             }
           ]
         }

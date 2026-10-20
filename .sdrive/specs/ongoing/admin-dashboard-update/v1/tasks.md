@@ -198,18 +198,18 @@ Depends on: P1, P2.
 
 Depends on: P1, P2, P3, P4, P5.
 
-- [ ] **T6.1** Run the typechecker.
+- [x] **T6.1** Run the typechecker.
   - Linked: NFR-014, AC-001
   - Run npx tsc --noEmit and resolve every error introduced by the feature.
-- [ ] **T6.2** Run the linter.
+- [x] **T6.2** Run the linter.
   - Linked: NFR-014, AC-001
   - Run npm run lint and reach zero errors without disabling rules to hide feature code.
-- [ ] **T6.3** Validate SpecDrive governance.
+- [x] **T6.3** Validate SpecDrive governance.
   - Linked: NFR-014, AC-001
   - Run node .sdrive/scripts/validate-governance.js against the new spec, plan, tasks, and traceability, using the documented Ajv 8 resolution if the root install still exposes Ajv 6.
-- [ ] **T6.4** Run the manual accessibility, responsive, and motion pass.
+- [x] **T6.4** Run the manual accessibility, responsive, and motion pass.
   - Linked: NFR-009, NFR-010, NFR-012, AC-002, AC-003, AC-015
   - Keyboard and screen-reader pass over the palette, dialogs, filters, and every chart table; 360px check on every new screen; reduced-motion check for opacity and transform transitions.
-- [ ] **T6.5** Run the manual role and baseline-control matrix.
+- [x] **T6.5** Run the manual role and baseline-control matrix.
   - Linked: NFR-001, NFR-002, NFR-007, AC-022, AC-025, AC-028
   - Exercise user, admin, and super_admin against every new function, confirming client gating is never the only control and that proxy.ts, security headers, and transport enforcement are unchanged.

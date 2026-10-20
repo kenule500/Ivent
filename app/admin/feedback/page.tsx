@@ -180,7 +180,10 @@ export default function FeedbackInboxPage() {
             setTypeFilter((value ?? "all") as FeedbackType | "all")
           }
         >
-          <SelectTrigger className="h-9 w-[140px] text-xs">
+          <SelectTrigger
+            className="h-9 w-[140px] text-xs"
+            aria-label="Filter by feedback type"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -199,7 +202,10 @@ export default function FeedbackInboxPage() {
             setPriorityFilter((value ?? "all") as Priority | "all")
           }
         >
-          <SelectTrigger className="h-9 w-[140px] text-xs">
+          <SelectTrigger
+            className="h-9 w-[140px] text-xs"
+            aria-label="Filter by feedback priority"
+          >
             <SelectValue />
           </SelectTrigger>
           <SelectContent>
@@ -324,7 +330,7 @@ export default function FeedbackInboxPage() {
                       }}
                       disabled={pending}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full" aria-label="Feedback status">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>
@@ -346,7 +352,7 @@ export default function FeedbackInboxPage() {
                       }}
                       disabled={pending}
                     >
-                      <SelectTrigger className="w-full">
+                      <SelectTrigger className="w-full" aria-label="Feedback priority">
                         <SelectValue />
                       </SelectTrigger>
                       <SelectContent>

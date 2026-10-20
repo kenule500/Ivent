@@ -72,6 +72,16 @@ export const history = query({
       .order("desc")
       .take(100);
 
+    const authors = new Map<string, string>();
+    const authorIds = Array.from(new Set(rows.map((row) => row.createdBy))).slice(
+      0,
+      100
+    );
+    for (const authorId of authorIds) {
+      const author = await ctx.db.get(authorId);
+      if (author) authors.set(authorId, author.name);
+    }
+
     return rows.map((row) => ({
       id: row._id,
       subject: row.subject,
@@ -81,6 +91,7 @@ export const history = query({
       sentCount: row.sentCount,
       failedCount: row.failedCount,
       status: row.status,
+      createdByName: authors.get(row.createdBy) ?? "Unknown admin",
       createdAt: row.createdAt,
       sentAt: row.sentAt ?? null,
     }));

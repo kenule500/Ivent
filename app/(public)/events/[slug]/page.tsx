@@ -3,6 +3,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -14,6 +15,7 @@ import {
   Share2,
   Ticket,
   ExternalLink,
+  Flag,
   Loader2,
   CheckCircle,
 } from "lucide-react";
@@ -340,6 +342,18 @@ export default function EventDetailPage() {
                 >
                   <Share2 className="w-4 h-4" />
                   Share Event
+                </Button>
+
+                {/* Report link (FR-030) */}
+                <Button
+                  variant="ghost"
+                  className="w-full gap-2 text-xs text-muted-foreground"
+                  render={
+                    <Link href={`/feedback?eventId=${event._id}`} />
+                  }
+                >
+                  <Flag className="w-3.5 h-3.5" />
+                  Report this event
                 </Button>
               </CardContent>
             </Card>

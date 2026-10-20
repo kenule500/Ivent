@@ -5,7 +5,9 @@ import { usePathname } from "next/navigation";
 import AdminGuard from "@/components/AdminGuard";
 import AdminSidebar from "@/components/AdminSidebar";
 import { CommandPalette } from "@/components/admin/command-palette";
+import { ModuleNotEnabled } from "@/components/admin/module-not-enabled";
 import { usePlatformSettings } from "@/hooks/usePlatformSettings";
+import { ADMIN_NAV, isNavItemActive } from "@/lib/admin-nav";
 import { Menu, Search, Shield } from "lucide-react";
 
 export default function AdminLayout({
@@ -36,6 +38,10 @@ export default function AdminLayout({
 function AdminShell({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
   const { featureFlags } = usePlatformSettings();
+  const disabledItem = ADMIN_NAV.find(
+    (item) =>
+      item.flag && !featureFlags[item.flag] && isNavItemActive(item.href, pathname)
+  );
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [paletteOpen, setPaletteOpen] = useState(false);
   const sidebarTriggerRef = useRef<HTMLButtonElement>(null);
@@ -146,7 +152,13 @@ function AdminShell({ children }: { children: React.ReactNode }) {
       )}
 
       {/* Main content */}
-      <main className="md:ml-64 p-4 sm:p-6 md:p-8">{children}</main>
+      <main className="md:ml-64 p-4 sm:p-6 md:p-8">
+        {disabledItem ? (
+          <ModuleNotEnabled label={disabledItem.label} />
+        ) : (
+          children
+        )}
+      </main>
     </div>
   );
 }
