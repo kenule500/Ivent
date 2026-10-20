@@ -1,11 +1,11 @@
 {
   "feature": "event-management-and-check-in",
-  "status": "fail",
-  "checkedAt": "2026-10-19T17:05:12.820Z",
+  "status": "pass",
+  "checkedAt": "2026-10-20T13:40:52.471Z",
   "summary": {
-    "matched": 14,
-    "missing": 15,
-    "renamed": 4,
+    "matched": 33,
+    "missing": 0,
+    "renamed": 0,
     "extra": 0
   },
   "items": {
@@ -59,6 +59,144 @@
         "file": "components/event-card.tsx"
       },
       {
+        "type": "component",
+        "name": "convex/events.ts",
+        "action": "reuse",
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/dashboard.ts",
+        "action": "reuse",
+        "file": "convex/dashboard.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "action": "reuse",
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/rateLimiter.ts",
+        "action": "reuse",
+        "file": "convex/rateLimiter.ts"
+      },
+      {
+        "type": "entity",
+        "name": "events",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "slug",
+        "fieldType": "string",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "organizerId",
+        "fieldType": "Id<users>",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "organizerName",
+        "fieldType": "string",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "capacity",
+        "fieldType": "number",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketType",
+        "fieldType": "free|paid",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketPrice",
+        "fieldType": "number|null",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "registrationCount",
+        "fieldType": "number",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "coverImage",
+        "fieldType": "string|null",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "themeColor",
+        "fieldType": "string|null",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "users",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "freeEventsCreated",
+        "fieldType": "number",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedIn",
+        "fieldType": "boolean",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedInAt",
+        "fieldType": "number|null",
+        "action": "no_change",
+        "file": "convex/schema.ts"
+      },
+      {
         "type": "dependency",
         "name": "react-hook-form",
         "action": "no_change"
@@ -89,137 +227,8 @@
         "action": "no_change"
       }
     ],
-    "missing": [
-      {
-        "type": "entity",
-        "name": "events",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "slug",
-        "fieldType": "string",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "organizerId",
-        "fieldType": "Id<users>",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "organizerName",
-        "fieldType": "string",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "capacity",
-        "fieldType": "number",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "ticketType",
-        "fieldType": "free|paid",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "ticketPrice",
-        "fieldType": "number|null",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "registrationCount",
-        "fieldType": "number",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "coverImage",
-        "fieldType": "string|null",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "events",
-        "name": "themeColor",
-        "fieldType": "string|null",
-        "action": "no_change"
-      },
-      {
-        "type": "entity",
-        "name": "users",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "users",
-        "name": "freeEventsCreated",
-        "fieldType": "number",
-        "action": "no_change"
-      },
-      {
-        "type": "entity",
-        "name": "registrations",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "registrations",
-        "name": "checkedIn",
-        "fieldType": "boolean",
-        "action": "no_change"
-      },
-      {
-        "type": "field",
-        "entity": "registrations",
-        "name": "checkedInAt",
-        "fieldType": "number|null",
-        "action": "no_change"
-      }
-    ],
-    "renamed": [
-      {
-        "type": "component",
-        "name": "convex/events.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/dashboard.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/registrations.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      },
-      {
-        "type": "component",
-        "name": "convex/rateLimiter.ts",
-        "action": "reuse",
-        "to": "app/ConvexClientProvider.tsx",
-        "file": "app/ConvexClientProvider.tsx"
-      }
-    ],
+    "missing": [],
+    "renamed": [],
     "extra": []
   }
 }
