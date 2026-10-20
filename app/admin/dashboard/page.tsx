@@ -1,162 +1,304 @@
-// app/admin/dashboard/page.tsx
 "use client";
 
+import Link from "next/link";
+import {
+  AlertTriangle,
+  Calendar,
+  CalendarCheck,
+  Clock,
+  MailWarning,
+  MessageSquare,
+  TicketCheck,
+  TrendingUp,
+  UserPlus,
+  Users,
+} from "lucide-react";
 import { useConvexQuery } from "@/hooks/useConvexQuery";
 import { api } from "@/convex/_generated/api";
-import { useRouter } from "next/navigation";
-import { useEffect } from "react";
-import { Users, Calendar, Ticket, TrendingUp, Loader2, ShieldAlert } from "lucide-react";
-import Link from "next/link";
-import { Button } from "@/components/ui/button";
+import { PageHeader } from "@/components/admin/page-header";
+import { PanelErrorBoundary, PanelState } from "@/components/admin/panel-state";
+import { TrendCard } from "@/components/admin/trend-card";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Progress } from "@/components/ui/progress";
+import { Badge } from "@/components/ui/badge";
+import {
+  DEFAULT_CURRENCY,
+  formatCurrency,
+  formatDateTime,
+  formatNumber,
+  formatPercent,
+  formatRelativeTime,
+  DEFAULT_TIMEZONE,
+} from "@/lib/format";
+
+const WINDOW_DAYS = 30;
 
 export default function AdminDashboard() {
-  const router = useRouter();
-  const { data: stats, isLoading, error } = useConvexQuery(api.admin.getDashboardStats);
-
-  // If there's an error (not admin), redirect to login
-  useEffect(() => {
-    if (!isLoading && error) {
-      router.push("/admin");
-    }
-  }, [isLoading, error, router]);
-
-  if (isLoading) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="text-center space-y-4">
-          <ShieldAlert className="w-12 h-12 text-red-500 mx-auto" />
-          <h2 className="text-2xl font-bold">Access Denied</h2>
-          <p className="text-muted-foreground">You don&rsquo;t have admin permissions.</p>
-          <Button onClick={() => router.push("/admin")}>
-            Go to Admin Login
-          </Button>
-        </div>
-      </div>
-    );
-  }
-
-  const statCards = [
-    { 
-      label: "Total Users", 
-      value: stats?.totalUsers ?? 0, 
-      icon: Users, 
-      color: "text-blue-500",
-      href: "/admin/users"
-    },
-    { 
-      label: "Total Events", 
-      value: stats?.totalEvents ?? 0, 
-      icon: Calendar, 
-      color: "text-purple-500",
-      href: "/admin/events"
-    },
-    { 
-      label: "Total Registrations", 
-      value: stats?.totalRegistrations ?? 0, 
-      icon: Ticket, 
-      color: "text-green-500",
-      href: "/admin/registrations"
-    },
-    { 
-      label: "Upcoming Events", 
-      value: stats?.upcomingEvents ?? 0, 
-      icon: TrendingUp, 
-      color: "text-orange-500",
-      href: "/admin/events"
-    },
-  ];
-
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Dashboard</h1>
-        <p className="text-muted-foreground">Overview of your platform</p>
+      <PageHeader
+        title="Dashboard"
+        description="What changed and what needs attention today."
+        breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Dashboard" }]}
+      />
+
+      <PanelErrorBoundary label="Trends">
+        <TrendsPanel />
+      </PanelErrorBoundary>
+
+      <div className="grid gap-4 lg:grid-cols-2">
+        <PanelErrorBoundary label="Action queue">
+          <ActionQueuePanel />
+        </PanelErrorBoundary>
+        <PanelErrorBoundary label="Today">
+          <TodayPanel />
+        </PanelErrorBoundary>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-        {statCards.map((stat) => (
-          <Link
-            key={stat.label}
-            href={stat.href}
-            className="p-6 bg-card rounded-lg border hover:border-purple-500/30 transition-colors"
-          >
-            <div className="w-10 h-10 rounded-lg bg-muted flex items-center justify-center mb-4">
-              <stat.icon className={`w-5 h-5 ${stat.color}`} />
-            </div>
-            <div className="text-3xl font-bold">{stat.value}</div>
-            <div className="text-sm text-muted-foreground">{stat.label}</div>
-          </Link>
-        ))}
-      </div>
-
-      {/* Quick Actions */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-        <div className="p-6 bg-card rounded-lg border">
-          <h3 className="font-semibold mb-4">Recent Users</h3>
-          <RecentUsers />
-        </div>
-        <div className="p-6 bg-card rounded-lg border">
-          <h3 className="font-semibold mb-4">Recent Events</h3>
-          <RecentEvents />
-        </div>
-      </div>
+      <PanelErrorBoundary label="Recent audit activity">
+        <RecentAuditPanel />
+      </PanelErrorBoundary>
     </div>
   );
 }
 
-function RecentUsers() {
-  const { data: users } = useConvexQuery(api.admin.getAllUsers, { limit: 5 });
-  
+function TrendsPanel() {
+  const { data, isLoading } = useConvexQuery(api.commandCenter.getTrends, {
+    days: WINDOW_DAYS,
+  });
+
+  const windowLabel = `last ${WINDOW_DAYS} days`;
+
   return (
-    <div className="space-y-3">
-      {users?.map((user) => (
-        <div key={user._id} className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-8 h-8 rounded-full bg-muted flex items-center justify-center">
-              {user.name.charAt(0)}
-            </div>
-            <div>
-              <p className="text-sm font-medium">{user.name}</p>
-              <p className="text-xs text-muted-foreground">{user.email}</p>
-            </div>
-          </div>
-          {user.role === "admin" && (
-            <span className="text-xs bg-purple-500/10 text-purple-500 px-2 py-1 rounded">
-              Admin
-            </span>
+    <PanelState loading={isLoading} skeletonRows={5}>
+      <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4">
+        <TrendCard
+          label="New users"
+          current={data?.metrics.users.current ?? 0}
+          previous={data?.metrics.users.previous ?? 0}
+          sparkline={data?.metrics.users.sparkline ?? []}
+          windowLabel={windowLabel}
+          formatValue={(value) => formatNumber(value)}
+          icon={UserPlus}
+          color="text-blue-500"
+        />
+        <TrendCard
+          label="New events"
+          current={data?.metrics.events.current ?? 0}
+          previous={data?.metrics.events.previous ?? 0}
+          sparkline={data?.metrics.events.sparkline ?? []}
+          windowLabel={windowLabel}
+          formatValue={(value) => formatNumber(value)}
+          icon={Calendar}
+          color="text-purple-500"
+        />
+        <TrendCard
+          label="Registrations"
+          current={data?.metrics.registrations.current ?? 0}
+          previous={data?.metrics.registrations.previous ?? 0}
+          sparkline={data?.metrics.registrations.sparkline ?? []}
+          windowLabel={windowLabel}
+          formatValue={(value) => formatNumber(value)}
+          icon={TicketCheck}
+          color="text-emerald-500"
+        />
+        <TrendCard
+          label="Estimated revenue"
+          current={data?.metrics.revenue.current ?? 0}
+          previous={data?.metrics.revenue.previous ?? 0}
+          sparkline={data?.metrics.revenue.sparkline ?? []}
+          windowLabel={windowLabel}
+          formatValue={(value) =>
+            formatCurrency(value, {
+              currency: DEFAULT_CURRENCY,
+              locale: undefined,
+            })
+          }
+          icon={TrendingUp}
+          color="text-orange-500"
+        />
+      </div>
+      {data && (
+        <p className="mt-2 text-[0.7rem] text-muted-foreground">
+          As of {formatDateTime(data.asOf, { currency: DEFAULT_CURRENCY, timezone: DEFAULT_TIMEZONE })}
+        </p>
+      )}
+    </PanelState>
+  );
+}
+
+const QUEUE_META = [
+  {
+    key: "expiringInvites" as const,
+    label: "Invites expiring in 48h",
+    icon: Clock,
+    href: "/admin/invites",
+  },
+  {
+    key: "atCapacity" as const,
+    label: "Events at capacity",
+    icon: Users,
+    href: "/admin/events",
+  },
+  {
+    key: "staleFeedback" as const,
+    label: "Feedback open over 48h",
+    icon: MessageSquare,
+    href: "/admin/feedback",
+  },
+  {
+    key: "failedEmails" as const,
+    label: "Failed emails (24h)",
+    icon: MailWarning,
+    href: "/admin/health",
+  },
+];
+
+function ActionQueuePanel() {
+  const { data, isLoading } = useConvexQuery(api.commandCenter.getActionQueue, {});
+  const total = data
+    ? Object.values(data.queues).reduce((sum, queue) => sum + queue.count, 0)
+    : 0;
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <AlertTriangle className="size-4 text-orange-500" aria-hidden="true" />
+          Action queue
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <PanelState
+          loading={isLoading}
+          skeletonRows={4}
+          empty={!isLoading && total === 0}
+          emptyTitle="Nothing needs attention"
+          emptyDescription="No expiring invites, full events, stale feedback, or failed emails."
+        >
+          <ul className="space-y-3">
+            {QUEUE_META.map((meta) => {
+              const queue = data?.queues[meta.key];
+              const Icon = meta.icon;
+              return (
+                <li key={meta.key}>
+                  <Link
+                    href={meta.href}
+                    className="flex items-start justify-between gap-3 rounded-lg px-1 py-1.5 hover:bg-muted/60"
+                  >
+                    <span className="flex min-w-0 items-start gap-2">
+                      <Icon
+                        className="mt-0.5 size-4 shrink-0 text-muted-foreground"
+                        aria-hidden="true"
+                      />
+                      <span className="min-w-0">
+                        <span className="block text-sm font-medium">{meta.label}</span>
+                        {queue && queue.previews.length > 0 ? (
+                          <span className="block truncate text-xs text-muted-foreground">
+                            {queue.previews.map((preview) => preview.label).join(" · ")}
+                          </span>
+                        ) : (
+                          <span className="block text-xs text-muted-foreground">
+                            Nothing pending
+                          </span>
+                        )}
+                      </span>
+                    </span>
+                    <Badge variant={queue && queue.count > 0 ? "default" : "secondary"}>
+                      {queue?.count ?? 0}
+                    </Badge>
+                  </Link>
+                </li>
+              );
+            })}
+          </ul>
+        </PanelState>
+      </CardContent>
+    </Card>
+  );
+}
+
+function TodayPanel() {
+  const { data, isLoading } = useConvexQuery(api.commandCenter.getToday, {});
+
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-sm">
+          <CalendarCheck className="size-4 text-emerald-500" aria-hidden="true" />
+          Today
+          {data && (
+            <span className="font-normal text-muted-foreground">({data.timezone})</span>
           )}
-        </div>
-      ))}
-    </div>
+        </CardTitle>
+      </CardHeader>
+      <CardContent>
+        <PanelState
+          loading={isLoading}
+          skeletonRows={3}
+          empty={!isLoading && (data?.events.length ?? 0) === 0}
+          emptyTitle="No events today"
+          emptyDescription="Nothing is scheduled in the platform timezone today."
+        >
+          <ul className="space-y-3">
+            {data?.events.map((event) => (
+              <li key={event.id} className="space-y-1.5">
+                <div className="flex items-center justify-between gap-2">
+                  <p className="min-w-0 truncate text-sm font-medium">{event.title}</p>
+                  <span className="shrink-0 text-xs text-muted-foreground">
+                    {event.checkedIn}/{event.confirmed} checked in
+                  </span>
+                </div>
+                <Progress value={Math.round(event.rate * 100)} aria-label="Check-in progress" />
+                <p className="text-[0.7rem] text-muted-foreground">
+                  {event.city ? `${event.city} · ` : ""}
+                  {formatPercent(event.rate)} check-in rate
+                </p>
+              </li>
+            ))}
+          </ul>
+        </PanelState>
+      </CardContent>
+    </Card>
   );
 }
 
-function RecentEvents() {
-  const { data: events } = useConvexQuery(api.admin.getAllEvents, { limit: 5 });
-  
+function RecentAuditPanel() {
+  const { data, isLoading } = useConvexQuery(api.admin.getRecentAudit, { limit: 10 });
+
   return (
-    <div className="space-y-3">
-      {events?.map((event) => (
-        <div key={event._id} className="flex items-center justify-between">
-          <div className="min-w-0">
-            <p className="text-sm font-medium truncate">{event.title}</p>
-            <p className="text-xs text-muted-foreground">
-              {event.city}, {event.state}
-            </p>
-          </div>
-          <span className="text-xs bg-muted px-2 py-1 rounded shrink-0">
-            {event.registrationCount}/{event.capacity}
-          </span>
-        </div>
-      ))}
-    </div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-sm">Recent admin activity</CardTitle>
+      </CardHeader>
+      <CardContent>
+        <PanelState
+          loading={isLoading}
+          skeletonRows={5}
+          empty={!isLoading && (data?.length ?? 0) === 0}
+          emptyTitle="No admin activity yet"
+          emptyDescription="Administrative actions will appear here as they happen."
+        >
+          <ul className="divide-y">
+            {data?.map((entry) => (
+              <li key={entry._id} className="flex items-start justify-between gap-3 py-2">
+                <div className="min-w-0">
+                  <p className="truncate text-sm">
+                    <span className="font-medium">{entry.actorName}</span>{" "}
+                    <span className="text-muted-foreground">{entry.action}</span>
+                  </p>
+                  <p className="truncate text-xs text-muted-foreground">
+                    {entry.targetLabel}
+                  </p>
+                </div>
+                <span className="shrink-0 text-xs text-muted-foreground">
+                  {formatRelativeTime(entry.createdAt)}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </PanelState>
+      </CardContent>
+    </Card>
   );
 }

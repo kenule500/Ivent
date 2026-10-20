@@ -10,7 +10,9 @@
 
 import type * as admin from "../admin.js";
 import type * as analytics from "../analytics.js";
+import type * as analyticsFilters from "../analyticsFilters.js";
 import type * as audit from "../audit.js";
+import type * as commandCenter from "../commandCenter.js";
 import type * as crons from "../crons.js";
 import type * as dashboard from "../dashboard.js";
 import type * as emails from "../emails.js";
@@ -33,7 +35,9 @@ import type {
 declare const fullApi: ApiFromModules<{
   admin: typeof admin;
   analytics: typeof analytics;
+  analyticsFilters: typeof analyticsFilters;
   audit: typeof audit;
+  commandCenter: typeof commandCenter;
   crons: typeof crons;
   dashboard: typeof dashboard;
   emails: typeof emails;

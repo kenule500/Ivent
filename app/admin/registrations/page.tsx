@@ -44,6 +44,7 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 import { CancelRegistrationModal } from "@/components/admin/cancel-registration-modal";
 import { Pagination } from "@/components/admin/pagination";
+import { PageHeader } from "@/components/admin/page-header";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -196,18 +197,17 @@ export default function AdminRegistrationsPage() {
     <>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Registrations</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Manage all event registrations across the platform
-            </p>
-          </div>
-          <Button onClick={handleExport} className="gap-2 shrink-0">
-            <Download className="w-4 h-4" />
-            Export CSV
-          </Button>
-        </div>
+        <PageHeader
+          title="Registrations"
+          description="Manage all event registrations across the platform."
+          breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Registrations" }]}
+          actions={
+            <Button onClick={handleExport} className="gap-2 shrink-0">
+              <Download className="w-4 h-4" />
+              Export CSV
+            </Button>
+          }
+        />
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

@@ -2,40 +2,27 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import {
-  LayoutDashboard,
-  Users,
-  Calendar,
-  Ticket,
-  BarChart3,
-  Settings,
-  ArrowLeft,
-  LogOut,
-  KeyRound,
-  Activity,
-  X,
-  Shield,
-} from "lucide-react";
+import { ArrowLeft, LogOut, Shield, X } from "lucide-react";
 import { SignOutButton } from "@clerk/nextjs";
-
-const navItems = [
-  { href: "/admin/dashboard", label: "Dashboard", icon: LayoutDashboard },
-  { href: "/admin/users", label: "Users", icon: Users },
-  { href: "/admin/events", label: "Events", icon: Calendar },
-  { href: "/admin/registrations", label: "Registrations", icon: Ticket },
-  { href: "/admin/invites", label: "Admin Invites", icon: KeyRound },
-  { href: "/admin/audit", label: "Audit Log", icon: Activity },
-  { href: "/admin/analytics", label: "Analytics", icon: BarChart3 },
-  { href: "/admin/settings", label: "Settings", icon: Settings },
-];
+import {
+  groupedNavItems,
+  isNavItemActive,
+  type AdminFeatureFlag,
+} from "@/lib/admin-nav";
 
 interface AdminSidebarProps {
   isOpen: boolean;
   onClose: () => void;
+  enabledFlags?: Partial<Record<AdminFeatureFlag, boolean>>;
 }
 
-export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
+export default function AdminSidebar({
+  isOpen,
+  onClose,
+  enabledFlags,
+}: AdminSidebarProps) {
   const pathname = usePathname();
+  const groups = groupedNavItems(enabledFlags);
 
   return (
     <>
@@ -53,10 +40,11 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         className={`
           fixed top-0 left-0 bottom-0 w-64 bg-background border-r z-50
           flex flex-col
-          transition-transform duration-300 ease-in-out
+          transition-transform duration-300 ease-in-out motion-reduce:transition-none
           md:translate-x-0
           ${isOpen ? "translate-x-0" : "-translate-x-full"}
         `}
+        aria-label="Admin navigation"
       >
         {/* Header */}
         <div className="p-6 flex items-center justify-between border-b">
@@ -80,25 +68,33 @@ export default function AdminSidebar({ isOpen, onClose }: AdminSidebarProps) {
         </div>
 
         {/* Nav */}
-        <nav className="flex-1 overflow-y-auto p-4 space-y-1">
-          {navItems.map((item) => {
-            const isActive = pathname === item.href;
-            return (
-              <Link
-                key={item.href}
-                href={item.href}
-                onClick={onClose}
-                className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm ${
-                  isActive
-                    ? "bg-purple-500/10 text-purple-500 font-medium"
-                    : "hover:bg-muted text-muted-foreground hover:text-foreground"
-                }`}
-              >
-                <item.icon className="w-5 h-5 shrink-0" />
-                {item.label}
-              </Link>
-            );
-          })}
+        <nav className="flex-1 overflow-y-auto p-4 space-y-5">
+          {groups.map(({ group, items }) => (
+            <div key={group} className="space-y-1">
+              <p className="px-3 text-[0.65rem] font-semibold uppercase tracking-wider text-muted-foreground">
+                {group}
+              </p>
+              {items.map((item) => {
+                const isActive = isNavItemActive(item.href, pathname);
+                return (
+                  <Link
+                    key={item.href}
+                    href={item.href}
+                    onClick={onClose}
+                    aria-current={isActive ? "page" : undefined}
+                    className={`flex items-center gap-3 px-3 py-2.5 rounded-lg transition-colors text-sm ${
+                      isActive
+                        ? "bg-purple-500/10 text-purple-500 font-medium"
+                        : "hover:bg-muted text-muted-foreground hover:text-foreground"
+                    }`}
+                  >
+                    <item.icon className="w-5 h-5 shrink-0" />
+                    {item.label}
+                  </Link>
+                );
+              })}
+            </div>
+          ))}
         </nav>
 
         {/* Footer */}

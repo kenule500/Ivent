@@ -11,6 +11,7 @@ import {
   Ban,
 } from "lucide-react";
 import { StatCard, UsersTable } from "@/components/admin";
+import { PageHeader } from "@/components/admin/page-header";
 
 export default function AdminUsersPage() {
   const [search, setSearch] = useState("");
@@ -27,14 +28,11 @@ export default function AdminUsersPage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">User Management</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage all platform users and their permissions
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="User Management"
+        description="Manage all platform users and their permissions."
+        breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Users" }]}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

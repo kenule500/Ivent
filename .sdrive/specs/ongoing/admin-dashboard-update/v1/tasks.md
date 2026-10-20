@@ -26,34 +26,34 @@ updated: 2026-10-20
 
 ## P1 — Foundations
 
-- [ ] **T1.1** Extend the Convex schema with new tables, indexes, and audit literals.
+- [x] **T1.1** Extend the Convex schema with new tables, indexes, and audit literals.
   - Linked: FR-039, FR-042, NFR-016, AC-022, AC-025, AC-028
   - Add platformSettings, announcements, announcementDeliveries, feedback, emailEvents, and cronRuns tables with their indexes; add settings, announcement, feedback, and export targetType literals plus the six new audit action literals; add users.by_createdAt, registrations.by_registeredAt, and registrations.by_event_status. Deploy this schema before any code that writes the new literals.
-- [ ] **T1.2** Add requireSuperAdmin and enforce server-side authorization in new functions.
+- [x] **T1.2** Add requireSuperAdmin and enforce server-side authorization in new functions.
   - Linked: FR-040, NFR-001, NFR-002, NFR-004, AC-022, AC-025, AC-027
   - Add requireSuperAdmin beside requireAdmin in convex/helpers.ts, document the rule that every new function declares convex/values arguments and calls requireAdmin or requireSuperAdmin, and add the bounded search and pagination helpers reused by palette, feedback, and reports.
-- [ ] **T1.3** Extend the audit module with new literals and date-range filters.
+- [x] **T1.3** Extend the audit module with new literals and date-range filters.
   - Linked: FR-039, NFR-015, AC-022, AC-025, AC-028
   - Widen the action and target unions in convex/audit.ts, add date-range and target filters used by the audit page and the dashboard recent list, and keep logAdminAction the single write path for administrative mutations.
-- [ ] **T1.4** Add rate-limit buckets with retry hints.
+- [x] **T1.4** Add rate-limit buckets with retry hints.
   - Linked: NFR-003, AC-017, AC-025, AC-027
   - Add adminSearch, analytics, adminExport, broadcast, feedbackWrite, and feedback-submit buckets to convex/rateLimiter.ts, leaving existing buckets untouched, and return a retry hint on rejection so the UI can state when to try again.
-- [ ] **T1.5** Build the shared formatting module.
+- [x] **T1.5** Build the shared formatting module.
   - Linked: FR-027, FR-041, FR-044, FR-045, AC-005, AC-011, AC-019
   - Create lib/format.ts with currency, compact number, percentage, relative time, signed delta, and timezone-aware day bucketing. A zero or missing baseline renders "new" or "no change", never NaN or Infinity. Currency and timezone are parameters supplied from platform settings.
-- [ ] **T1.6** Build the OWASP-compliant CSV serializer.
+- [x] **T1.6** Build the OWASP-compliant CSV serializer.
   - Linked: FR-019, NFR-005, NFR-013, AC-017
   - Create lib/csv.ts as a pure serializer: header plus rows, every field quoted, internal quotes doubled, leading = + - @ tab CR LF neutralised with a tab prefix, and an exported MAX_EXPORT_ROWS of 10000. No CSV package is added.
-- [ ] **T1.7** Define the shared analytics filter contract and scope resolver.
+- [x] **T1.7** Define the shared analytics filter contract and scope resolver.
   - Linked: FR-011, FR-013, FR-017, FR-042, NFR-008, AC-008, AC-009, AC-010
   - Create lib/analytics-filters.ts with the client filter model, presets, URL serialization, and the 730-day clamp, and convex/analyticsFilters.ts with the single analyticsFilterValidator plus resolveAnalyticsScope. The resolver narrows events and registrations through indexes, runs once per handler, and returns appliedFilters and rowCounts.
-- [ ] **T1.8** Create shared panel states and a local error boundary.
+- [x] **T1.8** Create shared panel states and a local error boundary.
   - Linked: FR-043, NFR-011, AC-007, AC-032
   - Create components/admin/panel-state.tsx with skeletons shaped like the final layout, empty and error states with retry, and a PanelErrorBoundary that contains a failing Convex query to its own panel because Convex throws into the React tree.
-- [ ] **T1.9** Create the shared page header component.
+- [x] **T1.9** Create the shared page header component.
   - Linked: FR-003, NFR-010, AC-002
   - Create components/admin/page-header.tsx with title, one-sentence description, breadcrumb, and an optional primary-action slot that wraps without horizontal scrolling at 360px.
-- [ ] **T1.10** Create the single admin navigation configuration.
+- [x] **T1.10** Create the single admin navigation configuration.
   - Linked: FR-001, FR-026, AC-001, AC-021
   - Create lib/admin-nav.ts with typed groups for Overview, Audience, Events, Operations, Governance, and Personal, each item carrying href, label, icon, group, and an optional feature flag key. This is the only source of admin destinations.
 
@@ -61,28 +61,28 @@ updated: 2026-10-20
 
 Depends on: P1.
 
-- [ ] **T2.1** Rebuild the sidebar from the navigation configuration.
+- [x] **T2.1** Rebuild the sidebar from the navigation configuration.
   - Linked: FR-001, FR-002, AC-001
   - Render lib/admin-nav groups, filter flagged items through platform settings, mark the active route with aria-current, close the drawer on route change, and restore focus to the drawer trigger without regressing the existing responsive behaviour.
-- [ ] **T2.2** Apply the shared page header across every admin page.
+- [x] **T2.2** Apply the shared page header across every admin page.
   - Linked: FR-003, NFR-010, AC-002
   - Add the header slot to app/admin/layout.tsx and give dashboard, analytics, users, events, registrations, invites, audit, and settings their title, purpose, breadcrumb, and primary action.
-- [ ] **T2.3** Mount the command palette and own its keyboard lifecycle.
+- [x] **T2.3** Mount the command palette and own its keyboard lifecycle.
   - Linked: FR-004, FR-006, AC-003
   - Mount one palette instance in app/admin/layout.tsx, add the Ctrl/Cmd+K listener that respects focused text fields, trap focus while open, close on Esc, return focus to the invoking element, and expose role-permitted quick actions.
-- [ ] **T2.4** Build the palette dialog with grouped results and states.
+- [x] **T2.4** Build the palette dialog with grouped results and states.
   - Linked: FR-004, FR-005, FR-006, NFR-009, NFR-011, AC-003, AC-004
   - Build components/admin/command-palette.tsx from components/ui/dialog: labelled input, 250 ms debounce, two-character minimum, grouped Pages, Users, Events, and Registrations sections, arrow and Enter navigation, a query-naming empty state, and an inline retry on failure.
-- [ ] **T2.5** Add the admin-authorized palette search query.
+- [x] **T2.5** Add the admin-authorized palette search query.
   - Linked: FR-005, NFR-003, AC-003, AC-004
   - Add admin.searchPalette: authorize with requireAdmin, reject queries under two characters, reuse events.search_title, bound user name/email matching to five, bound registration lookup to five through the event join, consume the adminSearch bucket, and return a typed result union.
-- [ ] **T2.6** Add command-center trend queries and trend cards.
+- [x] **T2.6** Add command-center trend queries and trend cards.
   - Linked: FR-007, FR-014, FR-041, AC-005
   - Create convex/commandCenter.ts#getTrends returning current and previous totals plus a 30-point sparkline per metric, and components/admin/trend-card.tsx with the named comparison window, a direction indicator that is not colour-only, an aria-label, and a Recharts sparkline.
-- [ ] **T2.7** Add the action queue, today at a glance, and recent audit panels.
+- [x] **T2.7** Add the action queue, today at a glance, and recent audit panels.
   - Linked: FR-008, FR-009, FR-045, AC-006, AC-007
   - Add getActionQueue (expiring invites, at-capacity events, feedback older than 48 hours, failed deliveries, each with a count and three previews), getToday (today's events with check-in progress), and getRecentAudit (ten entries with actor and relative time), then render them with links to their modules and an as-of label.
-- [ ] **T2.8** Recompose the dashboard into independently fetching panels.
+- [x] **T2.8** Recompose the dashboard into independently fetching panels.
   - Linked: FR-010, FR-043, NFR-011, AC-007, AC-032
   - Split app/admin/dashboard/page.tsx into four panels, each with its own query, loading skeleton, empty state, and PanelErrorBoundary, so one slow or failing block never blanks the page.
 

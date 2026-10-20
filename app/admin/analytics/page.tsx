@@ -7,16 +7,16 @@ import {
   CityChart,
   TopEvents,
 } from "@/components/admin/analytics-charts";
+import { PageHeader } from "@/components/admin/page-header";
 
 export default function AdminAnalyticsPage() {
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Analytics</h1>
-        <p className="text-muted-foreground">
-          Platform insights and growth metrics
-        </p>
-      </div>
+      <PageHeader
+        title="Analytics"
+        description="Platform insights and growth metrics."
+        breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Analytics" }]}
+      />
 
       {/* Summary Cards */}
       <AnalyticsSummary />

@@ -12,7 +12,7 @@
         "T1.10",
         "T2.1"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-002",
@@ -23,7 +23,7 @@
       "taskIds": [
         "T2.1"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-003",
@@ -35,7 +35,7 @@
         "T1.9",
         "T2.2"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-004",
@@ -47,7 +47,7 @@
         "T2.3",
         "T2.4"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-005",
@@ -60,7 +60,7 @@
         "T2.4",
         "T2.5"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-006",
@@ -72,7 +72,7 @@
         "T2.3",
         "T2.4"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-007",
@@ -83,7 +83,7 @@
       "taskIds": [
         "T2.6"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-008",
@@ -94,7 +94,7 @@
       "taskIds": [
         "T2.7"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-009",
@@ -105,7 +105,7 @@
       "taskIds": [
         "T2.7"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-010",
@@ -117,7 +117,7 @@
       "taskIds": [
         "T2.8"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-011",
@@ -130,7 +130,7 @@
         "T1.7",
         "T3.2"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-012",
@@ -153,7 +153,7 @@
         "T1.7",
         "T3.2"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-014",
@@ -167,7 +167,7 @@
         "T3.3",
         "T3.10"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-015",
@@ -207,7 +207,7 @@
         "T3.3",
         "T3.8"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-018",
@@ -232,7 +232,7 @@
         "T1.6",
         "T4.2"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-020",
@@ -316,7 +316,7 @@
         "T1.10",
         "T5.4"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-027",
@@ -329,7 +329,7 @@
         "T1.5",
         "T5.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-028",
@@ -472,7 +472,7 @@
         "T1.1",
         "T1.3"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-040",
@@ -485,7 +485,7 @@
       "taskIds": [
         "T1.2"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-041",
@@ -500,7 +500,7 @@
         "T3.10",
         "T5.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-042",
@@ -513,7 +513,7 @@
         "T1.1",
         "T1.7"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-043",
@@ -526,7 +526,7 @@
         "T1.8",
         "T2.8"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "FR-044",
@@ -541,7 +541,7 @@
         "T4.5",
         "T5.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "FR-045",
@@ -557,7 +557,7 @@
         "T4.8",
         "T5.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-001",
@@ -571,7 +571,7 @@
         "T1.2",
         "T6.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-002",
@@ -586,7 +586,7 @@
         "T5.7",
         "T6.5"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-003",
@@ -602,7 +602,7 @@
         "T5.7",
         "T5.10"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-004",
@@ -619,7 +619,7 @@
         "T5.8",
         "T5.10"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-005",
@@ -633,7 +633,7 @@
         "T5.10",
         "T5.12"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-006",
@@ -668,7 +668,7 @@
       "taskIds": [
         "T1.7"
       ],
-      "status": "not_started"
+      "status": "complete"
     },
     {
       "requirementId": "NFR-009",
@@ -683,7 +683,7 @@
         "T5.8",
         "T6.4"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-010",
@@ -696,7 +696,7 @@
         "T2.2",
         "T6.4"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-011",
@@ -713,7 +713,7 @@
         "T4.8",
         "T5.12"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-012",
@@ -738,7 +738,7 @@
         "T4.2",
         "T4.3"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-014",
@@ -768,7 +768,7 @@
         "T5.7",
         "T5.11"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     },
     {
       "requirementId": "NFR-016",
@@ -780,7 +780,7 @@
         "T1.1",
         "T5.11"
       ],
-      "status": "not_started"
+      "status": "in_progress"
     }
   ]
 }

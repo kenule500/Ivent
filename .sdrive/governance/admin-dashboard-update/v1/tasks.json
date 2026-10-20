@@ -11,238 +11,415 @@
           "id": "T1.1",
           "title": "Extend the Convex schema with new tables, indexes, and audit literals",
           "description": "Add platformSettings, announcements, announcementDeliveries, feedback, emailEvents, and cronRuns tables with their indexes; add settings, announcement, feedback, and export targetType literals plus the six new audit action literals; add users.by_createdAt, registrations.by_registeredAt, and registrations.by_event_status. Deploy this schema before any code that writes the new literals.",
-          "linkedRequirements": ["FR-039", "FR-042", "NFR-016"],
-          "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-039",
+            "FR-042",
+            "NFR-016"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-022",
+            "AC-025",
+            "AC-028"
+          ],
+          "completed": true
         },
         {
           "id": "T1.2",
           "title": "Add requireSuperAdmin and enforce server-side authorization in new functions",
           "description": "Add requireSuperAdmin beside requireAdmin in convex/helpers.ts, document the rule that every new function declares convex/values arguments and calls requireAdmin or requireSuperAdmin, and add the bounded search and pagination helpers reused by palette, feedback, and reports.",
-          "linkedRequirements": ["FR-040", "NFR-001", "NFR-002", "NFR-004"],
-          "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-027"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-040",
+            "NFR-001",
+            "NFR-002",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-022",
+            "AC-025",
+            "AC-027"
+          ],
+          "completed": true
         },
         {
           "id": "T1.3",
           "title": "Extend the audit module with new literals and date-range filters",
           "description": "Widen the action and target unions in convex/audit.ts, add date-range and target filters used by the audit page and the dashboard recent list, and keep logAdminAction the single write path for administrative mutations.",
-          "linkedRequirements": ["FR-039", "NFR-015"],
-          "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-039",
+            "NFR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-022",
+            "AC-025",
+            "AC-028"
+          ],
+          "completed": true
         },
         {
           "id": "T1.4",
           "title": "Add rate-limit buckets with retry hints",
           "description": "Add adminSearch, analytics, adminExport, broadcast, feedbackWrite, and feedback-submit buckets to convex/rateLimiter.ts, leaving existing buckets untouched, and return a retry hint on rejection so the UI can state when to try again.",
-          "linkedRequirements": ["NFR-003"],
-          "linkedAcceptanceCriteria": ["AC-017", "AC-025", "AC-027"],
-          "completed": false
+          "linkedRequirements": [
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-017",
+            "AC-025",
+            "AC-027"
+          ],
+          "completed": true
         },
         {
           "id": "T1.5",
           "title": "Build the shared formatting module",
           "description": "Create lib/format.ts with currency, compact number, percentage, relative time, signed delta, and timezone-aware day bucketing. A zero or missing baseline renders \"new\" or \"no change\", never NaN or Infinity. Currency and timezone are parameters supplied from platform settings.",
-          "linkedRequirements": ["FR-027", "FR-041", "FR-044", "FR-045"],
-          "linkedAcceptanceCriteria": ["AC-005", "AC-011", "AC-019"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-027",
+            "FR-041",
+            "FR-044",
+            "FR-045"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005",
+            "AC-011",
+            "AC-019"
+          ],
+          "completed": true
         },
         {
           "id": "T1.6",
           "title": "Build the OWASP-compliant CSV serializer",
           "description": "Create lib/csv.ts as a pure serializer: header plus rows, every field quoted, internal quotes doubled, leading = + - @ tab CR LF neutralised with a tab prefix, and an exported MAX_EXPORT_ROWS of 10000. No CSV package is added.",
-          "linkedRequirements": ["FR-019", "NFR-005", "NFR-013"],
-          "linkedAcceptanceCriteria": ["AC-017"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-019",
+            "NFR-005",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-017"
+          ],
+          "completed": true
         },
         {
           "id": "T1.7",
           "title": "Define the shared analytics filter contract and scope resolver",
           "description": "Create lib/analytics-filters.ts with the client filter model, presets, URL serialization, and the 730-day clamp, and convex/analyticsFilters.ts with the single analyticsFilterValidator plus resolveAnalyticsScope. The resolver narrows events and registrations through indexes, runs once per handler, and returns appliedFilters and rowCounts.",
-          "linkedRequirements": ["FR-011", "FR-013", "FR-017", "FR-042", "NFR-008"],
-          "linkedAcceptanceCriteria": ["AC-008", "AC-009", "AC-010"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-011",
+            "FR-013",
+            "FR-017",
+            "FR-042",
+            "NFR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008",
+            "AC-009",
+            "AC-010"
+          ],
+          "completed": true
         },
         {
           "id": "T1.8",
           "title": "Create shared panel states and a local error boundary",
           "description": "Create components/admin/panel-state.tsx with skeletons shaped like the final layout, empty and error states with retry, and a PanelErrorBoundary that contains a failing Convex query to its own panel because Convex throws into the React tree.",
-          "linkedRequirements": ["FR-043", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-007", "AC-032"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-043",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-032"
+          ],
+          "completed": true
         },
         {
           "id": "T1.9",
           "title": "Create the shared page header component",
           "description": "Create components/admin/page-header.tsx with title, one-sentence description, breadcrumb, and an optional primary-action slot that wraps without horizontal scrolling at 360px.",
-          "linkedRequirements": ["FR-003", "NFR-010"],
-          "linkedAcceptanceCriteria": ["AC-002"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-003",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
         },
         {
           "id": "T1.10",
           "title": "Create the single admin navigation configuration",
           "description": "Create lib/admin-nav.ts with typed groups for Overview, Audience, Events, Operations, Governance, and Personal, each item carrying href, label, icon, group, and an optional feature flag key. This is the only source of admin destinations.",
-          "linkedRequirements": ["FR-001", "FR-026"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-021"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-001",
+            "FR-026"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-021"
+          ],
+          "completed": true
         }
       ]
     },
     {
       "phaseId": "P2",
       "name": "Shell and command center",
-      "dependencies": ["P1"],
+      "dependencies": [
+        "P1"
+      ],
       "tasks": [
         {
           "id": "T2.1",
           "title": "Rebuild the sidebar from the navigation configuration",
           "description": "Render lib/admin-nav groups, filter flagged items through platform settings, mark the active route with aria-current, close the drawer on route change, and restore focus to the drawer trigger without regressing the existing responsive behaviour.",
-          "linkedRequirements": ["FR-001", "FR-002"],
-          "linkedAcceptanceCriteria": ["AC-001"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-001",
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
+          "completed": true
         },
         {
           "id": "T2.2",
           "title": "Apply the shared page header across every admin page",
           "description": "Add the header slot to app/admin/layout.tsx and give dashboard, analytics, users, events, registrations, invites, audit, and settings their title, purpose, breadcrumb, and primary action.",
-          "linkedRequirements": ["FR-003", "NFR-010"],
-          "linkedAcceptanceCriteria": ["AC-002"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-003",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
         },
         {
           "id": "T2.3",
           "title": "Mount the command palette and own its keyboard lifecycle",
           "description": "Mount one palette instance in app/admin/layout.tsx, add the Ctrl/Cmd+K listener that respects focused text fields, trap focus while open, close on Esc, return focus to the invoking element, and expose role-permitted quick actions.",
-          "linkedRequirements": ["FR-004", "FR-006"],
-          "linkedAcceptanceCriteria": ["AC-003"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-004",
+            "FR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003"
+          ],
+          "completed": true
         },
         {
           "id": "T2.4",
           "title": "Build the palette dialog with grouped results and states",
           "description": "Build components/admin/command-palette.tsx from components/ui/dialog: labelled input, 250 ms debounce, two-character minimum, grouped Pages, Users, Events, and Registrations sections, arrow and Enter navigation, a query-naming empty state, and an inline retry on failure.",
-          "linkedRequirements": ["FR-004", "FR-005", "FR-006", "NFR-009", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-003", "AC-004"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-004",
+            "FR-005",
+            "FR-006",
+            "NFR-009",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-004"
+          ],
+          "completed": true
         },
         {
           "id": "T2.5",
           "title": "Add the admin-authorized palette search query",
           "description": "Add admin.searchPalette: authorize with requireAdmin, reject queries under two characters, reuse events.search_title, bound user name/email matching to five, bound registration lookup to five through the event join, consume the adminSearch bucket, and return a typed result union.",
-          "linkedRequirements": ["FR-005", "NFR-003"],
-          "linkedAcceptanceCriteria": ["AC-003", "AC-004"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-005",
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-004"
+          ],
+          "completed": true
         },
         {
           "id": "T2.6",
           "title": "Add command-center trend queries and trend cards",
           "description": "Create convex/commandCenter.ts#getTrends returning current and previous totals plus a 30-point sparkline per metric, and components/admin/trend-card.tsx with the named comparison window, a direction indicator that is not colour-only, an aria-label, and a Recharts sparkline.",
-          "linkedRequirements": ["FR-007", "FR-014", "FR-041"],
-          "linkedAcceptanceCriteria": ["AC-005"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-007",
+            "FR-014",
+            "FR-041"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
         },
         {
           "id": "T2.7",
           "title": "Add the action queue, today at a glance, and recent audit panels",
           "description": "Add getActionQueue (expiring invites, at-capacity events, feedback older than 48 hours, failed deliveries, each with a count and three previews), getToday (today's events with check-in progress), and getRecentAudit (ten entries with actor and relative time), then render them with links to their modules and an as-of label.",
-          "linkedRequirements": ["FR-008", "FR-009", "FR-045"],
-          "linkedAcceptanceCriteria": ["AC-006", "AC-007"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-008",
+            "FR-009",
+            "FR-045"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006",
+            "AC-007"
+          ],
+          "completed": true
         },
         {
           "id": "T2.8",
           "title": "Recompose the dashboard into independently fetching panels",
           "description": "Split app/admin/dashboard/page.tsx into four panels, each with its own query, loading skeleton, empty state, and PanelErrorBoundary, so one slow or failing block never blanks the page.",
-          "linkedRequirements": ["FR-010", "FR-043", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-007", "AC-032"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-010",
+            "FR-043",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-032"
+          ],
+          "completed": true
         }
       ]
     },
     {
       "phaseId": "P3",
       "name": "Analytics workspace",
-      "dependencies": ["P1", "P2"],
+      "dependencies": [
+        "P1",
+        "P2"
+      ],
       "tasks": [
         {
           "id": "T3.1",
           "title": "Add URL-encoded filter state with presets and custom ranges",
           "description": "Wire lib/analytics-filters.ts into the analytics page: 7/30/90/365 presets, react-day-picker custom range, URL encoding that survives reload and back/forward, and one filter set driving every card and chart.",
-          "linkedRequirements": ["FR-012"],
-          "linkedAcceptanceCriteria": ["AC-008"],
+          "linkedRequirements": [
+            "FR-012"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008"
+          ],
           "completed": false
         },
         {
           "id": "T3.2",
           "title": "Build the filter bar, chips, and range validation",
           "description": "Add category, country, city, ticket type, organizer, registration status, and check-in controls; render active filters as removable chips plus Clear all; reject start-after-end and spans over 730 days inline while keeping the last valid query.",
-          "linkedRequirements": ["FR-011", "FR-013"],
-          "linkedAcceptanceCriteria": ["AC-009", "AC-010"],
+          "linkedRequirements": [
+            "FR-011",
+            "FR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009",
+            "AC-010"
+          ],
           "completed": false
         },
         {
           "id": "T3.3",
           "title": "Add the summary query with previous-period comparison",
           "description": "Replace the fixed-window analytics summary with a filter-aware getSummary that duplicates the range backwards by its exact length and returns current, previous, absolute delta, and a nullable percentage delta plus appliedFilters and rowCounts.",
-          "linkedRequirements": ["FR-014", "FR-017"],
-          "linkedAcceptanceCriteria": ["AC-011"],
+          "linkedRequirements": [
+            "FR-014",
+            "FR-017"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-011"
+          ],
           "completed": false
         },
         {
           "id": "T3.4",
           "title": "Add time-series and revenue-split charts",
           "description": "Add filter-aware getTimeSeries for users, events, registrations, and revenue, including a free/paid revenue split, bucketed by the platform timezone and rendered as a ghost series when comparison is on.",
-          "linkedRequirements": ["FR-015"],
-          "linkedAcceptanceCriteria": ["AC-013"],
+          "linkedRequirements": [
+            "FR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-013"
+          ],
           "completed": false
         },
         {
           "id": "T3.5",
           "title": "Add the registration funnel, check-in trend, and capacity utilisation",
           "description": "Add getFunnel for registered, confirmed, and checked-in steps with step conversion, a check-in rate over time, and a capacity-utilisation distribution for the filtered event set.",
-          "linkedRequirements": ["FR-015"],
-          "linkedAcceptanceCriteria": ["AC-013"],
+          "linkedRequirements": [
+            "FR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-013"
+          ],
           "completed": false
         },
         {
           "id": "T3.6",
           "title": "Add cohort and retention analysis",
           "description": "Add getCohorts returning new versus returning attendees per cohort period, define \"returning\" as a first registration predating the cohort period, state that definition on the card, and show the minimum-data requirement instead of empty axes.",
-          "linkedRequirements": ["FR-015"],
-          "linkedAcceptanceCriteria": ["AC-014"],
+          "linkedRequirements": [
+            "FR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-014"
+          ],
           "completed": false
         },
         {
           "id": "T3.7",
           "title": "Add the weekday by hour registration heatmap",
           "description": "Add getHeatmap bucketing registrations by local weekday and hour in the platform timezone, with an accessible legend and the active timezone displayed on the card.",
-          "linkedRequirements": ["FR-015", "FR-044"],
-          "linkedAcceptanceCriteria": ["AC-013"],
+          "linkedRequirements": [
+            "FR-015",
+            "FR-044"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-013"
+          ],
           "completed": false
         },
         {
           "id": "T3.8",
           "title": "Add dimension breakdown charts",
           "description": "Add getBreakdown for category, country, city, ticket type, status, and organizer, replacing the existing category and city charts while keeping filter context in every response.",
-          "linkedRequirements": ["FR-015", "FR-017"],
-          "linkedAcceptanceCriteria": ["AC-009", "AC-013"],
+          "linkedRequirements": [
+            "FR-015",
+            "FR-017"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009",
+            "AC-013"
+          ],
           "completed": false
         },
         {
           "id": "T3.9",
           "title": "Wrap every chart in a card with a data-table alternative",
           "description": "Create the chart card shell with title, one-line interpretation, skeleton, and empty state, plus components/admin/data-table-alt.tsx inside a figure with figcaption so each chart's numbers are keyboard-reachable as text.",
-          "linkedRequirements": ["FR-016", "NFR-009", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-015"],
+          "linkedRequirements": [
+            "FR-016",
+            "NFR-009",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-015"
+          ],
           "completed": false
         },
         {
           "id": "T3.10",
           "title": "Add the comparison toggle and delta rendering",
           "description": "Add a session-persisted comparison toggle that hides deltas and ghost series when off, and render current, previous, absolute delta, percentage delta, and a non-colour direction indicator when on.",
-          "linkedRequirements": ["FR-014", "FR-041"],
-          "linkedAcceptanceCriteria": ["AC-011", "AC-012"],
+          "linkedRequirements": [
+            "FR-014",
+            "FR-041"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-011",
+            "AC-012"
+          ],
           "completed": false
         }
       ]
@@ -250,70 +427,123 @@
     {
       "phaseId": "P4",
       "name": "Operations: export, reports, and health",
-      "dependencies": ["P1", "P3"],
+      "dependencies": [
+        "P1",
+        "P3"
+      ],
       "tasks": [
         {
           "id": "T4.1",
           "title": "Build the export trigger with progress and toasts",
           "description": "Create components/admin/export-button.tsx: show progress while generating, reject repeat clicks, download the returned CSV as a Blob with text/csv;charset=utf-8, raise success or failure toasts, and name the failure reason without a stack trace.",
-          "linkedRequirements": ["FR-018", "FR-020"],
-          "linkedAcceptanceCriteria": ["AC-018"],
+          "linkedRequirements": [
+            "FR-018",
+            "FR-020"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-018"
+          ],
           "completed": false
         },
         {
           "id": "T4.2",
           "title": "Add the server-side CSV export mutation",
           "description": "Create convex/exports.ts#generate: authorize with requireAdmin, apply the same resolver as the visible view, accept only visible columns, enforce the 10000-row cap with a narrower-filter message, write export.generated with module and row count, consume the adminExport bucket, and return CSV text plus filename.",
-          "linkedRequirements": ["FR-018", "FR-019", "FR-020", "NFR-013", "NFR-015"],
-          "linkedAcceptanceCriteria": ["AC-016", "AC-017"],
+          "linkedRequirements": [
+            "FR-018",
+            "FR-019",
+            "FR-020",
+            "NFR-013",
+            "NFR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-016",
+            "AC-017"
+          ],
           "completed": false
         },
         {
           "id": "T4.3",
           "title": "Wire export into every list and analytics view",
           "description": "Add the export action to users, events, registrations, audit, and analytics with visible-column definitions and the <module>-<yyyy-MM-dd>.csv filename, leaving moderation logic untouched.",
-          "linkedRequirements": ["FR-018", "NFR-013"],
-          "linkedAcceptanceCriteria": ["AC-016"],
+          "linkedRequirements": [
+            "FR-018",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-016"
+          ],
           "completed": false
         },
         {
           "id": "T4.4",
           "title": "Build the reports hub event list",
           "description": "Add reports.listEvents with bounded search and pagination, and create app/admin/reports/page.tsx listing selectable events with date, organizer, and registration count.",
-          "linkedRequirements": ["FR-021"],
-          "linkedAcceptanceCriteria": ["AC-019"],
+          "linkedRequirements": [
+            "FR-021"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-019"
+          ],
           "completed": false
         },
         {
           "id": "T4.5",
           "title": "Add the per-event report query and view",
           "description": "Add reports.getEventReport composing attendance (confirmed, checked in, no-show, cancelled), a check-in series, capacity utilisation, and paid-event revenue, then render it with an as-of timestamp, timezone-aware labels, and a zeros-plus-explanation state for events with no registrations.",
-          "linkedRequirements": ["FR-021", "FR-044", "FR-045"],
-          "linkedAcceptanceCriteria": ["AC-019"],
+          "linkedRequirements": [
+            "FR-021",
+            "FR-044",
+            "FR-045"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-019"
+          ],
           "completed": false
         },
         {
           "id": "T4.6",
           "title": "Add report CSV export and the print stylesheet",
           "description": "Reuse the export path for the report and add route-scoped print CSS that hides the sidebar, header, and actions while showing a masthead with platform name, event, date, and as-of timestamp. PDF is the browser's print-to-PDF.",
-          "linkedRequirements": ["FR-022"],
-          "linkedAcceptanceCriteria": ["AC-020"],
+          "linkedRequirements": [
+            "FR-022"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-020"
+          ],
           "completed": false
         },
         {
           "id": "T4.7",
           "title": "Add health queries, cron heartbeats, and email event logging",
           "description": "Create convex/health.ts#getOverview for cron recency and status, 24-hour and 7-day email failures, rate-limit rejections, open-feedback age, and Boolean-only configuration presence; write cronRuns heartbeats from convex/crons.ts and emailEvents from the shared send helper.",
-          "linkedRequirements": ["FR-036", "FR-037", "NFR-006"],
-          "linkedAcceptanceCriteria": ["AC-030", "AC-031"],
+          "linkedRequirements": [
+            "FR-036",
+            "FR-037",
+            "NFR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-030",
+            "AC-031"
+          ],
           "completed": false
         },
         {
           "id": "T4.8",
           "title": "Build the system health page with per-card windows",
           "description": "Create app/admin/health/page.tsx with one card per signal, each stating its window and timestamp, isolated error and retry state, and configuration labels that never print a value.",
-          "linkedRequirements": ["FR-036", "FR-037", "FR-045", "NFR-006", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-030", "AC-031", "AC-032"],
+          "linkedRequirements": [
+            "FR-036",
+            "FR-037",
+            "FR-045",
+            "NFR-006",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-030",
+            "AC-031",
+            "AC-032"
+          ],
           "completed": false
         }
       ]
@@ -321,110 +551,204 @@
     {
       "phaseId": "P5",
       "name": "Governance and feedback",
-      "dependencies": ["P1", "P2"],
+      "dependencies": [
+        "P1",
+        "P2"
+      ],
       "tasks": [
         {
           "id": "T5.1",
           "title": "Add platform settings queries with a safe singleton read",
           "description": "Create convex/platform.ts: getSettings reads by_key(\"global\") and falls back to USD/UTC defaults when absent, updateSettings requires super_admin, validates country through country-state-city, currency and timezone through Intl.supportedValuesOf with fallback lists, and writes settings.updated with a shallow before/after diff. getPublicStatus returns only the maintenance flag and message.",
-          "linkedRequirements": ["FR-023", "FR-024", "NFR-002", "NFR-004", "NFR-015"],
-          "linkedAcceptanceCriteria": ["AC-021", "AC-022"],
+          "linkedRequirements": [
+            "FR-023",
+            "FR-024",
+            "NFR-002",
+            "NFR-004",
+            "NFR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-021",
+            "AC-022"
+          ],
           "completed": false
         },
         {
           "id": "T5.2",
           "title": "Build the platform settings page",
           "description": "Create app/admin/platform/page.tsx with a Zod-validated form for default country, currency, timezone, and the five feature flags, a read-only view for non-super-admins, and typed confirmation before enabling maintenance mode.",
-          "linkedRequirements": ["FR-023", "FR-024", "FR-025", "NFR-004"],
-          "linkedAcceptanceCriteria": ["AC-021", "AC-022", "AC-023"],
+          "linkedRequirements": [
+            "FR-023",
+            "FR-024",
+            "FR-025",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-021",
+            "AC-022",
+            "AC-023"
+          ],
           "completed": false
         },
         {
           "id": "T5.3",
           "title": "Add the maintenance render gate outside the admin segment",
           "description": "Create components/maintenance-gate.tsx, mount it in AdminAwareLayout around non-admin routes, subscribe to getPublicStatus, render the notice for signed-out and non-admin visitors, let admins bypass through the existing role query, and leave proxy.ts and Clerk middleware untouched.",
-          "linkedRequirements": ["FR-025"],
-          "linkedAcceptanceCriteria": ["AC-023"],
+          "linkedRequirements": [
+            "FR-025"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-023"
+          ],
           "completed": false
         },
         {
           "id": "T5.4",
           "title": "Enforce feature flags in navigation and on the server",
           "description": "Filter flagged destinations through platform settings in the sidebar, render a \"not enabled\" state for a direct URL hit, and have each flagged module's server query reject with a typed not-enabled error.",
-          "linkedRequirements": ["FR-026"],
-          "linkedAcceptanceCriteria": ["AC-021"],
+          "linkedRequirements": [
+            "FR-026"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-021"
+          ],
           "completed": false
         },
         {
           "id": "T5.5",
           "title": "Adopt platform defaults in every formatter and panel label",
           "description": "Add the client platform-settings hook and pass currency and timezone into lib/format.ts everywhere, remove any remaining hard-coded naira or Nigeria assumptions from admin screens, and surface the active timezone on time-bucketed cards and reports.",
-          "linkedRequirements": ["FR-027", "FR-041", "FR-044", "FR-045"],
-          "linkedAcceptanceCriteria": ["AC-019", "AC-021"],
+          "linkedRequirements": [
+            "FR-027",
+            "FR-041",
+            "FR-044",
+            "FR-045"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-019",
+            "AC-021"
+          ],
           "completed": false
         },
         {
           "id": "T5.6",
           "title": "Extract the shared Resend helper and email delivery log",
           "description": "Refactor convex/emails.ts into a shared send helper that writes an emailEvents row per attempt and supports the plain-text announcement template, preserving the existing invite behaviour, and keep cron heartbeats writing on both success and failure.",
-          "linkedRequirements": ["FR-036", "NFR-015"],
-          "linkedAcceptanceCriteria": ["AC-026", "AC-030"],
+          "linkedRequirements": [
+            "FR-036",
+            "NFR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-026",
+            "AC-030"
+          ],
           "completed": false
         },
         {
           "id": "T5.7",
           "title": "Add broadcast audience resolution and sending",
           "description": "Create convex/announcements.ts: resolveAudience counts and returns up to five masked samples for all users, organizers, one event's confirmed registrations de-duplicated by email, and admins; send requires super_admin, a matching typed confirmation, and the broadcast bucket, creates the record as sending, sends in batches of 50, writes one delivery row per recipient, updates counts and a sent or partial status, and writes announcement.sent.",
-          "linkedRequirements": ["FR-028", "FR-029", "FR-030", "NFR-002", "NFR-003", "NFR-015"],
-          "linkedAcceptanceCriteria": ["AC-024", "AC-025", "AC-026"],
+          "linkedRequirements": [
+            "FR-028",
+            "FR-029",
+            "FR-030",
+            "NFR-002",
+            "NFR-003",
+            "NFR-015"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-024",
+            "AC-025",
+            "AC-026"
+          ],
           "completed": false
         },
         {
           "id": "T5.8",
           "title": "Build the broadcast composer",
           "description": "Create the announcements page composer: audience selector with a resolved recipient count, masked sample preview, subject and body preview, send disabled at zero recipients, and typed confirmation before sending.",
-          "linkedRequirements": ["FR-028", "FR-029", "NFR-004", "NFR-009"],
-          "linkedAcceptanceCriteria": ["AC-024", "AC-025"],
+          "linkedRequirements": [
+            "FR-028",
+            "FR-029",
+            "NFR-004",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-024",
+            "AC-025"
+          ],
           "completed": false
         },
         {
           "id": "T5.9",
           "title": "Add the announcements history list",
           "description": "Render announcements with status, audience, recipient, sent and failed counts, author, and timestamp, so a partial failure is never presented as a success.",
-          "linkedRequirements": ["FR-030", "FR-031"],
-          "linkedAcceptanceCriteria": ["AC-026"],
+          "linkedRequirements": [
+            "FR-030",
+            "FR-031"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-026"
+          ],
           "completed": false
         },
         {
           "id": "T5.10",
           "title": "Add feedback submission and the public feedback page",
           "description": "Create convex/feedback.ts#submit requiring a signed-in identity, a validated type, a 10-2000 character message, an existing event when supplied, duplicate suppression per user, type, and event within 10 minutes, and the feedback bucket. Create app/(public)/feedback/page.tsx with an optional eventId parameter and a Report this event link, rendering all user content as text with no file uploads.",
-          "linkedRequirements": ["FR-032", "NFR-003", "NFR-004", "NFR-005"],
-          "linkedAcceptanceCriteria": ["AC-027"],
+          "linkedRequirements": [
+            "FR-032",
+            "NFR-003",
+            "NFR-004",
+            "NFR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-027"
+          ],
           "completed": false
         },
         {
           "id": "T5.11",
           "title": "Add the feedback inbox queries, mutations, and audited deletion",
           "description": "Add feedback.list with status, type, and priority filters plus counts, and feedback.update appending immutable notes, stamping resolvedBy and resolvedAt on terminal states, writing feedback.updated on every change, and writing feedback.deleted before an explicit deletion. Records are never auto-purged.",
-          "linkedRequirements": ["FR-033", "FR-034", "NFR-015", "NFR-016"],
-          "linkedAcceptanceCriteria": ["AC-028"],
+          "linkedRequirements": [
+            "FR-033",
+            "FR-034",
+            "NFR-015",
+            "NFR-016"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-028"
+          ],
           "completed": false
         },
         {
           "id": "T5.12",
           "title": "Build the feedback inbox interface",
           "description": "Create app/admin/feedback/page.tsx with filterable list, detail view, note composer, status and priority controls, target navigation, the target removed label when the event is gone, and text-only rendering of user content.",
-          "linkedRequirements": ["FR-033", "FR-035", "NFR-005", "NFR-011"],
-          "linkedAcceptanceCriteria": ["AC-028", "AC-029"],
+          "linkedRequirements": [
+            "FR-033",
+            "FR-035",
+            "NFR-005",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-028",
+            "AC-029"
+          ],
           "completed": false
         },
         {
           "id": "T5.13",
           "title": "Remove attendee concepts from admin settings",
           "description": "Delete the Onboarding InfoRow from app/admin/settings/page.tsx without reflowing the two-column layout, narrow the admin projection in convex/settings.ts so onboarding, interests, and attendee location are never returned, and render a truthful degraded state instead of inventing Pending.",
-          "linkedRequirements": ["FR-038"],
-          "linkedAcceptanceCriteria": ["AC-033", "AC-034"],
+          "linkedRequirements": [
+            "FR-038"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-033",
+            "AC-034"
+          ],
           "completed": false
         }
       ]
@@ -432,46 +756,80 @@
     {
       "phaseId": "P6",
       "name": "Verification",
-      "dependencies": ["P1", "P2", "P3", "P4", "P5"],
+      "dependencies": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
       "tasks": [
         {
           "id": "T6.1",
           "title": "Run the typechecker",
           "description": "Run npx tsc --noEmit and resolve every error introduced by the feature.",
-          "linkedRequirements": ["NFR-014"],
-          "linkedAcceptanceCriteria": ["AC-001"],
+          "linkedRequirements": [
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
           "completed": false
         },
         {
           "id": "T6.2",
           "title": "Run the linter",
           "description": "Run npm run lint and reach zero errors without disabling rules to hide feature code.",
-          "linkedRequirements": ["NFR-014"],
-          "linkedAcceptanceCriteria": ["AC-001"],
+          "linkedRequirements": [
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
           "completed": false
         },
         {
           "id": "T6.3",
           "title": "Validate SpecDrive governance",
           "description": "Run node .sdrive/scripts/validate-governance.js against the new spec, plan, tasks, and traceability, using the documented Ajv 8 resolution if the root install still exposes Ajv 6.",
-          "linkedRequirements": ["NFR-014"],
-          "linkedAcceptanceCriteria": ["AC-001"],
+          "linkedRequirements": [
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
           "completed": false
         },
         {
           "id": "T6.4",
           "title": "Run the manual accessibility, responsive, and motion pass",
           "description": "Keyboard and screen-reader pass over the palette, dialogs, filters, and every chart table; 360px check on every new screen; reduced-motion check for opacity and transform transitions.",
-          "linkedRequirements": ["NFR-009", "NFR-010", "NFR-012"],
-          "linkedAcceptanceCriteria": ["AC-002", "AC-003", "AC-015"],
+          "linkedRequirements": [
+            "NFR-009",
+            "NFR-010",
+            "NFR-012"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002",
+            "AC-003",
+            "AC-015"
+          ],
           "completed": false
         },
         {
           "id": "T6.5",
           "title": "Run the manual role and baseline-control matrix",
           "description": "Exercise user, admin, and super_admin against every new function, confirming client gating is never the only control and that proxy.ts, security headers, and transport enforcement are unchanged.",
-          "linkedRequirements": ["NFR-001", "NFR-002", "NFR-007"],
-          "linkedAcceptanceCriteria": ["AC-022", "AC-025", "AC-028"],
+          "linkedRequirements": [
+            "NFR-001",
+            "NFR-002",
+            "NFR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-022",
+            "AC-025",
+            "AC-028"
+          ],
           "completed": false
         }
       ]

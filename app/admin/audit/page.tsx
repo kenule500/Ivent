@@ -44,6 +44,7 @@ import {
   LucideIcon,
 } from "lucide-react";
 import { Pagination } from "@/components/admin/pagination";
+import { PageHeader } from "@/components/admin/page-header";
 
 const ITEMS_PER_PAGE = 20;
 
@@ -143,12 +144,11 @@ export default function AdminAuditPage() {
 
   return (
     <div className="space-y-6">
-      <div>
-        <h1 className="text-3xl font-bold">Audit Log</h1>
-        <p className="text-muted-foreground">
-          Complete history of admin actions across the platform
-        </p>
-      </div>
+      <PageHeader
+        title="Audit Log"
+        description="Complete history of admin actions across the platform."
+        breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Audit log" }]}
+      />
 
       {/* Stats */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

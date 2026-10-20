@@ -37,7 +37,9 @@ export default defineSchema({
 
         createdAt: v.optional(v.number()),
         updatedAt: v.optional(v.number()),
-    }).index("by_token", ["tokenIdentifier"]),
+    })
+    .index("by_token", ["tokenIdentifier"])
+    .index("by_createdAt", ["createdAt"]),
 
 
     events: defineTable({
@@ -113,7 +115,9 @@ export default defineSchema({
     .index("by_event", ["eventId"])
     .index("by_user", ["userId"])
     .index("by_event_user", ["eventId", "userId"])
-    .index("by_qrCode", ["qrCode"]),
+    .index("by_qrCode", ["qrCode"])
+    .index("by_registeredAt", ["registeredAt"])
+    .index("by_event_status", ["eventId", "status"]),
 
     // convex/schema.ts (Add this table)
     adminInvites: defineTable({
@@ -163,7 +167,13 @@ export default defineSchema({
             v.literal("invite.revoked"),
             v.literal("invite.resent"),
             v.literal("invite.deleted"),
-            v.literal("registration.cancelled")
+            v.literal("registration.cancelled"),
+            v.literal("settings.updated"),
+            v.literal("announcement.sent"),
+            v.literal("feedback.updated"),
+            v.literal("feedback.deleted"),
+            v.literal("export.generated"),
+            v.literal("maintenance.changed")
         ),
         
         // What they acted on
@@ -171,7 +181,11 @@ export default defineSchema({
             v.literal("event"),
             v.literal("user"),
             v.literal("invite"),
-            v.literal("registration")
+            v.literal("registration"),
+            v.literal("settings"),
+            v.literal("announcement"),
+            v.literal("feedback"),
+            v.literal("export")
         ),
         targetId: v.string(),
         targetLabel: v.string(), // e.g. event title, user email, invite code
@@ -185,4 +199,123 @@ export default defineSchema({
         .index("by_createdAt", ["createdAt"])
         .index("by_actor", ["actorId"])
         .index("by_action", ["action"]),
+
+    // Platform-wide defaults, feature flags, and maintenance mode (singleton: key = "global")
+    platformSettings: defineTable({
+        key: v.string(),
+        defaultCountry: v.string(),
+        defaultCurrency: v.string(),
+        defaultTimezone: v.string(),
+        maintenanceMode: v.boolean(),
+        maintenanceMessage: v.optional(v.string()),
+        featureFlags: v.object({
+            commandPalette: v.boolean(),
+            reports: v.boolean(),
+            broadcasts: v.boolean(),
+            feedbackInbox: v.boolean(),
+            systemHealth: v.boolean(),
+        }),
+        updatedBy: v.id("users"),
+        updatedAt: v.number(),
+    }).index("by_key", ["key"]),
+
+    // Broadcast announcements
+    announcements: defineTable({
+        subject: v.string(),
+        body: v.string(),
+        audienceType: v.union(
+            v.literal("all"),
+            v.literal("organizers"),
+            v.literal("event"),
+            v.literal("admins")
+        ),
+        audienceEventId: v.optional(v.id("events")),
+        recipientCount: v.number(),
+        sentCount: v.number(),
+        failedCount: v.number(),
+        status: v.union(
+            v.literal("draft"),
+            v.literal("sending"),
+            v.literal("sent"),
+            v.literal("partial"),
+            v.literal("failed")
+        ),
+        createdBy: v.id("users"),
+        createdAt: v.number(),
+        sentAt: v.optional(v.number()),
+    })
+    .index("by_createdAt", ["createdAt"])
+    .index("by_status", ["status"]),
+
+    // Per-recipient broadcast delivery outcomes
+    announcementDeliveries: defineTable({
+        announcementId: v.id("announcements"),
+        email: v.string(),
+        status: v.union(v.literal("sent"), v.literal("failed")),
+        error: v.optional(v.string()),
+        createdAt: v.number(),
+    })
+    .index("by_announcement", ["announcementId"])
+    .index("by_status_createdAt", ["status", "createdAt"]),
+
+    // Internal support and abuse reports
+    feedback: defineTable({
+        type: v.union(
+            v.literal("bug"),
+            v.literal("feature"),
+            v.literal("abuse"),
+            v.literal("other")
+        ),
+        eventId: v.optional(v.id("events")),
+        userId: v.id("users"),
+        userEmail: v.string(),
+        message: v.string(),
+        status: v.union(
+            v.literal("open"),
+            v.literal("in_review"),
+            v.literal("resolved"),
+            v.literal("dismissed")
+        ),
+        priority: v.union(
+            v.literal("low"),
+            v.literal("normal"),
+            v.literal("high")
+        ),
+        adminNotes: v.array(
+            v.object({
+                authorId: v.id("users"),
+                authorName: v.string(),
+                body: v.string(),
+                createdAt: v.number(),
+            })
+        ),
+        createdAt: v.number(),
+        updatedAt: v.number(),
+        resolvedBy: v.optional(v.id("users")),
+        resolvedAt: v.optional(v.number()),
+    })
+    .index("by_status_createdAt", ["status", "createdAt"])
+    .index("by_type", ["type"])
+    .index("by_event", ["eventId"])
+    .index("by_user", ["userId"]),
+
+    // Email delivery log used by the health panel and the action queue
+    emailEvents: defineTable({
+        template: v.union(v.literal("invite"), v.literal("announcement")),
+        recipient: v.string(),
+        status: v.union(v.literal("sent"), v.literal("failed")),
+        error: v.optional(v.string()),
+        createdAt: v.number(),
+    })
+    .index("by_createdAt", ["createdAt"])
+    .index("by_status_createdAt", ["status", "createdAt"]),
+
+    // Cron heartbeats
+    cronRuns: defineTable({
+        name: v.string(),
+        lastRunAt: v.number(),
+        status: v.union(v.literal("success"), v.literal("failed")),
+        error: v.optional(v.string()),
+        processed: v.number(),
+    }).index("by_name", ["name"]),
 })
