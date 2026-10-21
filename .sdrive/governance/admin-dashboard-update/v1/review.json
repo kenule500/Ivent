@@ -1,0 +1,88 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": "v1",
+  "status": "FAIL",
+  "commit": "ef5d1ca8749080885b9c44d9e78f240cb0b046b2",
+  "base": "main",
+  "branch": "feature/admin-dashboard-update",
+  "reviewedBy": "AI Review Agent (OpenCode) for kenule500",
+  "reviewedAt": "2026-10-21T13:53:32.273Z",
+  "coverage": 100,
+  "criteria": [
+    { "id": "spec-convergence", "status": "pass", "detail": "34/34 ACs implemented; feature suite covers every AC." },
+    { "id": "task-completion", "status": "pass", "detail": "54/54 tasks completed." },
+    { "id": "traceability", "status": "pass", "detail": "61/61 rows complete, 34 unique TEST-### IDs, every AC linked." },
+    { "id": "coverage", "status": "pass", "detail": "100% (34/34 ACs tested, 43/43 feature tests passing)." },
+    { "id": "test-report", "status": "pass", "detail": "test-report-admin-dashboard-update-v1-2026-10-20.md exists and is newer than spec.md and plan.md." },
+    { "id": "test-evidence", "status": "fail", "detail": "test-evidence.json is missing; no machine-verifiable run is bound to HEAD." },
+    { "id": "change-scope", "status": "warn", "detail": "Branch is based on main and contains only feature commits, but 19 changed files are not in plan.json and the tree is dirty." },
+    { "id": "test-quality", "status": "pass", "detail": "No .only/xit/skips/commented assertions; every test name carries its AC ID." },
+    { "id": "code-quality", "status": "pass", "detail": "tsc exit 0; lint exit 0 with 0 errors and 17 warnings." },
+    { "id": "security", "status": "fail", "detail": "npm audit: 5 critical and 29 high advisories; 3 critical and 27 high with --omit=dev (next, proxy-addr, shell-quote). No secure report or waiver. Secret scan clean." },
+    { "id": "testing", "status": "warn", "detail": "Feature suite 43/43 passes; full suite 142/146 with 4 pre-existing failures outside this feature." },
+    { "id": "documentation", "status": "fail", "detail": "README.md remains the create-next-app template; no CHANGELOG.md for user-facing admin changes." },
+    { "id": "nfr-evidence", "status": "not_verified", "detail": "NFR-008 performance and NFR-009 accessibility have no report or waiver." },
+    { "id": "definition-of-done", "status": "fail", "detail": "Verification and security criteria are unmet." },
+    { "id": "spec-to-code-verification", "status": "fail", "detail": "sdrive verify returns fail (38 matched, 132 missing, 19 renamed); Convex source roots are not scanned. Shared T6.1." },
+    { "id": "ci", "status": "not_verified", "detail": "No CI workflow configured and gh is unavailable." },
+    { "id": "permission", "status": "pass", "detail": "kenule500 is admin in team.json." },
+    { "id": "reviewer-independence", "status": "warn", "detail": "No assignee recorded; reviewer is an AI agent, so a human must confirm any future PASS." }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "issue": "3 critical and 27 high production dependency advisories (next, proxy-addr, shell-quote critical).",
+      "location": "package-lock.json",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "sdrive verify cannot pass: the verifier does not scan convex/ or resolve convex/schema.ts, so 132 planned items are reported missing.",
+      "location": ".sdrive/scripts/verify.js",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "No test-evidence.json is recorded, so the passing feature run is not machine-verifiable against HEAD.",
+      "location": ".sdrive/governance/admin-dashboard-update/v1/",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "NFR-008 performance and NFR-009 accessibility have no evidence report.",
+      "location": ".sdrive/reports/",
+      "fixRequired": true,
+      "acIds": ["AC-008", "AC-015", "AC-030"]
+    },
+    {
+      "severity": "medium",
+      "issue": "Working tree is dirty; pending test artifacts, the Ajv devDependency change, and the SpecDrive CLI 0.1.44 framework sync are uncommitted.",
+      "location": "repository",
+      "fixRequired": true
+    },
+    {
+      "severity": "medium",
+      "issue": "User-facing admin changes are undocumented; README.md is the framework template and no changelog exists.",
+      "location": "README.md",
+      "fixRequired": true
+    },
+    {
+      "severity": "low",
+      "issue": "19 changed files are not listed in plan.json.",
+      "location": "plan.json",
+      "fixRequired": false
+    },
+    {
+      "severity": "info",
+      "issue": "Full suite has 4 failures that reproduce on clean main; none belongs to this feature.",
+      "location": "test suite",
+      "fixRequired": false
+    }
+  ],
+  "evidence": {
+    "testEvidence": ".sdrive/governance/admin-dashboard-update/v1/test-evidence.json (missing)",
+    "testReport": ".sdrive/reports/tests/test-report-admin-dashboard-update-v1-2026-10-20.md",
+    "verification": ".sdrive/governance/admin-dashboard-update/v1/verification.json (not generated; sdrive verify returned fail)",
+    "audit": ".sdrive/audit-log.json (chain verified; no entries yet)"
+  }
+}

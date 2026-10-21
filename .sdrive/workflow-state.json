@@ -79,12 +79,12 @@
         {
           "id": "v1",
           "phase": "ongoing",
-          "currentStep": "implementation",
+          "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "in_progress",
-            "review": "pending"
+            "review": "rejected"
           },
           "history": [
             {
@@ -116,6 +116,16 @@
               "event": "implementation_completed",
               "by": "sdrive:apply",
               "timestamp": "2026-10-20T18:17:06.044Z"
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-10-20T21:52:42.336Z"
+            },
+            {
+              "event": "review_failed",
+              "by": "sdrive:review",
+              "timestamp": "2026-10-21T13:53:32.273Z"
             }
           ]
         }
@@ -187,6 +197,6 @@
     "verifiedFeatures": [],
     "migrated": [],
     "skipped": [],
-    "notes": "Brownfield onboarding completed on 2026-10-18. A baseline constitution (v1.0.0) was generated from repository facts, with a security baseline that expands only the controls that apply to a Next.js + Convex + Clerk stack. Four retroactive specs document shipped behaviour; they are marked retroactive in their spec.md frontmatter, in overview.assumptions, and in this onboarding block, and they are not approved product decisions. The raw scan remains in .sdrive/onboarding/inventory.json and report.md. Two framework inconsistencies were found: (1) onboard.js writes onboarding.projectBrief, which workflow-state.schema.json rejects, so that key was removed and the brief is preserved in .sdrive/product/overview.md and .sdrive/onboarding/decisions.md; (2) the retroactive marker is kept out of governance JSON because spec.schema.json sets additionalProperties:false, and the validator is run via .sdrive/onboarding/validate.js because the root node_modules resolves Ajv 6 while SpecDrive requires Ajv 8. Current quality gate: npx tsc --noEmit passes and npm run lint passes with 0 errors and 14 warnings after the follow-up fix (ignore .sdrive/** and convex/_generated/** in the flat config; defer the carousel's initial select), so all verification tasks and quality NFRs are complete. The product overview was approved on 2026-10-18 through the onboarding interview: it is organizer-first and global, and the Nigeria-first implementation (NG pickers, naira pricing, seed cities) is recorded as an implementation gap rather than the product boundary."
+    "notes": "Brownfield onboarding completed on 2026-10-18. A baseline constitution (v1.0.0) was generated from repository facts, with a security baseline that expands only the controls that apply to a Next.js + Convex + Clerk stack. Four retroactive specs document shipped behaviour; they are marked retroactive in their spec.md frontmatter, in overview.assumptions, and in this onboarding block, and they are not approved product decisions. The raw scan remains in .sdrive/onboarding/inventory.json and report.md. Two framework inconsistencies were found: (1) onboard.js writes onboarding.projectBrief, which workflow-state.schema.json rejects, so that key was removed and the brief is preserved in .sdrive/product/overview.md and .sdrive/onboarding/decisions.md; (2) the retroactive marker is kept out of governance JSON because spec.schema.json sets additionalProperties:false, and governance validation now runs directly with `node .sdrive/scripts/validate-governance.js` because ajv@8 and ajv-formats@3 are project devDependencies (the older wrapper remains as an alias only). Current quality gate: npx tsc --noEmit passes and npm run lint passes with 0 errors and 14 warnings after the follow-up fix (ignore .sdrive/** and convex/_generated/** in the flat config; defer the carousel's initial select), so all verification tasks and quality NFRs are complete. The product overview was approved on 2026-10-18 through the onboarding interview: it is organizer-first and global, and the Nigeria-first implementation (NG pickers, naira pricing, seed cities) is recorded as an implementation gap rather than the product boundary."
   }
 }
