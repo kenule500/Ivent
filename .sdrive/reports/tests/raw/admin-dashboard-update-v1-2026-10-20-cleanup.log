@@ -1,0 +1,24 @@
+﻿node.exe : npm info using npm@11.21.0
+At C:\Users\KENULE-NWINEE\AppData\Roaming\npm\npm.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/npm/bin/npm-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+
+> ivent@0.1.0 test
+> vitest run test/admin-dashboard-update/export-button.test.tsx
+
+
+[1m[46m RUN [49m[22m [36mv3.2.7 [39m[90mC:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent[39m
+
+ [32mÔ£ô[39m test/admin-dashboard-update/export-button.test.tsx [2m([22m[2m2 tests[22m[2m)[22m[33m 661[2mms[22m[39m
+   [33m[2mÔ£ô[22m[39m export trigger[2m > [22mAC-018: shows progress, rejects repeat clicks, downloads the CSV and toasts the result [33m 551[2mms[22m[39m
+
+[2m Test Files [22m [1m[32m1 passed[39m[22m[90m (1)[39m
+[2m      Tests [22m [1m[32m2 passed[39m[22m[90m (2)[39m
+[2m   Start at [22m 22:47:07
+[2m   Duration [22m 4.06s[2m (transform 185ms, setup 438ms, collect 583ms, tests 661ms, environment 1.67s, prepare 244ms)[22m
+
+npm info ok

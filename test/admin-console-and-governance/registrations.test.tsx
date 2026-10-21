@@ -6,6 +6,7 @@ import userEvent from "@testing-library/user-event";
 const mocks = vi.hoisted(() => ({
   useConvexQuery: vi.fn(),
   mutate: vi.fn(),
+  exportRegistrations: vi.fn(),
   toastSuccess: vi.fn(),
   toastError: vi.fn(),
 }));
@@ -14,6 +15,9 @@ vi.mock("@/hooks/useConvexQuery", () => ({
   useConvexQuery: mocks.useConvexQuery,
   useConvexMutation: () => ({ mutate: mocks.mutate, isLoading: false }),
 }));
+vi.mock("convex/react", () => ({
+  useMutation: () => mocks.exportRegistrations,
+}));
 vi.mock("@/convex/_generated/api", () => ({
   api: {
     admin: {
@@ -21,6 +25,7 @@ vi.mock("@/convex/_generated/api", () => ({
       getAllEvents: { __apiName: "admin.getAllEvents" },
     },
     registrations: { cancelRegistration: { __apiName: "registrations.cancelRegistration" } },
+    exports: { generate: { __apiName: "exports.generate" } },
   },
 }));
 vi.mock("sonner", () => ({
@@ -64,6 +69,12 @@ beforeEach(() => {
     };
   });
   mocks.mutate.mockReset().mockResolvedValue({ success: true });
+  mocks.exportRegistrations.mockReset().mockResolvedValue({
+    filename: "registrations.csv",
+    csv: "id\nreg_ada",
+    rowCount: 1,
+    truncated: false,
+  });
 });
 
 describe("AC-005: registration oversight", () => {

@@ -1,0 +1,57 @@
+﻿node.exe : npm info using npm@11.21.0
+At C:\Users\KENULE-NWINEE\AppData\Roaming\npm\npm.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/npm/bin/npm-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+
+> ivent@0.1.0 lint
+> eslint
+
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\(main)\my-events\[eventId]\page.tsx
+  28:29  warning  'CardHeader' is defined but never used       @typescript-eslint/no-unused-vars
+  28:41  warning  'CardTitle' is defined but never used        @typescript-eslint/no-unused-vars
+  28:52  warning  'CardDescription' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\(main)\my-events\_components\qr-scanner-modal.tsx
+  126:6  warning  React Hook useEffect has a missing dependency: 'handleCheckIn'. Either include it or remove the dependency array  react-hooks/exhaustive-deps
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\admin\invites\page.tsx
+  163:18  warning  'emailError' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\admin\settings\page.tsx
+  89:14  warning  'error' is defined but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\components\SmartImage.tsx
+  23:7  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\components\admin\event-details-modal.tsx
+  45:19  warning  'deleteEvent' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\convex\events.ts
+  81:21  warning  '_' is assigned a value but never used   @typescript-eslint/no-unused-vars
+  81:36  warning  '__' is assigned a value but never used  @typescript-eslint/no-unused-vars
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\ai-event-creation\review-before-saving.test.tsx
+  33:60  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  37:45  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\event-discovery-and-registration\event-detail.test.tsx
+  44:60  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\event-discovery-and-registration\explore.test.tsx
+  25:60  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\event-management-and-check-in\create-event-form.test.tsx
+  33:60  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+  37:45  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\event-management-and-check-in\event-dashboard.test.tsx
+  38:60  warning  Using `<img>` could result in slower LCP and higher bandwidth. Consider using `<Image />` from `next/image` or a custom image loader to automatically optimize images. This may incur additional usage or cost from your provider. See: https://nextjs.org/docs/messages/no-img-element  @next/next/no-img-element
+
+Ô£û 17 problems (0 errors, 17 warnings)
+
+npm info ok

@@ -1,0 +1,538 @@
+﻿
+ RUN  v4.1.12 C:/Users/KENULE-NWINEE/AppData/Local/Temp/ivent-main-baseline
+
+node : stderr | test/ai-event-creation/ai-creator.test.tsx > AC-001: generating event details > AC-001: submitting a 
+prompt shows loading and fills the form from the API
+At line:1 char:1
++ node node_modules/vitest/vitest.mjs run test/admin-console-and-govern ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (stderr | test/a...rm from the API:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <AIEventCreator onEventGenerated={function Mock}>
+    <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+      <DialogRoot data-slot="dialog" open={false} onOpenChange={function bound dispatchSetState}>
+        <DialogTrigger>
+          <DialogTrigger data-slot="dialog-tri...">
+>           <button
+>             type="button"
+>             onClick={function}
+>             onMouseDown={function}
+>             onKeyDown={function}
+>             onKeyUp={function}
+>             onPointerDown={function}
+>             tabIndex={0}
+>             disabled={false}
+>             data-base-ui-click-trigger=""
+>             id="base-ui-_r_1_"
+>             aria-haspopup="dialog"
+>             aria-expanded={false}
+>             aria-controls={undefined}
+>             data-slot="dialog-trigger"
+>             ref={function}
+>           >
+              <Button variant="outline" className="gap-2">
+                <Button data-slot="button" className={"group/bu..."}>
+>                 <button
+>                   type="button"
+>                   onClick={function}
+>                   onMouseDown={function}
+>                   onKeyDown={function}
+>                   onKeyUp={function}
+>                   onPointerDown={function}
+>                   tabIndex={0}
+>                   disabled={false}
+>                   data-slot="button"
+>                   ref={function}
+>                   className={"group/button inline-flex shrink-0 items-center justify-center rounded-lg border 
+bg-cl..."}
+>                 >
+        ...
+
+<button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+
+stderr | test/ai-event-creation/ai-creator.test.tsx > AC-005: failing safely in the dialog > AC-005: a network failure 
+keeps the dialog open and shows an error toast
+Error: offline
+    at C:/Users/KENULE-NWINEE/AppData/Local/Temp/ivent-main-baseline/test/ai-event-creation/ai-creator.test.tsx:89:33
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner/dist/ch
+unk-artifact.js:302:11
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner/dist/ch
+unk-artifact.js:1903:26
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner/dist/ch
+unk-artifact.js:2326:20
+    at new Promise (<anonymous>)
+    at runWithCancel (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest
+/runner/dist/chunk-artifact.js:2323:10)
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner/dist/ch
+unk-artifact.js:2305:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vites
+t/runner/dist/chunk-artifact.js:2272:10)
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner/dist/ch
+unk-artifact.js:2956:64
+
+┬À┬À┬À┬À┬Àx┬À┬À┬À┬Àx┬À┬À┬À┬À┬À┬À┬À┬À┬Àxx┬À┬À┬À┬À┬À
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed Tests 4 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»
+
+ FAIL  test/ai-event-creation/ai-creator.test.tsx > AC-005: failing safely in the dialog > AC-005: a server error 
+keeps the dialog open, shows an error toast, and does not populate the form
+AssertionError: expected "vi.fn()" to be called at least once
+
+Ignored nodes: comments, script, style
+[36m<html[39m
+  [33mstyle[39m=[32m""[39m
+[36m>[39m
+  [36m<head />[39m
+  [36m<body[39m
+    [33mstyle[39m=[32m""[39m
+  [36m>[39m
+    [36m<div>[39m
+      [36m<button[39m
+        [33maria-expanded[39m=[32m"false"[39m
+        [33maria-haspopup[39m=[32m"dialog"[39m
+        [33mdata-base-ui-click-trigger[39m=[32m""[39m
+        [33mdata-slot[39m=[32m"dialog-trigger"[39m
+        [33mid[39m=[32m"base-ui-_r_6_"[39m
+        [33mtabindex[39m=[32m"0"[39m
+        [33mtype[39m=[32m"button"[39m
+      [36m>[39m
+        [36m<button[39m
+          [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center rounded-lg border 
+bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none 
+focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px 
+disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 
+aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 
+[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background 
+hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input 
+dark:bg-input/30 dark:hover:bg-input/50 h-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 
+gap-2"[39m
+          [33mdata-slot[39m=[32m"button"[39m
+          [33mtabindex[39m=[32m"0"[39m
+          [33mtype[39m=[32m"button"[39m
+        [36m>[39m
+          [36m<svg[39m
+            [33maria-hidden[39m=[32m"true"[39m
+            [33mclass[39m=[32m"lucide lucide-sparkles w-4 h-4"[39m
+            [33mfill[39m=[32m"none"[39m
+            [33mheight[39m=[32m"24"[39m
+            [33mstroke[39m=[32m"currentColor"[39m
+            [33mstroke-linecap[39m=[32m"round"[39m
+            [33mstroke-linejoin[39m=[32m"round"[39m
+            [33mstroke-width[39m=[32m"2"[39m
+            [33mviewBox[39m=[32m"0 0 24 24"[39m
+            [33mwidth[39m=[32m"24"[39m
+            [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+          [36m>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 
+1 0 1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 
+0-1.594-1.594l-5.558-1.051a1 1 0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M20 2v4"[39m
+            [36m/>[39m
+            [36m<path[39m
+              [33md[39m=[32m"M22 4h-4"[39m
+            [36m/>[39m
+            [36m<circle[39m
+              [33mcx[39m=[32m"4"[39m
+              [33mcy[39m=[32m"20"[39m
+              [33mr[39m=[32m"2"[39m
+            [36m/>[39m
+          [36m</svg>[39m
+          [0mGenerate with AI[0m
+        [36m</button>[39m
+      [36m</button>[39m
+    [36m</div>[39m
+  [36m</body>[39m
+[36m</html>[39m
+ ÔØ» test/ai-event-creation/ai-creator.test.tsx:83:50
+     81|     await openAndSubmit();
+     82|
+     83|     await waitFor(() => expect(mocks.toastError).toHaveBeenCalled());
+       |                                                  ^
+     84|     expect(screen.getByText("AI Event Creator")).toBeInTheDocument();
+     85|     expect(mocks.onGenerated).not.toHaveBeenCalled();
+ ÔØ» runWithExpensiveErrorDiagnosticsDisabled 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/config.js:47:12
+ ÔØ» checkCallback 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ÔØ» Timeout.checkRealTimersCallback 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/event-detail.test.tsx > AC-006: sidebar call to action > AC-006: the 
+organizer sees Manage Event
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/manage event/i`
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Tech Summit":
+  [36m<h1[39m
+    [33mclass[39m=[32m"text-4xl md:text-5xl font-bold mb-4"[39m
+  [36m/>[39m
+
+  Name "About This Event":
+  [36m<h2[39m
+    [33mclass[39m=[32m"text-2xl font-bold mb-4"[39m
+  [36m/>[39m
+
+  Name "Location":
+  [36m<h2[39m
+    [33mclass[39m=[32m"text-2xl font-bold mb-4 flex items-center gap-2"[39m
+  [36m/>[39m
+
+  Name "Organizer":
+  [36m<h2[39m
+    [33mclass[39m=[32m"text-2xl font-bold mb-4"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-muted-foreground whitespace-pre-wrap leading-relaxed"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"font-medium"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"font-semibold"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-sm text-muted-foreground"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-sm text-muted-foreground mb-1"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"text-3xl font-bold"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"font-semibold"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"font-semibold text-sm"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<p[39m
+    [33mclass[39m=[32m"font-semibold text-sm"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  separator:
+
+  Name "":
+  [36m<div[39m
+    [33maria-orientation[39m=[32m"horizontal"[39m
+    [33mclass[39m=[32m"shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px 
+data-vertical:self-stretch"[39m
+    [33mdata-orientation[39m=[32m"horizontal"[39m
+    [33mdata-slot[39m=[32m"separator"[39m
+    [33mrole[39m=[32m"separator"[39m
+  [36m/>[39m
+
+  Name "":
+  [36m<div[39m
+    [33maria-orientation[39m=[32m"horizontal"[39m
+    [33mclass[39m=[32m"shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px 
+data-vertical:self-stretch"[39m
+    [33mdata-orientation[39m=[32m"horizontal"[39m
+    [33mdata-slot[39m=[32m"separator"[39m
+    [33mrole[39m=[32m"separator"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+  button:
+
+  Name "Register for Event":
+  [36m<button[39m
+    [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center rounded-lg border 
+border-transparent bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none 
+focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px 
+disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 
+aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 
+[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground 
+hover:bg-primary/80 h-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 w-full gap-2"[39m
+    [33mdata-slot[39m=[32m"button"[39m
+    [33mtabindex[39m=[32m"0"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  Name "Share Event":
+  [36m<button[39m
+    [33mclass[39m=[32m"group/button inline-flex shrink-0 items-center justify-center rounded-lg border 
+bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none 
+focus-visible:border-ring focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px 
+disabled:pointer-events-none disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 
+aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 
+[&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 border-border bg-background 
+hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground dark:border-input 
+dark:bg-input/30 dark:hover:bg-input/50 h-8 px-2.5 has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 
+w-full gap-2"[39m
+    [33mdata-slot[39m=[32m"button"[39m
+    [33mtabindex[39m=[32m"0"[39m
+    [33mtype[39m=[32m"button"[39m
+  [36m/>[39m
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+[36m<body>[39m
+  [36m<div>[39m
+    [36m<div[39m
+      [33mclass[39m=[32m"min-h-screen py-8 -mt-6 md:-mt-16 lg:-mx-5"[39m
+      [33mstyle[39m=[32m"background-color: rgb(30, 58, 138);"[39m
+    [36m>[39m
+      [36m<div[39m
+        [33mclass[39m=[32m"max-w-7xl mx-auto px-8"[39m
+      [36m>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"mb-8"[39m
+        [36m>[39m
+          [36m<span[39m
+            [33mclass[39m=[32m"group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 
+overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all 
+focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 
+has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 
+dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3! bg-secondary 
+text-secondary-foreground [a]:hover:bg-secondary/80 mb-3"[39m
+            [33mdata-slot[39m=[32m"badge"[39m
+            [33mdata-variant[39m=[32m"secondary"[39m
+          [36m>[39m
+            [0m­ƒÆ╗[0m
+            [0m [0m
+            [0mTechnology[0m
+          [36m</span>[39m
+          [36m<h1[39m
+            [33mclass[39m=[32m"text-4xl md:text-5xl font-bold mb-4"[39m
+          [36m>[39m
+            [0mTech Summit[0m
+          [36m</h1>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"flex flex-wrap items-center gap-4 text-muted-foreground"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-calendar w-5 h-5"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"24"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"24"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M8 2v4"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M16 2v4"[39m
+                [36m/>[39m
+                [36m<rect[39m
+                  [33mheight[39m=[32m"18"[39m
+                  [33mrx[39m=[32m"2"[39m
+                  [33mwidth[39m=[32m"18"[39m
+                  [33mx[39m=[32m"3"[39m
+                  [33my[39m=[32m"4"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M3 10h18"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span>[39m
+                [0mWednesday, October 21, 2026[0m
+              [36m</span>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"flex items-center gap-2"[39m
+            [36m>[39m
+              [36m<svg[39m
+                [33maria-hidden[39m=[32m"true"[39m
+                [33mclass[39m=[32m"lucide lucide-clock w-5 h-5"[39m
+                [33mfill[39m=[32m"none"[39m
+                [33mheight[39m=[32m"24"[39m
+                [33mstroke[39m=[32m"currentColor"[39m
+                [33mstroke-linecap[39m=[32m"round"[39m
+                [33mstroke-linejoin[39m=[32m"round"[39m
+                [33mstroke-width[39m=[32m"2"[39m
+                [33mviewBox[39m=[32m"0 0 24 24"[39m
+                [33mwidth[39m=[32m"24"[39m
+                [33mxmlns[39m=[32m"http://www.w3.org/2000/svg"[39m
+              [36m>[39m
+                [36m<circle[39m
+                  [33mcx[39m=[32m"12"[39m
+                  [33mcy[39m=[32m"12"[39m
+                  [33mr[39m=[32m"10"[39m
+                [36m/>[39m
+                [36m<path[39m
+                  [33md[39m=[32m"M12 6v6l4 2"[39m
+                [36m/>[39m
+              [36m</svg>[39m
+              [36m<span>[39m
+                [0m10:17 PM[0m
+                [0m -[0m
+                [0m [0m
+                [0m11:17 PM[0m
+              [36m</span>[39m
+            [36m</div>[39m
+          [36m</div>[39m
+        [36m</div>[39m
+        [36m<div[39m
+          [33mclass[39m=[32m"grid lg:grid-cols-[1fr_380px] gap-8"[39m
+        [36m>[39m
+          [36m<div[39m
+            [33mclass[39m=[32m"space-y-8"[39m
+          [36m>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card 
+py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] 
+has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] 
+data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl 
+pt-0"[39m
+              [33mdata-size[39m=[32m"default"[39m
+              [33mdata-slot[39m=[32m"card"[39m
+              [33mstyle[39m=[32m"background-color: rgb(19, 47, 127);"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"px-(--card-spacing) pt-6"[39m
+                [33mdata-slot[39m=[32m"card-content"[39m
+              [36m>[39m
+                [36m<h2[39m
+                  [33mclass[39m=[32m"text-2xl font-bold mb-4"[39m
+                [36m>[39m
+                  [0mAbout This Event[0m
+
+ Test Files  4 failed | 2 passed (6)
+      Tests  4 failed | 23 passed (27)
+   Start at  22:17:38
+   Duration  17.58s (transform 7.23s, setup 17.11s, import 26.47s, tests 11.15s, environment 23.29s)
+
+                [36m</h2>[39m
+                [36m<p[39m
+                  [33mclass[39m=[32m"text-muted-foreground whitespace-pre-wrap leading-relaxed"[39m
+                [36m>[39m
+                  [0mA full day of talks about building products.[0m
+                [36m</p>[39m
+              [36m</div>[39m
+            [36m</div>[39m
+            [36m<div[39m
+              [33mclass[39m=[32m"group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card 
+py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] 
+has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] 
+data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl 
+pt-0"[39m
+              [33mdata-size[39m=[32m"default"[39m
+              [33mdata-slot[39m=[32m"card"[39m
+              [33mstyle[39m=[32m"background-color: rgb(19, 47, 127);"[39m
+            [36m>[39m
+              [36m<div[39m
+                [33mclass[39m=[32m"px-(--card-spacing) pt-6"[39m
+          ...
+ ÔØ» Object.getElementError 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/config.js:37:19
+ ÔØ» 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ÔØ» 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ÔØ» 
+../../../../Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ÔØ» test/event-discovery-and-registration/event-detail.test.tsx:140:19
+    138|     render(<EventDetailPage />);
+    139|
+    140|     expect(screen.getByRole("button", { name: /manage event/i })).toBeÔÇª
+       |                   ^
+    141|   });
+    142|
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/explore.test.tsx > AC-002: per-section loading and empty states > AC-002: 
+each section shows its own empty state
+Error: [2mexpect([22m[31mreceived[39m[2m).toBeInTheDocument()[22m
+
+[31mreceived[39m value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: [31mnull[39m
+ ÔØ» test/event-discovery-and-registration/explore.test.tsx:143:60
+    141|     render(<ExplorePage />);
+    142|
+    143|     expect.soft(screen.queryByText(/no featured events/i)).toBeInTheDoÔÇª
+       |                                                            ^
+    144|     expect.soft(screen.queryByText(/no events near you/i)).toBeInTheDoÔÇª
+    145|     expect.soft(screen.getByText("No popular events yet.")).toBeInTheDÔÇª
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[3/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/explore.test.tsx > AC-002: per-section loading and empty states > AC-002: 
+each section shows its own empty state
+Error: [2mexpect([22m[31mreceived[39m[2m).toBeInTheDocument()[22m
+
+[31mreceived[39m value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: [31mnull[39m
+ ÔØ» test/event-discovery-and-registration/explore.test.tsx:144:60
+    142|
+    143|     expect.soft(screen.queryByText(/no featured events/i)).toBeInTheDoÔÇª
+    144|     expect.soft(screen.queryByText(/no events near you/i)).toBeInTheDoÔÇª
+       |                                                            ^
+    145|     expect.soft(screen.getByText("No popular events yet.")).toBeInTheDÔÇª
+    146|   });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[4/5]ÔÄ»
+
+ FAIL  test/event-management-and-check-in/check-in.test.ts > AC-007: QR check-in > AC-007: failed scans also count 
+toward the brute-force limit
+AssertionError: expected [Function] to throw error matching /rate limit/i but got 'Invalid or cancelled QR code'
+
+- Expected:
+/rate limit/i
+
++ Received:
+"Invalid or cancelled QR code"
+
+ ÔØ» test/event-management-and-check-in/check-in.test.ts:132:5
+    130|         qrCode: "EVT-GUESS-FINAL",
+    131|       })
+    132|     ).rejects.toThrow(/rate limit/i);
+       |     ^
+    133|   });
+    134| });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[5/5]ÔÄ»
+

@@ -1,75 +1,178 @@
 // @vitest-environment jsdom
 import { describe, expect, test, vi, beforeEach } from "vitest";
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen } from "@testing-library/react";
 
 const mocks = vi.hoisted(() => ({
-  push: vi.fn(),
   useConvexQuery: vi.fn(),
-  state: { data: null as null | Record<string, number>, isLoading: false, error: null as null | Error },
+  loading: false,
+  responses: {} as Record<string, unknown>,
 }));
 
-vi.mock("next/navigation", () => ({ useRouter: () => ({ push: mocks.push }) }));
 vi.mock("next/link", () => ({
   default: ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a href={href}>{children}</a>
   ),
 }));
 vi.mock("@/hooks/useConvexQuery", () => ({ useConvexQuery: mocks.useConvexQuery }));
+vi.mock("@/hooks/usePlatformSettings", () => ({
+  usePlatformSettings: () => ({
+    settings: null,
+    isLoading: false,
+    country: "US",
+    currency: "USD",
+    timezone: "UTC",
+    featureFlags: {
+      commandPalette: true,
+      reports: true,
+      broadcasts: true,
+      feedbackInbox: true,
+      systemHealth: true,
+    },
+  }),
+}));
 vi.mock("@/convex/_generated/api", () => ({
   api: {
+    commandCenter: {
+      getTrends: { __apiName: "commandCenter.getTrends" },
+      getActionQueue: { __apiName: "commandCenter.getActionQueue" },
+      getToday: { __apiName: "commandCenter.getToday" },
+    },
     admin: {
-      getDashboardStats: { __apiName: "admin.getDashboardStats" },
-      getAllUsers: { __apiName: "admin.getAllUsers" },
-      getAllEvents: { __apiName: "admin.getAllEvents" },
+      getRecentAudit: { __apiName: "admin.getRecentAudit" },
     },
   },
 }));
 
 import AdminDashboard from "@/app/admin/dashboard/page";
 
+const now = Date.now();
+
+function trendMetric(current: number, previous: number) {
+  return { current, previous, sparkline: Array.from({ length: 30 }, () => 0) };
+}
+
 beforeEach(() => {
-  mocks.push.mockReset();
-  mocks.state = {
-    data: { totalUsers: 12, totalEvents: 7, totalRegistrations: 34, upcomingEvents: 5 },
-    isLoading: false,
-    error: null,
+  mocks.loading = false;
+  mocks.responses = {
+    "commandCenter.getTrends": {
+      days: 30,
+      asOf: now,
+      window: { start: now - 30 * 86_400_000, end: now },
+      previousWindow: { start: now - 60 * 86_400_000, end: now - 30 * 86_400_000 },
+      metrics: {
+        users: trendMetric(4, 2),
+        events: trendMetric(3, 3),
+        registrations: trendMetric(12, 9),
+        revenue: trendMetric(500, 0),
+      },
+    },
+    "commandCenter.getActionQueue": {
+      queues: {
+        expiringInvites: {
+          count: 1,
+          href: "/admin/invites",
+          previews: [{ label: "pending@example.com" }],
+        },
+        atCapacity: { count: 0, href: "/admin/events", previews: [] },
+        staleFeedback: { count: 0, href: "/admin/feedback", previews: [] },
+        failedEmails: { count: 0, href: "/admin/health", previews: [] },
+      },
+    },
+    "commandCenter.getToday": {
+      timezone: "UTC",
+      events: [
+        {
+          id: "event_1",
+          title: "Today Summit",
+          city: "Lagos",
+          confirmed: 4,
+          checkedIn: 2,
+          capacity: 10,
+          rate: 0.5,
+        },
+      ],
+    },
+    "admin.getRecentAudit": [
+      {
+        _id: "audit_1",
+        actorName: "Admin",
+        action: "event.deleted",
+        targetLabel: "audit-0",
+        createdAt: now - 60_000,
+      },
+    ],
   };
   mocks.useConvexQuery.mockReset();
-  mocks.useConvexQuery.mockImplementation((ref: { __apiName?: string }) => {
-    if (ref.__apiName === "admin.getAllUsers" || ref.__apiName === "admin.getAllEvents") {
-      return { data: [], isLoading: false, error: null };
-    }
-    return mocks.state;
-  });
+  mocks.useConvexQuery.mockImplementation((ref: { __apiName?: string }) => ({
+    data: mocks.loading ? null : mocks.responses[ref.__apiName ?? ""],
+    isLoading: mocks.loading,
+    error: null,
+  }));
 });
 
-describe("AC-002: platform totals on the dashboard", () => {
-  test("AC-002: totals and upcoming counts are rendered", () => {
+describe("admin dashboard command center", () => {
+  test("renders the trends, action queue, today's events and recent audit activity", () => {
     render(<AdminDashboard />);
 
-    expect(screen.getByText("Total Users")).toBeInTheDocument();
-    expect(screen.getByText("12")).toBeInTheDocument();
-    expect(screen.getByText("Total Events")).toBeInTheDocument();
-    expect(screen.getByText("7")).toBeInTheDocument();
-    expect(screen.getByText("Total Registrations")).toBeInTheDocument();
-    expect(screen.getByText("34")).toBeInTheDocument();
-    expect(screen.getByText("Upcoming Events")).toBeInTheDocument();
-    expect(screen.getByText("5")).toBeInTheDocument();
+    expect(screen.getByRole("heading", { level: 1, name: "Dashboard" })).toBeInTheDocument();
+    expect(screen.getByText("What changed and what needs attention today.")).toBeInTheDocument();
+
+    expect(screen.getByText("New users")).toBeInTheDocument();
+    expect(screen.getByText("New events")).toBeInTheDocument();
+    expect(screen.getByText("Registrations")).toBeInTheDocument();
+    expect(screen.getByText("Estimated revenue")).toBeInTheDocument();
+
+    expect(screen.getByText("Action queue")).toBeInTheDocument();
+    expect(screen.getByText("Invites expiring in 48h")).toBeInTheDocument();
+    expect(screen.getByText("pending@example.com")).toBeInTheDocument();
+    expect(screen.getByText("Events at capacity")).toBeInTheDocument();
+    expect(screen.getByText("Failed emails (24h)")).toBeInTheDocument();
+
+    expect(screen.getByText("Today Summit")).toBeInTheDocument();
+    expect(screen.getByText("2/4 checked in")).toBeInTheDocument();
+    expect(screen.getByText(/50% check-in rate/)).toBeInTheDocument();
+
+    expect(screen.getByText("Recent admin activity")).toBeInTheDocument();
+    expect(screen.getByText("event.deleted")).toBeInTheDocument();
+    expect(screen.getByText("audit-0")).toBeInTheDocument();
   });
 
-  test("AC-002: a loading state is shown while stats load", () => {
-    mocks.state = { data: null, isLoading: true, error: null };
-    const { container } = render(<AdminDashboard />);
+  test("shows a loading state while the command center panels load", () => {
+    mocks.loading = true;
+    render(<AdminDashboard />);
 
-    expect(container.querySelector(".animate-spin")).toBeTruthy();
+    expect(screen.getAllByRole("status", { name: "Loading" }).length).toBeGreaterThan(0);
+    expect(screen.queryByText("Today Summit")).not.toBeInTheDocument();
   });
 
-  test("AC-002: an access-denied state is shown on error and the visitor is redirected", async () => {
-    mocks.state = { data: null, isLoading: false, error: new Error("Admin access required") };
+  test("shows positive empty states when nothing needs attention", () => {
+    mocks.responses = {
+      "commandCenter.getTrends": {
+        days: 30,
+        asOf: now,
+        metrics: {
+          users: trendMetric(0, 0),
+          events: trendMetric(0, 0),
+          registrations: trendMetric(0, 0),
+          revenue: trendMetric(0, 0),
+        },
+      },
+      "commandCenter.getActionQueue": {
+        queues: {
+          expiringInvites: { count: 0, href: "/admin/invites", previews: [] },
+          atCapacity: { count: 0, href: "/admin/events", previews: [] },
+          staleFeedback: { count: 0, href: "/admin/feedback", previews: [] },
+          failedEmails: { count: 0, href: "/admin/health", previews: [] },
+        },
+      },
+      "commandCenter.getToday": { timezone: "UTC", events: [] },
+      "admin.getRecentAudit": [],
+    };
 
     render(<AdminDashboard />);
 
-    expect(screen.getByText("Access Denied")).toBeInTheDocument();
-    await waitFor(() => expect(mocks.push).toHaveBeenCalledWith("/admin"));
+    expect(screen.getByText("Nothing needs attention")).toBeInTheDocument();
+    expect(screen.getByText("No events today")).toBeInTheDocument();
+    expect(screen.getByText("No admin activity yet")).toBeInTheDocument();
   });
 });

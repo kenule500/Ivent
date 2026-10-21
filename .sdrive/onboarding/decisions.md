@@ -150,10 +150,14 @@ SpecDrive itself. Item 4 was a project configuration problem and is fixed.
 2. `migrate-openspec.js` / `migrate-speckit.js` write `retroactive` and
    `migratedFrom` into `spec.json`, which `spec.schema.json` rejects. No
    migration ran here, so nothing was affected.
-3. `validate-governance.js` requires Ajv 8, but this project resolves Ajv 6 from
-   the root `node_modules`. Validation was run through
-   `.sdrive/onboarding/validate.js`, which redirects only the `ajv` specifier to
-   the Ajv 8 copy nested under `ajv-formats`. The framework script was not edited.
+3. **Fixed.** `validate-governance.js` requires Ajv 8, but the root
+   `node_modules` used to resolve Ajv 6 (a transitive dependency of ESLint), and
+   `ajv-formats` was only available from a machine-level `node_modules`. A
+   temporary wrapper redirected the `ajv` specifier, then broke when that copy
+   moved. `ajv@^8.20.0` and `ajv-formats@^3.0.1` are now project devDependencies,
+   so `node .sdrive/scripts/validate-governance.js` works directly. Values:
+   `.sdrive/onboarding/validate.js` remains as a thin alias for existing
+   references. The framework script itself was not edited.
 4. **Fixed.** `eslint.config.mjs` did not ignore `.sdrive/**` or
    `convex/_generated/**`, so `npm run lint` reported CommonJS `require` errors
    from framework scripts and generated files. Both globs were added to

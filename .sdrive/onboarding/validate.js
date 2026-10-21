@@ -1,39 +1,26 @@
-// Runs the SpecDrive governance validator with an Ajv v8-compatible resolution.
+// Compatibility entry point for SpecDrive governance validation.
 //
-// Why this wrapper exists: the app's root node_modules contains Ajv 6.x (pulled in
-// by another dependency), while .sdrive/scripts/validate-governance.js and the
-// installed ajv-formats 3.x expect Ajv 8.x. Requiring the validator directly from
-// this project therefore crashes inside addFormats() before any file is checked.
+// History: the root node_modules used to resolve Ajv 6 (a transitive dependency of
+// ESLint), while .sdrive/scripts/validate-governance.js and ajv-formats 3.x require
+// Ajv 8. This wrapper originally redirected the bare "ajv" specifier to a nested
+// Ajv 8 copy. That copy does not ship with ajv-formats, so the workaround depended
+// on the machine's user-level node_modules and eventually crashed.
 //
-// This wrapper redirects only the bare "ajv" specifier to the Ajv 8 copy that
-// ships inside node_modules/ajv-formats, then runs the same validateArtifacts()
-// function the CLI uses. No project or framework file is modified.
+// The project now declares ajv@8 and ajv-formats@3 as devDependencies, so the
+// framework validator works directly:
+//
+//   node .sdrive/scripts/validate-governance.js
+//
+// This file is kept as a thin alias for existing references (docs, scripts, and
+// .sdrive/reports). It performs no module patching.
 
 const path = require("path");
-const Module = require("module");
-
-const ok = "\u2705";
-const fail = "\u274c";
-
-const projectRoot = path.join(__dirname, "..", "..");
-const ajvV8Root = path.join(projectRoot, "node_modules", "ajv-formats", "node_modules");
-
-const originalResolve = Module._resolveFilename;
-
-Module._resolveFilename = function (request, parent, isMain, options) {
-  if (request === "ajv" || request.startsWith("ajv/")) {
-    return originalResolve.call(this, request, parent, isMain, {
-      ...(options || {}),
-      paths: [ajvV8Root],
-    });
-  }
-
-  return originalResolve.call(this, request, parent, isMain, options);
-};
 
 const { validateArtifacts } = require("../scripts/validate-governance");
 
-console.log("\uD83D\uDD0D SpecDrive Governance Validation (Ajv 8 compatibility wrapper)\n");
+const projectRoot = path.join(__dirname, "..", "..");
+
+console.log("\uD83D\uDD0D SpecDrive Governance Validation\n");
 
 const { ok: valid, results } = validateArtifacts(projectRoot, {
   log: (line) => console.log(line),
@@ -44,7 +31,7 @@ const invalid = results.filter((result) => result.status === "invalid");
 console.log("\n----------------------------------------");
 
 if (!valid) {
-  console.log(`${fail} Validation FAILED. ${invalid.length} file(s) invalid.`);
+  console.log(`\u274c Validation FAILED. ${invalid.length} file(s) invalid.`);
   for (const result of invalid) {
     console.log(`- ${result.file}`);
     for (const error of result.errors || []) {
@@ -54,4 +41,4 @@ if (!valid) {
   process.exit(1);
 }
 
-console.log(`${ok} Governance validation complete. All present files are valid.`);
+console.log("\u2705 Governance validation complete. All present files are valid.");

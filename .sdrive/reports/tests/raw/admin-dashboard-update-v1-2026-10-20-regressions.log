@@ -1,0 +1,19 @@
+﻿node.exe : npm info using npm@11.21.0
+At C:\Users\KENULE-NWINEE\AppData\Roaming\npm\npx.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/npm/bin/npx-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+
+ RUN  v4.1.12 C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent
+
+┬À┬À┬À┬À┬À┬À
+
+ Test Files  2 passed (2)
+      Tests  6 passed (6)
+   Start at  22:19:37
+   Duration  15.71s (transform 2.29s, setup 2.36s, import 17.34s, tests 3.49s, environment 5.50s)
+
+npm info ok

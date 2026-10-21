@@ -1,0 +1,103 @@
+﻿node.exe : npm info using npm@11.21.0
+At C:\Users\KENULE-NWINEE\AppData\Roaming\npm\npm.ps1:24 char:5
++     & "node$exe"  "$basedir/node_modules/npm/bin/npm-cli.js" $args
++     ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+npm http fetch GET 200 https://registry.npmjs.org/ajv 855ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ajv-formats 361ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/json-schema-traverse 240ms (cache revalidated)
+npm http cache https://registry.npmjs.org/ajv 19ms (cache hit)
+npm http fetch GET 200 https://registry.npmjs.org/fast-json-stable-stringify 235ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/uri-js 748ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/utf-8-validate 336ms (cache revalidated)
+npm http fetch POST 200 https://registry.npmjs.org/-/npm/v1/security/advisories/bulk 1052ms
+npm http fetch GET 200 https://registry.npmjs.org/braces 1159ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/baseline-browser-mapping 1163ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/postcss-selector-parser 1347ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sharp 1349ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/stream-json 1485ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/uuid 1500ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@hono%2fnode-server 1648ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fast-uri 1636ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/brace-expansion 1654ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@modelcontextprotocol%2fsdk 1662ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/proxy-addr 1658ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/js-yaml 1674ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/postcss 1671ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/browserslist 1697ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ip-address 1718ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/hono 1760ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/undici 1805ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/image-size 1858ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/next 1957ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/tinypool 4857ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/qs 4872ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vitest 4932ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shell-quote 4964ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@vitest%2fmocker 4979ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/shadcn 494ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/minimatch 195ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/micromatch 352ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/update-browserslist-db 210ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@babel%2fhelper-compilation-targets 218ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ajv 214ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro 202ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/express-rate-limit 223ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@eslint%2feslintrc 224ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/cosmiconfig 227ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@dotenvx%2fdotenvx 292ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@clerk%2fnextjs 391ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@tailwindcss%2fpostcss 405ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vite 449ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/express 249ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/body-parser 221ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/jayson 189ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-devtools-core 232ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@testing-library%2fjest-dom 251ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/fast-glob 207ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-file-map 215ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fweb3.js 276ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@next%2feslint-plugin-next 287ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@ts-morph%2fcommon 499ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana-mobile%2fmobile-wallet-adapter-protocol-web3js 268ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-adapter-react 443ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-adapter-base 453ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana-mobile%2fwallet-adapter-mobile 468ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-standard-wallet-adapter-base 579ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/eslint-config-next 225ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/ts-morph 291ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-config 191ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/metro-transform-worker 255ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fcommunity-cli-plugin 379ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@clerk%2fui 247ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-standard-wallet-adapter-react 593ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-standard-wallet-adapter 520ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/react-native 302ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana%2fwallet-standard 443ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native-async-storage%2fasync-storage 220ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@react-native%2fvirtualized-lists 240ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana-mobile%2fmobile-wallet-adapter-protocol 494ms (cache 
+revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@solana-mobile%2fwallet-standard-mobile 224ms (cache revalidated)
+
+up to date, audited 1145 packages in 25s
+
+281 packages are looking for funding
+  run `npm fund` for details
+
+52 vulnerabilities (18 moderate, 29 high, 5 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
+
+Run `npm audit` for details.
+npm info ok
