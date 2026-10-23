@@ -1,0 +1,25 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": "v1",
+  "command": "node .sdrive/reports/tests/run-feature-evidence.js admin-dashboard-update",
+  "source": "--cmd",
+  "exitCode": 0,
+  "timedOut": false,
+  "signal": null,
+  "commit": "88b63a33845a4e8a74d7e6d5bc9c3890e3d2f9ec",
+  "branch": "feature/admin-dashboard-update",
+  "startedAt": "2026-10-23T12:05:18.640Z",
+  "finishedAt": "2026-10-23T12:05:47.152Z",
+  "durationMs": 28508,
+  "outputHash": "sha256:9adc4edcf177b858dba793fc8f25f3518d9145216b31d4072becffac0b8efb32",
+  "summary": {
+    "passed": 43,
+    "failed": 0,
+    "skipped": 0,
+    "total": 43
+  },
+  "testIds": [],
+  "acIds": [],
+  "outputTail": "JSON report written to C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/.sdrive/reports/tests/raw/admin-dashboard-update-vitest.json\nTests: 0 failed, 43 passed, 43 total\n\nnpm info using npm@11.21.0\nnpm info using node@v24.20.0\nnpm info ok\n",
+  "recordedAt": "2026-10-23T12:05:47.420Z"
+}

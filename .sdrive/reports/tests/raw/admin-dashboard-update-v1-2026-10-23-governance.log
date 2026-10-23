@@ -1,0 +1,47 @@
+﻿­ƒöì SpecDrive Governance Validation
+
+Ô£à config.json is valid.
+Ô£à workflow-state.json is valid.
+
+­ƒôü Validating feature: admin-console-and-governance
+Ô£à admin-console-and-governance/v1/spec.json is valid.
+Ô£à admin-console-and-governance/v1/plan.json is valid.
+Ô£à admin-console-and-governance/v1/tasks.json is valid.
+Ô£à admin-console-and-governance/v1/traceability.json is valid.
+ÔÜá´©Å  admin-console-and-governance/v1/test-evidence.json not found. Skipping.
+ÔÜá´©Å  admin-console-and-governance/v1/review.json not found. Skipping.
+
+­ƒôü Validating feature: admin-dashboard-update
+Ô£à admin-dashboard-update/v1/spec.json is valid.
+Ô£à admin-dashboard-update/v1/plan.json is valid.
+Ô£à admin-dashboard-update/v1/tasks.json is valid.
+Ô£à admin-dashboard-update/v1/traceability.json is valid.
+Ô£à admin-dashboard-update/v1/test-evidence.json is valid.
+Ô£à admin-dashboard-update/v1/review.json is valid.
+
+­ƒôü Validating feature: ai-event-creation
+Ô£à ai-event-creation/v1/spec.json is valid.
+Ô£à ai-event-creation/v1/plan.json is valid.
+Ô£à ai-event-creation/v1/tasks.json is valid.
+Ô£à ai-event-creation/v1/traceability.json is valid.
+ÔÜá´©Å  ai-event-creation/v1/test-evidence.json not found. Skipping.
+ÔÜá´©Å  ai-event-creation/v1/review.json not found. Skipping.
+
+­ƒôü Validating feature: event-discovery-and-registration
+Ô£à event-discovery-and-registration/v1/spec.json is valid.
+Ô£à event-discovery-and-registration/v1/plan.json is valid.
+Ô£à event-discovery-and-registration/v1/tasks.json is valid.
+Ô£à event-discovery-and-registration/v1/traceability.json is valid.
+ÔÜá´©Å  event-discovery-and-registration/v1/test-evidence.json not found. Skipping.
+ÔÜá´©Å  event-discovery-and-registration/v1/review.json not found. Skipping.
+
+­ƒôü Validating feature: event-management-and-check-in
+Ô£à event-management-and-check-in/v1/spec.json is valid.
+Ô£à event-management-and-check-in/v1/plan.json is valid.
+Ô£à event-management-and-check-in/v1/tasks.json is valid.
+Ô£à event-management-and-check-in/v1/traceability.json is valid.
+ÔÜá´©Å  event-management-and-check-in/v1/test-evidence.json not found. Skipping.
+ÔÜá´©Å  event-management-and-check-in/v1/review.json not found. Skipping.
+
+----------------------------------------
+Ô£à Governance validation complete. All files are valid.
