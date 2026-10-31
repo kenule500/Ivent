@@ -1,0 +1,719 @@
+node.exe : npm info using npm@11.21.0
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\KENULE-NWINEE\AppData\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+
+ RUN  v3.2.7 C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent
+
+stderr | test/ai-event-creation/ai-creator.test.tsx > AC-001: generating event details > 
+AC-001: submitting a prompt shows loading and fills the form from the API
+In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <AIEventCreator onEventGenerated={function spy}>
+    <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+      <DialogRoot data-slot="dialog" open={false} onOpenChange={function bound dispatchSetState}>
+        <DialogTrigger>
+          <DialogTrigger data-slot="dialog-tri...">
+>           <button
+>             type="button"
+>             onClick={function}
+>             onMouseDown={function}
+>             onKeyDown={function}
+>             onKeyUp={function}
+>             onPointerDown={function}
+>             tabIndex={0}
+>             disabled={false}
+>             data-base-ui-click-trigger=""
+>             id="base-ui-_r_1_"
+>             aria-haspopup="dialog"
+>             aria-expanded={false}
+>             aria-controls={undefined}
+>             data-slot="dialog-trigger"
+>             ref={function}
+>           >
+              <Button variant="outline" className="gap-2">
+                <Button data-slot="button" className={"group/bu..."}>
+>                 <button
+>                   type="button"
+>                   onClick={function}
+>                   onMouseDown={function}
+>                   onKeyDown={function}
+>                   onKeyUp={function}
+>                   onPointerDown={function}
+>                   tabIndex={0}
+>                   disabled={false}
+>                   data-slot="button"
+>                   ref={function}
+>                   className={"group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-cl..."}
+>                 >
+        ...
+
+<button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+
+stderr | test/ai-event-creation/ai-creator.test.tsx > AC-005: failing safely in the dialog > 
+AC-005: a network failure keeps the dialog open and shows an error toast
+Error: offline
+    at C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\ai-event-creation\ai-creator.test.
+tsx:89:33
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:155:11
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:752:26
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/[
+4m@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vite
+st/runner/dist/chunk-hooks.js:1574:12)
+    at runSuite (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vit
+est/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vit
+est/runner/dist/chunk-hooks.js:1729:8)
+    at runFiles (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vit
+est/runner/dist/chunk-hooks.js:1787:3)
+
+stderr | test/event-discovery-and-registration/event-detail.test.tsx > AC-005: public event 
+details > AC-005: a valid slug renders every required detail
+Base UI: A component that acts as a button expected a native <button> because the `nativeButton` prop is true. 
+Rendering a non-<button> removes native button semantics, which can impact forms and accessibility. Use a real <button> in 
+the `render` prop, or set `nativeButton` to `false`.
+    at Button (C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\components\ui\button.tsx:46:58)
+    at EventDetailPage 
+(C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\(public)\events\[slug]\page.tsx:618:67)
+
+stderr | test/event-management-and-check-in/create-event-form.test.tsx > AC-001: create-event 
+validation > AC-001: required fields are enforced
+In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <CreateEventPage>
+    <div className="min-h-scre..." style={{...}}>
+      <div className="max-w-6xl ...">
+        <div>
+        <AIEventCreator onEventGenerated={function handleAIGenerate}>
+          <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+            <DialogRoot data-slot="dialog" open={false} onOpenChange={function bound dispatchSetState}>
+              <DialogTrigger>
+                <DialogTrigger data-slot="dialog-tri...">
+>                 <button
+>                   type="button"
+>                   onClick={function}
+>                   onMouseDown={function}
+>                   onKeyDown={function}
+>                   onKeyUp={function}
+>                   onPointerDown={function}
+>                   tabIndex={0}
+>                   disabled={false}
+>                   data-base-ui-click-trigger=""
+>                   id="base-ui-_r_1_"
+>                   aria-haspopup="dialog"
+>                   aria-expanded={false}
+>                   aria-controls={undefined}
+>                   data-slot="dialog-trigger"
+>                   ref={function}
+>                 >
+                    <Button variant="outline" className="gap-2">
+                      <Button data-slot="button" className={"group/bu..."}>
+>                       <button
+>                         type="button"
+>                         onClick={function}
+>                         onMouseDown={function}
+>                         onKeyDown={function}
+>                         onKeyUp={function}
+>                         onPointerDown={function}
+>                         tabIndex={0}
+>                         disabled={false}
+>                         data-slot="button"
+>                         ref={function}
+>                         className={"group/button inline-flex shrink-0 items-center justify-center rounded-lg border..."}
+>                       >
+              ...
+      ...
+
+<button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+
+stderr | test/ai-event-creation/review-before-saving.test.tsx > AC-004: review before saving > 
+AC-004: generated values only populate the form and no event is created until submit
+In HTML, <button> cannot be a descendant of <button>.
+This will cause a hydration error.
+
+  <CreateEventPage>
+    <div className="min-h-scre..." style={{...}}>
+      <div className="max-w-6xl ...">
+        <div>
+        <AIEventCreator onEventGenerated={function handleAIGenerate}>
+          <Dialog open={false} onOpenChange={function bound dispatchSetState}>
+            <DialogRoot data-slot="dialog" open={false} onOpenChange={function bound dispatchSetState}>
+              <DialogTrigger>
+                <DialogTrigger data-slot="dialog-tri...">
+>                 <button
+>                   type="button"
+>                   onClick={function}
+>                   onMouseDown={function}
+>                   onKeyDown={function}
+>                   onKeyUp={function}
+>                   onPointerDown={function}
+>                   tabIndex={0}
+>                   disabled={false}
+>                   data-base-ui-click-trigger=""
+>                   id="base-ui-_r_1_"
+>                   aria-haspopup="dialog"
+>                   aria-expanded={false}
+>                   aria-controls={undefined}
+>                   data-slot="dialog-trigger"
+>                   ref={function}
+>                 >
+                    <Button variant="outline" className="gap-2">
+                      <Button data-slot="button" className={"group/bu..."}>
+>                       <button
+>                         type="button"
+>                         onClick={function}
+>                         onMouseDown={function}
+>                         onKeyDown={function}
+>                         onKeyUp={function}
+>                         onPointerDown={function}
+>                         tabIndex={0}
+>                         disabled={false}
+>                         data-slot="button"
+>                         ref={function}
+>                         className={"group/button inline-flex shrink-0 items-center justify-center rounded-lg border..."}
+>                       >
+              ...
+      ...
+
+<button> cannot contain a nested <button>.
+See this log for the ancestor stack trace.
+
+stderr | test/event-management-and-check-in/event-dashboard.test.tsx > AC-008: attendee CSV export 
+> AC-008: export downloads a CSV with every required column
+Not implemented: navigation to another Document
+
+stderr | test/ai-event-creation/generate-event-route.test.ts > AC-003: provider key stays 
+server-side > AC-003: a missing key produces a clear server error and leaks no key
+Error generating event with Cerebras: Error: Missing CEREBRAS_API_KEY environment variable
+    at getClient (C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\api\generate-event\route
+.ts:19:11)
+    at Module.POST (C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\api\generate-event\rou
+te.ts:76:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\ai-event-creation\generate-event-r
+oute.test.ts:70:17
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:752:20
+
+stderr | test/ai-event-creation/generate-event-route.test.ts > AC-005: failing safely on the 
+server > AC-005: a provider failure returns 500 instead of crashing
+Error generating event with Cerebras: Error: provider down
+    at C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\ai-event-creation\generate-event-r
+oute.test.ts:98:39
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:155:11
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:752:26
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:1897:20
+    at new Promise (<anonymous>)
+    at runWithTimeout (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/[
+4m@vitest/runner/dist/chunk-hooks.js:1863:10)
+    at runTest (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vite
+st/runner/dist/chunk-hooks.js:1574:12)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at runSuite (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vit
+est/runner/dist/chunk-hooks.js:1729:8)
+    at runSuite (file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vit
+est/runner/dist/chunk-hooks.js:1729:8)
+
+stderr | test/ai-event-creation/generate-event-route.test.ts > AC-005: failing safely on the 
+server > AC-005: malformed model JSON returns 500
+Error generating event with Cerebras: SyntaxError: Unexpected token 'o', "not-json" is not valid JSON
+    at JSON.parse (<anonymous>)
+    at Module.POST (C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\app\api\generate-event\rou
+te.ts:86:28)
+    at processTicksAndRejections (node:internal/process/task_queues:104:5)
+    at C:\Users\KENULE-NWINEE\Documents\vscode-projs\Gomyc0de-project\Ivent\test\ai-event-creation\generate-event-r
+oute.test.ts:111:17
+    at file:///C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/node_modules/@vitest/runner
+/dist/chunk-hooks.js:752:20
+
+┬À┬À┬À┬À┬À┬À┬Àx┬À┬À┬À┬Àx┬À┬À┬À┬À┬Àx┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬Àx┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À┬À
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ» Failed Tests 4 ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»
+
+ FAIL  test/ai-event-creation/ai-creator.test.tsx > AC-005: failing safely in the dialog > 
+AC-005: a server error keeps the dialog open, shows an error toast, and does not populate the form
+AssertionError: expected "spy" to be called at least once
+
+Ignored nodes: comments, script, style
+<html
+  style=""
+>
+  <head />
+  <body
+    style=""
+  >
+    <div>
+      <button
+        aria-expanded="false"
+        aria-haspopup="dialog"
+        data-base-ui-click-trigger=""
+        data-slot="dialog-trigger"
+        id="base-ui-_r_6_"
+        tabindex="0"
+        type="button"
+      >
+        <button
+          class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border 
+bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring 
+focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none 
+disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 
+dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 
+[&_svg:not([class*='size-'])]:size-4 border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted 
+aria-expanded:text-foreground dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 px-2.5 
+has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 gap-2"
+          data-slot="button"
+          tabindex="0"
+          type="button"
+        >
+          <svg
+            aria-hidden="true"
+            class="lucide lucide-sparkles w-4 h-4"
+            fill="none"
+            height="24"
+            stroke="currentColor"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            stroke-width="2"
+            viewBox="0 0 24 24"
+            width="24"
+            xmlns="http://www.w3.org/2000/svg"
+          >
+            <path
+              d="M11.017 2.814a1 1 0 0 1 1.966 0l1.051 5.558a2 2 0 0 0 1.594 1.594l5.558 1.051a1 1 0 0 1 0 
+1.966l-5.558 1.051a2 2 0 0 0-1.594 1.594l-1.051 5.558a1 1 0 0 1-1.966 0l-1.051-5.558a2 2 0 0 0-1.594-1.594l-5.558-1.051a1 1 
+0 0 1 0-1.966l5.558-1.051a2 2 0 0 0 1.594-1.594z"
+            />
+            <path
+              d="M20 2v4"
+            />
+            <path
+              d="M22 4h-4"
+            />
+            <circle
+              cx="4"
+              cy="20"
+              r="2"
+            />
+          </svg>
+          Generate with AI
+        </button>
+      </button>
+    </div>
+  </body>
+</html>
+ ÔØ» test/ai-event-creation/ai-creator.test.tsx:83:50
+     81|     await openAndSubmit();
+     82| 
+     83|     await waitFor(() => 
+expect(mocks.toastError).toHaveBeenCalled());
+       |                                                  ^
+     84|     expect(screen.getByText("AI Event 
+Creator")).toBeInTheDocument();
+     85|     
+expect(mocks.onGenerated).not.toHaveBeenCalled();
+ ÔØ» runWithExpensiveErrorDiagnosticsDisabled 
+node_modules/@testing-library/dom/dist/config.js:47:12
+ ÔØ» checkCallback node_modules/@testing-library/dom/dist/wait-for.js:124:77
+ ÔØ» Timeout.checkRealTimersCallback node_modules/@testing-library/dom/dist/wait-for.js:118:16
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[1/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/event-detail.test.tsx > AC-006: sidebar call to 
+action > AC-006: the organizer sees Manage Event
+TestingLibraryElementError: Unable to find an accessible element with the role "button" and name `/manage 
+event/i`
+
+Here are the accessible roles:
+
+  heading:
+
+  Name "Tech Summit":
+  <h1
+    class="text-4xl md:text-5xl font-bold mb-4"
+  />
+
+  Name "About This Event":
+  <h2
+    class="text-2xl font-bold mb-4"
+  />
+
+  Name "Location":
+  <h2
+    class="text-2xl font-bold mb-4 flex items-center gap-2"
+  />
+
+  Name "Organizer":
+  <h2
+    class="text-2xl font-bold mb-4"
+  />
+
+  --------------------------------------------------
+  paragraph:
+
+  Name "":
+  <p
+    class="text-muted-foreground whitespace-pre-wrap leading-relaxed"
+  />
+
+  Name "":
+  <p
+    class="font-medium"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="font-semibold"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground"
+  />
+
+  Name "":
+  <p
+    class="text-sm text-muted-foreground mb-1"
+  />
+
+  Name "":
+  <p
+    class="text-3xl font-bold"
+  />
+
+  Name "":
+  <p
+    class="font-semibold"
+  />
+
+  Name "":
+  <p
+    class="font-semibold text-sm"
+  />
+
+  Name "":
+  <p
+    class="font-semibold text-sm"
+  />
+
+  --------------------------------------------------
+  separator:
+
+  Name "":
+  <div
+    aria-orientation="horizontal"
+    class="shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px 
+data-vertical:self-stretch"
+    data-orientation="horizontal"
+    data-slot="separator"
+    role="separator"
+  />
+
+  Name "":
+  <div
+    aria-orientation="horizontal"
+    class="shrink-0 bg-border data-horizontal:h-px data-horizontal:w-full data-vertical:w-px 
+data-vertical:self-stretch"
+    data-orientation="horizontal"
+    data-slot="separator"
+    role="separator"
+  />
+
+  --------------------------------------------------
+  button:
+
+  Name "Register for Event":
+  <button
+    class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent 
+bg-clip-padding text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring 
+focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none 
+disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 
+dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 
+[&_svg:not([class*='size-'])]:size-4 bg-primary text-primary-foreground hover:bg-primary/80 h-8 px-2.5 
+has-data-[icon=inline-end]:pr-2 has-data-[icon=inline-start]:pl-2 w-full gap-2"
+    data-slot="button"
+    tabindex="0"
+    type="button"
+  />
+
+  Name "Share Event":
+  <button
+    class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border bg-clip-padding 
+text-sm font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring focus-visible:ring-3 
+focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none disabled:opacity-50 
+aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 dark:aria-invalid:border-destructive/50 
+dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 [&_svg:not([class*='size-'])]:size-4 
+border-border bg-background hover:bg-muted hover:text-foreground aria-expanded:bg-muted aria-expanded:text-foreground 
+dark:border-input dark:bg-input/30 dark:hover:bg-input/50 h-8 px-2.5 has-data-[icon=inline-end]:pr-2 
+has-data-[icon=inline-start]:pl-2 w-full gap-2"
+    data-slot="button"
+    tabindex="0"
+    type="button"
+  />
+
+  --------------------------------------------------
+  link:
+
+  Name "Report this event":
+  <a
+    class="group/button inline-flex shrink-0 items-center justify-center rounded-lg border border-transparent 
+bg-clip-padding font-medium whitespace-nowrap transition-all outline-none select-none focus-visible:border-ring 
+focus-visible:ring-3 focus-visible:ring-ring/50 active:not-aria-[haspopup]:translate-y-px disabled:pointer-events-none 
+disabled:opacity-50 aria-invalid:border-destructive aria-invalid:ring-3 aria-invalid:ring-destructive/20 
+dark:aria-invalid:border-destructive/50 dark:aria-invalid:ring-destructive/40 [&_svg]:pointer-events-none [&_svg]:shrink-0 
+[&_svg:not([class*='size-'])]:size-4 hover:bg-muted hover:text-foreground aria-expanded:bg-muted 
+aria-expanded:text-foreground dark:hover:bg-muted/50 h-8 px-2.5 has-data-[icon=inline-end]:pr-2 
+has-data-[icon=inline-start]:pl-2 w-full gap-2 text-xs text-muted-foreground"
+    data-slot="button"
+    href="/feedback?eventId=event_1"
+    tabindex="0"
+    type="button"
+  />
+
+  --------------------------------------------------
+
+Ignored nodes: comments, script, style
+<body>
+  <div>
+    <div
+      class="min-h-screen py-8 -mt-6 md:-mt-16 lg:-mx-5"
+      style="background-color: rgb(30, 58, 138);"
+    >
+      <div
+        class="max-w-7xl mx-auto px-8"
+      >
+        <div
+          class="mb-8"
+        >
+          <span
+            class="group/badge inline-flex h-5 w-fit shrink-0 items-center justify-center gap-1 
+overflow-hidden rounded-4xl border border-transparent px-2 py-0.5 text-xs font-medium whitespace-nowrap transition-all 
+focus-visible:border-ring focus-visible:ring-[3px] focus-visible:ring-ring/50 has-data-[icon=inline-end]:pr-1.5 
+has-data-[icon=inline-start]:pl-1.5 aria-invalid:border-destructive aria-invalid:ring-destructive/20 
+dark:aria-invalid:ring-destructive/40 [&>svg]:pointer-events-none [&>svg]:size-3! bg-secondary text-secondary-foreground 
+[a]:hover:bg-secondary/80 mb-3"
+            data-slot="badge"
+            data-variant="secondary"
+          >
+            ­ƒÆ╗
+             
+            Technology
+          </span>
+          <h1
+            class="text-4xl md:text-5xl font-bold mb-4"
+          >
+            Tech Summit
+          </h1>
+          <div
+            class="flex flex-wrap items-center gap-4 text-muted-foreground"
+          >
+            <div
+              class="flex items-center gap-2"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-calendar w-5 h-5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M8 2v4"
+                />
+                <path
+                  d="M16 2v4"
+                />
+                <rect
+                  height="18"
+                  rx="2"
+                  width="18"
+                  x="3"
+                  y="4"
+                />
+                <path
+                  d="M3 10h18"
+                />
+              </svg>
+              <span>
+                Sunday, November 01, 2026
+              </span>
+            </div>
+            <div
+              class="flex items-center gap-2"
+            >
+              <svg
+                aria-hidden="true"
+                class="lucide lucide-clock w-5 h-5"
+                fill="none"
+                height="24"
+                stroke="currentColor"
+                stroke-linecap="round"
+                stroke-linejoin="round"
+                stroke-width="2"
+                viewBox="0 0 24 24"
+                width="24"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle
+                  cx="12"
+                  cy="12"
+                  r="10"
+                />
+                <path
+                  d="M12 6v6l4 2"
+                />
+              </svg>
+              <span>
+                12:48 PM
+                 -
+                 
+                1:48 PM
+              </span>
+            </div>
+          </div>
+        </div>
+        <div
+          class="grid lg:grid-cols-[1fr_380px] gap-8"
+        >
+          <div
+            class="space-y-8"
+          >
+            <div
+              class="group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card 
+py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] 
+has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] 
+data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl pt-0"
+              data-size="default"
+              data-slot="card"
+              style="background-color: rgb(19, 47, 127);"
+            >
+              <div
+                class="px-(--card-spacing) pt-6"
+                data-slot="card-content"
+              >
+                <h2
+                  class="text-2xl font-bold mb-4"
+                >
+                  About This Event
+                </h2>
+                <p
+                  class="text-muted-foreground whitespace-pre-wrap leading-relaxed"
+                >
+                  A full day of talks about building products.
+                </p>
+              </div>
+            </div>
+            <div
+              class="group/card flex flex-col gap-(--card-spacing) overflow-hidden rounded-xl bg-card 
+py-(--card-spacing) text-sm text-card-foreground ring-1 ring-foreground/10 [--card-spacing:--spacing(4)] 
+has-data-[slot=card-footer]:pb-0 has-[>img:first-child]:pt-0 data-[size=sm]:[--card-spacing:--spacing(3)] 
+data-[size=sm]:has-data-[slot=card-footer]:pb-0 *:[img:first-child]:rounded-t-xl *:[img:last-child]:rounded-b-xl pt-0"
+              data-size="default"
+              data-slot="card"
+              style="background-color: rgb(19, 47, 127);"
+            >
+              <div
+                class="px-(--card-spacing) pt-6"
+             ...
+ ÔØ» Object.getElementError node_modules/@testing-library/dom/dist/config.js:37:19
+ ÔØ» node_modules/@testing-library/dom/dist/query-helpers.js:76:38
+ ÔØ» node_modules/@testing-library/dom/dist/query-helpers.js:52:17
+ ÔØ» node_modules/@testing-library/dom/dist/query-helpers.js:95:19
+ ÔØ» test/event-discovery-and-registration/event-detail.test.tsx:140:19
+    138|     render(<EventDetailPage />);
+    139| 
+    140|     expect(screen.getByRole("button", { name: /manage event/i })).toBeÔÇª
+
+ Test Files  4 failed | 44 passed (48)
+      Tests  4 failed | 142 passed (146)
+   Start at  12:47:42
+       |                   ^
+    141|   });
+    142| 
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[2/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/explore.test.tsx > AC-002: per-section loading and 
+empty states > AC-002: each section shows its own empty state
+Error: expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ÔØ» test/event-discovery-and-registration/explore.test.tsx:143:60
+    141|     render(<ExplorePage />);
+    142| 
+    143|     expect.soft(screen.queryByText(/no featured events/i)).toBeInTheDoÔÇª
+       |                                                            ^
+    144|     expect.soft(screen.queryByText(/no events near you/i)).toBeInTheDoÔÇª
+    145|     expect.soft(screen.getByText("No popular events yet.")).toBeInTheDÔÇª
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[3/5]ÔÄ»
+
+ FAIL  test/event-discovery-and-registration/explore.test.tsx > AC-002: per-section loading and 
+empty states > AC-002: each section shows its own empty state
+Error: expect(received).toBeInTheDocument()
+
+received value must be an HTMLElement or an SVGElement.
+Received has type:  Null
+Received has value: null
+ ÔØ» test/event-discovery-and-registration/explore.test.tsx:144:60
+    142| 
+    143|     expect.soft(screen.queryByText(/no featured events/i)).toBeInTheDoÔÇª
+    144|     expect.soft(screen.queryByText(/no events near you/i)).toBeInTheDoÔÇª
+       |                                                            ^
+    145|     expect.soft(screen.getByText("No popular events yet.")).toBeInTheDÔÇª
+    146|   });
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[4/5]ÔÄ»
+
+ FAIL  test/event-management-and-check-in/check-in.test.ts > AC-007: QR check-in > 
+AC-007: failed scans also count toward the brute-force limit
+AssertionError: expected [Function] to throw error matching /rate limit/i but got 'Invalid or cancelled QR 
+code'
+
+- Expected: 
+/rate limit/i
+
++ Received: 
+"Invalid or cancelled QR code"
+
+ ÔØ» test/event-management-and-check-in/check-in.test.ts:128:5
+    126|     // A rejected mutation rolls back its rate-limit token, so an attaÔÇª
+    127|     // keep guessing codes without ever hitting the limit.
+    128|     await expect(
+       |     ^
+    129|       t.withIdentity(organizerIdentity).mutation(api.registrations.cheÔÇª
+    130|         qrCode: "EVT-GUESS-FINAL",
+
+ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»ÔÄ»[5/5]ÔÄ»
+
+   Duration  127.51s (transform 38.23s, setup 68.84s, collect 261.75s, tests 63.45s, environment 328.78s, prepare 47.57s)
+

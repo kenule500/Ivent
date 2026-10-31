@@ -43,4 +43,20 @@ console.log(
   `Tests: ${report.numFailedTests} failed, ${report.numPassedTests} passed, ${report.numTotalTests} total`
 );
 
+// The evidence parser also harvests AC-### IDs from the captured output. Printing
+// them lets review.json prove WHICH criteria the run exercised, not merely how
+// many assertions passed. Derived from the reporter's own titles; nothing is
+// inferred or invented.
+const acIds = new Set();
+
+for (const suite of report.testResults || []) {
+  for (const test of suite.assertionResults || []) {
+    for (const match of String(test.fullName || "").matchAll(/\bAC-\d{3}\b/g)) {
+      acIds.add(match[0]);
+    }
+  }
+}
+
+console.log(`ACs exercised: ${[...acIds].sort().join(" ")}`);
+
 process.exit(report.success ? 0 : 1);
