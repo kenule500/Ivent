@@ -1,0 +1,1076 @@
+add smart-buffer 4.2.0
+add @modelcontextprotocol/core 2.4.0
+add socks 2.8.10
+add @shadcn/registry 0.2.1
+add glob-parent 5.1.2
+add tsconfig-paths 4.2.0
+add postcss 8.5.32
+add fast-glob 3.3.3
+add @modelcontextprotocol/server 2.4.0
+remove zod-validation-error 4.0.2
+remove zod-to-json-schema 3.25.2
+change zod 4.4.3 => 4.6.7
+remove yocto-queue 0.1.0
+remove yargs-parser 18.1.3
+remove camelcase 5.3.1
+remove yargs 15.4.1
+remove string-width 4.2.3
+remove p-locate 4.1.0
+remove p-limit 2.3.0
+remove locate-path 5.0.0
+remove find-up 4.1.0
+remove emoji-regex 8.0.0
+remove yaml 2.9.0
+remove y18n 4.0.3
+remove xmlchars 2.2.0
+remove xml-name-validator 5.0.0
+change wsl-utils 0.3.1 => 1.0.1
+remove wrappy 1.0.2
+remove wrap-ansi 6.2.0
+remove string-width 4.2.3
+remove emoji-regex 8.0.0
+remove word-wrap 1.2.5
+remove why-is-node-running 2.3.0
+remove which-typed-array 1.1.22
+remove which-module 2.0.1
+remove which-collection 1.0.2
+remove which-builtin-type 1.2.1
+remove which-boxed-primitive 1.1.1
+remove whatwg-mimetype 5.0.0
+remove whatwg-fetch 3.6.20
+remove web-streams-polyfill 3.3.3
+remove walker 1.0.8
+remove w3c-xmlserializer 6.0.0
+remove vlq 1.0.1
+remove vitest 3.2.7
+remove picomatch 4.0.7
+remove @vitest/mocker 3.2.7
+remove vite-tsconfig-paths 6.1.1
+remove vite-node 3.2.4
+remove vite 7.3.7
+remove picomatch 4.0.7
+remove fdir 6.5.0
+remove vary 1.1.2
+remove uuid 8.3.2
+remove utils-merge 1.0.1
+remove utf-8-validate 6.0.6
+remove uri-js 4.4.1
+change update-browserslist-db 1.2.3 => 1.3.4
+remove unrs-resolver 1.12.2
+remove unpipe 1.0.0
+change undici 7.28.0 => 7.30.1
+remove unbox-primitive 1.1.0
+remove typescript-eslint 8.61.1
+remove typescript 5.9.3
+remove typed-array-length 1.0.8
+remove typed-array-byte-offset 1.0.4
+remove typed-array-byte-length 1.0.3
+remove typed-array-buffer 1.0.3
+remove type-is 2.1.0
+remove content-type 2.0.0
+change type-fest 0.7.1 => 4.41.0
+remove type-check 0.4.0
+remove tsconfig-paths 3.15.0
+remove json5 1.0.2
+remove tsconfck 3.1.6
+remove ts-api-utils 2.5.0
+remove tough-cookie 6.0.2
+remove toidentifier 1.0.1
+remove tmpl 1.0.5
+remove tldts-core 7.4.18
+remove tldts 7.4.18
+remove tinyspy 4.0.6
+remove tinyrainbow 2.0.0
+remove tinypool 1.1.1
+remove tinyglobby 0.2.17
+remove picomatch 4.0.4
+remove fdir 6.5.0
+remove tinyexec 0.3.2
+remove tinybench 2.9.0
+remove throat 5.0.0
+remove text-encoding-utf-8 1.0.2
+remove terser 5.48.0
+remove commander 2.20.3
+remove tapable 2.3.3
+remove tailwindcss 4.3.1
+change tabbable 6.4.0 => 6.5.1
+change systeminformation 5.31.7 => 5.33.19
+remove supports-color 7.2.0
+remove superstruct 2.0.2
+remove strip-literal 3.1.0
+remove js-tokens 9.0.1
+remove strip-json-comments 3.1.1
+remove strip-indent 3.0.0
+remove string.prototype.trimstart 1.0.8
+remove string.prototype.trimend 1.0.10
+remove string.prototype.trim 1.2.11
+remove string.prototype.repeat 1.0.0
+remove string.prototype.matchall 4.0.12
+remove string.prototype.includes 2.0.1
+remove stream-json 1.9.1
+remove stream-chain 2.2.5
+remove stop-iteration-iterator 1.1.0
+remove statuses 2.0.2
+remove stacktrace-parser 0.1.11
+remove stackframe 1.3.4
+remove stackback 0.0.2
+remove stable-hash 0.0.5
+remove source-map-support 0.5.21
+remove siginfo 2.0.0
+remove side-channel-weakmap 1.0.2
+remove side-channel-map 1.0.1
+remove side-channel-list 1.0.1
+remove side-channel 1.1.1
+remove shell-quote 1.8.4
+change shadcn 4.11.0 => 4.23.0
+add postcss 8.5.32
+remove zod 3.25.76
+remove setprototypeof 1.2.0
+remove set-proto 1.0.0
+remove set-function-name 2.0.2
+remove set-function-length 1.2.2
+remove set-blocking 2.0.0
+remove serve-static 2.2.1
+remove serialize-error 2.1.0
+remove send 1.2.1
+remove saxes 6.0.0
+remove safer-buffer 2.1.2
+remove safe-regex-test 1.1.0
+remove safe-push-apply 1.0.0
+remove safe-buffer 5.2.1
+remove safe-array-concat 1.1.4
+remove rpc-websockets 9.3.9
+remove uuid 14.0.0
+remove @types/ws 8.18.1
+remove router 2.2.0
+remove rollup 4.64.10
+remove resolve-pkg-maps 1.0.0
+remove resolve 2.0.0-next.7
+remove require-main-filename 2.0.0
+remove require-directory 2.1.1
+remove regexp.prototype.flags 1.5.4
+remove regenerator-runtime 0.13.11
+remove reflect.getprototypeof 1.0.10
+remove redent 3.0.0
+remove react-refresh 0.14.2
+remove react-native 0.86.0
+remove yargs-parser 21.1.1
+remove yargs 17.7.2
+remove y18n 5.0.8
+remove ws 7.5.11
+remove wrap-ansi 7.0.0
+remove string-width 4.2.3
+remove semver 7.8.4
+remove emoji-regex 8.0.0
+remove commander 12.1.0
+remove cliui 8.0.1
+remove react-devtools-core 6.1.5
+remove ws 7.5.11
+remove raw-body 3.0.2
+remove range-parser 1.2.1
+remove queue 6.0.2
+remove qs 6.15.2
+remove qrcode 1.5.4
+remove punycode 2.3.1
+remove proxy-addr 2.0.7
+remove promise 8.3.0
+remove pretty-format 29.7.0
+remove react-is 18.3.1
+remove ansi-styles 5.2.0
+remove prelude-ls 1.2.1
+change powershell-utils 0.1.0 => 0.2.1
+change postcss-selector-parser 7.1.4 => 7.1.7
+remove postcss 8.5.15
+remove possible-typed-array-names 1.1.0
+remove pngjs 5.0.0
+remove pkce-challenge 5.0.1
+remove pathval 2.0.1
+remove pathe 2.0.3
+remove path-to-regexp 8.4.2
+remove path-exists 4.0.0
+remove parseurl 1.3.3
+remove parse5 8.0.1
+remove p-locate 5.0.0
+remove p-limit 3.1.0
+remove own-keys 1.0.1
+remove optionator 0.9.4
+change open 11.0.0 => 11.0.4
+remove once 1.4.0
+remove on-finished 2.4.1
+remove object.values 1.2.1
+remove object.groupby 1.0.3
+remove object.fromentries 2.0.8
+remove object.entries 1.1.9
+remove object.assign 4.1.7
+remove object-keys 1.1.1
+remove object-inspect 1.13.4
+remove ob1 0.84.4
+remove nullthrows 1.1.1
+change node-releases 2.0.47 => 2.0.63
+remove node-int64 0.4.0
+remove node-gyp-build 4.8.4
+remove node-fetch 3.3.2
+remove node-exports-info 1.6.0
+remove negotiator 1.0.0
+remove natural-compare 1.4.0
+remove napi-postinstall 0.3.4
+remove mkdirp 1.0.4
+remove minimatch 3.1.5
+remove min-indent 1.0.1
+remove mime-types 3.0.2
+remove mime-db 1.54.0
+remove mime 1.6.0
+remove metro-transform-worker 0.84.4
+remove metro-transform-plugins 0.84.4
+remove metro-symbolicate 0.84.4
+remove source-map 0.5.7
+remove metro-source-map 0.84.4
+remove source-map 0.5.7
+remove metro-runtime 0.84.4
+remove metro-resolver 0.84.4
+remove metro-minify-terser 0.84.4
+remove metro-file-map 0.84.4
+remove metro-core 0.84.4
+remove metro-config 0.84.4
+remove metro-cache-key 0.84.4
+remove metro-cache 0.84.4
+remove metro-babel-transformer 0.84.4
+remove hermes-parser 0.35.0
+remove hermes-estree 0.35.0
+remove metro 0.84.4
+remove yargs-parser 21.1.1
+remove yargs 17.7.2
+remove y18n 5.0.8
+remove ws 7.5.11
+remove wrap-ansi 7.0.0
+remove string-width 4.2.3
+remove source-map 0.5.7
+remove hermes-parser 0.35.0
+remove hermes-estree 0.35.0
+remove emoji-regex 8.0.0
+remove cliui 8.0.1
+remove merge-options 3.0.4
+remove is-plain-obj 2.1.0
+remove merge-descriptors 2.0.0
+remove memoize-one 5.2.1
+remove media-typer 1.1.0
+remove mdn-data 2.27.1
+remove marky 1.3.0
+remove makeerror 1.0.12
+remove magic-string 0.30.21
+remove lz-string 1.5.0
+remove loupe 3.2.1
+remove lodash.throttle 4.1.1
+remove lodash.merge 4.6.2
+remove locate-path 6.0.0
+remove lightningcss-win32-x64-msvc 1.32.0
+remove lightningcss 1.32.0
+remove lighthouse-logger 1.4.2
+remove ms 2.0.0
+remove debug 2.6.9
+remove levn 0.4.1
+remove leven 3.1.0
+remove language-tags 1.0.9
+remove language-subtag-registry 0.3.23
+remove keyv 4.5.4
+remove jsx-ast-utils 3.3.5
+remove json-stringify-safe 5.0.1
+remove json-stable-stringify-without-jsonify 1.0.1
+remove json-schema-typed 8.0.2
+remove json-buffer 3.0.1
+remove jsdom 30.1.3
+remove whatwg-url 17.3.0
+remove webidl-conversions 8.0.1
+remove undici 8.12.2
+remove tr46 7.0.0
+remove lru-cache 11.5.3
+remove jsc-safe-url 0.2.4
+remove js-yaml 4.2.0
+remove jose 6.2.3
+remove jiti 2.7.0
+remove jest-worker 29.7.0
+remove supports-color 8.1.1
+remove jest-validate 29.7.0
+remove jest-util 29.7.0
+remove ci-info 3.9.0
+remove jest-get-type 29.6.3
+remove jayson 4.3.0
+remove ws 7.5.11
+remove commander 2.20.3
+remove @types/node 12.20.55
+remove iterator.prototype 1.1.5
+remove isomorphic-ws 4.0.1
+remove isarray 2.0.5
+remove is-weakset 2.0.4
+remove is-weakref 1.1.1
+remove is-weakmap 2.0.2
+remove is-typed-array 1.1.15
+remove is-symbol 1.1.1
+remove is-string 1.1.1
+remove is-shared-array-buffer 1.0.4
+remove is-set 2.0.3
+remove is-regex 1.2.1
+remove is-promise 4.0.0
+remove is-potential-custom-element-name 1.0.1
+remove is-number-object 1.1.1
+remove is-negative-zero 2.0.3
+remove is-map 2.0.3
+remove is-generator-function 1.1.2
+remove is-fullwidth-code-point 3.0.0
+remove is-finalizationregistry 1.1.1
+remove is-document.all 1.0.0
+remove is-date-object 1.1.0
+remove is-data-view 1.0.2
+remove is-callable 1.2.7
+remove is-bun-module 2.0.0
+remove semver 7.8.4
+remove is-boolean-object 1.2.2
+remove is-bigint 1.1.0
+remove is-async-function 2.1.1
+remove is-array-buffer 3.0.5
+remove ipaddr.js 1.9.1
+change ip-address 10.2.0 => 10.7.5
+remove invariant 2.2.4
+remove internal-slot 1.1.0
+remove inherits 2.0.4
+remove indent-string 4.0.0
+remove imurmurhash 0.1.4
+remove image-size 1.2.1
+remove ieee754 1.2.1
+remove iconv-lite 0.7.2
+remove https-proxy-agent 7.0.6
+remove http-errors 2.0.1
+remove html-encoding-sniffer 7.0.0
+remove hono 4.12.25
+remove hermes-parser 0.25.1
+remove hermes-estree 0.25.1
+remove hermes-compiler 250829098.0.14
+remove has-proto 1.2.0
+remove has-property-descriptors 1.0.2
+remove has-flag 4.0.0
+remove has-bigints 1.1.0
+remove globrex 0.1.2
+remove globalthis 1.0.4
+remove globals 14.0.0
+remove glob-parent 6.0.2
+remove get-tsconfig 4.14.0
+remove get-symbol-description 1.1.0
+remove get-caller-file 2.0.5
+remove generator-function 2.0.1
+remove functions-have-names 1.2.3
+remove function.prototype.name 1.2.0
+remove fresh 2.0.0
+remove forwarded 0.2.0
+remove formdata-polyfill 4.0.10
+remove for-each 0.3.5
+remove flow-enums-runtime 0.0.6
+remove flatted 3.4.2
+remove flat-cache 4.0.1
+remove find-up 5.0.0
+remove finalhandler 2.1.1
+remove file-entry-cache 8.0.0
+remove fetch-blob 3.2.0
+remove fb-watchman 2.0.2
+remove fb-dotslash 0.5.8
+change fast-uri 3.1.2 => 3.1.9
+remove fast-stable-stringify 1.0.0
+remove fast-levenshtein 2.0.6
+remove fast-json-stable-stringify 2.1.0
+remove fast-glob 3.3.1
+remove glob-parent 5.1.2
+remove eyes 0.1.8
+remove express-rate-limit 8.5.2
+remove express 5.2.1
+remove exponential-backoff 3.1.3
+remove expect-type 1.4.0
+remove eventsource-parser 3.1.0
+remove eventsource 3.0.7
+remove etag 1.8.1
+remove esutils 2.0.3
+remove estree-walker 3.0.3
+remove estraverse 5.3.0
+remove esrecurse 4.3.0
+remove esquery 1.7.0
+remove espree 10.4.0
+remove eslint-visitor-keys 4.2.1
+remove eslint-scope 8.4.0
+remove eslint-plugin-react-hooks 7.1.1
+remove eslint-plugin-react 7.37.5
+remove eslint-plugin-jsx-a11y 6.10.2
+remove eslint-plugin-import 2.32.0
+remove debug 3.2.7
+remove eslint-module-utils 2.13.0
+remove debug 3.2.7
+remove eslint-import-resolver-typescript 3.10.1
+remove eslint-import-resolver-node 0.3.10
+remove debug 3.2.7
+remove eslint-config-next 16.2.9
+remove globals 16.4.0
+remove eslint 9.39.4
+remove json-schema-traverse 0.4.1
+remove ajv 6.15.0
+remove escape-html 1.0.3
+remove es6-promisify 5.0.0
+remove es6-promise 4.2.8
+remove es-to-primitive 1.3.1
+remove es-shim-unscopables 1.1.0
+remove es-module-lexer 1.7.0
+remove es-iterator-helpers 1.3.3
+remove es-abstract-get 1.0.0
+remove es-abstract 1.24.2
+remove error-stack-parser 2.1.4
+remove entities 8.1.0
+remove enhanced-resolve 5.21.6
+remove encodeurl 2.0.0
+remove emoji-regex 9.2.2
+change electron-to-chromium 1.5.375 => 1.5.472
+remove ee-first 1.1.1
+remove dom-accessibility-api 0.5.16
+remove doctrine 2.1.0
+remove dijkstrajs 1.0.3
+remove destroy 1.2.0
+remove depd 2.0.0
+remove delay 5.0.0
+remove define-properties 1.2.1
+remove define-data-property 1.1.4
+change default-browser 5.5.0 => 5.5.1
+remove deep-is 0.1.4
+remove deep-eql 5.0.2
+remove decimal.js 10.6.0
+remove decamelize 1.2.0
+remove data-view-byte-offset 1.0.1
+remove data-view-byte-length 1.0.2
+remove data-view-buffer 1.0.2
+remove data-urls 8.0.0
+remove whatwg-url 17.3.0
+remove webidl-conversions 8.0.1
+remove tr46 7.0.0
+remove data-uri-to-buffer 4.0.1
+remove damerau-levenshtein 1.0.8
+remove css.escape 1.5.1
+remove css-tree 3.2.1
+remove cosmiconfig 9.0.2
+remove cors 2.8.6
+remove cookie-signature 1.2.2
+remove cookie 0.7.2
+remove convex-test 0.0.62
+remove content-type 1.0.5
+remove content-disposition 1.1.0
+remove connect 3.7.0
+remove statuses 1.5.0
+remove on-finished 2.3.0
+remove ms 2.0.0
+remove finalhandler 1.1.2
+remove encodeurl 1.0.2
+remove debug 2.6.9
+remove concat-map 0.0.1
+remove color-name 1.1.4
+remove color-convert 2.0.1
+remove cliui 6.0.0
+remove string-width 4.2.3
+remove emoji-regex 8.0.0
+remove ci-info 2.0.0
+remove chromium-edge-launcher 0.3.0
+remove is-wsl 2.2.0
+remove is-docker 2.2.1
+remove chrome-launcher 0.15.2
+remove is-wsl 2.2.0
+remove is-docker 2.2.1
+remove check-error 2.1.3
+remove chalk 4.1.2
+remove chai 5.3.3
+change caniuse-lite 1.0.30001799 => 1.0.30001820
+remove camelcase 6.3.0
+remove call-bound 1.0.4
+remove call-bind 1.0.9
+remove cac 6.7.14
+remove bytes 3.1.2
+change bundle-name 4.1.0 => 4.1.1
+remove bufferutil 4.1.0
+remove buffer-from 1.1.2
+remove buffer 6.0.3
+remove bser 2.1.1
+remove bs58 6.0.0
+change browserslist 4.28.2 => 4.29.5
+remove brace-expansion 1.1.15
+remove borsh 0.7.0
+remove bs58 4.0.1
+remove base-x 3.0.11
+remove body-parser 2.3.0
+remove content-type 2.0.0
+remove bn.js 5.2.3
+remove bidi-js 1.1.0
+change baseline-browser-mapping 2.10.37 => 2.11.34
+remove base64-js 1.5.1
+remove base-x 5.0.1
+remove balanced-match 1.0.2
+remove babel-plugin-syntax-hermes-parser 0.36.0
+remove hermes-parser 0.36.0
+remove hermes-estree 0.36.0
+remove axobject-query 4.1.0
+remove axe-core 4.12.1
+remove available-typed-arrays 1.0.7
+remove async-function 1.0.0
+remove ast-types-flow 0.0.8
+remove assertion-error 2.0.1
+remove asap 2.0.6
+remove arraybuffer.prototype.slice 1.0.4
+remove array.prototype.tosorted 1.1.4
+remove array.prototype.flatmap 1.3.3
+remove array.prototype.flat 1.3.3
+remove array.prototype.findlastindex 1.2.6
+remove array.prototype.findlast 1.2.5
+remove array-includes 3.1.9
+remove array-buffer-byte-length 1.0.2
+remove aria-query 5.3.2
+remove argparse 2.0.1
+remove ansi-styles 4.3.0
+remove anser 1.4.10
+remove ajv-formats 3.0.1
+remove agent-base 7.1.4
+remove acorn-jsx 5.3.2
+remove acorn 8.17.0
+remove accepts 2.0.0
+change @wallet-standard/core 1.1.2 => 1.1.1
+remove @vitest/utils 3.2.7
+remove @vitest/spy 3.2.7
+remove @vitest/snapshot 3.2.7
+remove @vitest/runner 3.2.7
+remove @vitest/pretty-format 3.2.7
+remove @vitest/expect 3.2.7
+remove @vitejs/plugin-react 5.2.0
+remove react-refresh 0.18.0
+remove @unrs/resolver-binding-win32-x64-msvc 1.12.2
+remove @typescript-eslint/visitor-keys 8.61.1
+remove eslint-visitor-keys 5.0.1
+remove @typescript-eslint/utils 8.61.1
+remove @typescript-eslint/typescript-estree 8.61.1
+remove semver 7.8.4
+remove minimatch 10.2.5
+remove brace-expansion 5.0.6
+remove balanced-match 4.0.4
+remove @typescript-eslint/types 8.61.1
+remove @typescript-eslint/type-utils 8.61.1
+remove @typescript-eslint/tsconfig-utils 8.61.1
+remove @typescript-eslint/scope-manager 8.61.1
+remove @typescript-eslint/project-service 8.61.1
+remove @typescript-eslint/parser 8.61.1
+remove @typescript-eslint/eslint-plugin 8.61.1
+remove ignore 7.0.5
+remove @types/yargs-parser 21.0.3
+remove @types/yargs 17.0.35
+remove @types/ws 7.4.7
+remove @types/uuid 10.0.0
+remove @types/react-dom 19.2.3
+remove @types/json5 0.0.29
+remove @types/json-schema 7.0.15
+remove @types/istanbul-reports 3.0.4
+remove @types/istanbul-lib-report 3.0.3
+remove @types/istanbul-lib-coverage 2.0.6
+remove @types/estree 1.0.9
+remove @types/deep-eql 4.0.2
+remove @types/connect 3.4.38
+remove @types/chai 5.2.3
+remove @types/babel__traverse 7.28.0
+remove @types/babel__template 7.4.4
+remove @types/babel__generator 7.27.0
+remove @types/babel__core 7.20.5
+remove @types/aria-query 5.0.4
+change minimatch 10.2.5 => 10.2.6
+change brace-expansion 5.0.6 => 5.0.12
+remove @testing-library/user-event 14.6.8
+remove @testing-library/react 16.3.3
+remove @testing-library/jest-dom 7.0.1
+remove dom-accessibility-api 0.6.3
+remove @testing-library/dom 10.4.2
+remove react-is 17.0.2
+remove pretty-format 27.5.1
+remove aria-query 5.3.0
+remove ansi-styles 5.2.0
+change @tanstack/query-core 5.101.0 => 5.105.0
+remove @tailwindcss/postcss 4.3.1
+remove @tailwindcss/oxide-win32-x64-msvc 4.3.1
+remove @tailwindcss/oxide 4.3.1
+remove @tailwindcss/node 4.3.1
+remove @solana/web3.js 1.98.4
+remove node-fetch 2.7.0
+remove chalk 5.6.2
+remove bs58 4.0.1
+remove base-x 3.0.11
+remove @solana/errors 2.3.0
+remove @solana/codecs-numbers 2.3.0
+remove @solana/codecs-core 2.3.0
+remove @solana/wallet-standard-wallet-adapter-react 1.1.5
+remove @solana/wallet-standard-wallet-adapter-base 1.1.5
+remove @solana/wallet-standard-wallet-adapter 1.1.5
+remove @solana/wallet-standard-util 1.1.3
+remove @solana/wallet-standard-features 1.4.0
+remove @solana/wallet-standard-core 1.1.3
+remove @solana/wallet-standard-chains 1.1.2
+remove @solana/wallet-standard 1.1.4
+remove @solana/wallet-adapter-react 0.15.39
+remove @solana/wallet-adapter-base 0.9.27
+remove @solana/transactions 6.10.0
+remove @solana/transaction-messages 6.10.0
+remove @solana/transaction-confirmation 6.10.0
+remove @solana/sysvars 6.10.0
+remove @solana/subscribable 6.10.0
+remove @solana/signers 6.10.0
+remove @solana/rpc-types 6.10.0
+remove @solana/rpc-transport-http 6.10.0
+remove undici-types 8.5.0
+remove @solana/rpc-transformers 6.10.0
+remove @solana/rpc-subscriptions-spec 6.10.0
+remove @solana/rpc-subscriptions-channel-websocket 6.10.0
+remove @solana/rpc-subscriptions-api 6.10.0
+remove @solana/rpc-subscriptions 6.10.0
+remove @solana/rpc-spec-types 6.10.0
+remove @solana/rpc-spec 6.10.0
+remove @solana/rpc-parsed-types 6.10.0
+remove @solana/rpc-api 6.10.0
+remove @solana/rpc 6.10.0
+remove @solana/promises 6.10.0
+remove @solana/programs 6.10.0
+remove @solana/program-client-core 6.10.0
+remove @solana/plugin-interfaces 6.10.0
+remove @solana/plugin-core 6.10.0
+remove @solana/options 6.10.0
+remove @solana/offchain-messages 6.10.0
+remove @solana/nominal-types 6.10.0
+remove @solana/kit 6.10.0
+remove @solana/keys 6.10.0
+remove @solana/instructions 6.10.0
+remove @solana/instruction-plans 6.10.0
+remove @solana/functional 6.10.0
+remove @solana/fixed-points 6.10.0
+remove @solana/fast-stable-stringify 6.10.0
+remove @solana/errors 6.10.0
+remove commander 15.0.0
+remove chalk 5.6.2
+remove @solana/codecs-strings 6.10.0
+remove @solana/codecs-numbers 6.10.0
+remove @solana/codecs-data-structures 6.10.0
+remove @solana/codecs-core 6.10.0
+remove @solana/codecs 6.10.0
+remove @solana/buffer-layout 4.0.1
+remove @solana/assertions 6.10.0
+remove @solana/addresses 6.10.0
+remove @solana/accounts 6.10.0
+remove @solana-mobile/wallet-standard-mobile 0.5.3
+remove @solana-mobile/wallet-adapter-mobile 2.2.9
+remove @solana-mobile/mobile-wallet-adapter-protocol-web3js 2.2.9
+remove @solana-mobile/mobile-wallet-adapter-protocol 2.2.9
+remove @sinclair/typebox 0.27.10
+remove @rtsao/scc 1.1.0
+remove @rollup/rollup-win32-x64-msvc 4.64.10
+remove @rollup/rollup-win32-x64-gnu 4.64.10
+remove @rolldown/pluginutils 1.0.0-rc.3
+remove @react-native/virtualized-lists 0.86.0
+remove @react-native/normalize-colors 0.86.0
+remove @react-native/js-polyfills 0.86.0
+remove @react-native/gradle-plugin 0.86.0
+remove @react-native/dev-middleware 0.86.0
+remove ws 7.5.11
+remove serve-static 1.16.3
+remove send 0.19.2
+remove debug 2.6.9
+remove ms 2.0.0
+remove open 7.4.2
+remove is-wsl 2.2.0
+remove is-docker 2.2.1
+remove fresh 0.5.2
+remove @react-native/debugger-shell 0.86.0
+remove @react-native/debugger-frontend 0.86.0
+remove @react-native/community-cli-plugin 0.86.0
+remove semver 7.8.4
+remove @react-native/codegen 0.86.0
+remove yargs-parser 21.1.1
+remove yargs 17.7.2
+remove y18n 5.0.8
+remove wrap-ansi 7.0.0
+remove string-width 4.2.3
+remove hermes-parser 0.36.0
+remove hermes-estree 0.36.0
+remove emoji-regex 8.0.0
+remove cliui 8.0.1
+remove @react-native/assets-registry 0.86.0
+remove @react-native-async-storage/async-storage 1.24.0
+remove @nolyfill/is-core-module 1.0.39
+remove @next/eslint-plugin-next 16.2.9
+remove @modelcontextprotocol/sdk 1.29.0
+remove @jridgewell/source-map 0.3.11
+remove @jest/types 29.6.3
+remove @jest/schemas 29.6.3
+remove @isaacs/ttlcache 1.4.1
+remove @humanwhocodes/retry 0.4.3
+remove @humanwhocodes/module-importer 1.0.1
+remove @humanfs/types 0.15.0
+remove @humanfs/node 0.16.8
+remove @humanfs/core 0.19.2
+remove @hono/node-server 1.19.14
+change @floating-ui/utils 0.2.11 => 0.2.12
+change @floating-ui/react-dom 2.1.8 => 2.1.9
+change @floating-ui/react 0.27.12 => 0.27.20
+change @floating-ui/dom 1.7.6 => 1.8.0
+change @floating-ui/core 1.7.5 => 1.8.0
+remove @exodus/bytes 1.16.0
+remove @eslint/plugin-kit 0.4.1
+remove @eslint/object-schema 2.1.7
+remove @eslint/js 9.39.4
+remove @eslint/eslintrc 3.3.5
+remove json-schema-traverse 0.4.1
+remove ajv 6.15.0
+remove @eslint/core 0.17.0
+remove @eslint/config-helpers 0.4.2
+remove @eslint/config-array 0.21.2
+remove @eslint-community/regexpp 4.12.2
+remove @eslint-community/eslint-utils 4.9.1
+remove eslint-visitor-keys 3.4.3
+remove @edge-runtime/vm 5.0.0
+remove @edge-runtime/primitives 6.0.0
+remove @csstools/css-tokenizer 4.0.2
+remove @csstools/css-syntax-patches-for-csstree 1.1.15
+remove @csstools/css-parser-algorithms 4.0.2
+remove @csstools/css-color-parser 4.2.6
+remove @csstools/css-calc 3.4.3
+remove @csstools/color-helpers 6.1.2
+change @clerk/ui 1.18.0 => 1.42.2
+change @clerk/shared 4.19.0 => 4.43.1
+add js-cookie 3.0.8
+change @clerk/localizations 4.9.0 => 4.24.4
+remove @bramus/specificity 2.4.3
+remove @babel/plugin-transform-react-jsx-source 7.29.7
+remove @babel/plugin-transform-react-jsx-self 7.29.7
+remove @asamuzakjp/dom-selector 10.0.4
+remove lru-cache 11.5.3
+remove @asamuzakjp/css-color 7.1.7
+remove lru-cache 11.5.3
+remove @alloc/quick-lru 5.2.0
+remove @adobe/css-tools 4.5.0
+
+added 11 packages, removed 706 packages, changed 32 packages, and audited 450 packages in 2m
+
+106 packages are looking for funding
+  run `npm fund` for details
+
+# npm audit report
+
+@hono/node-server  <=2.1.2
+Severity: moderate
+Node.js Adapter for Hono: Path traversal in `serve-static` on Windows via encoded backslash (`%5C`) - https://github.com/advisories/GHSA-frvp-7c67-39w9
+@hono/node-server: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths - https://github.com/advisories/GHSA-rmxm-3fg6-px4f
+fix available via `npm audit fix`
+
+
+@modelcontextprotocol/sdk  <=1.31.0
+Severity: high
+MCP TypeScript SDK: OAuth client could send credentials to an authorization server chosen by the MCP server - https://github.com/advisories/GHSA-6qxp-vccf-f47h
+MCP TypeScript SDK: Experimental tasks were not tied to the session that created them - https://github.com/advisories/GHSA-22jm-h49p-29qw
+MCP TypeScript client SDK: HTTP client transports and OAuth requests followed cross-origin redirects and re-sent custom headers and request bodies - https://github.com/advisories/GHSA-6prh-2h8m-c8cw
+MCP TypeScript SDK: One HTTP request within the default size limit could exhaust server memory during validation - https://github.com/advisories/GHSA-46jr-4wx8-v453
+MCP TypeScript SDK: Server bearer authentication accepted tokens issued for another service - https://github.com/advisories/GHSA-rvq5-wwqv-78pq
+MCP TypeScript SDK: HTTP server transports and handlers did not limit request body size or JSON-RPC batch length - https://github.com/advisories/GHSA-f897-62hf-6gxq
+fix available via `npm audit fix`
+
+
+baseline-browser-mapping  >=2.0.0 <2.11.0
+Severity: moderate
+baseline-browser-mapping process termination on invalid input causes denial of service - https://github.com/advisories/GHSA-w5vr-8v7q-w6rv
+fix available via `npm audit fix`
+
+
+body-parser  2.0.0 - 2.3.0
+Severity: high
+body-parser vulnerable to Denial of Service via trailing bytes after a compressed request body - https://github.com/advisories/GHSA-27r3-jxmh-p828
+fix available via `npm audit fix`
+
+
+brace-expansion  3.0.0 - 5.0.11
+Severity: high
+brace-expansion: DoS via exponential-time expansion of consecutive non-expanding {} groups - https://github.com/advisories/GHSA-3jxr-9vmj-r5cp
+brace-expansion: DoS via unbounded expansion length causing an out-of-memory process crash - https://github.com/advisories/GHSA-mh99-v99m-4gvg
+brace-expansion: DoS via unbounded intermediate arrays, bypassing the CVE-2026-14257 mitigation - https://github.com/advisories/GHSA-rgw5-rvv9-x895
+brace-expansion: Quadratic-time expansion of the `{a},b}` rewrite causes CPU denial of service - https://github.com/advisories/GHSA-q2hr-2g5m-vwhr
+brace-expansion: DoS via uncontrolled recursion on nested brace groups causing stack exhaustion - https://github.com/advisories/GHSA-qhr7-859c-m2p7
+brace-expansion: DoS via uncontrolled recursion in parseCommaParts causing stack exhaustion - https://github.com/advisories/GHSA-6j4f-fj2g-mc7p
+fix available via `npm audit fix`
+
+
+browserslist  <=4.28.6
+Severity: high
+Browserslist: Unbounded memory growth (no cache eviction) via distinct query results, leading to eventual OOM - https://github.com/advisories/GHSA-c83g-rgw3-j3cx
+Browserslist: Uncaught crash / prototype write via untrusted browserslist-stats.json custom stats (normalizeStats) - https://github.com/advisories/GHSA-73wf-gq98-2v4g
+fix available via `npm audit fix`
+
+
+deepmerge  >=4.2.0
+deepmerge mergeObject() allows prototype poisoning of returned objects - https://github.com/advisories/GHSA-gcqx-w48m-w2h4
+fix available via `npm audit fix --force`
+Will install shadcn@1.0.0, which is a breaking change
+node_modules/deepmerge
+  shadcn  <=0.0.0-rc-20261007105214 || >=2.0.0
+  Depends on vulnerable versions of deepmerge
+  Depends on vulnerable versions of ts-morph
+  Depends on vulnerable versions of zod
+  
+
+fast-uri  3.0.0 - 3.1.8
+Severity: high
+fast-uri vulnerable to host confusion via literal backslash authority delimiter - https://github.com/advisories/GHSA-v2hh-gcrm-f6hx
+fast-uri vulnerable to host confusion via backslash authority introducer - https://github.com/advisories/GHSA-7p8r-x3mc-p8w7
+fast-uri vulnerable to server-side request forgery via malformed IPv6 normalization - https://github.com/advisories/GHSA-f65p-4m7j-42xc
+fast-uri vulnerable to server-side request forgery via repeated hostname percent-decoding - https://github.com/advisories/GHSA-fph4-wmhf-6fwf
+fast-uri vulnerable to host confusion via percent-encoded scheme normalization - https://github.com/advisories/GHSA-jqff-g426-hqxp
+fast-uri vulnerable to host confusion via failed IDN canonicalization - https://github.com/advisories/GHSA-4c8g-83qw-93j6
+fast-uri vulnerable to authority injection via an unvalidated port in serialize - https://github.com/advisories/GHSA-qw65-cvwx-89v3
+fast-uri vulnerable to inconsistent host case normalization via percent-encoded octets - https://github.com/advisories/GHSA-hrr3-gc8f-f4qj
+fast-uri vulnerable to URI scheme spoofing via percent-encoded scheme decoding - https://github.com/advisories/GHSA-w74x-v6f9-j3xg
+fast-uri vulnerable to improper path equivalence in relative reference normalization - https://github.com/advisories/GHSA-xhq7-xmqj-769h
+fast-uri vulnerable to scheme injection via an unescaped first-segment colon in suffix references - https://github.com/advisories/GHSA-333x-w4r6-6crp
+fix available via `npm audit fix`
+
+
+hono  <=4.13.10
+Severity: moderate
+Hono: API Gateway v1 adapter can drop a distinct repeated request header value during de-duplication - https://github.com/advisories/GHSA-xgm2-5f3f-mvvc
+hono/jsx does not isolate context per request, leading to cross-request data disclosure - https://github.com/advisories/GHSA-hvrm-45r6-mjfj
+Hono: Server-Side XSS via JSX Escaping Bypass in cx() Utility - https://github.com/advisories/GHSA-w62v-xxxg-mg59
+Hono: ReDoS in CORS middleware via Access-Control-Request-Headers - https://github.com/advisories/GHSA-8j4g-w8fx-2239
+Hono: `memo()` retains SSR output across requests, leading to cross-user data disclosure - https://github.com/advisories/GHSA-f23p-vx2j-j53r
+Hono: Proxy Helper does not remove response headers listed in the `Connection` header - https://github.com/advisories/GHSA-79qm-7rj5-m7r9
+Hono: Algorithmic Complexity DoS in Language Middleware - https://github.com/advisories/GHSA-54fx-42gc-7vw4
+Hono: Incomplete fix for CVE-2026-39408: `toSSG()` still writes files outside the output directory - https://github.com/advisories/GHSA-gqvv-2mrq-wpjv
+Hono: Unbounded dot-notation nesting in `parseBody()` can cause memory exhaustion - https://github.com/advisories/GHSA-g6gw-c38x-mqfc
+Hono: Query parser reads parameters after the URL fragment, causing cache-key and proxy interpretation differentials - https://github.com/advisories/GHSA-crvj-82cr-hjcx
+hono/jsx renders plain strings unescaped in boundary components, leading to XSS - https://github.com/advisories/GHSA-hxh3-vqpv-xpqv
+Hono: `serveStatic` decodes the request path a second time, leading to bypass of middleware on static paths - https://github.com/advisories/GHSA-5r4p-p66f-jhc7
+fix available via `npm audit fix`
+
+
+image-size  0.6.3 - 2.0.2
+Severity: high
+image-size: JXL and HEIF parsers allow denial of service through infinite loops - https://github.com/advisories/GHSA-5p2g-fcmc-qvqq
+image-size: ICNS parser allows denial of service through an infinite loop - https://github.com/advisories/GHSA-w3rx-r6r6-pgpr
+fix available via `npm audit fix`
+
+
+ip-address  <=10.7.3
+Severity: high
+ip-address: Address4 decodes leading-zero octets as decimal while resolvers decode them as octal, allowing SSRF and trust-boundary bypass - https://github.com/advisories/GHSA-mwp4-54f8-5fhr
+ip-address: a CIDR suffix on the parsed address suppresses special-use classification and can bypass SSRF and trust-boundary checks - https://github.com/advisories/GHSA-4xrf-jv44-h6hh
+ip-address: misclassification of IPv4-mapped/NAT64 IPv6 addresses can bypass SSRF and trust-boundary checks - https://github.com/advisories/GHSA-22jq-vg5j-6vgg
+ip-address: Address6.isLinkLocal() recognizes fe80::/64 rather than fe80::/10, allowing SSRF and trust-boundary bypass to on-link hosts - https://github.com/advisories/GHSA-rpw4-54j3-4h4q
+ip-address: no classifier recognizes the NAT64 local-use range 64:ff9b:1::/48, allowing SSRF and trust-boundary bypass - https://github.com/advisories/GHSA-2vr4-cq9g-pvrc
+ip-address: isInSubnet() and isHostInSubnet() compare addresses of different families as if they shared an address space, allowing an allowlist check to admit an address outside its range - https://github.com/advisories/GHSA-j6r3-76f7-8jcv
+ip-address: Address6 builds a parse diagnostic proportional to the input with no length bound, allowing a single long string to stall or crash the process - https://github.com/advisories/GHSA-h3mg-xc3c-68pw
+ip-address: Address6 matches a zone identifier in quadratic time ahead of its length limit, allowing a single long string to stall the process - https://github.com/advisories/GHSA-rxp7-6hxx-x8q5
+fix available via `npm audit fix`
+
+
+js-yaml  4.0.0 - 4.3.1
+Severity: high
+js-yaml: YAML merge-key chains can force quadratic CPU consumption - https://github.com/advisories/GHSA-52cp-r559-cp3m
+JS-YAML: Quadratic CPU consumption in !!omap resolution (3.x and 4.x) — CVE-2026-59870 fix not backported - https://github.com/advisories/GHSA-5p4m-2wfm-xmqj
+js-yaml: maxTotalMergeKeys does not limit CPU use for empty merge sources - https://github.com/advisories/GHSA-2883-xcg3-v3hh
+fix available via `npm audit fix`
+
+
+minimatch  <11.0.1
+Severity: moderate
+minimatch has potential denial of service via globparts amplification - https://github.com/advisories/GHSA-g3hv-75wg-m249
+fix available via `npm audit fix --force`
+Will install shadcn@1.0.0, which is a breaking change
+
+
+  @ts-morph/common  >=0.9.0
+  Depends on vulnerable versions of minimatch
+  node_modules/@ts-morph/common
+    ts-morph  >=10.0.2
+    Depends on vulnerable versions of @ts-morph/common
+    node_modules/ts-morph
+
+next  9.3.4-canary.0 - 16.4.0
+Severity: critical
+Next.js: Middleware / Proxy bypass in App Router applications using Turbopack and single locale - https://github.com/advisories/GHSA-6gpp-xcg3-4w24
+Next.js: Denial of Service in App Router using Server Actions - https://github.com/advisories/GHSA-m99w-x7hq-7vfj
+Next.js: Server-Side Request Forgery in Server Actions on custom servers - https://github.com/advisories/GHSA-89xv-2m56-2m9x
+Next.js: Cache confusion of response bodies for requests with bodies - https://github.com/advisories/GHSA-68g3-v927-f742
+Next.js: Cache confusion of response bodies for requests with bodies containing invalid UTF-8 byte sequences - https://github.com/advisories/GHSA-4633-3j49-mh5q
+Next.js: Unbounded Server Action payload in Edge runtime - https://github.com/advisories/GHSA-4c39-4ccg-62r3
+Next.js: Server-Side Request Forgery in rewrites via attacker-controlled destination hostname - https://github.com/advisories/GHSA-p9j2-gv94-2wf4
+Next.js: Denial of Service in the Image Optimization API using SVGs - https://github.com/advisories/GHSA-q8wf-6r8g-63ch
+Next.js: Unauthenticated disclosure of internal Server Function endpoints - https://github.com/advisories/GHSA-955p-x3mx-jcvp
+Next.js: Unauthenticated Remote Code Execution on windows-hosted servers - https://github.com/advisories/GHSA-p293-qw3h-jr36
+Next.js: Unauthenticated Remote Code Execution in Image Optimization API when AVIF files are used - https://github.com/advisories/GHSA-2xp9-vwfh-vxw4
+Next.js: Remote Code Execution in next/og ImageResponse - https://github.com/advisories/GHSA-vcvr-r3jv-pc5j
+Next.js has cache poisoning of SSG and ISR pages in self-hosted applications - https://github.com/advisories/GHSA-4jqv-mc3x-m676
+Next.js has information disclosure in development server's Model Context Protocol endpoint - https://github.com/advisories/GHSA-39w2-rjm5-chcv
+Next.js has information disclosure in App Router metadata image routes via dynamicParams bypass - https://github.com/advisories/GHSA-f87g-xv8r-7p7x
+Next.js has cache poisoning in SSG/ISR rendering that leads to cross-user content substitution and persistent denial of service - https://github.com/advisories/GHSA-mcj8-r9mp-w47p
+Next.js has Server-Side Request Forgery in Image Optimization - https://github.com/advisories/GHSA-cjq9-62q9-8jv4
+Next.js: Unauthenticated Remote Code Execution in Image Optimization API when SVG files are used - https://github.com/advisories/GHSA-2464-fhr4-w9xw
+Next.js: Denial of Service in App Router using Server Actions - https://github.com/advisories/GHSA-p3m5-59mp-jv5r
+Next.js: Unauthenticated Remote Code Execution in `use cache` functions returning typed arrays - https://github.com/advisories/GHSA-673q-mjm6-r5xr
+Depends on vulnerable versions of postcss
+Depends on vulnerable versions of sharp
+fix available via `npm audit fix --force`
+Will install next@16.4.3, which is outside the stated dependency range
+node_modules/next
+
+postcss  <=8.5.22
+Severity: high
+PostCSS has XSS via Unescaped </style> in its CSS Stringify Output - https://github.com/advisories/GHSA-qx2v-qp2m-jg93
+PostCSS: Arbitrary file read and information disclosure via attacker-controlled sourceMappingURL in CSS comments - https://github.com/advisories/GHSA-6g55-p6wh-862q
+PostCSS: incomplete fix of GHSA-6g55-p6wh-862q — attacker-controlled sourceMappingURL reads arbitrary .map files when `from` is unset - https://github.com/advisories/GHSA-fxqj-rqcc-2cmp
+PostCSS: Path Traversal in Previous Source Map Auto-Loading (sourceMappingURL) leads to Arbitrary .map File Disclosure - https://github.com/advisories/GHSA-r28c-9q8g-f849
+fix available via `npm audit fix --force`
+Will install next@16.4.3, which is outside the stated dependency range
+
+node_modules/next/node_modules/postcss
+node_modules/postcss
+
+postcss-selector-parser  7.0.0 - 7.1.5
+Severity: moderate
+PostCSS: Quadratic complexity in flat selector parsing allows CPU exhaustion - https://github.com/advisories/GHSA-rj75-hqrm-r3gf
+fix available via `npm audit fix`
+
+
+proxy-addr  1.1.0 - 2.0.7
+Severity: critical
+proxy-addr vulnerable to IP spoofing via IPv4-mapped IPv6 trust subnet - https://github.com/advisories/GHSA-jqcg-44mw-7w3h
+fix available via `npm audit fix`
+
+
+qs  2.2.5 - 6.16.0
+Severity: moderate
+qs array-limit bypass via bracket-key comma parsing - https://github.com/advisories/GHSA-x5fp-wj9c-mxmx
+qs: Denial of Service via Attacker Controlled isBuffer - https://github.com/advisories/GHSA-4mjr-xmp4-gh2g
+qs : qs.stringify with arrayFormat 'comma' throws an uncaught TypeError on array elements carrying a non-callable own toString (DoS) - https://github.com/advisories/GHSA-6pq8-jhm2-2vcw
+fix available via `npm audit fix`
+
+
+sharp  <=0.35.5-rc.1
+Severity: high
+sharp inherited vulnerabilities in libvips: CVE-2026-33327, CVE-2026-33328, CVE-2026-35590, CVE-2026-35591 - https://github.com/advisories/GHSA-f88m-g3jw-g9cj
+sharp: Vulnerabilities in libheif: GHSA-g89c-p67h-r497 and GHSA-2jg2-4ch7-h545 - https://github.com/advisories/GHSA-rgj7-g3m4-5g8c
+sharp : Vulnerability in librsvg dependency CVE-2026-96889 - https://github.com/advisories/GHSA-wq5f-xc86-pv6w
+fix available via `npm audit fix --force`
+Will install next@16.4.3, which is outside the stated dependency range
+node_modules/sharp
+
+shell-quote  <=1.10.0
+Severity: critical
+shell-quote: Quadratic-complexity Denial of Service in `parse()` (CWE-407) - https://github.com/advisories/GHSA-395f-4hp3-45gv
+shell-quote: `quote()` command injection via a line terminator in a token after a `{ comment }` token - https://github.com/advisories/GHSA-pqg4-j6r4-53mv
+fix available via `npm audit fix`
+
+
+stream-json  <=3.5.0
+Severity: moderate
+stream-json: pick/ignore/filter/replace filters are O(depth²) on nested input — small crafted JSON blocks the event loop for seconds→minutes (DoS) - https://github.com/advisories/GHSA-528h-pc64-c93x
+stream-json: JSONC parser and verifier re-scan the whole accumulated comment on every input chunk - https://github.com/advisories/GHSA-hqr4-qq8f-hg3x
+stream-json has a prototype pollution issue: Assembler writes this.current[this.key] on plain objects - https://github.com/advisories/GHSA-mjw6-4jj6-33hc
+fix available via `npm audit fix`
+
+  jayson  2.0.6 - 4.3.0
+  Depends on vulnerable versions of stream-json
+  Depends on vulnerable versions of uuid
+  
+    @solana/web3.js  <=0.0.0-pr-29130 || 0.0.4 - 1.99.0
+    Depends on vulnerable versions of jayson
+    
+      @solana-mobile/mobile-wallet-adapter-protocol-web3js  *
+      Depends on vulnerable versions of @solana/web3.js
+      
+        @solana-mobile/wallet-adapter-mobile  *
+        Depends on vulnerable versions of @solana-mobile/mobile-wallet-adapter-protocol-web3js
+        Depends on vulnerable versions of @solana/wallet-adapter-base
+        Depends on vulnerable versions of @solana/web3.js
+        
+          @solana/wallet-adapter-react  *
+          Depends on vulnerable versions of @solana-mobile/wallet-adapter-mobile
+          Depends on vulnerable versions of @solana/wallet-adapter-base
+          Depends on vulnerable versions of @solana/wallet-standard-wallet-adapter-react
+          Depends on vulnerable versions of @solana/web3.js
+          
+            @clerk/ui  0.3.25-canary.v20250218163602 - 1.37.1-canary.v20260930054833
+            Depends on vulnerable versions of @solana/wallet-adapter-base
+            Depends on vulnerable versions of @solana/wallet-adapter-react
+            Depends on vulnerable versions of @solana/wallet-standard
+            
+      @solana/wallet-adapter-base  *
+      Depends on vulnerable versions of @solana/web3.js
+      
+        @solana/wallet-standard-wallet-adapter-base  *
+        Depends on vulnerable versions of @solana/wallet-adapter-base
+        Depends on vulnerable versions of @solana/web3.js
+        
+          @solana/wallet-standard-wallet-adapter  *
+          Depends on vulnerable versions of @solana/wallet-standard-wallet-adapter-base
+          Depends on vulnerable versions of @solana/wallet-standard-wallet-adapter-react
+          
+            @solana/wallet-standard  *
+            Depends on vulnerable versions of @solana/wallet-standard-wallet-adapter
+            
+          @solana/wallet-standard-wallet-adapter-react  *
+          Depends on vulnerable versions of @solana/wallet-adapter-base
+          Depends on vulnerable versions of @solana/wallet-standard-wallet-adapter-base
+          
+
+systeminformation  <=5.33.15
+Severity: high
+systeminformation has path traversal in Linux networkStats() that allows symlink-based file disclosure outside /sys/class/net - https://github.com/advisories/GHSA-4vjg-vx72-qq4g
+systeminformation has prototype pollution in `networkStats()` via the interface name - https://github.com/advisories/GHSA-7648-jmwf-vw7j
+systeminformation vulnerable to Windows command injection in services() through Unicode quotation marks - https://github.com/advisories/GHSA-3f7j-7jwc-fxfj
+fix available via `npm audit fix`
+
+
+undici  7.0.0 - 7.30.0
+Severity: high
+undici vulnerable to downstream response desynchronization via retry interceptor - https://github.com/advisories/GHSA-8xcm-r25x-g524
+undici vulnerable to cross-user information disclosure and parse-time crash via degenerate private cache directives - https://github.com/advisories/GHSA-4cwx-7wf7-3272
+undici vulnerable to CRLF Injection via blob-like body 'type' property - https://github.com/advisories/GHSA-m8rv-5g2x-5cg5
+undici vulnerable to cross-user information disclosure via whitespace around equals in Cache-Control directives - https://github.com/advisories/GHSA-jr45-8vmc-qm54
+undici vulnerable to cookie attribute injection via unsanitized domain and unparsed setCookie fields - https://github.com/advisories/GHSA-v3r7-h72x-cjcm
+undici vulnerable to Denial of Service via unhandled error in WebSocket permessage-deflate decompression - https://github.com/advisories/GHSA-3wwx-pv8p-q78v
+undici vulnerable to Denial of Service via orphaned RetryHandler response body - https://github.com/advisories/GHSA-pmjh-fq2x-6v4x
+undici vulnerable to downstream response splitting via retry interceptor - https://github.com/advisories/GHSA-r53p-7pc4-xj5r
+undici vulnerable to Denial of Service via unrequested WebSocket subprotocol - https://github.com/advisories/GHSA-rfgv-xxqx-mfg5
+undici vulnerable to Denial of Service via unbounded decompression of compressed responses - https://github.com/advisories/GHSA-3xpg-4rpp-hhhm
+undici vulnerable to cross-user cookie disclosure via Set-Cookie caching in shared caches - https://github.com/advisories/GHSA-2jfj-6hjv-fm6j
+undici vulnerable to response truncation via oversized chunked responses in the dump interceptor - https://github.com/advisories/GHSA-2gqq-gqf2-x968
+undici vulnerable to TLS certificate validation bypass via dropped connect options in BalancedPool - https://github.com/advisories/GHSA-w293-vg96-wgc3
+undici vulnerable to caching and replay of unsafe HTTP method responses - https://github.com/advisories/GHSA-8436-99hf-9mmv
+undici vulnerable to Denial of Service via WebSocketStream unclean close - https://github.com/advisories/GHSA-rx4f-c7p8-82vq
+undici vulnerable to Denial of Service via unbounded memory in the EventSource parser - https://github.com/advisories/GHSA-4qv8-2p9j-2685
+undici vulnerable to Subresource Integrity bypass via non-lowercase algorithm tokens - https://github.com/advisories/GHSA-f72v-6w45-q472
+undici vulnerable to Denial of Service via unhandled error on excessive content-encodings - https://github.com/advisories/GHSA-xjj6-f33q-929c
+undici vulnerable to cache poisoning and cross-user disclosure via cross-origin redirects - https://github.com/advisories/GHSA-4w7w-5xrc-9h26
+undici vulnerable to TLS certificate validation bypass via dropped tls options in Agent - https://github.com/advisories/GHSA-2m5v-pch6-74hx
+undici vulnerable to Denial of Service via TLS 1.2 certificate-changing renegotiation - https://github.com/advisories/GHSA-qrxm-fqhp-jwvm
+undici WebSocket client vulnerable to Denial of Service via unbounded automatic PONG buffering - https://github.com/advisories/GHSA-9fm3-97px-rjf6
+undici vulnerable to Denial of Service via unhandled exception in the decompress interceptor - https://github.com/advisories/GHSA-55wc-3pg8-jfw6
+fix available via `npm audit fix`
+
+
+uuid  <11.1.1
+Severity: moderate
+uuid: Missing buffer bounds check in v3/v5/v6 when buf is provided - https://github.com/advisories/GHSA-w5hq-g745-h8pq
+fix available via `npm audit fix`
+
+
+zod  <4.6.6
+Severity: high
+Zod can exhaust memory while validating oversized constrained collections - https://github.com/advisories/GHSA-mrhx-c7xc-m3w5
+fix available via `npm audit fix --force`
+Will install shadcn@1.0.0, which is a breaking change
+
+
+
+39 vulnerabilities (1 low, 21 moderate, 14 high, 3 critical)
+
+To address issues that do not require attention, run:
+  npm audit fix
+
+To address all issues (including breaking changes), run:
+  npm audit fix --force
