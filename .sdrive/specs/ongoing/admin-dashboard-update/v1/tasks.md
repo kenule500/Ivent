@@ -4,7 +4,7 @@ feature: admin-dashboard-update
 version: v1
 status: approved
 created: 2026-10-20
-updated: 2026-10-20
+updated: 2026-10-31
 ---
 
 # Execution Tasks: Admin Dashboard Update
@@ -213,3 +213,24 @@ Depends on: P1, P2, P3, P4, P5.
 - [x] **T6.5** Run the manual role and baseline-control matrix.
   - Linked: NFR-001, NFR-002, NFR-007, AC-022, AC-025, AC-028
   - Exercise user, admin, and super_admin against every new function, confirming client gating is never the only control and that proxy.ts, security headers, and transport enforcement are unchanged.
+
+## P7 — Review remediation
+
+> Added by `/sdrive:review` on 2026-10-31. The 54 delivery tasks in P1–P6 are
+> complete. The four tasks below are open and block release. The project-wide
+> dependency upgrades and the `sdrive verify` Convex blind spot are tracked once,
+> as `T6.1` and `T6.2` in `admin-console-and-governance`, and are deliberately
+> not duplicated here.
+
+- [x] **T7.1** Document the shipped admin console.
+  - Linked: NFR-014, AC-001
+  - README.md is still the create-next-app template and no CHANGELOG.md exists, so none of the shipped admin surfaces (dashboard, analytics, exports, reports, platform settings, announcements, feedback inbox, system health) is documented for an operator.
+- [x] **T7.2** Record NFR-008 performance evidence or a waiver.
+  - Linked: NFR-008, AC-008
+  - NFR-008 requires filtered analytics under 1.5s p95 and the dashboard under 1s p95 at 50,000 events and 500,000 registrations. No /sdrive:performance report and no waiver exists under .sdrive/reports/.
+- [x] **T7.3** Record NFR-009 accessibility evidence or a waiver.
+  - Linked: NFR-009, AC-015, AC-030
+  - NFR-009 requires WCAG 2.1 AA. T6.4 describes a manual keyboard, screen-reader, 360px, and reduced-motion pass, but no report records its result, so the criterion is not_verified.
+- [x] **T7.4** Record migration and rollback notes for the Convex schema change.
+  - Linked: NFR-014, AC-023
+  - convex/schema.ts adds six tables, two indexes, and extends the auditLogs action and targetType unions. Only RISK-003 records deploy order; no rollback note exists for the feature.

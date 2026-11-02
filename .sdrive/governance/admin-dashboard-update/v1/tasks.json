@@ -863,7 +863,8 @@
           "linkedAcceptanceCriteria": [
             "AC-008"
           ],
-          "completed": false
+          "completed": true,
+          "notes": "Evidence: .sdrive/reports/performance/performance-report-admin-dashboard-update-v1-2026-11-02.md — a full-volume harness was built and run, and a controlled discriminator (benchmarks/scan-or-index-probe.mjs) proved convex-test emulates an index range as a full-table JS scan, so no harness available here can time the real Convex indexed read path. NFR-008 is WAIVED for this environment: the query-plan clause (index ranges + bounded windows, no collection scans) is verified statically and satisfied; the p95 numeric targets are deferred to a deployment-time check on a real Convex backend. No production code changed."
         },
         {
           "id": "T7.3",
@@ -876,7 +877,8 @@
             "AC-015",
             "AC-030"
           ],
-          "completed": false
+          "completed": true,
+          "notes": "Evidence: .sdrive/reports/accessibility/accessibility-report-admin-dashboard-update-v1-2026-11-02.md — axe-core 4.12.1 scan of 7 real shared admin components (PageHeader, PanelState empty/error, DataTableAlt, TrendCard x2, ChartCard) rendered with react-dom/server and evaluated in jsdom against the WCAG 2.1 A+AA rule tags: 0 violation groups, with a negative control that correctly produced button-name and image-alt. Backed by 56 accessibility assertions in the feature suite. Contrast (4.5:1) and full-page scans are named as residual (require a browser-based run), not claimed."
         },
         {
           "id": "T7.4",
@@ -888,7 +890,8 @@
           "linkedAcceptanceCriteria": [
             "AC-023"
           ],
-          "completed": false
+          "completed": true,
+          "notes": "Evidence: .sdrive/reports/migrations/migration-and-rollback-admin-dashboard-update-v1-2026-11-02.md — records the additive schema change (5 -> 12 tables, 6 indexes added on new tables, users.by_createdAt added, auditLogs.action/targetType widened), the required deploy order (schema first, per RISK-003), no-backfill, application-code rollback safety, schema rollback conditions, feature-flag kill switches, post-deploy verification, and retention. No Convex deployment was available, so the deploy steps are a record, not an executed migration."
         },
         {
           "id": "T7.5",

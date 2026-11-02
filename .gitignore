@@ -39,3 +39,6 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# SpecDrive benchmark build output (esbuild scratch dirs under .sdrive/reports/)
+.sdrive/reports/**/.build/

@@ -1,0 +1,194 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": "v1",
+  "nfr": "NFR-008",
+  "volume": {
+    "users": 200,
+    "events": 200,
+    "registrations": 2000
+  },
+  "iterations": 3,
+  "seedMs": 76,
+  "cases": [
+    {
+      "group": "analytics",
+      "name": "analytics:getSummary (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        18.37,
+        16.89,
+        18.05
+      ],
+      "min": 16.88549999999998,
+      "max": 18.37280000000004,
+      "median": 18.0462,
+      "p95": 18.0462,
+      "mean": 18.0462,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getSummary (365d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        52.21,
+        43.7,
+        45.02
+      ],
+      "min": 43.70380000000006,
+      "max": 52.2131,
+      "median": 45.01589999999999,
+      "p95": 45.01589999999999,
+      "mean": 45.01589999999999,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getTimeSeries (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        30.85,
+        26.31,
+        22.25
+      ],
+      "min": 22.251899999999978,
+      "max": 30.850799999999936,
+      "median": 26.308599999999956,
+      "p95": 26.308599999999956,
+      "mean": 26.308599999999956,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getFunnel (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        13.73,
+        13.73,
+        13.36
+      ],
+      "min": 13.356999999999971,
+      "max": 13.728399999999965,
+      "median": 13.727700000000027,
+      "p95": 13.727700000000027,
+      "mean": 13.727700000000027,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getCohorts (365d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        608.17,
+        583.62,
+        790.54
+      ],
+      "min": 583.6181999999999,
+      "max": 790.5409,
+      "median": 608.1705999999999,
+      "p95": 608.1705999999999,
+      "mean": 608.1705999999999,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getHeatmap (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        13.58,
+        15.75,
+        20.21
+      ],
+      "min": 13.583800000000338,
+      "max": 20.213600000000042,
+      "median": 15.752100000000155,
+      "p95": 15.752100000000155,
+      "mean": 15.752100000000155,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getBreakdown by category (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        14.25,
+        12.96,
+        13.7
+      ],
+      "min": 12.956099999999878,
+      "max": 14.251099999999951,
+      "median": 13.696200000000317,
+      "p95": 13.696200000000317,
+      "mean": 13.696200000000317,
+      "pass": true
+    },
+    {
+      "group": "analytics",
+      "name": "analytics:getBreakdown + filters (30d)",
+      "p95TargetMs": 1500,
+      "samples": [
+        23.75,
+        17.83,
+        11.28
+      ],
+      "min": 11.284699999999702,
+      "max": 23.751900000000205,
+      "median": 17.834000000000287,
+      "p95": 17.834000000000287,
+      "mean": 17.834000000000287,
+      "pass": true
+    },
+    {
+      "group": "dashboard",
+      "name": "commandCenter:getTrends (30d)",
+      "p95TargetMs": 1000,
+      "samples": [
+        32.43,
+        31,
+        26.26
+      ],
+      "min": 26.26090000000022,
+      "max": 32.42619999999988,
+      "median": 31.00490000000036,
+      "p95": 31.00490000000036,
+      "mean": 31.00490000000036,
+      "pass": true
+    },
+    {
+      "group": "dashboard",
+      "name": "commandCenter:getActionQueue",
+      "p95TargetMs": 1000,
+      "samples": [
+        10.64,
+        15.49,
+        14.57
+      ],
+      "min": 10.641199999999571,
+      "max": 15.485799999999927,
+      "median": 14.571300000000065,
+      "p95": 14.571300000000065,
+      "mean": 14.571300000000065,
+      "pass": true
+    },
+    {
+      "group": "dashboard",
+      "name": "commandCenter:getToday",
+      "p95TargetMs": 1000,
+      "samples": [
+        12.24,
+        10.69,
+        10.12
+      ],
+      "min": 10.118400000000292,
+      "max": 12.23759999999993,
+      "median": 10.685500000000047,
+      "p95": 10.685500000000047,
+      "mean": 10.685500000000047,
+      "pass": true
+    }
+  ],
+  "note": "DRY-RUN VALIDATION at reduced volume (200 users / 200 events / 2000 registrations, 3 iterations). Purpose: prove the harness wiring (esbuild bundle -> convex-test -> real handlers) before the full-scale run. These are NOT NFR-008 measurements. The full-scale run (50k/500k) was stopped once scan-or-index-probe.mjs proved convex-test emulates index ranges as full-table JS scans; its single observed case is quoted in the report, and the discriminator is the actual evidence. See performance-report-admin-dashboard-update-v1-2026-11-02.md sections 2-3.",
+  "partialRun": false,
+  "casesCompleted": 11,
+  "runType": "dry-run-validation"
+}
