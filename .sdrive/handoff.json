@@ -1,0 +1,23 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": "v1",
+  "recordedAt": "2026-11-02T06:34:16.642Z",
+  "by": null,
+  "steps": [
+    {
+      "command": "sdrive verify admin-dashboard-update",
+      "kind": "cli",
+      "why": "Verify compares plan.json to the code before any gate reads it."
+    },
+    {
+      "command": "sdrive test admin-dashboard-update",
+      "kind": "cli",
+      "why": "The implementation gate needs a recorded passing run."
+    },
+    {
+      "command": "sdrive approve admin-dashboard-update implementation",
+      "kind": "human",
+      "why": "Approving is a sign-off, so it stays with you."
+    }
+  ]
+}
