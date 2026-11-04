@@ -16,7 +16,6 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
 import { Id } from "@/convex/_generated/dataModel";
@@ -35,11 +34,10 @@ interface RegisterModalProps {
 export default function RegisterModal({ event, isOpen, onClose }: RegisterModalProps) {
   const router = useRouter();
   const { user } = useUser();
-  const [name, setName] = useState(user?.fullName || "");
-  const [email, setEmail] = useState(
-    user?.primaryEmailAddress?.emailAddress || ""
-  );
   const [isSuccess, setIsSuccess] = useState(false);
+
+  const attendeeName = user?.fullName ?? user?.username ?? "Guest";
+  const attendeeEmail = user?.primaryEmailAddress?.emailAddress ?? "";
 
   const { mutate: registerForEvent, isLoading } = useConvexMutation(
     api.registrations.registerForEvent
@@ -48,16 +46,9 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (!name.trim() || !email.trim()) {
-      toast.error("Please fill in all fields");
-      return;
-    }
-
     try {
       await registerForEvent({
         eventId: event._id,
-        attendeeName: name,
-        attendeeEmail: email,
       });
 
       setIsSuccess(true);
@@ -133,30 +124,18 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
             </p>
           </div>
 
-          {/* Name */}
+          {/* Ticket holder (from the signed-in account) */}
           <div className="space-y-2">
-            <Label htmlFor="name">Full Name</Label>
-            <Input
-              id="name"
-              type="text"
-              value={name}
-              onChange={(e) => setName(e.target.value)}
-              placeholder="John Doe"
-              required
-            />
-          </div>
-
-          {/* Email */}
-          <div className="space-y-2">
-            <Label htmlFor="email">Email</Label>
-            <Input
-              id="email"
-              type="email"
-              value={email}
-              onChange={(e) => setEmail(e.target.value)}
-              placeholder="john@example.com"
-              required
-            />
+            <Label>Ticket holder</Label>
+            <div className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
+              <p className="font-medium">{attendeeName}</p>
+              {attendeeEmail && (
+                <p className="text-muted-foreground">{attendeeEmail}</p>
+              )}
+            </div>
+            <p className="text-xs text-muted-foreground">
+              Your ticket is issued to your signed-in account.
+            </p>
           </div>
 
           {/* Terms */}

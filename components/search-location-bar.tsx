@@ -19,8 +19,7 @@ import {
   SelectItem,
   SelectValue,
 } from "@/components/ui/select";
-import { useConvexQuery } from "@/hooks/useConvexQuery";
-import { useConvexMutation } from "./onboarding-modal";
+import { useConvexQuery, useConvexMutation } from "@/hooks/useConvexQuery";
 
 export default function SearchLocationBar() {
   const router = useRouter();

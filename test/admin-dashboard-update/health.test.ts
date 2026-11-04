@@ -184,7 +184,8 @@ describe("system health", () => {
       resendFromAddressPresent: false,
       siteUrlPresent: false,
     });
-    expect(absent.broadcastSendingEnabled).toBe(false);
+    // Broadcasts follow the platform feature flag, whose default is enabled.
+    expect(absent.broadcastSendingEnabled).toBe(true);
 
     vi.stubEnv("RESEND_API_KEY", "re_live_secret_value");
     vi.stubEnv("RESEND_FROM_EMAIL", "sender@example.com");
@@ -204,5 +205,40 @@ describe("system health", () => {
     expect(serialized).not.toContain("sender@example.com");
     expect(serialized).not.toContain("https://ivent.example.com");
     expect(serialized).toContain("resendApiKeyPresent");
+  });
+
+  test("AC-031: broadcast sending mirrors the platform feature flag", async () => {
+    const t = createConvexTest();
+    const adminId = await seedAdmin(t, Date.now());
+
+    const enabled = await t
+      .withIdentity(adminIdentity)
+      .query(api.health.getOverview, {});
+    expect(enabled.broadcastSendingEnabled).toBe(true);
+
+    await t.run(async (ctx) => {
+      await ctx.db.insert("platformSettings", {
+        key: "global",
+        defaultCountry: "NG",
+        defaultCurrency: "NGN",
+        defaultTimezone: "Africa/Lagos",
+        maintenanceMode: false,
+        maintenanceMessage: "",
+        featureFlags: {
+          commandPalette: true,
+          reports: true,
+          broadcasts: false,
+          feedbackInbox: true,
+          systemHealth: true,
+        },
+        updatedBy: adminId,
+        updatedAt: Date.now(),
+      });
+    });
+
+    const disabled = await t
+      .withIdentity(adminIdentity)
+      .query(api.health.getOverview, {});
+    expect(disabled.broadcastSendingEnabled).toBe(false);
   });
 });
