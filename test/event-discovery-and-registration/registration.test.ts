@@ -30,8 +30,6 @@ describe("AC-008: registration issues a confirmed ticket", () => {
 
     await t.withIdentity(identity).mutation(api.registrations.registerForEvent, {
       eventId,
-      attendeeName: "Ada Lovelace",
-      attendeeEmail: "ada@example.com",
     });
 
     const snapshot = await t.run(async (ctx) => {
@@ -42,7 +40,8 @@ describe("AC-008: registration issues a confirmed ticket", () => {
 
     expect(snapshot.registrations).toHaveLength(1);
     expect(snapshot.registrations[0].status).toBe("confirmed");
-    expect(snapshot.registrations[0].attendeeName).toBe("Ada Lovelace");
+    expect(snapshot.registrations[0].attendeeName).toBe(identity.name);
+    expect(snapshot.registrations[0].attendeeEmail).toBe(identity.email);
     expect(snapshot.registrations[0].qrCode).toMatch(/^EVT-\d+-[0-9A-F]{8}$/);
     expect(snapshot.event?.registrationCount).toBe(1);
   });
@@ -50,16 +49,15 @@ describe("AC-008: registration issues a confirmed ticket", () => {
 
 describe("AC-009: full, duplicate and cancelled registrations", () => {
   test("AC-009: a full event rejects registration", async () => {
-    const { t, eventId } = await setup();
+    const { t, eventId, organizerId } = await setup();
     await t.run(async (ctx) => {
-      await ctx.db.patch(eventId, { capacity: 1, registrationCount: 1 });
+      await ctx.db.patch(eventId, { capacity: 1 });
+      await seedRegistration(ctx, eventId, organizerId, { status: "confirmed" });
     });
 
     await expect(
       t.withIdentity(identity).mutation(api.registrations.registerForEvent, {
         eventId,
-        attendeeName: "Ada",
-        attendeeEmail: "ada@example.com",
       })
     ).rejects.toThrow(/full/i);
   });
@@ -73,8 +71,6 @@ describe("AC-009: full, duplicate and cancelled registrations", () => {
     await expect(
       t.withIdentity(identity).mutation(api.registrations.registerForEvent, {
         eventId,
-        attendeeName: "Ada",
-        attendeeEmail: "ada@example.com",
       })
     ).rejects.toThrow(/already registered/i);
   });
@@ -91,8 +87,6 @@ describe("AC-009: full, duplicate and cancelled registrations", () => {
 
     await t.withIdentity(identity).mutation(api.registrations.registerForEvent, {
       eventId,
-      attendeeName: "Ada",
-      attendeeEmail: "ada@example.com",
     });
 
     const snapshot = await t.run(async (ctx) => ({
@@ -125,6 +119,21 @@ describe("AC-011: cancelling a registration", () => {
 
     expect(snapshot.registration?.status).toBe("cancelled");
     expect(snapshot.event?.registrationCount).toBe(0);
+  });
+
+  test("AC-011: a stale registrationCount is corrected from confirmed registrations", async () => {
+    const { t, attendeeId, eventId } = await setup();
+    const registrationId = await t.run(async (ctx) => {
+      await ctx.db.patch(eventId, { registrationCount: 99 });
+      return seedRegistration(ctx, eventId, attendeeId);
+    });
+
+    await t.withIdentity(identity).mutation(api.registrations.cancelRegistration, {
+      registrationId,
+    });
+
+    const event = await t.run((ctx) => ctx.db.get(eventId));
+    expect(event?.registrationCount).toBe(0);
   });
 
   test("AC-011: another user's registration cannot be cancelled", async () => {

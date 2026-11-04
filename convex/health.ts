@@ -1,7 +1,11 @@
 import { query } from "./_generated/server";
 import { requireAdmin } from "./helpers";
 import { getPlatformTimezone } from "./analyticsFilters";
-import { assertFeatureEnabled } from "./platformData";
+import {
+  assertFeatureEnabled,
+  readSettings,
+  withDefaults,
+} from "./platformData";
 import { isSandboxEnabled } from "./mailtrap";
 
 /**
@@ -25,8 +29,15 @@ export const getOverview = query({
     const weekAgo = now - 7 * DAY_MS;
     const timezone = await getPlatformTimezone(ctx);
 
-    const [cronRuns, failedRecent, failedWeek, sentRecent, openFeedback, rejections] =
-      await Promise.all([
+    const [
+      cronRuns,
+      failedRecent,
+      failedWeek,
+      sentRecent,
+      openFeedback,
+      rejections,
+      settingsDoc,
+    ] = await Promise.all([
         ctx.db.query("cronRuns").take(50),
         ctx.db
           .query("emailEvents")
@@ -56,7 +67,10 @@ export const getOverview = query({
           .query("rateLimitRejections")
           .withIndex("by_createdAt", (q) => q.gte("createdAt", dayAgo))
           .take(SCAN_LIMIT),
+        readSettings(ctx),
       ]);
+
+    const settings = withDefaults(settingsDoc);
 
     const rejectionCounts = new Map<string, number>();
     for (const rejection of rejections) {
@@ -119,9 +133,9 @@ export const getOverview = query({
         mailtrapSandbox: isSandboxEnabled(process.env),
         siteUrlPresent: Boolean(process.env.SITE_URL),
       },
-      // Broadcast sending intentionally defaults off until the sending domain
-      // is verified with Mailtrap.
-      broadcastSendingEnabled: process.env.BROADCAST_SENDING_ENABLED === "true",
+      // Mirrors the platform feature flag the announcements module enforces,
+      // so the panel cannot report "enabled" while the module is switched off.
+      broadcastSendingEnabled: settings.featureFlags.broadcasts,
     };
   },
 });

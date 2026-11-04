@@ -46,6 +46,15 @@ export default function AIEventCreator({ onEventGenerated }: AIEventCreatorProps
       });
 
       const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(
+          typeof data?.error === "string"
+            ? data.error
+            : "Failed to generate event. Please try again."
+        );
+      }
+
       onEventGenerated(data);
       toast.success("Event details generated! Review and customize below.");
       setIsOpen(false);
@@ -60,12 +69,14 @@ export default function AIEventCreator({ onEventGenerated }: AIEventCreatorProps
 
   return (
     <Dialog open={isOpen} onOpenChange={setIsOpen}>
-      <DialogTrigger>
-      <Button variant="outline" className="gap-2">
-        <Sparkles className="w-4 h-4" />
-        Generate with AI
-      </Button>
-    </DialogTrigger>
+      <DialogTrigger
+        render={
+          <Button variant="outline" className="gap-2">
+            <Sparkles className="w-4 h-4" />
+            Generate with AI
+          </Button>
+        }
+      />
       <DialogContent>
         <DialogHeader>
           <DialogTitle className="flex items-center gap-2">

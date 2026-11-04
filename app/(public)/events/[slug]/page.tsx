@@ -53,6 +53,9 @@ export default function EventDetailPage() {
     slug: params.slug as string,
   });
 
+  // Convex user record, needed to compare against event.organizerId
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
+
   // Check if user is already registered
   const { data: registration } = useConvexQuery(
     api.registrations.checkRegistration,
@@ -101,7 +104,7 @@ export default function EventDetailPage() {
 
   const isEventFull = event.registrationCount >= event.capacity;
   const isEventPast = event.endDate < Date.now();
-  const isOrganizer = user?.id === event.organizerId;
+  const isOrganizer = currentUser?._id === event.organizerId;
 
   return (
     <div

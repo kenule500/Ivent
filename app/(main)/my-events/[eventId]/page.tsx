@@ -268,7 +268,7 @@ export default function EventDashboardPage() {
               <div>
                 <p className="text-2xl font-bold tracking-tight">
                   {event.ticketType === "paid"
-                    ? `₹${stats.totalRevenue}`
+                    ? `₦${stats.totalRevenue}`
                     : `${stats.checkInRate}%`}
                 </p>
                 <p className="text-xs text-muted-foreground">

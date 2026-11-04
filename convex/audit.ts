@@ -134,15 +134,28 @@ export const getAuditStats = query({
   handler: async (ctx) => {
     await requireAdmin(ctx);
 
-    const logs = await ctx.db.query("auditLogs").collect();
     const now = Date.now();
     const dayAgo = now - 24 * 60 * 60 * 1000;
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
 
+    // Bounded reads: the log grows without limit, so both counts are capped at
+    // MAX_AUDIT_ROWS rather than streaming the whole table into memory.
+    const [weekLogs, newestLogs] = await Promise.all([
+      ctx.db
+        .query("auditLogs")
+        .withIndex("by_createdAt", (q) => q.gte("createdAt", weekAgo))
+        .take(MAX_AUDIT_ROWS),
+      ctx.db
+        .query("auditLogs")
+        .withIndex("by_createdAt")
+        .order("desc")
+        .take(MAX_AUDIT_ROWS),
+    ]);
+
     return {
-      total: logs.length,
-      last24h: logs.filter((l) => l.createdAt > dayAgo).length,
-      last7d: logs.filter((l) => l.createdAt > weekAgo).length,
+      total: newestLogs.length,
+      last24h: weekLogs.filter((log) => log.createdAt > dayAgo).length,
+      last7d: weekLogs.length,
     };
   },
 });

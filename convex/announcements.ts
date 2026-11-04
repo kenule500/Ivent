@@ -131,14 +131,14 @@ export const send = mutation({
     if (subject.length < SUBJECT_MIN || subject.length > SUBJECT_MAX) {
       return {
         ok: false as const,
-        message: `The subject must be ${SUBJECT_MIN}â€“${SUBJECT_MAX} characters.`,
+        message: `The subject must be ${SUBJECT_MIN}–${SUBJECT_MAX} characters.`,
       };
     }
 
     if (body.length < BODY_MIN || body.length > BODY_MAX) {
       return {
         ok: false as const,
-        message: `The message must be ${BODY_MIN}â€“${BODY_MAX} characters.`,
+        message: `The message must be ${BODY_MIN}–${BODY_MAX} characters.`,
       };
     }
 
