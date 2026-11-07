@@ -2,6 +2,7 @@ import { describe, expect, test, beforeEach, afterEach, vi } from "vitest";
 import { NextRequest } from "next/server";
 
 const cerebras = vi.hoisted(() => ({ create: vi.fn() }));
+const clerk = vi.hoisted(() => ({ auth: vi.fn() }));
 
 vi.mock("@cerebras/cerebras_cloud_sdk", () => ({
   Cerebras: class {
@@ -9,7 +10,15 @@ vi.mock("@cerebras/cerebras_cloud_sdk", () => ({
   },
 }));
 
+vi.mock("@clerk/nextjs/server", () => ({ auth: clerk.auth }));
+
 import { POST } from "../../app/api/generate-event/route";
+
+// Each test acts as a distinct user so the per-user request window never
+// carries over between cases.
+beforeEach(() => {
+  clerk.auth.mockResolvedValue({ userId: crypto.randomUUID() });
+});
 
 const validPayload = {
   title: "React 19 Meetup",
@@ -42,6 +51,22 @@ describe("AC-002: stable server contract", () => {
 
     expect(res.status).toBe(400);
     await expect(res.json()).resolves.toMatchObject({ error: "Prompt is required" });
+  });
+
+  test("AC-002: an unauthenticated request is rejected", async () => {
+    clerk.auth.mockResolvedValueOnce({ userId: null });
+
+    const res = await POST(request({ prompt: "A React meetup" }));
+
+    expect(res.status).toBe(401);
+    expect(cerebras.create).not.toHaveBeenCalled();
+  });
+
+  test("AC-002: an oversized prompt is rejected before calling the provider", async () => {
+    const res = await POST(request({ prompt: "x".repeat(501) }));
+
+    expect(res.status).toBe(400);
+    expect(cerebras.create).not.toHaveBeenCalled();
   });
 
   test("AC-002: a valid prompt returns the generated JSON shape", async () => {

@@ -9,6 +9,7 @@ import { format, differenceInDays } from "date-fns";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { PageHeader } from "@/components/admin/page-header";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
   Select,
@@ -269,24 +270,23 @@ export default function AdminInvitesPage() {
     <>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-3xl font-bold">Admin Invites</h1>
-            <p className="text-muted-foreground">
-              Generate and manage admin invite codes
-            </p>
-          </div>
-          {expiredCount > 0 && (
-            <Button
-              variant="outline"
-              onClick={handleCleanupExpired}
-              className="gap-2"
-            >
-              <Trash2 className="w-4 h-4" />
-              Clean {expiredCount} Expired
-            </Button>
-          )}
-        </div>
+        <PageHeader
+          title="Admin Invites"
+          description="Generate and manage admin invite codes."
+          breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Admin invites" }]}
+          actions={
+            expiredCount > 0 ? (
+              <Button
+                variant="outline"
+                onClick={handleCleanupExpired}
+                className="gap-2"
+              >
+                <Trash2 className="w-4 h-4" />
+                Clean {expiredCount} Expired
+              </Button>
+            ) : null
+          }
+        />
 
         {/* Stats */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">

@@ -19,22 +19,14 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import EventCard from "@/components/event-card";
+import type { FunctionReturnType } from "convex/server";
 import { Id } from "@/convex/_generated/dataModel";
 
-type RegistrationTicket = {
-  _id: Id<"registrations">;
-  attendeeName: string;
-  qrCode: string;
-  status: string;
-  registeredAt: number;
-  event: {
-    title: string;
-    startDate: number;
-    locationType: string;
-    city?: string;
-    state?: string;
-    country?: string;
-  };
+type RegistrationWithEvent = FunctionReturnType<
+  typeof api.registrations.getMyRegistrations
+>[number];
+type RegistrationTicket = RegistrationWithEvent & {
+  event: NonNullable<RegistrationWithEvent["event"]>;
 };
 
 
@@ -101,12 +93,18 @@ export default function MyTicketsPage() {
               {upcomingTickets.map((registration) => {
                 // ✅ Safety check: If event is null, render nothing
                 if (!registration.event) return null;
+                const event = registration.event;
                 return (
                   <EventCard
                     key={registration._id}
-                    event={registration.event}
+                    event={event}
                     action="ticket"
-                    onClick={() => setSelectedTicket(registration as RegistrationTicket)}
+                    onClick={() =>
+                      setSelectedTicket({
+                        ...registration,
+                        event,
+                      })
+                    }
                     onDelete={() => handleCancelRegistration(registration._id)}
                   />
                 );

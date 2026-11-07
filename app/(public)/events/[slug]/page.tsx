@@ -3,6 +3,7 @@
 
 import { useParams, useRouter } from "next/navigation";
 import { notFound } from "next/navigation";
+import Link from "next/link";
 import { useState } from "react";
 import Image from "next/image";
 import { format } from "date-fns";
@@ -14,6 +15,7 @@ import {
   Share2,
   Ticket,
   ExternalLink,
+  Flag,
   Loader2,
   CheckCircle,
 } from "lucide-react";
@@ -50,6 +52,9 @@ export default function EventDetailPage() {
   const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
     slug: params.slug as string,
   });
+
+  // Convex user record, needed to compare against event.organizerId
+  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
 
   // Check if user is already registered
   const { data: registration } = useConvexQuery(
@@ -99,7 +104,7 @@ export default function EventDetailPage() {
 
   const isEventFull = event.registrationCount >= event.capacity;
   const isEventPast = event.endDate < Date.now();
-  const isOrganizer = user?.id === event.organizerId;
+  const isOrganizer = currentUser?._id === event.organizerId;
 
   return (
     <div
@@ -340,6 +345,18 @@ export default function EventDetailPage() {
                 >
                   <Share2 className="w-4 h-4" />
                   Share Event
+                </Button>
+
+                {/* Report link (FR-030) */}
+                <Button
+                  variant="ghost"
+                  className="w-full gap-2 text-xs text-muted-foreground"
+                  render={
+                    <Link href={`/feedback?eventId=${event._id}`} />
+                  }
+                >
+                  <Flag className="w-3.5 h-3.5" />
+                  Report this event
                 </Button>
               </CardContent>
             </Card>

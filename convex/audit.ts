@@ -17,7 +17,13 @@ export type AuditAction =
   | "invite.revoked"
   | "invite.resent"
   | "invite.deleted"
-  | "registration.cancelled";
+  | "registration.cancelled"
+  | "settings.updated"
+  | "announcement.sent"
+  | "feedback.updated"
+  | "feedback.deleted"
+  | "export.generated"
+  | "maintenance.changed";
 
 /**
  * Valid target types.
@@ -26,7 +32,14 @@ export type AuditTargetType =
   | "event"
   | "user"
   | "invite"
-  | "registration";
+  | "registration"
+  | "settings"
+  | "announcement"
+  | "feedback"
+  | "export";
+
+/** Hard cap so a wide date range cannot stream the whole log to a client. */
+export const MAX_AUDIT_ROWS = 2000;
 
 /**
  * Log an admin action.
@@ -63,18 +76,40 @@ export const getAuditLogs = query({
   args: {
     search: v.optional(v.string()),
     actionFilter: v.optional(v.string()),
+    targetFilter: v.optional(v.string()),
+    from: v.optional(v.number()),
+    to: v.optional(v.number()),
+    limit: v.optional(v.number()),
   },
   handler: async (ctx, args) => {
     await requireAdmin(ctx);
 
+    const limit = Math.min(Math.max(args.limit ?? 500, 1), MAX_AUDIT_ROWS);
+
+    const from = args.from;
+    const to = args.to;
+
+    // Narrow the index range when a date filter is present; otherwise read backwards
+    // from the newest row and stop at the cap.
     let logs = await ctx.db
       .query("auditLogs")
-      .withIndex("by_createdAt")
+      .withIndex("by_createdAt", (q) => {
+        if (from !== undefined && to !== undefined) {
+          return q.gte("createdAt", from).lt("createdAt", to);
+        }
+        if (from !== undefined) return q.gte("createdAt", from);
+        if (to !== undefined) return q.lt("createdAt", to);
+        return q;
+      })
       .order("desc")
-      .collect();
+      .take(limit);
 
     if (args.actionFilter && args.actionFilter !== "all") {
       logs = logs.filter((log) => log.action === args.actionFilter);
+    }
+
+    if (args.targetFilter && args.targetFilter !== "all") {
+      logs = logs.filter((log) => log.targetType === args.targetFilter);
     }
 
     if (args.search) {
@@ -99,15 +134,28 @@ export const getAuditStats = query({
   handler: async (ctx) => {
     await requireAdmin(ctx);
 
-    const logs = await ctx.db.query("auditLogs").collect();
     const now = Date.now();
     const dayAgo = now - 24 * 60 * 60 * 1000;
     const weekAgo = now - 7 * 24 * 60 * 60 * 1000;
 
+    // Bounded reads: the log grows without limit, so both counts are capped at
+    // MAX_AUDIT_ROWS rather than streaming the whole table into memory.
+    const [weekLogs, newestLogs] = await Promise.all([
+      ctx.db
+        .query("auditLogs")
+        .withIndex("by_createdAt", (q) => q.gte("createdAt", weekAgo))
+        .take(MAX_AUDIT_ROWS),
+      ctx.db
+        .query("auditLogs")
+        .withIndex("by_createdAt")
+        .order("desc")
+        .take(MAX_AUDIT_ROWS),
+    ]);
+
     return {
-      total: logs.length,
-      last24h: logs.filter((l) => l.createdAt > dayAgo).length,
-      last7d: logs.filter((l) => l.createdAt > weekAgo).length,
+      total: newestLogs.length,
+      last24h: weekLogs.filter((log) => log.createdAt > dayAgo).length,
+      last7d: weekLogs.length,
     };
   },
 });

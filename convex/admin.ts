@@ -1,7 +1,8 @@
 // convex/admin.ts
 import { v } from "convex/values";
 import { query, mutation } from "./_generated/server";
-import { requireAdmin } from "./helpers";
+import { requireAdmin, consumeRateLimit } from "./helpers";
+import { assertFeatureEnabled } from "./platformData";
 import { Id } from "./_generated/dataModel";
 import { logAdminAction } from "./audit";
 import { rateLimiter } from "./rateLimiter";
@@ -33,6 +34,106 @@ export const getDashboardStats = query({
       totalEvents: events.length,
       totalRegistrations: registrations.length,
       upcomingEvents,
+    };
+  },
+});
+
+// ============ COMMAND CENTER ============
+
+/** Ten most recent audit entries for the dashboard (FR-009). */
+export const getRecentAudit = query({
+  args: { limit: v.optional(v.number()) },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+    const limit = Math.min(Math.max(args.limit ?? 10, 1), 50);
+    return ctx.db
+      .query("auditLogs")
+      .withIndex("by_createdAt")
+      .order("desc")
+      .take(limit);
+  },
+});
+
+const PALETTE_GROUP_LIMIT = 5;
+
+/**
+ * Admin-authorized palette search (FR-005, NFR-003).
+ * Pages are resolved on the client from lib/admin-nav.ts; this returns data only.
+ */
+export const searchPalette = mutation({
+  args: { query: v.string() },
+  handler: async (ctx, args) => {
+    const admin = await requireAdmin(ctx);
+    await assertFeatureEnabled(ctx, "commandPalette");
+    const query = args.query.trim();
+
+    if (query.length < 2) {
+      return { error: null, users: [], events: [], registrations: [] };
+    }
+
+    const limit = await consumeRateLimit(ctx, "adminSearch", admin._id);
+    if (!limit.ok) {
+      return {
+        error: limit.message,
+        users: [],
+        events: [],
+        registrations: [],
+      };
+    }
+
+    const lower = query.toLowerCase();
+
+    const [events, recentUsers, recentRegistrations] = await Promise.all([
+      ctx.db
+        .query("events")
+        .withSearchIndex("search_title", (q) => q.search("title", query))
+        .take(PALETTE_GROUP_LIMIT),
+      ctx.db.query("users").order("desc").take(500),
+      ctx.db
+        .query("registrations")
+        .withIndex("by_registeredAt")
+        .order("desc")
+        .take(500),
+    ]);
+
+    const users = recentUsers
+      .filter(
+        (user) =>
+          user.name.toLowerCase().includes(lower) ||
+          user.email.toLowerCase().includes(lower)
+      )
+      .slice(0, PALETTE_GROUP_LIMIT)
+      .map((user) => ({
+        id: user._id,
+        label: user.name || user.email,
+        email: user.email,
+        role: user.role ?? "user",
+      }));
+
+    const registrations = recentRegistrations
+      .filter(
+        (registration) =>
+          registration.attendeeName.toLowerCase().includes(lower) ||
+          registration.attendeeEmail.toLowerCase().includes(lower)
+      )
+      .slice(0, PALETTE_GROUP_LIMIT)
+      .map((registration) => ({
+        id: registration._id,
+        label: registration.attendeeName,
+        email: registration.attendeeEmail,
+        eventId: registration.eventId,
+      }));
+
+    return {
+      error: null,
+      users,
+      events: events.map((event) => ({
+        id: event._id,
+        label: event.title,
+        startDate: event.startDate,
+        city: event.city ?? null,
+      })),
+      registrations,
     };
   },
 });

@@ -1,36 +1,132 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Ivent
 
-## Getting Started
+An event platform: organizers publish events, attendees discover and register for
+them, and a full admin console governs the platform.
 
-First, run the development server:
+Built on Next.js 16 (App Router) + React 19, Convex as the backend and data layer,
+and Clerk for authentication.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open [http://localhost:3000](http://localhost:3000).
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Environment
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+Copy the variables below into `.env.local`. All of them are server-side except the
+`NEXT_PUBLIC_*` ones, which are exposed to the browser by design.
 
-## Learn More
+| Variable | Purpose |
+|----------|---------|
+| `CONVEX_DEPLOYMENT` | Convex deployment identifier |
+| `NEXT_PUBLIC_CONVEX_URL` | Convex client URL |
+| `NEXT_PUBLIC_CONVEX_SITE_URL` | Convex HTTP site URL |
+| `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY` | Clerk publishable key |
+| `CLERK_SECRET_KEY` | Clerk secret key (server only) |
+| `NEXT_PUBLIC_CLERK_SIGN_IN_URL` | Sign-in route |
+| `NEXT_PUBLIC_CLERK_SIGN_UP_URL` | Sign-up route |
+| `CLERK_JWT_ISSUER_DOMAIN` | Clerk JWT issuer, validated by Convex |
+| `NEXT_PUBLIC_UNSPLASH_ACCESS_KEY` | Unsplash cover-image search |
+| `NEXT_PUBLIC_UNSPLASH_SECRET_KEY` | Unsplash cover-image search |
+| `GEMINI_API_KEY` | Google AI |
+| `CEREBRAS_API_KEY` | AI event generation (`/api/generate-event`) |
+| `RESEND_API_KEY` | Transactional email |
+| `RESEND_FROM_EMAIL` | From address for outbound email |
+| `BROADCAST_SENDING_ENABLED` | Set to `true` to enable admin broadcasts |
 
-To learn more about Next.js, take a look at the following resources:
+## Scripts
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+| Command | What it does |
+|---------|--------------|
+| `npm run dev` | Dev server (webpack) |
+| `npm run build` | Production build |
+| `npm start` | Serve the production build |
+| `npm run lint` | ESLint |
+| `npm test` | Vitest, single run |
+| `npm run test:watch` | Vitest, watch mode |
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Surfaces
 
-## Deploy on Vercel
+### Public
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- `/` — landing page with featured and popular events
+- `/explore` — browse by category, city, and state
+- `/events/[slug]` — event detail and registration
+- `/feedback` — submit a bug, feature request, or abuse report
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+### Signed-in users
+
+- `/create-event` — create an event, optionally seeded by AI
+- `/my-events` — events you organize, with per-event dashboard and QR check-in
+- `/my-tickets` — your registrations and QR codes
+
+### Admin console (`/admin`)
+
+Sign in at `/admin`; invited admins sign up at `/admin/signup`.
+
+| Route | Purpose |
+|-------|---------|
+| `/admin/dashboard` | Command center: stats, recent audit activity |
+| `/admin/analytics` | Filtered analytics workspace with charts |
+| `/admin/events` | Event list, detail modal, delete |
+| `/admin/registrations` | Registrations, cancellation |
+| `/admin/users` | User list, ban/unban, role changes |
+| `/admin/invites` | Admin invites: create, resend, revoke, delete |
+| `/admin/announcements` | Broadcast email to an audience |
+| `/admin/feedback` | Feedback inbox and triage |
+| `/admin/reports` | Reports hub, per-event reports, CSV export |
+| `/admin/health` | System health: crons, email, rate limits |
+| `/admin/platform` | Platform settings, feature flags, maintenance mode |
+| `/admin/audit` | Audit log of admin actions |
+| `/admin/settings` | Your admin profile and notification preferences |
+
+## Roles
+
+- **user** — default role; can create events and register for them
+- **admin** — full admin console access
+- **super_admin** — additionally: assign roles, manage invites, change platform
+  settings, send broadcasts
+
+Roles are enforced in Convex (`requireAdmin` / `requireSuperAdmin`), never only in
+the UI.
+
+## Architecture
+
+```
+app/            Next.js routes: (public), (main), (auth), admin, api
+components/     Shared UI; components/ui holds the design primitives
+components/admin/  Admin console components
+convex/         Backend: schema, queries, mutations, crons, email
+hooks/          Client hooks (Convex wrappers, onboarding, platform settings)
+lib/            Formatting, CSV, filters, navigation config, utilities
+test/           Vitest suites, one folder per feature
+proxy.ts        Clerk middleware: route protection and security headers
+```
+
+Key conventions:
+
+- Authenticated Convex functions use `secureQuery` / `secureMutation`, or call
+  `requireAdmin`, and perform their own ownership checks.
+- Admin mutations that change users, events, invites, or registrations record an
+  entry through `logAdminAction`.
+- Convex function arguments are declared with `convex/values` validators.
+- Cross-directory imports use the `@/*` alias.
+
+## Testing
+
+Vitest, with suites under `test/<feature>/`. Test names carry their acceptance
+criterion ID (for example `AC-001: ...`).
+
+```bash
+npm test
+npx vitest run test/admin-dashboard-update   # one feature
+```
+
+## Deployment
+
+The app builds with `npm run build` and deploys to Vercel. Convex functions deploy
+separately with the Convex CLI. Set the environment variables above in both places.

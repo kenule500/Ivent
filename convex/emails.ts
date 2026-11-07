@@ -2,7 +2,7 @@
 
 import { v } from "convex/values";
 import { action } from "./_generated/server";
-import { Resend } from "resend";
+import { sendEmail } from "./emailService";
 
 /**
  * Send an admin invite email.
@@ -18,17 +18,7 @@ export const sendInviteEmail = action({
     const identity = await ctx.auth.getUserIdentity();
     if (!identity) throw new Error("Unauthenticated");
 
-    const apiKey = process.env.RESEND_API_KEY;
-    if (!apiKey) {
-      throw new Error("RESEND_API_KEY is not configured");
-    }
-
-    const resend = new Resend(apiKey);
-
-    const fromEmail =
-      process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
     const siteUrl = process.env.SITE_URL || "http://localhost:3000";
-
     const inviteUrl = `${siteUrl}/admin/signup?code=${args.inviteCode}&email=${encodeURIComponent(args.email)}`;
 
     const expiryDate = new Date(args.expiresAt).toLocaleDateString("en-US", {
@@ -38,10 +28,10 @@ export const sendInviteEmail = action({
       day: "numeric",
     });
 
-    const result = await resend.emails.send({
-      from: fromEmail,
+    const data = await sendEmail(ctx, {
       to: args.email,
       subject: "You've been invited as an admin to Ivent",
+      template: "invite",
       html: `
         <!DOCTYPE html>
         <html>
@@ -98,10 +88,6 @@ export const sendInviteEmail = action({
       `,
     });
 
-    if (result.error) {
-      throw new Error(`Resend error: ${result.error.message}`);
-    }
-
-    return { success: true, emailId: result.data?.id };
+    return { success: true, emailId: data.emailId };
   },
 });

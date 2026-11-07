@@ -6,6 +6,8 @@ import { api } from "@/convex/_generated/api";
 import { Input } from "@/components/ui/input";
 import { Search, Calendar, Ticket, TrendingUp } from "lucide-react";
 import { StatCard, EventsTable } from "@/components/admin";
+import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 export default function AdminEventsPage() {
   const [search, setSearch] = useState("");
@@ -40,14 +42,12 @@ export default function AdminEventsPage() {
   return (
     <div className="space-y-8">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight">Event Management</h1>
-          <p className="text-muted-foreground mt-1">
-            Manage all platform events
-          </p>
-        </div>
-      </div>
+      <PageHeader
+        title="Event Management"
+        description="Manage all platform events."
+        breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Events" }]}
+        actions={<ExportButton module="events" search={search || undefined} />}
+      />
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6">

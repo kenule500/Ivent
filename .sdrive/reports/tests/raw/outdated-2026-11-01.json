@@ -1,0 +1,303 @@
+﻿node.exe : npm info using npm@11.21.0
+At line:1 char:1
++ & "C:\Program Files\nodejs/node.exe" "C:\Users\KENULE-NWINEE\AppData\ ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (npm info using npm@11.21.0:String) [], RemoteException
+    + FullyQualifiedErrorId : NativeCommandError
+ 
+npm info using node@v24.20.0
+npm http fetch GET 200 https://registry.npmjs.org/cn 4075ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/vitest 3965ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@clerk%2fui 4200ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@base-ui%2freact 4307ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@testing-library%2fjest-dom 4197ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/clsx 4326ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@convex-dev%2frate-limiter 4349ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/shadcn 4687ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@clerk%2fnextjs 4836ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/zod 4937ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/vite 5015ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/sonner 5177ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@cerebras%2fcerebras_cloud_sdk 5295ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/ajv 5176ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@google%2fgenerative-ai 5305ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/convex-test 5199ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/tw-animate-css 5269ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/eslint 5265ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/@tailwindcss%2fpostcss 5333ms (cache revalidated)
+npm http fetch GET 200 https://registry.npmjs.org/class-variance-authority 5451ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@edge-runtime%2fvm 5536ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/embla-carousel-autoplay 5633ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/ajv-formats 5599ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/vite-tsconfig-paths 5548ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@vitejs%2fplugin-react 5617ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/next-themes 5729ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-qr-code 5734ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/lodash 5777ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2freact-dom 5750ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/resend 6006ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/country-state-city 6085ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-spinners 6049ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/html5-qrcode 6302ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@testing-library%2fuser-event 6290ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/jsdom 6281ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@testing-library%2freact 6444ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/date-fns 6540ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@radix-ui%2freact-slot 6770ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@hookform%2fresolvers 7157ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/embla-carousel-react 7336ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-day-picker 7334ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/recharts 7669ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2freact 7789ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/convex 7929ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/tailwind-merge 8134ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/lucide-react 8521ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@types%2fnode 9433ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-hook-form 9802ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react 12343ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/@clerk%2fthemes 12557ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/react-dom 12640ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/eslint-config-next 12829ms (cache updated)
+npm http fetch GET 200 https://registry.npmjs.org/tailwindcss 13666ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/typescript 18032ms (cache miss)
+npm http fetch GET 200 https://registry.npmjs.org/next 28168ms (cache updated)
+{
+  "@base-ui/react": {
+    "current": "1.5.0",
+    "wanted": "1.9.0",
+    "latest": "1.9.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@base-ui\\react"
+  },
+  "@cerebras/cerebras_cloud_sdk": {
+    "current": "1.64.1",
+    "wanted": "1.91.0",
+    "latest": "1.91.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@cerebras\\cerebras_cloud_sdk"
+  },
+  "@clerk/nextjs": {
+    "current": "7.5.5",
+    "wanted": "7.9.23",
+    "latest": "7.9.23",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@clerk\\nextjs"
+  },
+  "@clerk/ui": {
+    "current": "1.18.0",
+    "wanted": "1.42.2",
+    "latest": "1.42.2",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@clerk\\ui"
+  },
+  "@convex-dev/rate-limiter": {
+    "current": "0.3.2",
+    "wanted": "0.3.2",
+    "latest": "0.4.3",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@convex-dev\\rate-limiter"
+  },
+  "@hookform/resolvers": {
+    "current": "5.4.0",
+    "wanted": "5.9.2",
+    "latest": "7.0.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@hookform\\resolvers"
+  },
+  "@radix-ui/react-slot": {
+    "current": "1.3.0",
+    "wanted": "1.5.0",
+    "latest": "1.5.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@radix-ui\\react-slot"
+  },
+  "@tailwindcss/postcss": {
+    "current": "4.3.1",
+    "wanted": "4.3.3",
+    "latest": "4.3.3",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@tailwindcss\\postcss"
+  },
+  "@types/node": {
+    "current": "20.19.43",
+    "wanted": "20.19.43",
+    "latest": "26.6.6",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@types\\node"
+  },
+  "@types/react": {
+    "current": "19.2.17",
+    "wanted": "19.3.0",
+    "latest": "19.3.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@types\\react"
+  },
+  "@types/react-dom": {
+    "current": "19.2.3",
+    "wanted": "19.3.0",
+    "latest": "19.3.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@types\\react-dom"
+  },
+  "@vitejs/plugin-react": {
+    "current": "5.2.0",
+    "wanted": "5.2.0",
+    "latest": "6.1.2",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\@vitejs\\plugin-react"
+  },
+  "cn": {
+    "current": "0.2.5",
+    "wanted": "0.2.6",
+    "latest": "0.5.1",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\cn"
+  },
+  "convex": {
+    "current": "1.47.0",
+    "wanted": "1.49.0",
+    "latest": "1.49.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\convex"
+  },
+  "convex-test": {
+    "current": "0.0.62",
+    "wanted": "0.0.62",
+    "latest": "0.0.66",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\convex-test"
+  },
+  "eslint": {
+    "current": "9.39.4",
+    "wanted": "9.39.5",
+    "latest": "10.14.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\eslint"
+  },
+  "eslint-config-next": {
+    "current": "16.2.9",
+    "wanted": "16.2.9",
+    "latest": "16.4.3",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\eslint-config-next"
+  },
+  "lucide-react": {
+    "current": "1.20.0",
+    "wanted": "1.66.0",
+    "latest": "1.66.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\lucide-react"
+  },
+  "next": {
+    "current": "16.2.9",
+    "wanted": "16.2.9",
+    "latest": "16.4.3",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\next"
+  },
+  "react": {
+    "current": "19.2.4",
+    "wanted": "19.2.4",
+    "latest": "19.3.1",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\react"
+  },
+  "react-day-picker": {
+    "current": "10.0.1",
+    "wanted": "10.0.2",
+    "latest": "10.0.2",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\react-day-picker"
+  },
+  "react-dom": {
+    "current": "19.2.4",
+    "wanted": "19.2.4",
+    "latest": "19.3.1",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\react-dom"
+  },
+  "react-hook-form": {
+    "current": "7.87.0",
+    "wanted": "7.91.0",
+    "latest": "7.91.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\react-hook-form"
+  },
+  "react-spinners": {
+    "current": "0.17.0",
+    "wanted": "0.17.1",
+    "latest": "0.17.1",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\react-spinners"
+  },
+  "recharts": {
+    "current": "3.8.0",
+    "wanted": "3.10.1",
+    "latest": "3.10.1",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\recharts"
+  },
+  "resend": {
+    "current": "6.28.1",
+    "wanted": "6.37.0",
+    "latest": "6.37.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\resend"
+  },
+  "shadcn": {
+    "current": "4.11.0",
+    "wanted": "4.23.0",
+    "latest": "4.23.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\shadcn"
+  },
+  "sonner": {
+    "current": "2.0.7",
+    "wanted": "2.0.8",
+    "latest": "2.0.8",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\sonner"
+  },
+  "tailwind-merge": {
+    "current": "3.6.0",
+    "wanted": "3.7.0",
+    "latest": "3.7.0",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\tailwind-merge"
+  },
+  "tailwindcss": {
+    "current": "4.3.1",
+    "wanted": "4.3.3",
+    "latest": "4.3.3",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\tailwindcss"
+  },
+  "typescript": {
+    "current": "5.9.3",
+    "wanted": "5.9.3",
+    "latest": "7.0.2",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\typescript"
+  },
+  "vite": {
+    "current": "7.3.7",
+    "wanted": "7.3.7",
+    "latest": "8.3.5",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\vite"
+  },
+  "vitest": {
+    "current": "3.2.7",
+    "wanted": "3.2.7",
+    "latest": "5.0.5",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\vitest"
+  },
+  "zod": {
+    "current": "4.4.3",
+    "wanted": "4.6.7",
+    "latest": "4.6.7",
+    "dependent": "Ivent",
+    "location": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\node_modules\\zod"
+  }
+}

@@ -6,6 +6,10 @@ type EventDoc = Omit<Doc<"events">, "_id" | "_creationTime">;
 type RegistrationDoc = Omit<Doc<"registrations">, "_id" | "_creationTime">;
 type InviteDoc = Omit<Doc<"adminInvites">, "_id" | "_creationTime">;
 type AuditDoc = Omit<Doc<"auditLogs">, "_id" | "_creationTime">;
+type FeedbackDoc = Omit<Doc<"feedback">, "_id" | "_creationTime">;
+type EmailEventDoc = Omit<Doc<"emailEvents">, "_id" | "_creationTime">;
+type CronRunDoc = Omit<Doc<"cronRuns">, "_id" | "_creationTime">;
+type AnnouncementDoc = Omit<Doc<"announcements">, "_id" | "_creationTime">;
 
 export async function seedUser(
   ctx: MutationCtx,
@@ -101,6 +105,71 @@ export async function seedAuditLog(
     targetType: "event",
     targetId: "event-1",
     targetLabel: "Test Event",
+    createdAt: Date.now(),
+    ...overrides,
+  });
+}
+
+export async function seedFeedback(
+  ctx: MutationCtx,
+  userId: Id<"users">,
+  overrides: Partial<FeedbackDoc> = {}
+): Promise<Id<"feedback">> {
+  const now = Date.now();
+  return ctx.db.insert("feedback", {
+    type: "bug",
+    userId,
+    userEmail: "reporter@example.com",
+    message: "A reproducible problem was reported.",
+    status: "open",
+    priority: "normal",
+    adminNotes: [],
+    createdAt: now,
+    updatedAt: now,
+    ...overrides,
+  });
+}
+
+export async function seedEmailEvent(
+  ctx: MutationCtx,
+  overrides: Partial<EmailEventDoc> = {}
+): Promise<Id<"emailEvents">> {
+  return ctx.db.insert("emailEvents", {
+    template: "announcement",
+    recipient: "recipient@example.com",
+    status: "sent",
+    createdAt: Date.now(),
+    ...overrides,
+  });
+}
+
+export async function seedCronRun(
+  ctx: MutationCtx,
+  overrides: Partial<CronRunDoc> = {}
+): Promise<Id<"cronRuns">> {
+  return ctx.db.insert("cronRuns", {
+    name: "daily-maintenance",
+    lastRunAt: Date.now(),
+    status: "success",
+    processed: 0,
+    ...overrides,
+  });
+}
+
+export async function seedAnnouncement(
+  ctx: MutationCtx,
+  createdBy: Id<"users">,
+  overrides: Partial<AnnouncementDoc> = {}
+): Promise<Id<"announcements">> {
+  return ctx.db.insert("announcements", {
+    subject: "Test announcement",
+    body: "This is a test announcement body.",
+    audienceType: "all",
+    recipientCount: 1,
+    sentCount: 0,
+    failedCount: 0,
+    status: "sending",
+    createdBy,
     createdAt: Date.now(),
     ...overrides,
   });

@@ -33,6 +33,97 @@ export async function requireAdmin(ctx: QueryCtx | MutationCtx) {
   return user;
 }
 
+/**
+ * Super-admin variant of requireAdmin. Platform settings and broadcast
+ * mutations are enforced here, never only in the UI (CON-512 / NFR-002).
+ */
+export async function requireSuperAdmin(ctx: QueryCtx | MutationCtx) {
+  const user = await requireAdmin(ctx);
+  if (user.role !== "super_admin") {
+    throw new Error("Super admin access required");
+  }
+  return user;
+}
+
+/** Rate-limit buckets available to admin modules. Keep in sync with rateLimiter.ts. */
+export type AdminRateLimitName =
+  | "adminSearch"
+  | "analytics"
+  | "adminExport"
+  | "broadcast"
+  | "feedbackWrite"
+  | "feedbackSubmit";
+
+/**
+ * Consume a rate-limit bucket for a key (usually the acting user id).
+ *
+ * Returns a result instead of throwing: a thrown mutation rolls back its own
+ * writes, which would discard the rejection record used by system health.
+ */
+export async function consumeRateLimit(
+  ctx: MutationCtx,
+  name: AdminRateLimitName,
+  key: string
+): Promise<
+  | { ok: true }
+  | { ok: false; message: string; retryAfterSeconds: number }
+> {
+  const status = await rateLimiter.limit(ctx, name, { key });
+  if (status.ok) return { ok: true };
+
+  await ctx.db.insert("rateLimitRejections", {
+    bucket: name,
+    createdAt: Date.now(),
+  });
+
+  const retryAfterSeconds = Math.max(
+    1,
+    Math.ceil((status.retryAfter ?? 1000) / 1000)
+  );
+  return {
+    ok: false,
+    message: `Rate limit exceeded. Try again in ${retryAfterSeconds} seconds.`,
+    retryAfterSeconds,
+  };
+}
+
+/**
+ * Read-only budget check for query handlers. Queries cannot consume a bucket,
+ * so the matching mutation (for example `analytics.pulse`) consumes it and the
+ * query rejects once the budget is spent.
+ */
+export async function assertRateLimitBudget(
+  ctx: QueryCtx,
+  name: AdminRateLimitName,
+  key: string
+) {
+  const status = await rateLimiter.check(ctx, name, { key });
+  if (!status.ok) {
+    const seconds = Math.max(1, Math.ceil((status.retryAfter ?? 1000) / 1000));
+    throw new Error(`Rate limit exceeded. Try again in ${seconds} seconds.`);
+  }
+}
+
+/** Page size bounds shared by the new list views. */
+export const DEFAULT_PAGE_SIZE = 25;
+export const MAX_PAGE_SIZE = 100;
+
+export function clampPageSize(size: number | undefined) {
+  return Math.min(Math.max(size ?? DEFAULT_PAGE_SIZE, 1), MAX_PAGE_SIZE);
+}
+
+export function clampPage(page: number | undefined) {
+  return Math.max(page ?? 1, 1);
+}
+
+/** Mask an email for audience previews: jane@example.com -> j***@example.com */
+export function maskEmail(email: string) {
+  const [local, domain] = email.split("@");
+  if (!domain) return "***";
+  const visible = local.slice(0, 1);
+  return `${visible}***@${domain}`;
+}
+
 // 1. Centralized Auth Resolver (Handles both QueryCtx and MutationCtx)
 export async function getAuthenticatedUser(
   ctx: QueryCtx | MutationCtx

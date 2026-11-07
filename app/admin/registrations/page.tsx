@@ -25,7 +25,6 @@ import {
 } from "@/components/ui/select";
 import {
   Search,
-  Download,
   Trash2,
   CheckCircle2,
   XCircle,
@@ -44,6 +43,8 @@ import {
 import { Id } from "@/convex/_generated/dataModel";
 import { CancelRegistrationModal } from "@/components/admin/cancel-registration-modal";
 import { Pagination } from "@/components/admin/pagination";
+import { PageHeader } from "@/components/admin/page-header";
+import { ExportButton } from "@/components/admin/export-button";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -141,42 +142,6 @@ export default function AdminRegistrationsPage() {
     }
   };
 
-  const handleExport = () => {
-    if (!filteredRegistrations) return;
-
-    const header = [
-      "Attendee Name",
-      "Attendee Email",
-      "Event",
-      "Status",
-      "QR Code",
-      "Registered At",
-      "Checked In",
-    ].join(",");
-
-    const rows = filteredRegistrations.map((reg) =>
-      [
-        reg.attendeeName,
-        reg.attendeeEmail,
-        events?.find((e) => e._id === reg.eventId)?.title || "Unknown",
-        reg.status,
-        reg.qrCode,
-        new Date(reg.registeredAt).toLocaleString(),
-        reg.checkedIn ? "Yes" : "No",
-      ].join(",")
-    );
-
-    const csvContent = [header, ...rows].join("\n");
-
-    const blob = new Blob([csvContent], { type: "text/csv" });
-    const url = window.URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = `registrations-${new Date().toISOString().split("T")[0]}.csv`;
-    a.click();
-    window.URL.revokeObjectURL(url);
-  };
-
   const hasActiveFilters = search || statusFilter !== "all";
 
   const clearFilters = () => {
@@ -196,18 +161,14 @@ export default function AdminRegistrationsPage() {
     <>
       <div className="space-y-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
-          <div>
-            <h1 className="text-2xl sm:text-3xl font-bold">Registrations</h1>
-            <p className="text-sm sm:text-base text-muted-foreground">
-              Manage all event registrations across the platform
-            </p>
-          </div>
-          <Button onClick={handleExport} className="gap-2 shrink-0">
-            <Download className="w-4 h-4" />
-            Export CSV
-          </Button>
-        </div>
+        <PageHeader
+          title="Registrations"
+          description="Manage all event registrations across the platform."
+          breadcrumb={[{ label: "Admin", href: "/admin/dashboard" }, { label: "Registrations" }]}
+          actions={
+            <ExportButton module="registrations" search={search || undefined} />
+          }
+        />
 
         {/* Stats */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">

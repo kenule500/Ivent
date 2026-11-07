@@ -19,10 +19,10 @@
 - **Tests:** no test framework, no test folder, no `*.test.*` / `*.spec.*`
   files. Test tooling is `[to be confirmed]`.
 - **SpecDrive validation:** `node .sdrive/scripts/validate-governance.js`
-  validates config, workflow state, and per-feature governance JSON. In this
-  repository it needs the Ajv 8-compatibility wrapper at
-  `.sdrive/onboarding/validate.js` because the root `node_modules` resolves
-  Ajv 6.
+  validates config, workflow state, and per-feature governance JSON. The project
+  now declares `ajv@8` and `ajv-formats@3` as devDependencies, so the script runs
+  directly. `.sdrive/onboarding/validate.js` remains as a thin alias for older
+  references.
 
 ## Standard Best Practices (from MCP/skills)
 

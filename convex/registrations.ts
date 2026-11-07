@@ -1,4 +1,6 @@
 import { v } from "convex/values";
+import { MutationCtx } from "./_generated/server";
+import { Id } from "./_generated/dataModel";
 import { secureQuery, secureMutation } from "./helpers";
 
 // Cryptographically secure QR code generator
@@ -6,16 +8,34 @@ function generateQRCode() {
   return `EVT-${Date.now()}-${crypto.randomUUID().slice(0, 8).toUpperCase()}`;
 }
 
+/**
+ * Count confirmed registrations from the source of truth. The denormalized
+ * `events.registrationCount` is always written from this value, so it cannot
+ * drift when a registration is cancelled or reactivated.
+ */
+async function countConfirmedRegistrations(
+  ctx: MutationCtx,
+  eventId: Id<"events">
+) {
+  const confirmed = await ctx.db
+    .query("registrations")
+    .withIndex("by_event_status", (q) =>
+      q.eq("eventId", eventId).eq("status", "confirmed")
+    )
+    .collect();
+
+  return confirmed.length;
+}
+
 export const registerForEvent = secureMutation({
   args: {
     eventId: v.id("events"),
-    attendeeName: v.string(),
-    attendeeEmail: v.string(),
   },
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
-    if (event.registrationCount >= event.capacity) throw new Error("Event is full");
+    const confirmedCount = await countConfirmedRegistrations(ctx, args.eventId);
+    if (confirmedCount >= event.capacity) throw new Error("Event is full");
 
     const existingRegistration = await ctx.db
       .query("registrations")
@@ -35,24 +55,26 @@ export const registerForEvent = secureMutation({
         status: "confirmed",
         checkedIn: false,
         qrCode,
+        attendeeName: ctx.user.name,
+        attendeeEmail: ctx.user.email,
         registeredAt: Date.now(),
       });
-      await ctx.db.patch(args.eventId, { registrationCount: event.registrationCount + 1 });
+      await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
       return existingRegistration._id;
     }
 
     const registrationId = await ctx.db.insert("registrations", {
       eventId: args.eventId,
       userId: ctx.user._id,
-      attendeeName: args.attendeeName,
-      attendeeEmail: args.attendeeEmail,
+      attendeeName: ctx.user.name,
+      attendeeEmail: ctx.user.email,
       qrCode,
       checkedIn: false,
       status: "confirmed",
       registeredAt: Date.now(),
     });
 
-    await ctx.db.patch(args.eventId, { registrationCount: event.registrationCount + 1 });
+    await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
     return registrationId;
   },
 });
@@ -108,11 +130,13 @@ export const cancelRegistration = secureMutation({
 
     await ctx.db.patch(args.registrationId, { status: "cancelled" });
 
-    if (event.registrationCount > 0) {
-      await ctx.db.patch(registration.eventId, {
-        registrationCount: event.registrationCount - 1,
-      });
-    }
+    const confirmedCount = await countConfirmedRegistrations(
+      ctx,
+      registration.eventId
+    );
+    await ctx.db.patch(registration.eventId, {
+      registrationCount: confirmedCount,
+    });
 
     return { success: true };
   },
@@ -146,8 +170,11 @@ export const checkInAttendee = secureMutation({
       .withIndex("by_qrCode", (q) => q.eq("qrCode", args.qrCode))
       .unique();
 
+    // Return instead of throwing so the consumed rate-limit token commits.
+    // A thrown mutation rolls back its own writes, which would let an attacker
+    // keep guessing QR codes without ever hitting the brute-force limit.
     if (!registration || registration.status !== "confirmed") {
-      throw new Error("Invalid or cancelled QR code");
+      return { success: false, message: "Invalid or cancelled QR code" };
     }
 
     const event = await ctx.db.get(registration.eventId);
@@ -168,203 +195,3 @@ export const checkInAttendee = secureMutation({
     };
   },
 });
-
-
-
-
-// Register for an event
-// export const registerForEvent = mutation({
-//   args: {
-//     eventId: v.id("events"),
-//     attendeeName: v.string(),
-//     attendeeEmail: v.string(),
-//   },
-//   handler: async (ctx, args) => {
-//     // const user = await ctx.runQuery(internal.users.getCurrentUser);
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error("Unauthenticated. Please sign in to create events.");
-//     }
-
-//     // 2. Fetch the actual user record from your "users" collection
-//     const user = await ctx.db
-//       .query("users")
-//       .withIndex("by_token", (q) =>
-//         q.eq("tokenIdentifier", identity.tokenIdentifier)
-//       )
-//       .unique();
-
-//     if (!user) {
-//         throw new Error("User profile records not found.");
-//     }
-    
-
-//     const event = await ctx.db.get(args.eventId);
-//     if (!event) {
-//       throw new Error("Event not found");
-//     }
-
-//     // Check if event is full
-//     if (event.registrationCount >= event.capacity) {
-//       throw new Error("Event is full");
-//     }
-
-//     // Check if user already registered
-//     const existingRegistration = await ctx.db
-//       .query("registrations")
-//       .withIndex("by_event_user", (q) =>
-//         q.eq("eventId", args.eventId).eq("userId", user._id)
-//       )
-//       .unique();
-
-//     if (existingRegistration) {
-//       throw new Error("You are already registered for this event");
-//     }
-
-//     // Create registration
-//     const qrCode = generateQRCode();
-//     const registrationId = await ctx.db.insert("registrations", {
-//       eventId: args.eventId,
-//       userId: user._id,
-//       attendeeName: args.attendeeName,
-//       attendeeEmail: args.attendeeEmail,
-//       qrCode: qrCode,
-//       checkedIn: false,
-//       status: "confirmed",
-//       registeredAt: Date.now(),
-//     });
-
-//     // Update event registration count
-//     await ctx.db.patch(args.eventId, {
-//       registrationCount: event.registrationCount + 1,
-//     });
-
-//     return registrationId;
-//   },
-// });
-
-
-// Cancel registration
-// export const cancelRegistration = mutation({
-//   args: { registrationId: v.id("registrations") },
-//   handler: async (ctx, args) => {
-//     // const user = await ctx.runQuery(internal.users.getCurrentUser);
-
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error("Unauthenticated. Please sign in to create events.");
-//     }
-
-//     // 2. Fetch the actual user record from your "users" collection
-//     const user = await ctx.db
-//       .query("users")
-//       .withIndex("by_token", (q) =>
-//         q.eq("tokenIdentifier", identity.tokenIdentifier)
-//       )
-//       .unique();
-
-//     if (!user) {
-//         throw new Error("User profile records not found.");
-//     }
-    
-
-//     const registration = await ctx.db.get(args.registrationId);
-//     if (!registration) {
-//       throw new Error("Registration not found");
-//     }
-
-//     // Check if user owns this registration
-//     if (registration.userId !== user._id) {
-//       throw new Error("You are not authorized to cancel this registration");
-//     }
-
-//     const event = await ctx.db.get(registration.eventId);
-//     if (!event) {
-//       throw new Error("Event not found");
-//     }
-
-//     // Update registration status
-//     await ctx.db.patch(args.registrationId, {
-//       status: "cancelled",
-//     });
-
-//     // Decrement event registration count
-//     if (event.registrationCount > 0) {
-//       await ctx.db.patch(registration.eventId, {
-//         registrationCount: event.registrationCount - 1,
-//       });
-//     }
-
-//     return { success: true };
-//   },
-// });
-
-
-// Check-in attendee with QR codea
-// export const checkInAttendee = mutation({
-//   args: { qrCode: v.string() },
-//   handler: async (ctx, args) => {
-//     // const user = await ctx.runQuery(internal.users.getCurrentUser);
-//     const identity = await ctx.auth.getUserIdentity();
-//     if (!identity) {
-//       throw new Error("Unauthenticated. Please sign in to create events.");
-//     }
-
-//     // 2. Fetch the actual user record from your "users" collection
-//     const user = await ctx.db
-//       .query("users")
-//       .withIndex("by_token", (q) =>
-//         q.eq("tokenIdentifier", identity.tokenIdentifier)
-//       )
-//       .unique();
-
-//     if (!user) {
-//         throw new Error("User profile records not found.");
-//     }
-    
-
-//     const registration = await ctx.db
-//       .query("registrations")
-//       .withIndex("by_qrCode", (q) => q.eq("qrCode", args.qrCode))
-//       .unique();
-
-//     if (!registration) {
-//       throw new Error("Invalid QR code");
-//     }
-
-//     const event = await ctx.db.get(registration.eventId);
-//     if (!event) {
-//       throw new Error("Event not found");
-//     }
-
-//     // Check if user is the organizer
-//     if (event.organizerId !== user._id) {
-//       throw new Error("You are not authorized to check in attendees");
-//     }
-
-//     // Check if already checked in
-//     if (registration.checkedIn) {
-//       return {
-//         success: false,
-//         message: "Already checked in",
-//         registration,
-//       };
-//     }
-
-//     // Check in
-//     await ctx.db.patch(registration._id, {
-//       checkedIn: true,
-//       checkedInAt: Date.now(),
-//     });
-
-//     return {
-//       success: true,
-//       message: "Check-in successful",
-//       registration: {
-//         ...registration,
-//         checkedIn: true,
-//         checkedInAt: Date.now(),
-//       },
-//     };
-//   },
-// });

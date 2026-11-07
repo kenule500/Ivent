@@ -1,0 +1,46 @@
+{
+  "feature": "admin-dashboard-update",
+  "version": "v1",
+  "nfr": "NFR-009",
+  "tool": "axe-core 4.12.1",
+  "standard": "WCAG 2.1 A + AA (automated subset)",
+  "negativeControl": {
+    "expectedViolations": true,
+    "found": [
+      "button-name",
+      "image-alt"
+    ]
+  },
+  "caseCount": 7,
+  "totalViolationGroups": 0,
+  "results": [
+    {
+      "name": "PageHeader (dashboard)",
+      "violations": []
+    },
+    {
+      "name": "PanelState (empty)",
+      "violations": []
+    },
+    {
+      "name": "PanelState (error with retry)",
+      "violations": []
+    },
+    {
+      "name": "DataTableAlt (chart alternative)",
+      "violations": []
+    },
+    {
+      "name": "TrendCard (positive delta)",
+      "violations": []
+    },
+    {
+      "name": "TrendCard (new / zero baseline)",
+      "violations": []
+    },
+    {
+      "name": "ChartCard (with data-table alternative)",
+      "violations": []
+    }
+  ]
+}

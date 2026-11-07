@@ -1,0 +1,197 @@
+﻿­ƒöì Scanning roots: components, app, lib
+
+­ƒôä Found 103 source files.
+
+
+­ƒôè Verification Result
+
+Ô£à Matched:  38
+ÔØî Missing:  132
+ÔÜá´©Å  Renamed: 19
+Ô×ò Extra:    26
+
+­ƒº¥ Status:   FAIL
+­ƒôü Report:   .sdrive\governance\admin-dashboard-update\v1\verification.json
+
+ÔØî Missing:
+  [component] hooks/useConvexQuery.ts
+  [component] proxy.ts
+  [endpoint] convex/commandCenter:getTrends
+  [endpoint] convex/commandCenter:getActionQueue
+  [endpoint] convex/commandCenter:getToday
+  [endpoint] convex/admin:getRecentAudit
+  [endpoint] convex/admin:searchPalette
+  [endpoint] convex/analytics:getSummary
+  [endpoint] convex/analytics:getTimeSeries
+  [endpoint] convex/analytics:getBreakdown
+  [endpoint] convex/analytics:getFunnel
+  [endpoint] convex/analytics:getCohorts
+  [endpoint] convex/analytics:getHeatmap
+  [endpoint] convex/exports:generate
+  [endpoint] convex/reports:listEvents
+  [endpoint] convex/reports:getEventReport
+  [endpoint] convex/health:getOverview
+  [endpoint] convex/platform:getSettings
+  [endpoint] convex/platform:getPublicStatus
+  [endpoint] convex/platform:updateSettings
+  [endpoint] convex/announcements:resolveAudience
+  [endpoint] convex/announcements:send
+  [endpoint] convex/announcements:list
+  [endpoint] convex/feedback:submit
+  [endpoint] convex/feedback:list
+  [endpoint] convex/feedback:update
+  [entity] platformSettings
+  [field] key
+  [field] defaultCountry
+  [field] defaultCurrency
+  [field] defaultTimezone
+  [field] maintenanceMode
+  [field] maintenanceMessage
+  [field] featureFlags
+  [field] updatedBy
+  [field] updatedAt
+  [field] by_key
+  [entity] announcements
+  [field] subject
+  [field] body
+  [field] audienceType
+  [field] audienceEventId
+  [field] recipientCount
+  [field] sentCount
+  [field] failedCount
+  [field] status
+  [field] createdBy
+  [field] createdAt
+  [field] sentAt
+  [field] by_createdAt
+  [field] by_status
+  [entity] announcementDeliveries
+  [field] announcementId
+  [field] email
+  [field] status
+  [field] error
+  [field] createdAt
+  [field] by_announcement
+  [field] by_status_createdAt
+  [entity] feedback
+  [field] type
+  [field] eventId
+  [field] userId
+  [field] userEmail
+  [field] message
+  [field] status
+  [field] priority
+  [field] adminNotes
+  [field] createdAt
+  [field] updatedAt
+  [field] resolvedBy
+  [field] resolvedAt
+  [field] by_status_createdAt
+  [field] by_type
+  [field] by_event
+  [field] by_user
+  [entity] emailEvents
+  [field] template
+  [field] recipient
+  [field] status
+  [field] error
+  [field] createdAt
+  [field] by_createdAt
+  [field] by_status_createdAt
+  [entity] cronRuns
+  [field] name
+  [field] lastRunAt
+  [field] status
+  [field] error
+  [field] processed
+  [field] by_name
+  [entity] auditLogs
+  [field] action
+  [field] targetType
+  [field] actorId
+  [field] actorName
+  [field] actorEmail
+  [field] targetId
+  [field] targetLabel
+  [field] metadata
+  [field] createdAt
+  [field] by_createdAt
+  [entity] users
+  [field] role
+  [field] name
+  [field] email
+  [field] createdAt
+  [field] by_createdAt
+  [entity] registrations
+  [field] eventId
+  [field] userId
+  [field] status
+  [field] checkedIn
+  [field] registeredAt
+  [field] by_registeredAt
+  [field] by_event_status
+  [entity] events
+  [field] startDate
+  [field] category
+  [field] country
+  [field] city
+  [field] ticketType
+  [field] organizerId
+  [field] capacity
+  [field] registrationCount
+  [field] by_startDate
+  [field] by_category
+  [field] by_organizer
+  [dependency] Convex
+  [dependency] Clerk
+  [dependency] Resend
+  [dependency] Recharts
+
+ÔÜá´©Å  Renamed:
+  [component] convex/schema.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/helpers.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/audit.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/rateLimiter.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] components/admin/filter-chips.tsx ÔåÆ components/admin/analytics-charts.tsx
+  [component] convex/commandCenter.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/analyticsFilters.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/analytics.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/exports.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/platform.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/announcements.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/feedback.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/health.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/emails.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/crons.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/settings.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] convex/search.ts ÔåÆ app/ConvexClientProvider.tsx
+  [component] components/ui/* ÔåÆ components/admin/analytics-charts.tsx
+  [component] components/admin/delete-modals.tsx ÔåÆ components/admin/analytics-charts.tsx
+
+Ô×ò Extra (not in plan):
+  [component] components/admin/analytics-charts.tsx
+  [component] components/admin/analytics-filters.tsx
+  [component] components/admin/analytics-summary.tsx
+  [component] components/admin/cancel-registration-modal.tsx
+  [component] components/admin/chart-card.tsx
+  [component] components/admin/delete-event-modal.tsx
+  [component] components/admin/delete-invite-modal.tsx
+  [component] components/admin/event-details-modal.tsx
+  [component] components/admin/events-table.tsx
+  [component] components/admin/index.ts
+  [component] components/admin/invite-status-badge.tsx
+  [component] components/admin/module-not-enabled.tsx
+  [component] components/admin/revoke-invite-modal.tsx
+  [component] components/admin/stat-card.tsx
+  [component] components/admin/user-table-row.tsx
+  [component] components/admin/users-table.tsx
+  [component] components/event-card.tsx
+  [component] components/footer.tsx
+  [component] components/header.tsx
+  [component] components/ImagePicker.tsx
+  [component] components/onboarding-modal.tsx
+  [component] components/search-location-bar.tsx
+  [component] components/SmartImage.tsx
+  [component] components/theme-provider.tsx
+  [component] components/upgrade-modal.tsx
+  [component] lib/utils.ts
