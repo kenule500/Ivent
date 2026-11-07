@@ -65,7 +65,7 @@
         "description": "Client trigger with progress, repeat-click rejection, Blob download, and toast success or failure."
       },
       {
-        "name": "components/admin/filter-chips.tsx",
+        "name": "components/admin/analytics-filters.tsx",
         "action": "create",
         "description": "Removable, keyboard-focusable active-filter chips plus a single Clear all action."
       },
@@ -235,9 +235,19 @@
         "description": "Existing client pagination is adequate for the new list views."
       },
       {
-        "name": "components/admin/delete-modals.tsx",
-        "action": "reuse",
-        "description": "Existing confirmation modals remain; typed confirmation is added only for maintenance mode and broadcast send."
+        "name": "components/admin/delete-event-modal.tsx",
+        "action": "create",
+        "description": "Confirmation dialog for deleting an event, with typed confirmation for destructive deletes."
+      },
+      {
+        "name": "components/admin/delete-invite-modal.tsx",
+        "action": "create",
+        "description": "Confirmation dialog for deleting a pending admin invite."
+      },
+      {
+        "name": "components/admin/cancel-registration-modal.tsx",
+        "action": "create",
+        "description": "Confirmation dialog for cancelling a registration from the admin registrations view."
       },
       {
         "name": "components/AdminGuard.tsx",
@@ -472,7 +482,7 @@
       "linkedRequirements": ["FR-009", "NFR-001"]
     },
     {
-      "method": "GET",
+      "method": "POST",
       "path": "convex/admin:searchPalette",
       "action": "create",
       "authenticationRequired": true,
@@ -571,13 +581,6 @@
     },
     {
       "method": "POST",
-      "path": "convex/announcements:resolveAudience",
-      "action": "create",
-      "authenticationRequired": true,
-      "linkedRequirements": ["FR-028", "NFR-002"]
-    },
-    {
-      "method": "POST",
       "path": "convex/announcements:send",
       "action": "create",
       "authenticationRequired": true,
@@ -585,7 +588,7 @@
     },
     {
       "method": "GET",
-      "path": "convex/announcements:list",
+      "path": "convex/announcements:history",
       "action": "create",
       "authenticationRequired": true,
       "linkedRequirements": ["FR-031"]

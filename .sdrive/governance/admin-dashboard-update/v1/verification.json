@@ -1,0 +1,1774 @@
+{
+  "feature": "admin-dashboard-update",
+  "status": "warn",
+  "checkedAt": "2026-11-07T13:21:26.155Z",
+  "summary": {
+    "matched": 190,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 38,
+    "withdrawn": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/helpers.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/helpers.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/audit.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/audit.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/rateLimiter.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/rateLimiter.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/format.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/format.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/csv.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/csv.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/analytics-filters.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/analytics-filters.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/admin-nav.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/admin-nav.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/page-header.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/page-header.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/panel-state.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/panel-state.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/command-palette.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/command-palette.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/export-button.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/export-button.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/analytics-filters.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/analytics-filters.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/data-table-alt.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/data-table-alt.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/trend-card.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/trend-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/maintenance-gate.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/maintenance-gate.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminSidebar.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "components/AdminSidebar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminAwareLayout.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "components/AdminAwareLayout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/layout.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/layout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/dashboard/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/dashboard/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/analytics/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/analytics/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/users/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/users/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/events/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/events/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/registrations/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/registrations/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/audit/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/audit/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/settings/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/settings/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/platform/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/admin/platform/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/reports/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/admin/reports/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/announcements/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/admin/announcements/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/feedback/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/admin/feedback/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/health/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/admin/health/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/feedback/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/feedback/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/commandCenter.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analyticsFilters.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/analyticsFilters.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analytics.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/exports.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/exports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platform.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcements.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/announcements.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/feedback.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/health.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/health.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emails.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/emails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/crons.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/crons.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/settings.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/settings.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/search.ts",
+        "action": "reuse",
+        "resolution": null,
+        "file": "convex/search.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/*",
+        "action": "reuse",
+        "resolution": null,
+        "file": "components/ui/avatar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/pagination.tsx",
+        "action": "reuse",
+        "resolution": null,
+        "file": "components/admin/pagination.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/delete-event-modal.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/delete-event-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/delete-invite-modal.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/delete-invite-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/cancel-registration-modal.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/admin/cancel-registration-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminGuard.tsx",
+        "action": "reuse",
+        "resolution": null,
+        "file": "components/AdminGuard.tsx"
+      },
+      {
+        "type": "component",
+        "name": "hooks/useConvexQuery.ts",
+        "action": "reuse",
+        "resolution": null,
+        "file": "hooks/useConvexQuery.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/data.ts",
+        "action": "reuse",
+        "resolution": null,
+        "file": "lib/data.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/location-utils.ts",
+        "action": "reuse",
+        "resolution": null,
+        "file": "lib/location-utils.ts"
+      },
+      {
+        "type": "component",
+        "name": "proxy.ts",
+        "action": "reuse",
+        "resolution": null,
+        "file": "proxy.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/invites/page.tsx",
+        "action": "reuse",
+        "resolution": null,
+        "file": "app/admin/invites/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/commandCenter:getTrends",
+        "method": "GET",
+        "path": "convex/commandCenter:getTrends",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/commandCenter:getActionQueue",
+        "method": "GET",
+        "path": "convex/commandCenter:getActionQueue",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/commandCenter:getToday",
+        "method": "GET",
+        "path": "convex/commandCenter:getToday",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/admin:getRecentAudit",
+        "method": "GET",
+        "path": "convex/admin:getRecentAudit",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/admin:searchPalette",
+        "method": "POST",
+        "path": "convex/admin:searchPalette",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getSummary",
+        "method": "GET",
+        "path": "convex/analytics:getSummary",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getTimeSeries",
+        "method": "GET",
+        "path": "convex/analytics:getTimeSeries",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getBreakdown",
+        "method": "GET",
+        "path": "convex/analytics:getBreakdown",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getFunnel",
+        "method": "GET",
+        "path": "convex/analytics:getFunnel",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getCohorts",
+        "method": "GET",
+        "path": "convex/analytics:getCohorts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/analytics:getHeatmap",
+        "method": "GET",
+        "path": "convex/analytics:getHeatmap",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/exports:generate",
+        "method": "POST",
+        "path": "convex/exports:generate",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/exports.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/reports:listEvents",
+        "method": "GET",
+        "path": "convex/reports:listEvents",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/reports.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/reports:getEventReport",
+        "method": "GET",
+        "path": "convex/reports:getEventReport",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/reports.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/health:getOverview",
+        "method": "GET",
+        "path": "convex/health:getOverview",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/health.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/platform:getSettings",
+        "method": "GET",
+        "path": "convex/platform:getSettings",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/platform:getPublicStatus",
+        "method": "GET",
+        "path": "convex/platform:getPublicStatus",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/platform:updateSettings",
+        "method": "POST",
+        "path": "convex/platform:updateSettings",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/announcements:send",
+        "method": "POST",
+        "path": "convex/announcements:send",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/announcements.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/announcements:history",
+        "method": "GET",
+        "path": "convex/announcements:history",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/announcements.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/feedback:submit",
+        "method": "POST",
+        "path": "convex/feedback:submit",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/feedback:list",
+        "method": "GET",
+        "path": "convex/feedback:list",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/feedback:update",
+        "method": "POST",
+        "path": "convex/feedback:update",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "entity",
+        "name": "platformSettings",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "key",
+        "fieldType": "string (literal \"global\")",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "defaultCountry",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "defaultCurrency",
+        "fieldType": "string (ISO 4217)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "defaultTimezone",
+        "fieldType": "string (IANA)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "maintenanceMode",
+        "fieldType": "boolean",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "maintenanceMessage",
+        "fieldType": "string|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "featureFlags",
+        "fieldType": "{commandPalette,reports,broadcasts,feedbackInbox,systemHealth: boolean}",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "updatedBy",
+        "fieldType": "Id<users>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "updatedAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "by_key",
+        "fieldType": "index on key",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "announcements",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "subject",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "body",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "audienceType",
+        "fieldType": "all|organizers|event|admins",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "audienceEventId",
+        "fieldType": "Id<events>|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "recipientCount",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "sentCount",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "failedCount",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "status",
+        "fieldType": "draft|sending|sent|partial|failed",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "createdBy",
+        "fieldType": "Id<users>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "sentAt",
+        "fieldType": "number|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "by_createdAt",
+        "fieldType": "index on createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcements",
+        "name": "by_status",
+        "fieldType": "index on status",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "announcementDeliveries",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "announcementId",
+        "fieldType": "Id<announcements>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "email",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "status",
+        "fieldType": "sent|failed",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "error",
+        "fieldType": "string|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "by_announcement",
+        "fieldType": "index on announcementId",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "announcementDeliveries",
+        "name": "by_status_createdAt",
+        "fieldType": "index on status + createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "feedback",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "type",
+        "fieldType": "bug|feature|abuse|other",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "eventId",
+        "fieldType": "Id<events>|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "userId",
+        "fieldType": "Id<users>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "userEmail",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "message",
+        "fieldType": "string (10-2000 chars)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "status",
+        "fieldType": "open|in_review|resolved|dismissed",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "priority",
+        "fieldType": "low|normal|high",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "adminNotes",
+        "fieldType": "array<{authorId,authorName,body,createdAt}>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "updatedAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "resolvedBy",
+        "fieldType": "Id<users>|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "resolvedAt",
+        "fieldType": "number|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "by_status_createdAt",
+        "fieldType": "index on status + createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "by_type",
+        "fieldType": "index on type",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "by_event",
+        "fieldType": "index on eventId",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "feedback",
+        "name": "by_user",
+        "fieldType": "index on userId",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "emailEvents",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "template",
+        "fieldType": "invite|announcement",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "recipient",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "status",
+        "fieldType": "sent|failed",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "error",
+        "fieldType": "string|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "by_createdAt",
+        "fieldType": "index on createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "by_status_createdAt",
+        "fieldType": "index on status + createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "cronRuns",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "name",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "lastRunAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "status",
+        "fieldType": "success|failed",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "error",
+        "fieldType": "string|null",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "processed",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "cronRuns",
+        "name": "by_name",
+        "fieldType": "index on name",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "auditLogs",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "action",
+        "fieldType": "AuditAction (adds settings.updated, announcement.sent, feedback.updated, feedback.deleted, export.generated, maintenance.changed)",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetType",
+        "fieldType": "event|user|invite|registration|settings|announcement|feedback|export",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorId",
+        "fieldType": "Id<users>",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorName",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "actorEmail",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetId",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetLabel",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "metadata",
+        "fieldType": "any|null",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "by_createdAt",
+        "fieldType": "index on createdAt",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "users",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "role",
+        "fieldType": "user|admin|super_admin",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "name",
+        "fieldType": "string|null",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "email",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "createdAt",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "users",
+        "name": "by_createdAt",
+        "fieldType": "index on createdAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "eventId",
+        "fieldType": "Id<events>",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "userId",
+        "fieldType": "Id<users>",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "status",
+        "fieldType": "confirmed|cancelled",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "checkedIn",
+        "fieldType": "boolean",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "registeredAt",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "by_registeredAt",
+        "fieldType": "index on registeredAt",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "by_event_status",
+        "fieldType": "index on eventId + status",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "events",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "startDate",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "category",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "country",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "city",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "ticketType",
+        "fieldType": "free|paid",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "organizerId",
+        "fieldType": "Id<users>",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "capacity",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "registrationCount",
+        "fieldType": "number",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "by_startDate",
+        "fieldType": "index on startDate",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "by_category",
+        "fieldType": "index on category",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "by_organizer",
+        "fieldType": "index on organizerId",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "dependency",
+        "name": "Convex",
+        "action": "no_change",
+        "depType": "service",
+        "resolution": null,
+        "note": "service dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Clerk",
+        "action": "no_change",
+        "depType": "service",
+        "resolution": null,
+        "note": "service dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Resend",
+        "action": "no_change",
+        "depType": "service",
+        "resolution": null,
+        "note": "service dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Recharts",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "date-fns",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "react-day-picker",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "lucide-react",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "zod",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "@convex-dev/rate-limiter",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "country-state-city",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": [
+      {
+        "type": "component",
+        "name": "convex/admin.ts",
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementAudience.ts",
+        "file": "convex/announcementAudience.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementsNode.ts",
+        "file": "convex/announcementsNode.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/auth.config.ts",
+        "file": "convex/auth.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/convex.config.ts",
+        "file": "convex/convex.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/dashboard.ts",
+        "file": "convex/dashboard.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailLog.ts",
+        "file": "convex/emailLog.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailService.ts",
+        "file": "convex/emailService.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/events.ts",
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/explore.ts",
+        "file": "convex/explore.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/mailtrap.ts",
+        "file": "convex/mailtrap.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platformData.ts",
+        "file": "convex/platformData.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/reports.ts",
+        "file": "convex/reports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/seed.ts",
+        "file": "convex/seed.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/users.ts",
+        "file": "convex/users.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/analytics-charts.tsx",
+        "file": "components/admin/analytics-charts.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/analytics-summary.tsx",
+        "file": "components/admin/analytics-summary.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/chart-card.tsx",
+        "file": "components/admin/chart-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/event-details-modal.tsx",
+        "file": "components/admin/event-details-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/events-table.tsx",
+        "file": "components/admin/events-table.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/index.ts",
+        "file": "components/admin/index.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/invite-status-badge.tsx",
+        "file": "components/admin/invite-status-badge.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/module-not-enabled.tsx",
+        "file": "components/admin/module-not-enabled.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/revoke-invite-modal.tsx",
+        "file": "components/admin/revoke-invite-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/stat-card.tsx",
+        "file": "components/admin/stat-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/user-table-row.tsx",
+        "file": "components/admin/user-table-row.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/admin/users-table.tsx",
+        "file": "components/admin/users-table.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/event-card.tsx",
+        "file": "components/event-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/footer.tsx",
+        "file": "components/footer.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/header.tsx",
+        "file": "components/header.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ImagePicker.tsx",
+        "file": "components/ImagePicker.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/onboarding-modal.tsx",
+        "file": "components/onboarding-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/search-location-bar.tsx",
+        "file": "components/search-location-bar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/SmartImage.tsx",
+        "file": "components/SmartImage.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/theme-provider.tsx",
+        "file": "components/theme-provider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/upgrade-modal.tsx",
+        "file": "components/upgrade-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "lib/utils.ts",
+        "file": "lib/utils.ts"
+      }
+    ],
+    "withdrawn": []
+  }
+}

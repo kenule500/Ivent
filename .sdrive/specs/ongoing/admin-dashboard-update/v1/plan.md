@@ -67,7 +67,7 @@ Everything below was checked against the repository before planning.
 | `proxy.ts` | **reuse** | Clerk route protection and security headers stay as they are; maintenance mode is a render gate, not a middleware rewrite. |
 | `app/api/generate-event/route.ts` | **reuse** | Unrelated to this feature. |
 
-**Create**: `components/admin/page-header.tsx`, `components/admin/command-palette.tsx`, `components/admin/panel-state.tsx`, `components/admin/export-button.tsx`, `components/admin/filter-chips.tsx`, `components/admin/data-table-alt.tsx`, `components/admin/trend-card.tsx`, `components/maintenance-gate.tsx`, `lib/format.ts`, `lib/csv.ts`, `lib/analytics-filters.ts`, `lib/admin-nav.ts`, `convex/platform.ts`, `convex/announcements.ts`, `convex/feedback.ts`, `convex/health.ts`, `convex/commandCenter.ts`, `convex/analyticsFilters.ts`, `convex/exports.ts`, plus the five new `app/admin/*` route folders and the public feedback page.
+**Create**: `components/admin/page-header.tsx`, `components/admin/command-palette.tsx`, `components/admin/panel-state.tsx`, `components/admin/export-button.tsx`, `components/admin/analytics-filters.tsx`, `components/admin/delete-event-modal.tsx`, `components/admin/delete-invite-modal.tsx`, `components/admin/cancel-registration-modal.tsx`, `components/admin/data-table-alt.tsx`, `components/admin/trend-card.tsx`, `components/maintenance-gate.tsx`, `lib/format.ts`, `lib/csv.ts`, `lib/analytics-filters.ts`, `lib/admin-nav.ts`, `convex/platform.ts`, `convex/announcements.ts`, `convex/feedback.ts`, `convex/health.ts`, `convex/commandCenter.ts`, `convex/analyticsFilters.ts`, `convex/exports.ts`, plus the five new `app/admin/*` route folders and the public feedback page.
 
 **Do not create**: a second chart library, a second table system, a command-palette package, a CSV package, a state-management library, an HTTP API for admin data, or a parallel auth path.
 
@@ -95,9 +95,8 @@ All functions below declare `convex/values` validators (CON-207) and call `requi
 | `platform.getSettings` | admin | `{}` | settings or defaults | — |
 | `platform.getPublicStatus` | **public** | `{}` | maintenance flag + message only | — |
 | `platform.updateSettings` | **super_admin** | `{ settings }` | saved settings | settings bucket |
-| `announcements.resolveAudience` | super_admin | `{ audience }` | count + sample recipients (masked) | broadcast bucket |
 | `announcements.send` | **super_admin** | `{ subject, body, audience, confirmation }` | announcement id + counts | broadcast bucket |
-| `announcements.list` | admin | `{ page? }` | announcements with counts | — |
+| `announcements.history` | admin | `{ page? }` | announcements with counts | — |
 | `feedback.submit` | signed-in user | `{ type, eventId?, message }` | id + status | feedback bucket |
 | `feedback.list` | admin | `{ status?, type?, priority?, page? }` | paged records + counts | — |
 | `feedback.update` | admin | `{ id, status?, priority?, note? }` | updated record | — |
@@ -215,7 +214,7 @@ Day bucketing and report labels use `Intl.DateTimeFormat` with the configured `t
 
 ### Broadcasts
 
-`announcements.resolveAudience` expands one of four audiences:
+`resolveAudience` — a shared helper in `convex/announcementAudience.ts`, not a client-callable Convex function — expands one of four audiences:
 
 | Audience | Source |
 |---|---|

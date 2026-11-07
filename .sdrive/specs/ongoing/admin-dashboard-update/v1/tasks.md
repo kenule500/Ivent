@@ -174,7 +174,7 @@ Depends on: P1, P2.
   - Refactor convex/emails.ts into a shared send helper that writes an emailEvents row per attempt and supports the plain-text announcement template, preserving the existing invite behaviour, and keep cron heartbeats writing on both success and failure.
 - [x] **T5.7** Add broadcast audience resolution and sending.
   - Linked: FR-028, FR-029, FR-030, NFR-002, NFR-003, NFR-015, AC-024, AC-025, AC-026
-  - Create convex/announcements.ts: resolveAudience counts and returns up to five masked samples for all users, organizers, one event's confirmed registrations de-duplicated by email, and admins; send requires super_admin, a matching typed confirmation, and the broadcast bucket, creates the record as sending, sends in batches of 50, writes one delivery row per recipient, updates counts and a sent or partial status, and writes announcement.sent.
+  - Create convex/announcements.ts and convex/announcementAudience.ts: the resolveAudience helper counts and returns up to five masked samples for all users, organizers, one event's confirmed registrations de-duplicated by email, and admins; send requires super_admin, a matching typed confirmation, and the broadcast bucket, creates the record as sending, sends in batches of 50, writes one delivery row per recipient, updates counts and a sent or partial status, and writes announcement.sent; history returns the announcements with their counts.
 - [x] **T5.8** Build the broadcast composer.
   - Linked: FR-028, FR-029, NFR-004, NFR-009, AC-024, AC-025
   - Create the announcements page composer: audience selector with a resolved recipient count, masked sample preview, subject and body preview, send disabled at zero recipients, and typed confirmation before sending.

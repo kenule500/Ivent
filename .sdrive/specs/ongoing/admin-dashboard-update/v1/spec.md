@@ -3,7 +3,7 @@ title: Admin Dashboard Update
 status: backlog
 version: v1
 created: 2026-10-20
-updated: 2026-10-20
+updated: 2026-11-07
 ---
 
 # Admin Dashboard Update
@@ -342,3 +342,24 @@ No new third-party package is required. `components/ui/dialog`, `tabs`, `select`
 - OWASP Foundation, *CSV Injection* — field quoting, doubled quotes, and neutralisation of `=`, `+`, `-`, `@`, tab, CR, LF, including the Excel-resistant tab-prefix note. Source: https://owasp.org/www-community/attacks/CSV_Injection
 - W3C, *Web Content Accessibility Guidelines (WCAG) 2.1* — Level AA success criteria used by NFR-009. Source: https://www.w3.org/TR/WCAG21/
 - No external research was available for product-specific dashboard IA; those decisions derive from the repository, the approved product overview, and the owner's answers.
+
+## Amendment: Plan Reconciliation (2026-11-07)
+
+`sdrive verify` compares the plan to the shipped code. After implementation, five plan
+entries named files or functions that the code delivers under a different name. The
+behaviour is unchanged and stays covered by the existing requirements, acceptance
+criteria, and tasks; only the plan's identifiers were wrong. No requirement, user story,
+or acceptance criterion was added, removed, or withdrawn, so the specification and
+planning approvals stand.
+
+| Planned | Shipped | Why |
+|---|---|---|
+| `components/admin/filter-chips.tsx` | `components/admin/analytics-filters.tsx` | the filter bar and its chips ship as one component |
+| `components/admin/delete-modals.tsx` (reuse) | `components/admin/delete-event-modal.tsx`, `components/admin/delete-invite-modal.tsx`, `components/admin/cancel-registration-modal.tsx` | the shared confirmation module was split into three purpose-built dialogs |
+| `GET convex/admin:searchPalette` | `POST` | it is a mutation: it consumes the search rate-limit bucket |
+| `POST convex/announcements:resolveAudience` | helper in `convex/announcementAudience.ts` | audience expansion is internal, not a client-callable function |
+| `GET convex/announcements:list` | `convex/announcements:history` | the query shipped as `history` |
+
+Evidence: `sdrive verify admin-dashboard-update` reports 0 missing and 0 renamed
+(190 matched). The 38 "extra" entries are supporting files inside folders this feature
+creates; the verifier treats those as a warning, not a failure.
