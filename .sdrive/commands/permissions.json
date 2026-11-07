@@ -64,6 +64,11 @@
     ],
     "/sdrive:onboard": [
       "admin"
+    ],
+    "/sdrive:worktree": [
+      "admin",
+      "reviewer",
+      "developer"
     ]
   },
   "cli": {
@@ -244,6 +249,24 @@
     ],
     "migrate:rollback": [
       "admin"
+    ],
+    "group:resolve": [
+      "admin",
+      "reviewer",
+      "developer"
+    ],
+    "mcp:list": [
+      "admin",
+      "reviewer",
+      "developer"
+    ],
+    "mcp:sync": [
+      "admin"
+    ],
+    "knowledge:fetch": [
+      "admin",
+      "reviewer",
+      "developer"
     ]
   }
 }

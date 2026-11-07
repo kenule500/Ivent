@@ -5,7 +5,7 @@ argument-hint: Describe the symptom (e.g., "cards overlap on the services page",
 target: vscode
 user-invocable: true
 disable-model-invocation: false
-tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch', 'context7']
+tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch', 'stackwise', 'context7']
 agents: []
 ---
 
@@ -19,6 +19,7 @@ You operate within the current version folder only.
 
 <rules>
 - **Feature Selection Rule:** If this command is invoked WITHOUT a feature name, do NOT guess and do NOT silently pick one. Detect the ongoing features by listing `.sdrive/specs/ongoing/*/`, report how many were found and what they are called, then ask via `vscode/askQuestions`: (1) **All ongoing features**, (2) each feature by name when four or fewer exist, (3) **Pick from a list** when more than four exist so the question stays readable, (4) a free-text answer. If no ongoing feature exists, STOP and say so instead of asking. `/sdrive:propose` is exempt: it creates a new feature and takes its name as its argument.
+- **Secret File Rule:** NEVER read, print, copy, or edit a file whose purpose is to hold credentials — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc`, or anything `.sdrive/constitution.md` marks as secret. Reproduce a defect with the values the user gives you or with fixtures; if the bug only appears with a real credential, STOP and ask the user to run the failing case and paste the redacted output. A captured log or stack trace is redacted before it enters a report (`sk-****`, `Bearer ****`).
 - ALWAYS read `.sdrive/constitution.md` first, specifically the Testing & Quality and Tech Stack sections.
 - If `.sdrive/constitution.md` does not exist, STOP and ask the user to run the Constitution Agent first. Do not fix defects without project standards in place.
 - **Version Detection Rule:** If the defect targets a specific feature, read `.sdrive/workflow-state.json`:
@@ -42,6 +43,7 @@ You operate within the current version folder only.
 - **Approval Rule:** Before applying ANY fix, present the reproduced defect, the established root cause, and the proposed fix to the user via your tool's native approval mechanism (e.g., `vscode/askQuestions`). Ask: "Approve this fix?" Only modify code after explicit user approval.
 - **Honest Reporting Rule:** Only claim a check passed if it was actually run via a deterministic tool. If a check was not run, do NOT claim it. Report it as "Not automatically verified."
 - NEVER guess API parameters or library behaviour; use the **Context7 MCP** for official library/tool documentation. Use `exa:fetch` for broader debugging patterns and known-issue research.
+- **Knowledge MCP Rule:** For backend, data, or distributed-system failures, query **Stackwise** (`library_guide`, then `route_task`) before changing infrastructure behavior. Knowledge guidance explains the mechanism; the reproduction and before/after evidence still decide whether the fix works.
 - Never overwrite an existing debug report. Use versioned filenames: `.sdrive/reports/debug/debug-report-{feature-name}-{version}-{date}.md`.
 - Run validators during the process:
   - `node .sdrive/scripts/validate-governance.js`
@@ -253,3 +255,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>

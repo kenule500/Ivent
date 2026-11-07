@@ -18,6 +18,7 @@ You operate within the current version folder only.
 <rules>
 - **Feature Selection Rule:** If this command is invoked WITHOUT a feature name, do NOT guess and do NOT silently pick one. Detect the ongoing features by listing `.sdrive/specs/ongoing/*/`, report how many were found and what they are called, then ask via `vscode/askQuestions`: (1) **All ongoing features**, (2) each feature by name when four or fewer exist, (3) **Pick from a list** when more than four exist so the question stays readable, (4) a free-text answer. If no ongoing feature exists, STOP and say so instead of asking. `/sdrive:propose` is exempt: it creates a new feature and takes its name as its argument.
 - **`--all` Mode Rule:** If the user invokes this command with `--all` (e.g. `/sdrive:test --all`), you MUST test EVERY feature currently in `ongoing/`, one after the other, in a single run. See the `<all-mode>` section for the exact procedure. In `--all` mode, the per-feature rules below still apply to each feature individually — you simply repeat the full workflow for each one.
+- **Secret File Rule:** NEVER read, print, copy, or edit a file whose purpose is to hold credentials — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc`, or anything `.sdrive/constitution.md` marks as secret. Write and run tests against variable NAMES and test fixtures, never against a real credential file: if a test needs a secret, it uses a literal fixture value in the test itself, or an environment variable the user provides. A test that reads `.env` is a finding, not a convenience.
 - ALWAYS read `.sdrive/constitution.md` first. If it does not exist, STOP and ask the user to run the Constitution Agent.
 - **Version Detection Rule:** Before reading feature files, read `.sdrive/workflow-state.json`:
   - Find the feature by name.
@@ -33,11 +34,12 @@ You operate within the current version folder only.
   - `.sdrive/governance/<feature>/<version>/tasks.json`
   - `.sdrive/governance/<feature>/<version>/traceability.json`
 - If any of these files are missing, work out WHY before reporting. Check `.sdrive/specs/completed/<feature>/` and `.sdrive/specs/backlog/<feature>/`:
-  - **Found under `completed/`** → the feature is already archived and its code is already merged to the target branch. It CANNOT be tested in place, because the archived spec is history and its feature branch has been deleted. Tell the user which of the two it is: if the closure itself was wrong (tests were never written), run `sdrive amend <feature> --reason "..."` first, then `/sdrive:test` → `/sdrive:review` → `/sdrive:archive`. If instead they want to CHANGE the released feature, run `sdrive version:new <feature>` — amending would rewrite a shipped version's record. NEVER tell them to re-run the Specification agent — that remedy is wrong and implies the spec is missing when it is simply finished.
+  - **Found under `completed/`** → the feature is already archived and its code is already merged to the target branch. It CANNOT be tested in place, because the archived spec is history and its feature branch has been deleted. Archived versions are immutable: there is no amend or reopen path. If the user wants to change the released feature, run `sdrive version:new <feature>` — that creates a new version and leaves the released one untouched. NEVER tell them to re-run the Specification agent — that remedy is wrong and implies the spec is missing when it is simply finished.
   - **Found under `backlog/`** → the feature has not been started. Tell the user to run `/sdrive:apply <feature>` first.
   - **Found nowhere** → STOP and ask the user to run the Specification or Implementation agent first.
 - NEVER modify production code. If code is broken, report it — do not fix it.
 - Write one test per acceptance criterion (AC-xxx).
+- **Skip withdrawn criteria.** A criterion marked `withdrawn: true` in `spec.json` is out of scope by decision, so do not write a test for it and do not create a traceability row claiming one. Report it under **Withdrawn Criteria** in the test report instead, with the reason recorded in `spec.json`.
 - Test names MUST include the AC ID:
   - `test('AC-001: valid login returns token', ...)`
   - `def test_ac_001_valid_login_returns_token():`
@@ -95,7 +97,7 @@ When invoked as `/sdrive:test --all`, test every ongoing feature sequentially.
    - Read `.sdrive/workflow-state.json`.
    - Collect every feature whose current version has `phase: "ongoing"`.
    - Cross-check against the filesystem: a feature qualifies only if `.sdrive/specs/ongoing/<feature>/` exists.
-   - Archived features under `specs/completed/` are skipped BY DESIGN — they are already merged, so there is nothing left to gate. Do not silently include them. If the user asks about one, explain that a closed record is corrected with `sdrive amend <feature> --reason "..."`, while new scope on a released feature is `sdrive version:new <feature>`.
+   - Archived features under `specs/completed/` are skipped BY DESIGN — they are already merged, so there is nothing left to gate. Do not silently include them. If the user asks about one, explain that archived versions are immutable, and new scope on a released feature is `sdrive version:new <feature>`.
    - If no ongoing features exist, report "No ongoing features to test." and STOP.
    - Present the discovered list to the user via `vscode/askQuestions` and ask: "Test all N ongoing features in this order?" Only proceed after approval.
 
@@ -191,6 +193,9 @@ When invoked as `/sdrive:test --all`, test every ongoing feature sequentially.
      - Test results
      - Any failures
      - Coverage percentage
+   - Run `sdrive next <feature> --write` so the handoff is recorded in
+     `.sdrive/handoff.json`. `/sdrive:review` cannot be started from here — no agent can
+     launch another — so your job is to leave the next step on disk and name it once.
    - Recommend next step: `/sdrive:review`.
 </workflow>
 
@@ -270,3 +275,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>

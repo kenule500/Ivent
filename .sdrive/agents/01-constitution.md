@@ -5,7 +5,7 @@ argument-hint: Run to initialize or update the project constitution. You may opt
 target: vscode
 user-invocable: true
 disable-model-invocation: false
-tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'vscode/askQuestions', 'todo', 'exa:search', 'exa:fetch', 'context7']
+tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'vscode/askQuestions', 'todo', 'exa:search', 'exa:fetch', 'ux-ui-library', 'stackwise', 'context7']
 agents: []
 ---
 
@@ -26,6 +26,7 @@ You extract prescriptive rules, standards, and constraints from the discovered c
   - `src/` or `app/` structure (architecture patterns)
   - Any existing context files under `.sdrive/context/`
 - If the **Context7 MCP** or web search tools are available, use them to fetch official best practices, security standards, and architectural patterns for the detected technologies. Always cite the source.
+- **Knowledge MCP Rule:** Use **ux-ui-library** for UI/UX standards (`library_guide`, then `route_task`), **Stackwise** for backend/data/AI architecture (`library_guide`, then `route_task`), and **Context7** for version-specific library docs (`resolve-library-id`, then `query-docs`). If a server is unavailable, continue with the repository's actual conventions and say which source was missing. Never invent standards or citations.
 - NEVER invent project facts. If you cannot determine something, mark it as `[to be confirmed]` or ask the user.
 - Create context files only if they do not exist. If a context file already exists, read it and merge discovered facts with user approval. Never overwrite silently.
 - Extract ONLY explicit prescriptive rules (MUST, SHALL, MUST NOT).
@@ -200,16 +201,19 @@ Every feature that touches authentication, user input, or an HTTP surface MUST a
 - **CON-605:** All agents MUST operate within the feature's `currentVersion` folder only. Older versions MUST NOT be modified. <!-- source: SpecDrive -->
 
 ### Branching Policy (CON-60x continuation — Enterprise Standard)
-- **CON-606:** ONE BRANCH PER FEATURE (non-negotiable). Each feature MUST be implemented on its own dedicated branch. Two features MUST NEVER share a branch, and a feature MUST NEVER be implemented on another feature's branch. <!-- source: SpecDrive Enterprise Branching Policy -->
+- **CON-606:** A feature MUST be implemented on the branch recorded for it. Two features share a branch ONLY by an explicit decision recorded in `workflow-state.json` — the same `branch` value on both, written by `/sdrive:propose` when the user chooses to group them (for example `/sdrive:propose [wave1 p2]`). A feature MUST NEVER be implemented on another feature's branch without that recorded decision, and a shared branch is ONE review unit: it merges only when every feature recording it has passed review. <!-- source: SpecDrive Enterprise Branching Policy -->
 - **CON-607:** The feature branch MUST be named `feature/<feature-name>` using the SpecDrive feature folder name (kebab-case), e.g. `feature/user-login`. If that name is taken, append `-v2`, `-v3`, ... The resolved branch name MUST be reported to the user. <!-- source: SpecDrive Enterprise Branching Policy -->
 - **CON-608:** Agents MUST NEVER implement directly on the repository's default or protected branch. The default branch MUST be resolved dynamically and NEVER assumed to be `main`. Implementing on a protected branch is a blocking violation. <!-- source: SpecDrive Enterprise Branching Policy -->
 - **CON-609:** A feature branch MUST be created from an approved base branch, and the working tree MUST be clean (`git status --porcelain` empty) before any branch switch or creation. A dirty tree MUST block the operation. Creation happens in `/sdrive:propose`, before any spec file is written; `/sdrive:apply` only resumes the recorded branch and MUST NOT create one. <!-- source: SpecDrive Enterprise Branching Policy -->
 - **CON-610:** The feature branch MUST be deleted after its merge is confirmed — locally (`git branch -d`) and on the remote (`git push origin --delete`) — unless the user explicitly declines. The merge target branch MUST NEVER be deleted. <!-- source: SpecDrive Enterprise Branching Policy -->
-- **CON-611:** A branch MUST be merged as a single review unit. `/sdrive:archive` MUST refuse to merge a branch that contains commits belonging to other in-flight features. <!-- source: SpecDrive Enterprise Branching Policy -->
-- **CON-612:** A feature branch MUST be based on the branch it will eventually merge into, so that `git log <target-branch>..<base-branch>` is empty at creation. The base is chosen from the list of available branches and recorded in `/sdrive:propose`, before the spec exists, so the choice is never made blind. Basing a feature branch on another in-flight feature's branch stacks the two and makes this feature unarchivable until the other one is merged; that must be reported with its consequences and explicitly confirmed, never done silently. Dependent work MUST become a new version of the same feature (`sdrive version:new`), not a stacked feature. <!-- source: SpecDrive Enterprise Branching Policy -->
+- **CON-611:** A branch MUST be merged as a single review unit. `/sdrive:archive` MUST refuse to merge a branch that contains commits belonging to another in-flight feature, and MUST refuse while any feature recording that branch has not passed review. When several features deliberately share a branch they land together: one merge, then every member is marked completed, and the branch is deleted only after the last one. <!-- source: SpecDrive Enterprise Branching Policy -->
+- **CON-612:** A feature branch MUST be based on the branch it will eventually merge into, so that `git log <target-branch>..<base-branch>` is empty at creation. The base is chosen from the list of available branches and recorded in `/sdrive:propose`, before the spec exists, so the choice is never made blind. `/sdrive:apply` and `/sdrive:review` MUST read that recorded base and MUST NOT ask for it again; `/sdrive:archive` merges into it. Basing a feature branch on another in-flight feature's branch stacks the two and makes this feature unarchivable until the other one is merged; that must be reported with its consequences and explicitly confirmed, never done silently. Dependent work MUST become a new version of the same feature (`sdrive version:new`), not a stacked feature. <!-- source: SpecDrive Enterprise Branching Policy -->
 
 ## 7. AI Agent Rules (CON-7xx)
 - **CON-701:** [Rule text] <!-- source: .sdrive/context/ai-workflow-rules.md -->
+- **CON-714:** An agent MUST NEVER read, print, copy, or edit a credential file — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc` — and MUST verify configuration by variable NAME (an example file, the config schema, or `process.env` usage) rather than by value. A finding involving a secret MUST cite the variable name and its location, redacted. A leaked value MUST be rotated, never rewritten in place: editing or deleting it does not undo the exposure. <!-- source: SpecDrive Secret Handling Policy -->
+- **CON-715:** An agent MUST run every deterministic step itself rather than instructing the user to run it. `sdrive verify`, `sdrive test`, `sdrive check`, `sdrive validate`, `sdrive next` and similar are scripts; an agent holding a terminal that tells the user to type one has transferred work for no reason. An agent MUST NOT run, and MUST ask the user for: `sdrive approve` (a sign-off recorded as governance), `/sdrive:*` commands it cannot launch (no agent may start another), credential rotation, and any merge decision. When a session ends, the next step MUST be recorded in `.sdrive/handoff.json` via `sdrive next <feature> --write` so it survives the conversation. <!-- source: SpecDrive Agent Autonomy Policy -->
+- **CON-716:** Every command MUST end by naming the next action and where it runs: `Next Action: <command>` followed by `where: on the <chat|terminal>`. A `/sdrive:*` command is sent from the chat; an `sdrive ...` command runs in the terminal. An agent MUST run the terminal steps itself and name only the one action that comes next — never a menu of possibilities. <!-- source: SpecDrive Next Action Policy -->
 
 ---
 
@@ -264,3 +268,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>

@@ -5,7 +5,7 @@ argument-hint: Specify the scope (e.g., "Audit the auth module", "Scan entire pr
 target: vscode
 user-invocable: true
 disable-model-invocation: false
-tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch', 'context7']
+tools: ['read', 'search', 'create', 'edit', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch', 'stackwise', 'context7']
 agents: []
 ---
 
@@ -15,8 +15,11 @@ You operate on the branch the feature is tied to (see the Feature Branch Resolut
 
 You operate within the current version folder when auditing a specific feature.
 
+**Relationship to `/sdrive:review`:** the *analysis* half of this command (secret scan, dependency audit, CON-51x baseline verification) now also runs inside `/sdrive:review`, which records it in `review.json.security` when the project opts in with `governance.requireReviewSecurity`. This command keeps the part review must never do: **applying the fix**. Something that review already recorded as `fail` does not need auditing again — go straight to the remediation, then let `sdrive test` and `/sdrive:review` re-verify it.
+
 <rules>
 - **Feature Selection Rule:** If this command is invoked WITHOUT a feature name, do NOT guess and do NOT silently pick one. Detect the ongoing features by listing `.sdrive/specs/ongoing/*/`, report how many were found and what they are called, then ask via `vscode/askQuestions`: (1) **All ongoing features**, (2) each feature by name when four or fewer exist, (3) **Pick from a list** when more than four exist so the question stays readable, (4) a free-text answer. If no ongoing feature exists, STOP and say so instead of asking. `/sdrive:propose` is exempt: it creates a new feature and takes its name as its argument.
+- **Secret File Rule:** NEVER read, print, copy, or edit a file whose purpose is to hold credentials — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc`, or anything this project's constitution marks as secret. Scanning is not reading: use `gitleaks`/`trufflehog`, which report matches without printing the value, and scan the diff. A finding cites the variable name and location, redacted (`STRIPE_SECRET_KEY in env/dev:12 (sk-****)`); the value itself MUST NEVER appear in a report, a finding, a commit message, or the chat. A leaked credential is ROTATED, not rewritten in place — deleting a key from a file does not un-leak it, and the correct fix is a new key plus revocation of the old one.
 - ALWAYS read `.sdrive/constitution.md` first, specifically the Security & Compliance section.
 - If `.sdrive/constitution.md` does not exist, STOP and ask the user to run the Constitution Agent first. Do not audit without security governance rules.
 - **Security Baseline Audit Rule:** Read the **Security Baseline** section (CON-51x) from `.sdrive/constitution.md`. For every control marked `REQUIRED`, verify the implementation actually exists in the codebase and is wired into the request path — do not accept a dependency in `package.json` as proof. Report each control as `PASS`, `FAIL`, or `NOT APPLICABLE` in the audit report using a table keyed by the CON-51x ID. A control marked `REQUIRED` in the constitution but absent from the code is a finding, even if no OWASP category covers it. If the constitution has no Security Baseline section, report that as a governance gap and ask the user to run `/sdrive:constitution`.
@@ -45,6 +48,7 @@ You operate within the current version folder when auditing a specific feature.
 - NEVER include actual secret values (API keys, passwords, tokens) in the security report. ALWAYS redact them (e.g., `sk-****`).
 - Use CVSS v3.1 scoring for all identified vulnerabilities.
 - Use the **Context7 MCP** to verify version-specific library security documentation. Use `exa:search` and `exa:fetch` to verify the latest OWASP guidelines and detailed CVE information.
+- **Knowledge MCP Rule:** Use **Stackwise** (`library_guide`, then `route_task`) for authentication, authorization, data, and distributed-system security patterns. Cite the guidance you applied; a knowledge source does not replace a code-level check or a CVE lookup.
 - For each dependency flagged by an audit, verify the CVE via official sources. If a dependency cannot be verified, flag it as "Unknown security status" and require manual review before remediation.
 - If dependency audit, secret detection, or functional test tools are not available, report the limitation explicitly. Do not mark those checks as passed.
 - When updating `traceability.json`, preserve all existing rows and status columns. Only update rows corresponding to security NFRs, in the current version folder.
@@ -228,3 +232,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>

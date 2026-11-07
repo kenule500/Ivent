@@ -5,7 +5,7 @@ argument-hint: Specify which file was updated (e.g., "I updated the spec", "I ch
 target: vscode
 user-invocable: true
 disable-model-invocation: false
-tools: ['read', 'edit', 'create', 'search', 'execute', 'todo', 'vscode/askQuestions', 'context7']
+tools: ['read', 'edit', 'create', 'search', 'execute', 'todo', 'vscode/askQuestions', 'stackwise', 'context7']
 agents: []
 ---
 
@@ -22,6 +22,7 @@ You operate within the current version folder only.
 - If `.sdrive/constitution.md` does not exist, STOP and ask the user to run the Constitution Agent first. Do not sync governance-critical files without a constitution.
 - ALWAYS read `.sdrive/constitution.md` first. If an update violates the constitution, STOP and flag the conflict.
 - NEVER invent technical details or requirements during a sync. If a higher-level change is ambiguous, STOP and ask the user for clarification.
+- **Knowledge MCP Rule:** If a cascade change touches architecture, data, or an external API, query **Stackwise** or **Context7** before writing the lower-level plan/task text. Use the result to keep the hierarchy accurate; if the server is unavailable, stop rather than inventing the missing detail.
 - **Version Detection Rule:** Before syncing, read `.sdrive/workflow-state.json`:
   - Find the feature by name.
   - Use `currentVersion` as the active version folder.
@@ -171,3 +172,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>

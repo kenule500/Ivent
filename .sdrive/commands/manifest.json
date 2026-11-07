@@ -188,6 +188,15 @@
       "validators": [
         "governance"
       ]
+    },
+    {
+      "command": "/sdrive:worktree",
+      "agent": "worktree",
+      "agentFile": ".sdrive/agents/16-worktree.md",
+      "description": "Prepare branches and isolated worktrees for the next ready Product Plan wave",
+      "acceptsFeature": false,
+      "gates": [],
+      "validators": []
     }
   ]
 }

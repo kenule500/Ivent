@@ -1,6 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 const { execFileSync } = require("child_process");
+const { isResolved, resolutionOf, describeResolved } = require("../scripts/lib/resolution");
 
 const projectRoot = process.cwd();
 
@@ -173,8 +174,218 @@ function testEvidencePolicy(root) {
   return {
     required: governance.requireTestEvidence === true,
     allowStale: governance.allowStaleEvidence === true,
-    structuredReview: governance.requireStructuredReview === true
+    structuredReview: governance.requireStructuredReview === true,
+    // Security and performance audits inside review are opt-in: turning them on for
+    // existing projects would refuse every in-flight feature at once. Off by default
+    // means 0.1.53 projects behave exactly as before; the audit itself still runs when
+    // the review agent is asked for it.
+    security: governance.requireReviewSecurity === true,
+    performance: governance.requireReviewPerformance === true,
+    // "I could not check" is an admission, not a pass - so `not_verified` blocks unless
+    // the project says otherwise. The escape hatch exists for environments that
+    // genuinely cannot run a scanner or start the app.
+    allowUnverifiedSecurity: governance.allowUnverifiedSecurity === true,
+    allowUnverifiedPerformance: governance.allowUnverifiedPerformance === true,
+    // Red-before-green: a test that passes without the change proves nothing. Opt-in,
+    // and grandfathered per feature, because demanding proof from work that was
+    // proposed under the old rules would refuse every in-flight feature at once.
+    redGreen: governance.requireRedGreen === true,
+    redGreenEnforceFrom:
+      typeof governance.redGreenEnforceFrom === "string" ? governance.redGreenEnforceFrom : null
   };
+}
+
+// ---------- GRANDFATHERING ----------
+//
+// "It only affects features proposed after the upgrade" has to be a mechanism, not a
+// promise. The signal is the feature's earliest recorded activity: every gate approval
+// pushes a timestamped history entry, so work that was in flight before the cutoff has
+// a stamp from before it and work proposed afterwards has one after it.
+//
+// No timestamp at all means the age is unknown, and unknown is grandfathered. Refusing
+// work of unknowable age is exactly the deadlock this mechanism exists to prevent, and
+// a feature with no history at all has not agreed to anything yet anyway.
+function earliestActivityAt(version) {
+  const stamps = [];
+
+  for (const entry of (version && version.history) || []) {
+    if (entry && typeof entry.timestamp === "string") stamps.push(entry.timestamp);
+  }
+
+  for (const value of Object.values((version && version.gates) || {})) {
+    if (value && typeof value === "object" && typeof value.at === "string") stamps.push(value.at);
+  }
+
+  if (stamps.length === 0) return null;
+
+  const parsed = stamps.map((stamp) => Date.parse(stamp)).filter((time) => !Number.isNaN(time));
+
+  return parsed.length === 0 ? null : new Date(Math.min(...parsed)).toISOString();
+}
+
+function isGrandfatheredVersion(version, cutoff) {
+  // No cutoff recorded means the check was never switched on with a date attached, so
+  // there is nothing to enforce against.
+  if (!cutoff) return true;
+
+  const earliest = earliestActivityAt(version);
+
+  if (!earliest) return true;
+
+  return Date.parse(earliest) < Date.parse(cutoff);
+}
+
+// ---------- RED-BEFORE-GREEN BLOCKERS ----------
+//
+// Coverage asks "is this criterion tested?". This asks "would that test have failed
+// without the work?" - the only question that separates a real test from a decorative
+// one. `sdrive test --prove` answers it by running the suite at the base commit.
+function redGreenBlockers({ evidence, specJson, traceJson, featureName }) {
+  const blockers = [];
+
+  if (!evidence) {
+    blockers.push(
+      `Red-before-green is required but there is no test-evidence.json - run \`sdrive test ${featureName} --prove\`.`
+    );
+
+    return blockers;
+  }
+
+  const effective = collectEffectiveAcceptanceCriteria(specJson);
+  const tested = collectTestedAcceptanceCriteria(traceJson);
+  const inScope = effective.filter((ac) => tested.includes(ac));
+
+  if (inScope.length === 0) {
+    // Nothing covered means the coverage check is already refusing; adding a second
+    // complaint about the same absence would bury the actionable one.
+    return blockers;
+  }
+
+  const recorded = new Map(
+    (Array.isArray(evidence.redGreen) ? evidence.redGreen : [])
+      .filter((entry) => entry && typeof entry.ac === "string")
+      .map((entry) => [entry.ac, entry])
+  );
+
+  const missing = inScope.filter((ac) => !recorded.has(ac));
+
+  if (missing.length > 0) {
+    blockers.push(
+      `${missing.length} of ${inScope.length} covered acceptance criteria have no red-before-green evidence ` +
+        `(${missing.slice(0, 6).join(", ")}${missing.length > 6 ? ", ..." : ""}) - ` +
+        `run \`sdrive test ${featureName} --prove\` so the suite is also run at the base commit.`
+    );
+  }
+
+  // Recorded, but the suite passed there too. That is the vacuous-test case: the work
+  // is not what makes these tests pass, so they cannot certify it.
+  const unproven = inScope
+    .filter((ac) => recorded.has(ac) && recorded.get(ac).proven !== true)
+    .map((ac) => {
+      const entry = recorded.get(ac);
+      const base = entry.baseExitCode === undefined ? "" : ` (exit ${entry.baseExitCode} at base)`;
+
+      return `${ac}${base}`;
+    });
+
+  if (unproven.length > 0) {
+    blockers.push(
+      `${unproven.length} acceptance criteria are covered by tests that also pass without the work ` +
+        `(${unproven.slice(0, 6).join(", ")}${unproven.length > 6 ? ", ..." : ""}) - ` +
+        "a test that passes before and after the change does not certify it. Strengthen the assertions, or withdraw the criterion with a reason."
+    );
+  }
+
+  return blockers;
+}
+
+// ---------- SECURITY / PERFORMANCE AUDIT RECORD ----------
+//
+// `/sdrive:secure` and `/sdrive:performance` can fix things, but only if someone runs
+// them and nothing made review care. These checks move the ANALYSIS half of those
+// commands into the gate - the REMEDIATION half stays where it is, because a review
+// that edits code moves HEAD and invalidates the very verdict it is writing.
+//
+// Four states, and the difference between the last two is the whole safety property:
+//   pass            measured and clean
+//   fail            a finding that requires a fix - blocks
+//   not_applicable  nothing here to measure; needs a reason ("this is not a claim
+//                   anyone can skip: 'nothing to measure' must be stated")
+//   not_verified    it could not be measured; needs a reason AND an opt-out, because an
+//                   unverified security check on a release is exactly what a
+//                   prompt-only rule used to let through
+const AUDIT_STATES = ["pass", "fail", "not_applicable", "not_verified"];
+
+function auditBlockers(reviewJson, section, label, options) {
+  const blockers = [];
+  const record = reviewJson[section];
+
+  if (!record) {
+    blockers.push(
+      `review.json has no \`${section}\` audit, so ${label} is not recorded. Run \`/sdrive:review\` and record the result: pass, fail, not_applicable with a reason, or not_verified with a reason.`
+    );
+    return blockers;
+  }
+
+  const status = record.status;
+  const reason = typeof record.reason === "string" ? record.reason.trim() : "";
+
+  if (!AUDIT_STATES.includes(status)) {
+    blockers.push(
+      `review.json \`${section}.status\` is "${status || "missing"}", which is not one of ${AUDIT_STATES.join(
+        ", "
+      )}.`
+    );
+    return blockers;
+  }
+
+  if (status === "fail") {
+    blockers.push(
+      `review.json records a failing ${label}. Clear the findings with \`${options.fixWith}\`, then re-run \`sdrive test\` and \`/sdrive:review\`.`
+    );
+  }
+
+  if (status === "not_verified") {
+    if (!reason) {
+      blockers.push(
+        `review.json records ${label} as "not_verified" with no reason. State what could not be checked and why.`
+      );
+    }
+
+    if (!options.allowUnverified) {
+      blockers.push(
+        `review.json records ${label} as "not_verified", and this project does not accept unverified audits. Install the missing tool or runtime and re-run \`/sdrive:review\`, or accept it explicitly with \`sdrive config:set governance.${options.allowKey} true\`.`
+      );
+    }
+  }
+
+  if (status === "not_applicable" && !reason) {
+    blockers.push(
+      `review.json records ${label} as "not_applicable" with no reason. "Nothing to measure" is a claim - state it.`
+    );
+  }
+
+  return blockers;
+}
+
+// A PASS verdict sitting next to an open high-severity finding is a contradiction, and
+// the cheapest evidence that a review was rubber-stamped. Both halves are already
+// required fields, so this detector needs no new input from the reviewer.
+function contradictionBlockers(reviewJson) {
+  const findings = Array.isArray(reviewJson.findings) ? reviewJson.findings : [];
+  const blocking = findings.filter(
+    (finding) => finding && finding.severity === "high" && finding.fixRequired === true
+  );
+
+  if (reviewJson.status === "PASS" && blocking.length > 0) {
+    return [
+      `review.json records status "PASS" while ${blocking.length} high-severity finding(s) require a fix ("${
+        blocking[0].issue
+      }"). A fix-required finding is a FAIL verdict.`
+    ];
+  }
+
+  return [];
 }
 
 function headCommit(root) {
@@ -189,9 +400,23 @@ function headCommit(root) {
   }
 }
 
+// Task counts for the implementation gate.
+//
+// A task is one of three things, not two:
+//   done       `completed: true`
+//   resolved   descoped with a stated reason (`resolution.reason`)
+//   outstanding  everything else
+//
+// Resolved is deliberately its own bucket. Counting a resolved task as incomplete
+// makes a descoped feature unarchivable - the deadlock that has no legitimate exit
+// except implementing the impossible or deleting the record. Counting it as done
+// would put a false completion in the governance record, which is the one thing
+// this gate exists to prevent. So it is neither: it is reported.
 function countTasks(tasksJson) {
   let total = 0;
   let done = 0;
+  let resolved = 0;
+  const resolvedTasks = [];
 
   for (const phase of (tasksJson && tasksJson.phases) || []) {
     for (const task of phase.tasks || []) {
@@ -199,29 +424,104 @@ function countTasks(tasksJson) {
 
       if (task.completed === true) {
         done += 1;
+      } else if (isResolved(task)) {
+        resolved += 1;
+        resolvedTasks.push({ id: task.id, ...resolutionOf(task) });
       }
     }
   }
 
-  return { total, done };
+  return { total, done, resolved, outstanding: total - done - resolved, resolvedTasks };
 }
 
 // Acceptance criteria are declared on the user stories in spec.json. Coverage is
 // always measured against THESE, never against the traceability matrix's own rows —
 // otherwise a criterion that is missing from the matrix would silently stop counting
 // and the feature would look fully covered.
+function eachAcceptanceCriterion(specJson, visit) {
+  for (const story of (specJson && specJson.userStories) || []) {
+    for (const ac of story.acceptanceCriteria || []) {
+      if (ac && ac.id) visit(ac);
+    }
+  }
+}
+
+// Every declared criterion, withdrawn ones included. "What did the spec ask for" and
+// "what is still in scope" are different questions, and answering both with one list
+// is how a criterion changes state without anyone recording that it did.
 function collectAcceptanceCriteria(specJson) {
   const ids = [];
 
-  for (const story of (specJson && specJson.userStories) || []) {
-    for (const ac of story.acceptanceCriteria || []) {
-      if (ac && ac.id && !ids.includes(ac.id)) {
-        ids.push(ac.id);
-      }
+  eachAcceptanceCriterion(specJson, (ac) => {
+    if (!ids.includes(ac.id)) {
+      ids.push(ac.id);
     }
-  }
+  });
 
   return ids;
+}
+
+// A withdrawal only counts when it says why. `spec.schema.json` enforces the same two
+// fields with minimum lengths; this checks presence, because the gate reads `spec.json`
+// directly and cannot assume `sdrive validate` was run first. A bare `{"withdrawn": true}`
+// is therefore NOT a withdrawal: the criterion stays in coverage and is reported.
+function withdrawalIsSubstantiated(ac) {
+  return Boolean(
+    String(ac.withdrawnReason || "").trim() && String(ac.withdrawnEvidence || "").trim()
+  );
+}
+
+// Criteria the specification itself places out of scope (`withdrawn: true`).
+//
+// An acceptance criterion can describe behaviour that does not exist anywhere - a
+// provider endpoint that was never published, a report nobody can query. It cannot be
+// implemented, and deleting it would quietly rewrite a specification that has already
+// been reviewed. Withdrawal keeps the ID, the reason, and a citation in the record,
+// and removes the criterion from coverage instead.
+//
+// It is deliberately NOT a way to clear an untested criterion:
+//   - `spec.schema.json` requires `withdrawnReason` and `withdrawnEvidence` whenever
+//     `withdrawn` is true, so an unnamed withdrawal is not a valid spec;
+//   - an unsubstantiated withdrawal is refused by the review gate, not honoured;
+//   - every consumer that computes coverage reports the withdrawn list;
+//   - the review gate refuses when withdrawing has left nothing in scope.
+function collectWithdrawnAcceptanceCriteria(specJson) {
+  const withdrawn = [];
+
+  eachAcceptanceCriterion(specJson, (ac) => {
+    if (ac.withdrawn !== true) return;
+    if (withdrawn.some((entry) => entry.id === ac.id)) return;
+
+    withdrawn.push({
+      id: ac.id,
+      reason: String(ac.withdrawnReason || ""),
+      evidence: String(ac.withdrawnEvidence || ""),
+      substantiated: withdrawalIsSubstantiated(ac)
+    });
+  });
+
+  return withdrawn;
+}
+
+// The withdrawals that actually take a criterion out of scope.
+function collectSubstantiatedWithdrawals(specJson) {
+  return collectWithdrawnAcceptanceCriteria(specJson).filter((entry) => entry.substantiated);
+}
+
+// The set coverage is actually measured against.
+function collectEffectiveAcceptanceCriteria(specJson) {
+  const excluded = collectSubstantiatedWithdrawals(specJson).map((entry) => entry.id);
+
+  return collectAcceptanceCriteria(specJson).filter((id) => !excluded.includes(id));
+}
+
+// Shared wording, so the planning gate, the review gate, and archive cannot describe
+// the same list three different ways.
+function describeWithdrawnCriteria(withdrawn) {
+  const shown = withdrawn.slice(0, 6).map((entry) => entry.id).join(", ");
+  const suffix = withdrawn.length > 6 ? ", ..." : "";
+
+  return `${withdrawn.length} acceptance criteria are withdrawn and excluded from coverage (${shown}${suffix}). Reasons and evidence are recorded in spec.json.`;
 }
 
 // A criterion counts as tested only when a traceability row links it to at least one
@@ -299,7 +599,7 @@ function checkGateRequirements(root, feature, version, gate) {
 
   if (location && location.stage === "completed") {
     blockers.push(
-      `"${feature.name}" is archived in specs/completed/. Gates on a completed feature are history - run \`sdrive amend ${feature.name}\` first.`
+      `"${feature.name}" is archived in specs/completed/. Archived features are immutable. Use \`sdrive version:new ${feature.name}\` only for new scope; the completed version stays archived.`
     );
   }
 
@@ -308,17 +608,24 @@ function checkGateRequirements(root, feature, version, gate) {
   }
 
   // Prerequisite gates must already be approved.
-  const gateIndex = GATE_ORDER.indexOf(gate);
+  //
+  // The list is the slice of GATE_ORDER strictly BEFORE `gate`, then filtered against
+  // `gate` itself. The slice already excludes it; the filter is there because the one
+  // refusal that is always wrong is naming the gate being approved as its own unmet
+  // prerequisite. A user cannot satisfy that, since approving the prerequisite IS the
+  // action being refused, so it must be impossible for any ordering of GATE_ORDER to
+  // produce it.
+  const gateIndex = Math.max(GATE_ORDER.indexOf(gate), 0);
+  const prerequisites = GATE_ORDER.slice(0, gateIndex).filter((earlier) => earlier !== gate);
 
-  for (let i = 0; i < gateIndex; i += 1) {
-    const earlier = GATE_ORDER[i];
-
+  prerequisites.forEach((earlier) => {
     if (!isGateApprovedFor(version, earlier)) {
       blockers.push(
-        `Prerequisite gate "${earlier}" is "${gateStatusFor(version, earlier)}", not "approved".`
+        `Prerequisite gate "${earlier}" is "${gateStatusFor(version, earlier)}", not "approved" ` +
+          `(required before "${gate}"; order: ${GATE_ORDER.join(" -> ")}).`
       );
     }
-  }
+  });
 
   const requireSpecFile = (name, why) => {
     if (location && !fs.existsSync(path.join(location.dir, name))) {
@@ -355,13 +662,31 @@ function checkGateRequirements(root, feature, version, gate) {
 
     if (specJson && tasksJson) {
       const planned = collectPlannedAcceptanceCriteria(specJson, tasksJson);
-      const unplanned = collectAcceptanceCriteria(specJson).filter((ac) => !planned.has(ac));
+      const withdrawn = collectWithdrawnAcceptanceCriteria(specJson);
+      const substantiated = withdrawn.filter((entry) => entry.substantiated);
+      const unplanned = collectEffectiveAcceptanceCriteria(specJson).filter((ac) => !planned.has(ac));
 
       if (unplanned.length > 0) {
         warnings.push(
           `${unplanned.length} acceptance criteria are not linked to any task (${unplanned
             .slice(0, 6)
             .join(", ")}${unplanned.length > 6 ? ", ..." : ""}). The review gate needs a passing test for every one of them - plan them explicitly.`
+        );
+      }
+
+      // Withdrawal is a decision someone made, so it is always reported - never a
+      // criterion that quietly stopped appearing in the count.
+      if (substantiated.length > 0) {
+        warnings.push(describeWithdrawnCriteria(substantiated));
+      }
+
+      if (withdrawn.length > substantiated.length) {
+        warnings.push(
+          `${withdrawn.length - substantiated.length} acceptance criteria are marked withdrawn without a reason and evidence (${withdrawn
+            .filter((entry) => !entry.substantiated)
+            .slice(0, 6)
+            .map((entry) => entry.id)
+            .join(", ")}). Fill in \`withdrawnReason\` and \`withdrawnEvidence\` in spec.json - the review gate refuses an unexplained withdrawal.`
         );
       }
     }
@@ -377,10 +702,18 @@ function checkGateRequirements(root, feature, version, gate) {
 
       if (tasks.total === 0) {
         blockers.push("tasks.json contains no tasks, so there is no work to certify.");
-      } else if (tasks.done < tasks.total) {
+      } else if (tasks.outstanding > 0) {
         blockers.push(
-          `${tasks.total - tasks.done} of ${tasks.total} tasks are still incomplete in tasks.json.`
+          `${tasks.outstanding} of ${tasks.total} tasks are still incomplete in tasks.json` +
+            (tasks.resolved > 0 ? ` (${tasks.done} completed, ${tasks.resolved} descoped).` : ".")
         );
+      }
+
+      // A descope is a decision someone made, so it is always named. Silent scope
+      // reduction is how a "finished" feature quietly comes to mean something
+      // narrower than the specification that was approved.
+      if (tasks.resolved > 0) {
+        warnings.push(describeResolved(tasks.resolvedTasks, "tasks"));
       }
     }
 
@@ -456,6 +789,34 @@ function checkGateRequirements(root, feature, version, gate) {
       }
     }
 
+    // Security and performance are part of the review now, when the project opts in.
+    // The record is what makes the handoff survivable: a session that ends mid-review
+    // leaves review.json naming the command that clears each finding, so `sdrive status`
+    // in another editor says what to do next instead of "run the tests again".
+    if (reviewJson && (reviewPolicy.security || reviewPolicy.performance)) {
+      if (reviewPolicy.security) {
+        blockers.push(
+          ...auditBlockers(reviewJson, "security", "the security audit", {
+            fixWith: `/sdrive:secure ${feature.name}`,
+            allowUnverified: reviewPolicy.allowUnverifiedSecurity,
+            allowKey: "allowUnverifiedSecurity"
+          })
+        );
+      }
+
+      if (reviewPolicy.performance) {
+        blockers.push(
+          ...auditBlockers(reviewJson, "performance", "the performance audit", {
+            fixWith: `/sdrive:performance ${feature.name}`,
+            allowUnverified: reviewPolicy.allowUnverifiedPerformance,
+            allowKey: "allowUnverifiedPerformance"
+          })
+        );
+      }
+
+      blockers.push(...contradictionBlockers(reviewJson));
+    }
+
     // Coverage is the whole point of this gate. Approving review is what unlocks
     // /sdrive:archive, and archive is what merges to the target branch and moves the
     // feature to completed/. An untested feature that reaches completed/ is already on
@@ -470,20 +831,54 @@ function checkGateRequirements(root, feature, version, gate) {
         "Missing or unreadable traceability.json, so test coverage cannot be verified."
       );
     } else {
-      const allAcs = collectAcceptanceCriteria(readJsonIfPresent(govFile("spec.json")));
+      const specJson = readJsonIfPresent(govFile("spec.json"));
+      const declaredAcs = collectAcceptanceCriteria(specJson);
+      const withdrawnAcs = collectWithdrawnAcceptanceCriteria(specJson);
+      const substantiatedAcs = collectSubstantiatedWithdrawals(specJson);
+      const unsubstantiatedAcs = withdrawnAcs.filter((entry) => !entry.substantiated);
+      const effectiveAcs = collectEffectiveAcceptanceCriteria(specJson);
       const testedAcs = collectTestedAcceptanceCriteria(traceJson);
-      const untested = allAcs.filter((ac) => !testedAcs.includes(ac));
+      // Coverage is measured against the criteria that are still in scope. A withdrawn
+      // criterion is not an untested one, and counting it as untested would make an
+      // accurate specification impossible to archive.
+      const untested = effectiveAcs.filter((ac) => !testedAcs.includes(ac));
 
-      if (allAcs.length === 0) {
+      if (declaredAcs.length === 0) {
         warnings.push(
           "spec.json declares no acceptance criteria, so coverage could not be computed."
         );
+      } else if (effectiveAcs.length === 0) {
+        // Every criterion withdrawn is not a fully covered feature, it is a feature with
+        // nothing left to verify. Without this refusal, `withdrawn: true` on all of them
+        // would be a one-line bypass of the coverage gate.
+        blockers.push(
+          `All ${declaredAcs.length} acceptance criteria are withdrawn, so nothing is left in scope to verify. ` +
+            "Keep at least one criterion in coverage, or describe the excluded surface in `overview.outOfScope` instead of withdrawing every criterion."
+        );
       } else if (untested.length > 0) {
         blockers.push(
-          `${untested.length} of ${allAcs.length} acceptance criteria have no passing test (${untested
+          `${untested.length} of ${effectiveAcs.length} acceptance criteria have no passing test (${untested
             .slice(0, 6)
             .join(", ")}${untested.length > 6 ? ", ..." : ""}) - run \`/sdrive:test ${feature.name}\` first, then re-run the review.`
         );
+      }
+
+      // A withdrawal nobody explained is not a withdrawal. This is checked here rather
+      // than trusted to `sdrive validate`, because approve reads spec.json directly and
+      // a hand-edited flag must not be worth more than a passing test.
+      if (unsubstantiatedAcs.length > 0) {
+        blockers.push(
+          `${unsubstantiatedAcs.length} acceptance criteria are marked withdrawn without a reason and evidence (${unsubstantiatedAcs
+            .slice(0, 6)
+            .map((entry) => entry.id)
+            .join(", ")}${unsubstantiatedAcs.length > 6 ? ", ..." : ""}). Set \`withdrawnReason\` and \`withdrawnEvidence\` in spec.json, or remove the flag - until then the criterion still counts as untested.`
+        );
+      }
+
+      // Reported after the verdict either way: withdrawing scope is a decision the
+      // archive record must mention, not a silent reduction of the denominator.
+      if (substantiatedAcs.length > 0 && effectiveAcs.length > 0) {
+        warnings.push(describeWithdrawnCriteria(substantiatedAcs));
       }
     }
 
@@ -531,6 +926,27 @@ function checkGateRequirements(root, feature, version, gate) {
             );
           }
         }
+      }
+    }
+
+    // Red-before-green. Off by default; grandfathered per feature so that switching it
+    // on never refuses work that was already in flight when the project opted in.
+    if (policy.redGreen) {
+      if (isGrandfatheredVersion(version, policy.redGreenEnforceFrom)) {
+        warnings.push(
+          `Red-before-green is switched on, but ${feature.name} ${version.id} predates the cutoff ` +
+            `(${policy.redGreenEnforceFrom || "no cutoff recorded"}), so it is grandfathered. ` +
+            "Features proposed after the cutoff must prove their tests fail without the work."
+        );
+      } else {
+        blockers.push(
+          ...redGreenBlockers({
+            evidence: readJsonIfPresent(govFile("test-evidence.json")),
+            specJson: readJsonIfPresent(govFile("spec.json")),
+            traceJson: readJsonIfPresent(govFile("traceability.json")),
+            featureName: feature.name
+          })
+        );
       }
     }
 
@@ -591,5 +1007,17 @@ module.exports = {
   GATE_ORDER,
   SPEC_STAGES,
   findSpecLocation,
+  collectAcceptanceCriteria,
+  collectWithdrawnAcceptanceCriteria,
+  collectSubstantiatedWithdrawals,
+  collectEffectiveAcceptanceCriteria,
+  collectTestedAcceptanceCriteria,
+  redGreenBlockers,
+  isGrandfatheredVersion,
+  earliestActivityAt,
+  AUDIT_STATES,
+  auditBlockers,
+  contradictionBlockers,
+  testEvidencePolicy,
   checkGateRequirements
 };

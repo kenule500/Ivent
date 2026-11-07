@@ -5,7 +5,7 @@ argument-hint: Describe the screen, flow, or component to design
 target: vscode
 user-invocable: true
 disable-model-invocation: false
-tools: ['read', 'create', 'edit', 'search', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch']
+tools: ['read', 'create', 'edit', 'search', 'execute', 'web', 'todo', 'vscode/askQuestions', 'exa:search', 'exa:fetch', 'ux-ui-library', 'context7']
 agents: []
 ---
 
@@ -39,7 +39,8 @@ You operate within the current version folder only.
   - `node .sdrive/scripts/validate-governance.js`
   - Any configured SpecDrive validation command.
 - If validation fails, fix before proceeding.
-- Use `exa:search`/`exa:fetch` only for UI/UX best practices or accessibility guidelines where needed.
+- Before designing a screen or flow, use the **ux-ui-library MCP**: call `library_guide` once, then `route_task` with the specific screen, flow, or review task. Use its rules, checklists, and design references before choosing layout, spacing, accessibility behavior, or interaction patterns.
+- Use the **Context7 MCP** (`resolve-library-id`, then `query-docs`) when the prototype must match a documented component library or framework API. Use `exa:search`/`exa:fetch` only for gaps the knowledge servers do not cover. If the servers are unavailable, say so and fall back to the constitution and project design tokens; never invent a pattern or citation.
 </rules>
 
 <capabilities>
@@ -174,3 +175,20 @@ If this command already committed and pushed its own work (for example `/sdrive:
 
 Never force-push. Never amend a commit you did not create in this run. Never commit work whose required human approval has not been granted. If Git is unavailable or the repository has no remote, report that and leave the working tree intact.
 </git-commit-and-push>
+
+<!-- specdrive-next-action -->
+<next-action>
+End every reply with the next action, as the last lines of the response:
+
+```
+Next Action: <command>
+where: on the <chat|terminal>
+```
+
+- `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
+- `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
+- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- Record the same step on disk with `sdrive next <feature> --write` before ending a session.
+
+Name the one action that comes next. Do not list a menu of possibilities.
+</next-action>
