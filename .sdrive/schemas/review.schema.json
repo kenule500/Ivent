@@ -81,6 +81,100 @@
         "audit": { "type": "string" }
       },
       "additionalProperties": false
+    },
+    "security": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": ["pass", "fail", "warn", "not_verified"]
+        },
+        "reason": { "type": "string" },
+        "secrets": {
+          "enum": ["clean", "findings", "not_scanned"]
+        },
+        "dependencies": {
+          "enum": ["clean", "vulnerable", "not_scanned"]
+        },
+        "baseline": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "pattern": "^CON-[0-9]{3}$" },
+              "status": {
+                "enum": [
+                  "pass",
+                  "fail",
+                  "warn",
+                  "not_applicable",
+                  "not_verified"
+                ]
+              },
+              "detail": { "type": "string" }
+            },
+            "required": ["id", "status", "detail"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["status"],
+      "additionalProperties": false
+    },
+    "performance": {
+      "type": "object",
+      "properties": {
+        "status": {
+          "enum": ["pass", "fail", "warn", "not_verified"]
+        },
+        "reason": { "type": "string" },
+        "method": { "type": "string" },
+        "nfr": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "pattern": "^NFR-[0-9]{3}$" },
+              "target": { "type": "string" },
+              "measured": { "type": "string" },
+              "status": {
+                "enum": ["pass", "fail", "warn", "not_verified", "not_applicable"]
+              }
+            },
+            "required": ["id", "status"],
+            "additionalProperties": false
+          }
+        },
+        "seo": { "type": "string" },
+        "report": { "type": "string" }
+      },
+      "required": ["status"],
+      "additionalProperties": false
+    },
+    "remediation": {
+      "type": "object",
+      "properties": {
+        "round": { "type": "integer", "minimum": 1 },
+        "items": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "id": { "type": "string", "minLength": 2 },
+              "finding": { "type": "string", "minLength": 3 },
+              "severity": {
+                "enum": ["high", "medium", "low", "info"]
+              },
+              "fixWith": { "type": "string" },
+              "task": { "type": "string" },
+              "roundsFailed": { "type": "integer", "minimum": 1 }
+            },
+            "required": ["id", "finding"],
+            "additionalProperties": false
+          }
+        }
+      },
+      "required": ["items"],
+      "additionalProperties": false
     }
   },
   "required": [
