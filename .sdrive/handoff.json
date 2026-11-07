@@ -1,23 +1,38 @@
 {
   "feature": "admin-dashboard-update",
   "version": "v1",
-  "recordedAt": "2026-11-02T06:47:35.129Z",
+  "recordedAt": "2026-11-07T15:37:34.110Z",
   "by": null,
   "steps": [
     {
-      "command": "sdrive verify admin-dashboard-update",
-      "kind": "cli",
-      "why": "Verify compares plan.json to the code before any gate reads it."
+      "command": "/sdrive:secure admin-dashboard-update",
+      "kind": "slash",
+      "why": "high severity, round 3 of 3: 1 critical and 2 high production dependency advisories with no secure report or waiver"
     },
     {
       "command": "sdrive test admin-dashboard-update",
       "kind": "cli",
-      "why": "The implementation gate needs a recorded passing run."
+      "why": "medium severity, round 3 of 3: Test evidence is stale: recorded at b37a6ab, HEAD is c7f2d0b"
+    },
+    {
+      "command": "/sdrive:test admin-dashboard-update",
+      "kind": "slash",
+      "why": "medium severity, round 3 of 3: Test report predates spec.md, so coverage evidence is stale"
+    },
+    {
+      "command": "sdrive test admin-dashboard-update",
+      "kind": "cli",
+      "why": "A fix moves HEAD, so the test record must be re-stamped before review can read it."
     },
     {
       "command": "sdrive approve admin-dashboard-update implementation",
       "kind": "human",
-      "why": "Approving is a sign-off, so it stays with you."
+      "why": "New fix tasks leave the implementation sign-off unsatisfied until it is given again."
+    },
+    {
+      "command": "/sdrive:review admin-dashboard-update",
+      "kind": "slash",
+      "why": "Review re-audits the new commit and clears the verdict."
     }
   ]
 }
