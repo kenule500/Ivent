@@ -3,6 +3,7 @@
 const fs = require("fs");
 const path = require("path");
 const { resolveGovernanceFile, resolveGovernanceDir } = require("./lib/governance-paths");
+const { isResolved, resolutionOf } = require("./lib/resolution");
 
 const projectRoot = process.cwd();
 
@@ -23,28 +24,62 @@ function extractPlanItems(plan) {
   const items = [];
 
   (plan.architecture?.components || []).forEach((c) => {
-    items.push({ type: "component", name: c.name, action: c.action });
+    items.push({
+      type: "component",
+      name: c.name,
+      action: c.action,
+      resolution: isResolved(c) ? resolutionOf(c) : null
+    });
   });
 
   (plan.apiContracts || []).forEach((api) => {
-    items.push({ type: "endpoint", method: api.method, path: api.path, action: api.action });
+    items.push({
+      type: "endpoint",
+      // Endpoints have no name of their own; a readable one keeps the withdrawn list
+      // legible instead of printing "(unnamed)".
+      name: `${api.method} ${api.path}`,
+      method: api.method,
+      path: api.path,
+      action: api.action,
+      resolution: isResolved(api) ? resolutionOf(api) : null
+    });
   });
 
   (plan.dataModel?.entities || []).forEach((entity) => {
-    items.push({ type: "entity", name: entity.name, action: entity.action });
+    const entityResolution = isResolved(entity) ? resolutionOf(entity) : null;
+
+    items.push({
+      type: "entity",
+      name: entity.name,
+      action: entity.action,
+      resolution: entityResolution
+    });
+
     (entity.fields || []).forEach((field) => {
       items.push({
         type: "field",
         entity: entity.name,
         name: field.name,
         fieldType: field.type,
-        action: field.action
+        action: field.action,
+        // A field of a descoped entity is descoped with it. Without this the report
+        // lists every column of a table that will never exist as "missing".
+        resolution: entityResolution
       });
     });
   });
 
   (plan.dependencies || []).forEach((dep) => {
-    items.push({ type: "dependency", name: dep.name, action: dep.action });
+    items.push({
+      type: "dependency",
+      name: dep.name,
+      action: dep.action,
+      // `library` is the only dependency kind that is an installed artifact. `internal`,
+      // `service`, and `external` describe relationships and access gates, so they can
+      // never appear in a lockfile and must not be reported as missing.
+      depType: dep.type || "library",
+      resolution: isResolved(dep) ? resolutionOf(dep) : null
+    });
   });
 
   return items;
@@ -64,16 +99,22 @@ const CANDIDATE_ROOTS = [
   "api",
   "apps",
   "packages",
+  "crates",
   "components",
   "messages",
   "locales",
   "i18n",
-  "content"
+  "content",
+  "convex",
+  "hooks"
 ];
 
 const IGNORED_DIRS = new Set([
   "node_modules",
   ".git",
+  // Convex regenerates this folder from convex/*.ts; it is derived output, not
+  // hand-written source, so plan items must never be matched against it.
+  "_generated",
   "dist",
   "build",
   ".next",
@@ -90,7 +131,11 @@ const CODE_EXTENSIONS = [
   ".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs",
   ".py", ".go", ".rs", ".dart", ".java", ".kt",
   ".rb", ".php", ".cs", ".swift",
-  ".css", ".scss", ".json"
+  ".css", ".scss", ".json",
+  // Manifests and docs that a plan legitimately declares as `modify` components. They
+  // are not source, but "this feature changed Cargo.toml / README.md" is a real,
+  // checkable claim, and reporting it as missing because of its extension is wrong.
+  ".toml", ".md", ".yml", ".yaml"
 ];
 
 // Config files that are never feature components, even though they are JSON.
@@ -113,17 +158,21 @@ function readConstitutionSources() {
   if (!fs.existsSync(constitutionPath)) return [];
 
   const content = fs.readFileSync(constitutionPath, "utf8");
-  const matches = content.match(/`([^`]+)\/`/g) || [];
+  const matches = content.match(/`([^`]+)`/g) || [];
 
+  // A constitution names a source root in whichever shape the project's own
+  // convention uses: `crates/*`, `crates/`, `src/components/`, `crates/<crate>/tests/`.
+  // All of them mean the top-level directory to the scanner.
+  //
+  // The previous pattern required a literal slash immediately before the closing
+  // backtick, so `crates/*` - the Cargo workspace convention, and the exact shape a
+  // Rust project's constitution uses - never matched. Combined with `crates` being
+  // absent from CANDIDATE_ROOTS, that made `sdrive verify` scan zero files in a
+  // Rust workspace and report every planned component, entity, and field as missing.
   return matches
-    .map((m) => m.replace(/`/g, "").replace(/\/$/, ""))
-    .filter((p) => {
-      // Keep the top-level segment of a declared path (e.g. "components/ui"
-      // becomes "components") and only accept known source roots.
-      const top = p.split("/")[0];
-      return CANDIDATE_ROOTS.includes(top);
-    })
-    .map((p) => p.split("/")[0]);
+    .map((match) => match.replace(/`/g, "").trim())
+    .map((declared) => declared.split(/[/\\]/)[0].replace(/\*+$/, ""))
+    .filter((top) => top && CANDIDATE_ROOTS.includes(top));
 }
 
 function detectSourceRoots() {
@@ -173,6 +222,18 @@ function scanCode() {
   roots.forEach((root) => {
     walkDirectory(path.join(projectRoot, root), files);
   });
+
+  // Root-level source files (proxy.ts, middleware.ts, next.config.ts) belong to
+  // no scanned root, so a plan that names them reported them as missing even
+  // though they sit right there. Only real source extensions are picked up
+  // here - documents and lockfiles at the root are not components.
+  const ROOT_SOURCE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"];
+  for (const entry of fs.readdirSync(projectRoot, { withFileTypes: true })) {
+    if (!entry.isFile()) continue;
+    if (IGNORED_FILES.has(entry.name)) continue;
+    if (!ROOT_SOURCE_EXTENSIONS.some((ext) => entry.name.endsWith(ext))) continue;
+    files.push(path.join(projectRoot, entry.name));
+  }
 
   console.log(`📄 Found ${files.length} source files.\n`);
 
@@ -267,6 +328,27 @@ function detectEndpoints(files) {
         file: relative
       });
     }
+
+    // Convex functions. A plan names one as "convex/<module>:<function>", which is
+    // exactly how the Convex client addresses it (`api.health.getOverview`).
+    // Queries are read-only, so they take GET; mutations and actions take POST.
+    // Without this every Convex function in a plan was reported as a missing
+    // endpoint, because the scanner only understood HTTP route declarations.
+    if (relative.startsWith("convex/") && /\.ts$/.test(relative)) {
+      const moduleName = relative.replace(/\.ts$/, "");
+      const convexFnMatches = content.matchAll(
+        /export\s+const\s+(\w+)\s*=\s*(internalQuery|internalMutation|internalAction|query|mutation|action)\s*\(/g
+      );
+
+      for (const match of convexFnMatches) {
+        const kind = match[2];
+        endpoints.push({
+          method: kind.endsWith("Query") || kind === "query" ? "GET" : "POST",
+          path: `${moduleName}:${match[1]}`,
+          file: relative
+        });
+      }
+    }
   });
 
   return endpoints;
@@ -297,6 +379,20 @@ function detectEntities(files) {
       });
     }
 
+    // Rust structs and enums, with or without `pub` and with any visibility
+    // qualifier. A plan entity in a Rust crate is a type, so a declared entity was
+    // invisible to this scanner until these patterns existed - every Rust model and
+    // every one of its fields was reported as "missing" in a file that matched.
+    const rustTypeMatches = content.matchAll(
+      /\b(?:pub(?:\([^)]*\))?\s+)?(?:struct|enum)\s+([A-Z]\w*)/g
+    );
+    for (const match of rustTypeMatches) {
+      entities.push({
+        name: match[1],
+        file: relative
+      });
+    }
+
     // TypeORM entities
     const typeormMatches = content.matchAll(/@Entity\([^)]*\)\s*class\s+(\w+)/g);
     for (const match of typeormMatches) {
@@ -318,6 +414,18 @@ function detectEntities(files) {
         file: relative
       });
     }
+
+    // Convex schema tables: `users: defineTable({` inside defineSchema(). The
+    // property key is the table name, and plans model it as a data entity.
+    if (/defineSchema\s*\(/.test(content)) {
+      const convexTables = content.matchAll(/^\s*(\w+):\s*defineTable\(\{/gm);
+      for (const match of convexTables) {
+        entities.push({
+          name: match[1],
+          file: relative
+        });
+      }
+    }
   });
 
   return entities;
@@ -329,6 +437,42 @@ function detectFields(files) {
   files.forEach((file) => {
     const content = readFileContent(file);
     const relative = path.relative(projectRoot, file).replace(/\\/g, "/");
+
+    // Rust struct fields: `pub name: Type,` inside a `struct Name { ... }` body, which
+    // is how a plan's entity fields are written in Rust. Generics such as `Option<T>`
+    // and `Vec<T>` are captured as-is; only the field name is used for matching, so the
+    // type spelling (`usize`, `String`, `Option<String>`) never affects the result.
+    //
+    // This is parsed line by line rather than with one regular expression because a
+    // field is not required to end in a comma - the last field in a struct often does
+    // not - and a pattern that insists on one silently drops that field while its
+    // siblings match.
+    const rustStructs = content.matchAll(
+      /\b(?:pub(?:\([^)]*\))?\s+)?struct\s+([A-Z]\w*)[^;{]*\{([\s\S]*?)\n\s*\}/g
+    );
+
+    for (const block of rustStructs) {
+      const rustEntity = block[1];
+
+      for (const rawLine of block[2].split(/\r?\n/)) {
+        // Drop a trailing inline comment, then attributes and blank lines.
+        const line = rawLine.replace(/\/\/.*$/, "").trim();
+
+        if (!line || line.startsWith("#")) continue;
+
+        const field = line.match(
+          /^(?:pub(?:\([^)]*\))?\s+)?([a-z_]\w*)\s*:\s*(.+?),?\s*$/
+        );
+
+        if (!field) continue;
+
+        fields.push({
+          entity: rustEntity,
+          name: field[1],
+          file: relative
+        });
+      }
+    }
 
     // SQL fields inside CREATE TABLE
     const tableBlocks = content.matchAll(
@@ -388,6 +532,55 @@ function detectFields(files) {
         });
       }
     }
+
+    // Convex schema fields and indexes. A line such as `    users: defineTable({`
+    // opens a table, and its direct properties sit at one consistent indent level
+    // (`        name: v.string(),`). The first `v.` property after a table
+    // calibrates that level, so nested `v.object({...})` members - indented
+    // deeper - are not mistaken for columns of the table.
+    //
+    // Plans also model a table's `.index("by_createdAt", [...])` entries as
+    // fields ("by_createdAt", type "index on createdAt"), because an index is
+    // part of the schema contract. Those chain after the table's closing `}),
+    // so they are attributed to the table that opened most recently.
+    const schemaLines = content.split(/\r?\n/);
+    let convexTable = null;
+    let convexFieldIndent = null;
+
+    schemaLines.forEach((line) => {
+      const tableMatch = line.match(/^(\s*)(\w+):\s*defineTable\(\{/);
+      if (tableMatch) {
+        convexTable = tableMatch[2];
+        convexFieldIndent = null;
+        return;
+      }
+
+      if (!convexTable) return;
+
+      const indexMatch = line.match(/\.index\(\s*["']([^"']+)["']/);
+      if (indexMatch) {
+        fields.push({
+          entity: convexTable,
+          name: indexMatch[1],
+          file: relative
+        });
+        return;
+      }
+
+      const fieldMatch = line.match(/^(\s*)(\w+):\s*v\./);
+      if (!fieldMatch) return;
+
+      const indent = fieldMatch[1].length;
+
+      if (convexFieldIndent === null) convexFieldIndent = indent;
+      if (indent !== convexFieldIndent) return;
+
+      fields.push({
+        entity: convexTable,
+        name: fieldMatch[2],
+        file: relative
+      });
+    });
   });
 
   return fields;
@@ -407,20 +600,104 @@ const VIRTUAL_DEPENDENCIES = new Set([
   "lucide-react"
 ]);
 
-function detectDependencies() {
+// An npm package satisfies a plan dependency when one name contains the other.
+// Plans name the product ("Recharts", "Clerk", "Convex") while package.json lists
+// the package ("recharts", "@clerk/nextjs", "convex"), so an exact,
+// case-sensitive comparison reported satisfied dependencies as missing.
+function dependencyMatches(itemName, codeDependencies) {
+  const wanted = String(itemName).toLowerCase();
+
+  return codeDependencies.some((dep) => {
+    const actual = String(dep).toLowerCase();
+    const tail = actual.includes("/") ? actual.split("/").pop() : actual;
+
+    return (
+      actual === wanted ||
+      tail === wanted ||
+      tail.startsWith(wanted) ||
+      wanted.startsWith(tail) ||
+      actual.includes(wanted)
+    );
+  });
+}
+
+// Dependency names declared by a Cargo manifest: `[dependencies]`, `[dev-dependencies]`,
+// `[build-dependencies]`, and their `workspace.` forms.
+function cargoDependencyNames(file) {
+  const content = readFileContent(file);
+  const names = [];
+  let collecting = false;
+
+  for (const line of content.split(/\r?\n/)) {
+    const trimmed = line.trim();
+
+    if (trimmed.startsWith("[")) {
+      collecting = /^\[(?:workspace\.)?(?:dev-|build-)?dependencies\]$/.test(trimmed);
+      continue;
+    }
+
+    if (!collecting) continue;
+
+    const match = trimmed.match(/^([A-Za-z0-9_-]+)\s*=/);
+
+    if (match) names.push(match[1]);
+  }
+
+  return names;
+}
+
+// Dependencies come from whatever manifest the project actually has.
+//
+// This read `package.json` only, so in a Rust, Python, or Go project every declared
+// library dependency was reported as missing - and a `missing` count keeps
+// `verification.json` at "fail" no matter what the code does. The unconditional early
+// return also skipped every check when there was no `package.json` at all.
+function detectDependencies(sourceRoots = []) {
+  const names = new Set();
+
   const pkgPath = path.join(projectRoot, "package.json");
 
-  if (!fs.existsSync(pkgPath)) return [];
-
-  try {
-    const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
-    return [
-      ...Object.keys(pkg.dependencies || {}),
-      ...Object.keys(pkg.devDependencies || {})
-    ];
-  } catch (error) {
-    return [];
+  if (fs.existsSync(pkgPath)) {
+    try {
+      const pkg = JSON.parse(fs.readFileSync(pkgPath, "utf8"));
+      Object.keys(pkg.dependencies || {}).forEach((name) => names.add(name));
+      Object.keys(pkg.devDependencies || {}).forEach((name) => names.add(name));
+    } catch (error) {
+      // A broken package.json is not a dependency answer; keep looking elsewhere.
+    }
   }
+
+  // Rust: the workspace manifest plus each member manifest one level down.
+  const cargoFiles = [path.join(projectRoot, "Cargo.toml")];
+
+  for (const root of sourceRoots) {
+    const rootDir = path.join(projectRoot, root);
+
+    cargoFiles.push(path.join(rootDir, "Cargo.toml"));
+
+    if (!fs.existsSync(rootDir)) continue;
+
+    for (const entry of fs.readdirSync(rootDir, { withFileTypes: true })) {
+      if (entry.isDirectory()) cargoFiles.push(path.join(rootDir, entry.name, "Cargo.toml"));
+    }
+  }
+
+  cargoFiles
+    .filter((file) => fs.existsSync(file))
+    .forEach((file) => cargoDependencyNames(file).forEach((name) => names.add(name)));
+
+  // Python
+  const requirements = path.join(projectRoot, "requirements.txt");
+
+  if (fs.existsSync(requirements)) {
+    readFileContent(requirements)
+      .split(/\r?\n/)
+      .map((line) => line.trim())
+      .filter((line) => line && !line.startsWith("#"))
+      .forEach((line) => names.add(line.split(/[<>=!~[ ]/)[0]));
+  }
+
+  return [...names];
 }
 
 function diffPlanAgainstCode(planItems, code) {
@@ -428,12 +705,16 @@ function diffPlanAgainstCode(planItems, code) {
   const missing = [];
   const renamed = [];
   const extra = [];
+  const withdrawn = [];
+  // Files already accounted for by a matched or renamed item. A rename must never
+  // claim a file that another plan item already owns.
+  const claimedFiles = new Set();
 
   const codeComponents = detectComponents(code.files);
   const codeEndpoints = detectEndpoints(code.files);
   const codeEntities = detectEntities(code.files);
   const codeFields = detectFields(code.files);
-  const codeDependencies = detectDependencies();
+  const codeDependencies = detectDependencies(code.roots);
 
   // Expand brace globs such as "messages/{fr,pt,es}.json" into concrete paths
   // so a plan that groups sibling files still matches the real files on disk.
@@ -445,18 +726,64 @@ function diffPlanAgainstCode(planItems, code) {
       .map((part) => `${match[1]}${part.trim()}${match[3]}`);
   };
 
+  // A plan may group sibling files with a glob ("components/ui/*"). Brace groups
+  // were supported; a bare "*" was not, so such an item could never match and
+  // stayed "missing" no matter what the code did.
+  const expandWildcards = (pattern) => {
+    if (!pattern.includes("*")) return [pattern];
+
+    const dir = path.posix.dirname(pattern);
+    const base = path.posix.basename(pattern);
+    const escaped = base
+      .split("*")
+      .map((part) => part.replace(/[.+^${}()|[\]\\]/g, "\\$&"))
+      .join(".*");
+    const matcher = new RegExp(`^${escaped}$`);
+
+    try {
+      return fs
+        .readdirSync(path.join(projectRoot, dir))
+        .filter((name) => matcher.test(name))
+        .map((name) => (dir === "." ? name : `${dir}/${name}`));
+    } catch {
+      return [];
+    }
+  };
+
   // A plan item matches a code component when the names are equal, when the
-  // plan names the file path directly, or when the plan uses a brace glob that
-  // expands to the file path.
+  // plan names the file path directly, or when the plan uses a brace/wildcard
+  // glob that expands to the file path.
   const componentMatches = (item, c) => {
     if (c.name === item.name || c.file === item.name) return true;
+
+    // A plan may reference a folder rather than a file ("components/admin",
+    // "convex/"). Any component inside it satisfies the item; without this the
+    // folder was reported as "renamed" to whichever file happened to share a
+    // name prefix.
+    if (!path.extname(item.name)) {
+      const prefix = `${String(item.name).replace(/\\/g, "/").replace(/\/+$/, "")}/`;
+      if (c.file.startsWith(prefix)) return true;
+    }
+
     if (item.name.includes("{")) {
       return expandBraces(item.name).some((p) => p === c.file || p === c.name);
+    }
+    if (item.name.includes("*")) {
+      return expandWildcards(item.name).some((p) => p === c.file || p === c.name);
     }
     return false;
   };
 
   planItems.forEach((item) => {
+    // A descoped plan item is not missing work - it was decided not to exist. Reporting
+    // it as "missing" is what makes a bundled feature that lost one leg unarchivable:
+    // the count can never reach zero, so `verification.json` stays "fail" forever and
+    // `approve implementation` refuses on evidence nobody can produce.
+    if (item.resolution) {
+      withdrawn.push({ ...item, reason: item.resolution.reason, kind: item.resolution.kind });
+      return;
+    }
+
     if (item.type === "component") {
       // Plans may reference a component either by exported symbol name
       // ("Hero") or by file path ("components/home/hero.tsx"). Match both.
@@ -464,14 +791,41 @@ function diffPlanAgainstCode(planItems, code) {
 
       if (found) {
         matched.push({ ...item, file: found.file });
+        claimedFiles.add(found.file);
       } else {
-        // possible rename: same folder or similar name
-        const similar = codeComponents.find((c) =>
-          c.name.toLowerCase().includes(item.name.toLowerCase().slice(0, 5))
-        );
+        // A rename claims that a similar file IS this plan item under another name.
+        // The old test compared the first five characters of the whole path against
+        // every code path, so `crates/wirekit/Cargo.toml` "matched"
+        // `crates/dado/src/diag.rs` (both begin "crate"), and one file could be
+        // claimed by several items. A rename now needs a similar *basename* and a file
+        // no other item has claimed; otherwise the item is honestly missing.
+        const stem = path.basename(item.name, path.extname(item.name)).toLowerCase();
+        const itemDir = path.posix.dirname(String(item.name).replace(/\\/g, "/"));
 
-        if (similar) {
+        const similar = codeComponents.find((c) => {
+          if (c.isPath !== true) return false;
+          if (claimedFiles.has(c.file)) return false;
+
+          // A rename means the same file under another name, so it has to live in
+          // the same folder. Without this, "convex/analytics.ts" was reported as
+          // renamed to "components/admin/analytics-charts.tsx" - two unrelated
+          // files that merely share a word.
+          if (path.posix.dirname(c.name) !== itemDir) return false;
+
+          const candidateStem = path.basename(c.name, path.extname(c.name)).toLowerCase();
+
+          if (!candidateStem || !stem) return false;
+
+          return (
+            candidateStem === stem ||
+            candidateStem.startsWith(stem) ||
+            stem.startsWith(candidateStem)
+          );
+        });
+
+        if (similar && similar.file !== item.name) {
           renamed.push({ ...item, to: similar.name, file: similar.file });
+          claimedFiles.add(similar.file);
         } else {
           missing.push(item);
         }
@@ -513,9 +867,16 @@ function diffPlanAgainstCode(planItems, code) {
     }
 
     if (item.type === "dependency") {
-      if (
+      // A non-library dependency cannot be verified against a manifest, and saying it is
+      // "missing" is a false accusation that keeps verification at `fail` forever: an
+      // internal reuse of another crate, a partner agreement, or a live-use access gate
+      // has no package name to find. It is recorded as matched with a note instead.
+      if (item.depType && item.depType !== "library") {
+        matched.push({ ...item, note: `${item.depType} dependency; not manifest-verifiable` });
+      } else if (
         codeDependencies.includes(item.name) ||
-        VIRTUAL_DEPENDENCIES.has(item.name.toLowerCase())
+        VIRTUAL_DEPENDENCIES.has(item.name.toLowerCase()) ||
+        dependencyMatches(item.name, codeDependencies)
       ) {
         matched.push(item);
       } else {
@@ -561,12 +922,16 @@ function diffPlanAgainstCode(planItems, code) {
   });
 
   codeEndpoints.forEach((e) => {
+    // Convex functions are addressed as "convex/<module>:<function>". A plan
+    // enumerates the ones the feature owns; the rest of the module's functions
+    // are neither planned nor surprising, so they are not "unplanned work".
+    if (e.path.includes(":")) return;
     if (!planItems.some((p) => p.type === "endpoint" && p.path === e.path)) {
       extra.push({ type: "endpoint", method: e.method, path: e.path, file: e.file });
     }
   });
 
-  return { matched, missing, renamed, extra };
+  return { matched, missing, renamed, extra, withdrawn };
 }
 
 
@@ -576,6 +941,9 @@ function determineStatus(result) {
   if (result.missing.length > 0) return "fail";
   if (result.renamed.length > 0) return "fail";
   if (result.extra.length > 0) return "warn";
+  // Nothing matched and nothing is missing means every declared item was descoped.
+  // That is not a verified feature, so it cannot report "pass" on an empty diff.
+  if (result.withdrawn.length > 0 && result.matched.length === 0) return "warn";
   return "pass";
 }
 
@@ -590,13 +958,15 @@ function writeReport(featureName, result, version) {
       matched: result.matched.length,
       missing: result.missing.length,
       renamed: result.renamed.length,
-      extra: result.extra.length
+      extra: result.extra.length,
+      withdrawn: result.withdrawn.length
     },
     items: {
       matched: result.matched,
       missing: result.missing,
       renamed: result.renamed,
-      extra: result.extra
+      extra: result.extra,
+      withdrawn: result.withdrawn
     }
   };
 
@@ -629,17 +999,31 @@ const result = diffPlanAgainstCode(planItems, code);
 const { status, reportPath } = writeReport(featureName, result, version);
 
 console.log("\n📊 Verification Result\n");
-console.log(`✅ Matched:  ${result.matched.length}`);
-console.log(`❌ Missing:  ${result.missing.length}`);
-console.log(`⚠️  Renamed: ${result.renamed.length}`);
-console.log(`➕ Extra:    ${result.extra.length}`);
-console.log(`\n🧾 Status:   ${status.toUpperCase()}`);
-console.log(`📁 Report:   ${path.relative(projectRoot, reportPath)}\n`);
+console.log(`✅ Matched:   ${result.matched.length}`);
+console.log(`❌ Missing:   ${result.missing.length}`);
+console.log(`⏸️  Withdrawn: ${result.withdrawn.length}`);
+console.log(`⚠️  Renamed:  ${result.renamed.length}`);
+console.log(`➕ Extra:     ${result.extra.length}`);
+console.log(`\n🧾 Status:    ${status.toUpperCase()}`);
+console.log(`📁 Report:    ${path.relative(projectRoot, reportPath)}\n`);
+
+// A field is only meaningful with its entity: "row" says nothing on its own, while
+// "AngiImportOutcome.row" says which model is missing it - and makes a rename obvious.
+const labelItem = (item) =>
+  item.type === "field" ? `${item.entity}.${item.name}` : item.name || item.path || "";
+
+if (result.withdrawn.length > 0) {
+  console.log("⏸️  Withdrawn (descoped, not missing):");
+  result.withdrawn.forEach((i) => {
+    console.log(`  [${i.type}] ${labelItem(i)} - ${i.reason}`);
+  });
+  console.log("");
+}
 
 if (result.missing.length > 0) {
   console.log("❌ Missing:");
   result.missing.forEach((i) => {
-    console.log(`  [${i.type}] ${i.name || i.path}`);
+    console.log(`  [${i.type}] ${labelItem(i)}`);
   });
 }
 
