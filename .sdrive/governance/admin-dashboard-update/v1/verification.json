@@ -1,12 +1,12 @@
 {
   "feature": "admin-dashboard-update",
   "status": "warn",
-  "checkedAt": "2026-11-07T13:21:26.155Z",
+  "checkedAt": "2026-11-07T13:42:35.169Z",
   "summary": {
     "matched": 190,
     "missing": 0,
     "renamed": 0,
-    "extra": 38,
+    "extra": 37,
     "withdrawn": 0
   },
   "items": {
@@ -1627,11 +1627,6 @@
         "type": "component",
         "name": "convex/explore.ts",
         "file": "convex/explore.ts"
-      },
-      {
-        "type": "component",
-        "name": "convex/mailtrap.ts",
-        "file": "convex/mailtrap.ts"
       },
       {
         "type": "component",

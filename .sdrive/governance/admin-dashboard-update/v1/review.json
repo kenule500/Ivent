@@ -2,97 +2,193 @@
   "feature": "admin-dashboard-update",
   "version": "v1",
   "status": "FAIL",
-  "commit": "5c3ef49b321975967e76bbec64eec58f9e6293e0",
+  "commit": "c7f2d0b7d007f40937cc76cb2ff82bcee9ef8660",
   "base": "main",
   "branch": "feature/admin-dashboard-update",
-  "reviewedBy": "AI Review Agent (Codebuff) for kenule500",
-  "reviewedAt": "2026-11-02T07:42:00.000Z",
+  "reviewedBy": "kenule500",
+  "reviewedAt": "2026-11-07T14:43:00.000Z",
   "coverage": 100,
   "criteria": [
-    { "id": "spec-convergence", "status": "pass", "detail": "34/34 ACs implemented; the feature suite exercises every AC." },
-    { "id": "task-completion", "status": "pass", "detail": "57/57 tasks completed; every P1-P7 checkbox in tasks.md is checked." },
-    { "id": "traceability", "status": "pass", "detail": "61/61 rows complete, 34 unique TEST-### IDs, every AC linked." },
-    { "id": "coverage", "status": "pass", "detail": "100% (34/34 ACs tested, 43/43 feature tests passing)." },
-    { "id": "test-report", "status": "pass", "detail": "test-report-admin-dashboard-update-v1-2026-11-02.md exists and is newer than spec.md and plan.md." },
-    { "id": "test-evidence", "status": "pass", "detail": "exitCode 0, 0 failures, summary.total 43, commit matches HEAD. Caveat: the binding is self-invalidating because committing the evidence advances HEAD; it holds only in the working tree." },
-    { "id": "change-scope", "status": "fail", "detail": "Working tree dirty (50 entries) and 43 changed files not referenced by plan.json. All 15 branch commits belong to this feature; no foreign commits." },
-    { "id": "test-quality", "status": "pass", "detail": "No .only/xit/skips/empty assertions in test/admin-dashboard-update/; every test name carries its AC ID." },
-    { "id": "code-quality", "status": "pass", "detail": "tsc exit 0; eslint exit 0 with 0 errors and 17 warnings." },
-    { "id": "security", "status": "fail", "detail": "Secret scan clean. Dependencies: 1 critical / 2 high with --omit=dev (3 critical / 6 high overall); no secure report or waiver." },
-    { "id": "testing", "status": "fail", "detail": "Feature suite 43/43 green; full suite 142/146 with 4 pre-existing failures in other features that also fail on main." },
-    { "id": "documentation", "status": "pass", "detail": "README.md (+136) and CHANGELOG.md (+71) updated; migration and rollback notes recorded for the schema change." },
-    { "id": "nfr-evidence", "status": "pass", "detail": "NFR-009 measured (axe-core, 7 components, 0 violations, negative control validated). NFR-008 recorded as an environment-scoped waiver with static query-plan evidence and a named production re-check." },
-    { "id": "definition-of-done", "status": "fail", "detail": "Inherits the Security and Change Scope failures." },
-    { "id": "spec-to-code-verification", "status": "fail", "detail": "sdrive verify returns FAIL (41 matched, 146 missing, 2 renamed, 26 extra). Convex blind spot, shared blocker T6.1." },
-    { "id": "ci", "status": "not_verified", "detail": "No .github/workflows directory; CI is not configured." },
-    { "id": "permission", "status": "pass", "detail": "kenule500 (admin) is allowed to review." },
-    { "id": "reviewer-independence", "status": "pass", "detail": "No assignee recorded on the feature; no self-approval conflict." }
+    {
+      "id": "spec-convergence",
+      "status": "pass",
+      "detail": "34/34 ACs implemented and exercised by the feature suite."
+    },
+    {
+      "id": "task-completion",
+      "status": "pass",
+      "detail": "59/59 tasks are completed:true and every tasks.md checkbox is [x]."
+    },
+    {
+      "id": "traceability",
+      "status": "pass",
+      "detail": "61/61 traceability rows are complete and every AC is linked to a test ID."
+    },
+    {
+      "id": "coverage",
+      "status": "pass",
+      "detail": "100% (34/34 in-scope ACs have a linked passing test)."
+    },
+    {
+      "id": "test-report",
+      "status": "fail",
+      "detail": "test-report-admin-dashboard-update-v1-2026-11-02.md predates spec.md (updated 2026-11-07), so it is stale."
+    },
+    {
+      "id": "test-evidence",
+      "status": "fail",
+      "detail": "test-evidence.json was recorded at b37a6ab; HEAD is c7f2d0b."
+    },
+    {
+      "id": "change-scope",
+      "status": "pass",
+      "detail": "Working tree clean at bind; 59 files and 4 commits against main, all this feature's governance and verifier work; no other feature's commits."
+    },
+    {
+      "id": "test-quality",
+      "status": "pass",
+      "detail": "No .only, xit, skipped tests, or empty assertions; every test name carries its AC ID."
+    },
+    {
+      "id": "code-quality",
+      "status": "pass",
+      "detail": "tsc --noEmit exit 0; eslint 0 errors, 17 warnings."
+    },
+    {
+      "id": "security",
+      "status": "fail",
+      "detail": "1 critical and 2 high production dependency advisories with no secure report or waiver."
+    },
+    {
+      "id": "testing",
+      "status": "pass",
+      "detail": "Feature suite 43/43 green; four full-suite failures also fail on main and belong to other features."
+    },
+    {
+      "id": "documentation",
+      "status": "pass",
+      "detail": "README and CHANGELOG updated earlier in the feature history (on main); schema change has migration and rollback notes."
+    },
+    {
+      "id": "nfr-evidence",
+      "status": "warn",
+      "detail": "NFR-009 measured (axe-core, 0 violations); NFR-008 is an environment-scoped waiver with static query-plan evidence and a named production check."
+    },
+    {
+      "id": "definition-of-done",
+      "status": "fail",
+      "detail": "Inherits the security and stale-evidence failures."
+    },
+    {
+      "id": "spec-to-code-verification",
+      "status": "pass",
+      "detail": "sdrive verify returns warn: 190 matched, 0 missing, 0 renamed, 37 extra."
+    },
+    {
+      "id": "ci",
+      "status": "not_verified",
+      "detail": "No CI workflow is configured, so no green run exists for this commit."
+    },
+    {
+      "id": "permission",
+      "status": "pass",
+      "detail": "kenule500 (admin) is allowed to review."
+    },
+    {
+      "id": "reviewer-independence",
+      "status": "pass",
+      "detail": "No assignee is recorded, so there is no self-approval conflict."
+    }
   ],
   "findings": [
     {
       "severity": "high",
-      "issue": "sdrive verify returns FAIL - the verifier scans only components/, app/ and lib/, so every convex/ function and schema field is reported missing (146 missing / 41 matched / 2 renamed / 26 extra). All blockers are convex/ or components/admin/ paths. This is the shared blocker T6.1 from admin-console-and-governance, unchanged by this branch.",
-      "location": "convex/**",
-      "fixRequired": true
-    },
-    {
-      "severity": "high",
-      "issue": "Critical dependency advisory in the production tree: 1 critical and 2 high with --omit=dev (shell-quote critical - command injection via a line terminator token; image-size and browserslist high); 3 critical and 6 high overall. No /sdrive:secure report or waiver exists.",
+      "issue": "Production dependency advisory: 1 critical and 2 high with --omit=dev. shell-quote@1.8.4 (GHSA-395f-4hp3-45gv, quadratic-complexity DoS in parse(), range <=1.8.4) via @clerk/ui > @solana/wallet-adapter-react > @solana-mobile/wallet-adapter-mobile > react-native > react-devtools-core; plus image-size and browserslist high. A fix is available (npm audit fix). No secure report or waiver exists.",
       "location": "package-lock.json",
       "fixRequired": true
     },
     {
       "severity": "medium",
-      "issue": "Working tree is dirty at review time (50 entries): 12 uncommitted SpecDrive CLI tooling-sync files, .perch/, .sdrive/.backups/, and the untracked verification.json. Permission, branch and evidence-binding checks pass, but the rule requires a clean tree.",
-      "location": "repository root",
+      "issue": "Test evidence is stale: recorded at b37a6ab while HEAD is c7f2d0b, so the run does not certify this revision.",
+      "location": ".sdrive/governance/admin-dashboard-update/v1/test-evidence.json",
       "fixRequired": true
     },
     {
       "severity": "medium",
-      "issue": "The test-evidence binding is self-invalidating: the run records HEAD, but committing test-evidence.json advances HEAD, so commit === HEAD holds only in the working tree. A review run from a fresh clone would fail Criterion 6 even though nothing is wrong. Recorded so the failure mode is not mistaken for a defect.",
-      "location": ".sdrive/governance/admin-dashboard-update/v1/test-evidence.json",
-      "fixRequired": false
+      "issue": "Test report test-report-admin-dashboard-update-v1-2026-11-02.md predates spec.md (updated 2026-11-07), so the coverage evidence is stale.",
+      "location": ".sdrive/reports/tests/",
+      "fixRequired": true
     },
     {
       "severity": "low",
-      "issue": "Four pre-existing failures in other features: test/ai-event-creation/ai-creator.test.tsx, test/event-discovery-and-registration/event-detail.test.tsx, test/event-discovery-and-registration/explore.test.tsx and test/event-management-and-check-in/check-in.test.ts. All four also fail on main (baseline log 2026-10-20), so they are not this feature's regression.",
+      "issue": "Full suite is 142/146: ai-creator, event-detail, explore, and check-in tests fail; all four also fail on main and belong to other features.",
       "location": "test/ai-event-creation, test/event-discovery-and-registration, test/event-management-and-check-in",
       "fixRequired": false
     },
     {
-      "severity": "low",
-      "issue": "CON-517 review note: components/ui/chart.tsx:94 uses dangerouslySetInnerHTML to inject chart theme CSS. Pre-existing on main and unchanged by this branch; the interpolated value is developer-authored chart config, not user input. Recorded for CON-517 traceability, not failed.",
-      "location": "components/ui/chart.tsx:94",
-      "fixRequired": false
-    },
-    {
-      "severity": "low",
-      "issue": "Stale constitution test rules: CON-401/402/403 still read '[to be confirmed]' although Vitest 3.2.7, a test script and test/ all exist.",
-      "location": ".sdrive/constitution.md:43-45",
+      "severity": "info",
+      "issue": "CI is not configured, so no green build exists for this commit.",
+      "location": "repository",
       "fixRequired": false
     }
   ],
   "security": {
     "status": "fail",
-    "reason": "1 critical and 2 high advisories in production dependencies (shell-quote critical; image-size and browserslist high) with no secure report or waiver. Secret scan is clean. The CON-51x baseline is wired: CON-511 and CON-512 pass in Convex, CON-514 rate limiting is live, CON-515 validation is present, CON-517 has no new HTML injection, CON-519 holds; CON-513, CON-516 and CON-518 are declared NOT APPLICABLE.",
+    "reason": "1 critical and 2 high advisories in the production dependency tree with no /sdrive:secure report or waiver. Secret scan is clean. The CON-51x baseline is wired into the request path.",
     "secrets": "clean",
     "dependencies": "vulnerable",
     "baseline": [
-      { "id": "CON-511", "status": "pass", "detail": "Clerk identity resolved via ctx.auth.getUserIdentity in convex/helpers.ts and used across 6 Convex modules." },
-      { "id": "CON-512", "status": "pass", "detail": "requireAdmin/requireSuperAdmin enforce roles inside Convex at convex/helpers.ts:14,40." },
-      { "id": "CON-513", "status": "not_applicable", "detail": "Constitution declares Helmet NOT APPLICABLE; this project has no Express server." },
-      { "id": "CON-514", "status": "pass", "detail": "consumeRateLimit in convex/helpers.ts plus convex/rateLimiter.ts wired into admin, analytics, announcements, exports and feedback." },
-      { "id": "CON-515", "status": "pass", "detail": "Zod validation in forms; Convex functions declare argument validators." },
-      { "id": "CON-516", "status": "not_applicable", "detail": "Constitution declares it NOT APPLICABLE; Convex queries are typed and parameterized." },
-      { "id": "CON-517", "status": "pass", "detail": "No new dangerouslySetInnerHTML introduced. The pre-existing use in components/ui/chart.tsx:94 was reviewed: developer-authored config, not user input." },
-      { "id": "CON-518", "status": "not_applicable", "detail": "Constitution declares CSRF NOT APPLICABLE; Convex mutations are token-authenticated, not cookie-driven form posts." },
-      { "id": "CON-519", "status": "pass", "detail": ".env* is git-ignored; no secrets are tracked." }
+      {
+        "id": "CON-511",
+        "status": "pass",
+        "detail": "Clerk identity resolved via ctx.auth.getUserIdentity in convex/helpers.ts and used across the Convex modules."
+      },
+      {
+        "id": "CON-512",
+        "status": "pass",
+        "detail": "requireAdmin/requireSuperAdmin enforce roles inside Convex at convex/helpers.ts:14,40."
+      },
+      {
+        "id": "CON-513",
+        "status": "not_applicable",
+        "detail": "Constitution declares Helmet NOT APPLICABLE; the project has no Express server."
+      },
+      {
+        "id": "CON-514",
+        "status": "pass",
+        "detail": "consumeRateLimit in convex/helpers.ts plus convex/rateLimiter.ts wired into admin, analytics, announcements, exports, and feedback."
+      },
+      {
+        "id": "CON-515",
+        "status": "pass",
+        "detail": "Zod validation in forms; Convex functions declare argument validators."
+      },
+      {
+        "id": "CON-516",
+        "status": "not_applicable",
+        "detail": "Constitution declares it NOT APPLICABLE; Convex queries are typed and parameterized."
+      },
+      {
+        "id": "CON-517",
+        "status": "pass",
+        "detail": "No new dangerouslySetInnerHTML; the pre-existing use in components/ui/chart.tsx was reviewed as developer-authored config."
+      },
+      {
+        "id": "CON-518",
+        "status": "not_applicable",
+        "detail": "Constitution declares CSRF NOT APPLICABLE; Convex mutations are token-authenticated."
+      },
+      {
+        "id": "CON-519",
+        "status": "pass",
+        "detail": ".env* is git-ignored; no secrets are tracked."
+      }
     ]
   },
   "performance": {
     "status": "not_verified",
-    "reason": "NFR-009 was measured and passes. NFR-008 could not be measured in this environment: no Convex deployment is reachable, and convex-test provably emulates an IndexRange as a full-table JS scan, so it times the emulator rather than Convex. The query-plan half of NFR-008 is verified statically and holds. An environment-scoped waiver with a named production re-check is recorded, so overall performance is not_verified rather than pass.",
-    "method": "NFR-009: axe-core 4.12.1 over 7 real admin components server-rendered with react-dom/server and evaluated in jsdom against the WCAG 2.1 A+AA rule tags, with a mandatory negative control. NFR-008: a full-volume convex-test harness plus a controlled discriminator (scan-or-index-probe.mjs) that holds the result set fixed at 6,200 rows while growing the table from 73k to 584k rows (378 ms to 2122 ms), proving the backend does not use a real index.",
+    "reason": "NFR-009 was measured and passes. NFR-008 could not be measured here: no Convex deployment is reachable and convex-test emulates index ranges as full-table scans, so an environment-scoped waiver with a named production re-check is recorded. SEO is not applicable.",
+    "method": "NFR-009: axe-core 4.12.1 over 7 real admin components server-rendered and evaluated in jsdom against WCAG 2.1 A+AA with a negative control. NFR-008: static query-plan evidence plus a recorded waiver.",
     "nfr": [
       {
         "id": "NFR-008",
@@ -103,7 +199,7 @@
       {
         "id": "NFR-009",
         "target": "WCAG 2.1 AA",
-        "measured": "0 violation groups across 7 real admin components; negative control correctly produced button-name and image-alt",
+        "measured": "0 violation groups across 7 admin components; negative control produced button-name and image-alt",
         "status": "pass"
       }
     ],
@@ -111,28 +207,27 @@
     "report": ".sdrive/reports/performance/performance-report-admin-dashboard-update-v1-2026-11-02.md"
   },
   "remediation": {
-    "round": 2,
+    "round": 3,
     "items": [
       {
         "id": "F-001",
-        "finding": "sdrive verify returns FAIL because it cannot see convex/ (shared blocker T6.1)",
-        "severity": "high",
-        "fixWith": "/sdrive:apply admin-console-and-governance",
-        "task": "T6.1",
-        "roundsFailed": 2
-      },
-      {
-        "id": "F-002",
         "finding": "1 critical and 2 high production dependency advisories with no secure report or waiver",
         "severity": "high",
         "fixWith": "/sdrive:secure admin-dashboard-update",
-        "roundsFailed": 2
+        "roundsFailed": 3
+      },
+      {
+        "id": "F-002",
+        "finding": "Test evidence is stale: recorded at b37a6ab, HEAD is c7f2d0b",
+        "severity": "medium",
+        "fixWith": "sdrive test admin-dashboard-update",
+        "roundsFailed": 1
       },
       {
         "id": "F-003",
-        "finding": "Working tree is dirty (50 entries) at review time",
+        "finding": "Test report predates spec.md, so coverage evidence is stale",
         "severity": "medium",
-        "fixWith": "commit or ignore the untracked tooling and backup paths",
+        "fixWith": "/sdrive:test admin-dashboard-update",
         "roundsFailed": 1
       }
     ]
@@ -140,7 +235,7 @@
   "evidence": {
     "testEvidence": ".sdrive/governance/admin-dashboard-update/v1/test-evidence.json",
     "testReport": ".sdrive/reports/tests/test-report-admin-dashboard-update-v1-2026-11-02.md",
-    "verification": ".sdrive/governance/admin-dashboard-update/v1/verification.json (status FAIL; left untracked)",
-    "audit": ".sdrive/audit-log.json (9 hashed events verified; CI not verified, no .github/workflows directory)"
+    "verification": ".sdrive/governance/admin-dashboard-update/v1/verification.json",
+    "audit": ".sdrive/audit-log.json"
   }
 }
