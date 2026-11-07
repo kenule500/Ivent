@@ -83,7 +83,7 @@
           "gates": {
             "specification": "approved",
             "planning": "approved",
-            "implementation": "in_progress",
+            "implementation": "approved",
             "review": "rejected"
           },
           "history": [
@@ -137,6 +137,13 @@
               "by": "sdrive:update-propose",
               "timestamp": "2026-11-07T13:20:00.000Z",
               "summary": "Five plan entries renamed to the shipped code: filter-chips -> analytics-filters, delete-modals -> three modal components, searchPalette GET -> POST, resolveAudience recorded as an internal helper, announcements:list -> announcements:history. No requirement, story, AC, or task was added, removed, or renumbered, so the specification and planning gates stay approved."
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "in_progress",
+              "timestamp": "2026-11-07T13:38:01.167Z"
             }
           ]
         }
