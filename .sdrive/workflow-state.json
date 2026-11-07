@@ -78,13 +78,13 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "ongoing",
+          "phase": "completed",
           "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "approved",
-            "review": "rejected"
+            "review": "approved"
           },
           "history": [
             {
@@ -144,6 +144,21 @@
               "actor": "kenule500",
               "previousValue": "in_progress",
               "timestamp": "2026-11-07T13:38:01.167Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "rejected",
+              "timestamp": "2026-11-07T15:57:56.836Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "e2bee03",
+              "timestamp": "2026-11-07T16:15:12.715Z"
             }
           ]
         }

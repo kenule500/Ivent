@@ -164,6 +164,37 @@
       "event": "test_passed",
       "prevHash": "daff8f0736111308b2e3f26f06ade47eb7dbc7ad594c21b767594d6ce0900d81",
       "hash": "0d05e8969126c1c0a6b09370f533f4bed5fb45ba640cebc0d2280564f7ca754d"
+    },
+    {
+      "timestamp": "2026-11-07T15:43:00.764Z",
+      "actor": "kenule500",
+      "feature": "admin-dashboard-update",
+      "version": "v1",
+      "total": 43,
+      "durationMs": 27067,
+      "event": "test_passed",
+      "prevHash": "0d05e8969126c1c0a6b09370f533f4bed5fb45ba640cebc0d2280564f7ca754d",
+      "hash": "76a015cd96d6104e415516a779fcd5438570ba2780a7fe92427660d73bd13a9a"
+    },
+    {
+      "timestamp": "2026-11-07T15:57:57.074Z",
+      "actor": "kenule500",
+      "feature": "admin-dashboard-update",
+      "version": "v1",
+      "gate": "review",
+      "previousValue": "rejected",
+      "event": "gate_approved",
+      "prevHash": "76a015cd96d6104e415516a779fcd5438570ba2780a7fe92427660d73bd13a9a",
+      "hash": "a981eb862aea1f56d5e32f4fadf6c10c9242c562072b29490903420e5a7fe20f"
+    },
+    {
+      "timestamp": "2026-11-07T16:15:12.724Z",
+      "actor": "kenule500",
+      "feature": "admin-dashboard-update",
+      "version": "v1",
+      "event": "feature_archived",
+      "prevHash": "a981eb862aea1f56d5e32f4fadf6c10c9242c562072b29490903420e5a7fe20f",
+      "hash": "7374f253bb7da3a8869981f574f2440848b12f105b484f7b02866b3d1a12707e"
     }
   ]
 }
