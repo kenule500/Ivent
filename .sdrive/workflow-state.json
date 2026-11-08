@@ -12,7 +12,7 @@
         {
           "id": "v1",
           "phase": "ongoing",
-          "currentStep": "implementation",
+          "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
@@ -48,6 +48,11 @@
               "actor": "kenule500",
               "previousValue": "pending",
               "timestamp": "2026-11-08T11:37:12.110Z"
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-11-08T11:55:00.000Z"
             }
           ]
         }

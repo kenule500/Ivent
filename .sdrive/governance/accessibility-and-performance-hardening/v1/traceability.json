@@ -13,8 +13,10 @@
         "T2.2",
         "T2.4"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-035"
+      ]
     },
     {
       "requirementId": "FR-002",
@@ -26,8 +28,10 @@
         "T2.2",
         "T3.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-035"
+      ]
     },
     {
       "requirementId": "FR-003",
@@ -39,8 +43,10 @@
         "T1.1",
         "T1.4"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-036"
+      ]
     },
     {
       "requirementId": "FR-004",
@@ -51,8 +57,10 @@
       "taskIds": [
         "T2.7"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-036"
+      ]
     },
     {
       "requirementId": "FR-005",
@@ -64,8 +72,10 @@
         "T1.2",
         "T2.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-037"
+      ]
     },
     {
       "requirementId": "FR-006",
@@ -77,8 +87,10 @@
         "T2.1",
         "T2.3"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-037"
+      ]
     },
     {
       "requirementId": "FR-007",
@@ -91,8 +103,10 @@
         "T2.4",
         "T2.6"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-038"
+      ]
     },
     {
       "requirementId": "FR-008",
@@ -105,8 +119,10 @@
         "T2.5",
         "T2.6"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-039"
+      ]
     },
     {
       "requirementId": "FR-009",
@@ -118,8 +134,10 @@
         "T2.3",
         "T3.2"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-040"
+      ]
     },
     {
       "requirementId": "FR-010",
@@ -131,8 +149,10 @@
         "T2.2",
         "T3.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-041"
+      ]
     },
     {
       "requirementId": "FR-011",
@@ -143,8 +163,10 @@
       "taskIds": [
         "T5.1"
       ],
-      "status": "not_started",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-042"
+      ]
     },
     {
       "requirementId": "FR-012",
@@ -158,8 +180,10 @@
         "T4.1",
         "T5.2"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-042"
+      ]
     },
     {
       "requirementId": "NFR-001",
@@ -171,8 +195,11 @@
       "taskIds": [
         "T5.1"
       ],
-      "status": "not_started",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-035",
+        "TEST-040"
+      ]
     },
     {
       "requirementId": "NFR-002",
@@ -222,8 +249,10 @@
       "taskIds": [
         "T5.3"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-042"
+      ]
     },
     {
       "requirementId": "NFR-006",
@@ -235,8 +264,10 @@
         "T2.5",
         "T2.6"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-039"
+      ]
     }
   ]
 }

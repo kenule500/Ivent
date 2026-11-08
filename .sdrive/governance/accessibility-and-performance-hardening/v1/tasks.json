@@ -255,7 +255,7 @@
           "linkedAcceptanceCriteria": [
             "AC-010"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.2",

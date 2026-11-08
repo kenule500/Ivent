@@ -64,7 +64,7 @@ Legend: each task lists the requirements and acceptance criteria it closes. Task
 
 ## M4 — Automated gates
 
-- [ ] **T5.1** Add the axe-core reference-page suite.
+- [x] **T5.1** Add the axe-core reference-page suite.
   - Linked: FR-011, NFR-001, AC-010
   - Render the five reference pages and assert zero WCAG 2.1 A/AA violations.
 - [x] **T5.2** Add the Lighthouse budget.
