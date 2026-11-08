@@ -1,8 +1,7 @@
 "use client";
 
-import { FunctionReference, FunctionArgs, FunctionReturnType } from "convex/server";
-import { useMutation } from "convex/react";
 import { useState, useMemo } from "react";
+import { useConvexMutation } from "@/hooks/useConvexQuery";
 import { MapPin, Heart, ArrowRight, ArrowLeft } from "lucide-react";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
@@ -275,28 +274,3 @@ export default function OnboardingModal({ isOpen, onClose, onComplete }: Onboard
   );
 }
 
-// function useConvexMutation(completeOnboarding: FunctionReference<"mutation", "public", 
-//   "{ location: { state?: string | undefined; city: string; country: string; }; 
-//   interests: string[]; }, string & { __tableName: "users"; }, 
-//   string | undefined>): { mutate: any; isLoading: any; } {
-//   throw new Error("Function not implemented.");
-// }
-
-export function useConvexMutation<Mutation extends FunctionReference<"mutation">>(
-  mutationRef: Mutation
-) {
-  const [isLoading, setIsLoading] = useState(false);
-  const mutation = useMutation(mutationRef);
-
-  const mutate = async (args: FunctionArgs<Mutation>): Promise<FunctionReturnType<Mutation>> => {
-    setIsLoading(true);
-    try {
-      const result = await mutation(args);
-      return result;
-    } finally {
-      setIsLoading(false);
-    }
-  };
-
-  return { mutate, isLoading };
-}

@@ -175,7 +175,7 @@ export default function CreateEventPage() {
       router.push("/my-events");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "Failed to create event";
-      throw new Error(`Failed to delete event: ${errorMessage}`);
+      toast.error(errorMessage);
     }
   };
 
@@ -498,7 +498,7 @@ export default function CreateEventPage() {
             {ticketType === "paid" && (
               <Input
                 type="number"
-                placeholder="Ticket price ₹"
+                placeholder="Ticket price ₦"
                 {...register("ticketPrice", { valueAsNumber: true })}
               />
             )}

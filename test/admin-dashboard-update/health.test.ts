@@ -189,7 +189,8 @@ describe("system health", () => {
       mailtrapSandbox: false,
       siteUrlPresent: false,
     });
-    expect(absent.broadcastSendingEnabled).toBe(false);
+    // Broadcasts follow the platform feature flag, whose default is enabled.
+    expect(absent.broadcastSendingEnabled).toBe(true);
 
     vi.stubEnv("MAILTRAP_API_KEY", "mt_live_secret_value");
     vi.stubEnv("MAILTRAP_BULK_API_KEY", "mt_bulk_secret_value");
@@ -216,5 +217,40 @@ describe("system health", () => {
     expect(serialized).not.toContain("sender@example.com");
     expect(serialized).not.toContain("https://ivent.example.com");
     expect(serialized).toContain("mailtrapApiKeyPresent");
+  });
+
+  test("AC-031: broadcast sending mirrors the platform feature flag", async () => {
+    const t = createConvexTest();
+    const adminId = await seedAdmin(t, Date.now());
+
+    const enabled = await t
+      .withIdentity(adminIdentity)
+      .query(api.health.getOverview, {});
+    expect(enabled.broadcastSendingEnabled).toBe(true);
+
+    await t.run(async (ctx) => {
+      await ctx.db.insert("platformSettings", {
+        key: "global",
+        defaultCountry: "NG",
+        defaultCurrency: "NGN",
+        defaultTimezone: "Africa/Lagos",
+        maintenanceMode: false,
+        maintenanceMessage: "",
+        featureFlags: {
+          commandPalette: true,
+          reports: true,
+          broadcasts: false,
+          feedbackInbox: true,
+          systemHealth: true,
+        },
+        updatedBy: adminId,
+        updatedAt: Date.now(),
+      });
+    });
+
+    const disabled = await t
+      .withIdentity(adminIdentity)
+      .query(api.health.getOverview, {});
+    expect(disabled.broadcastSendingEnabled).toBe(false);
   });
 });

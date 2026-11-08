@@ -88,6 +88,9 @@ export default defineSchema({
     .index("by_slug", ["slug"])
     .index("by_category", ["category"])
     .index("by_startDate", ["startDate"])
+    .index("by_category_startDate", ["category", "startDate"])
+    .index("by_city_startDate", ["city", "startDate"])
+    .index("by_state_startDate", ["state", "startDate"])
     .searchIndex("search_title", {
         searchField: "title",
     }),

@@ -11,8 +11,12 @@ export default function AdminLoginPage() {
   const { isSignedIn } = useAuth();
   const { data: currentUser, isLoading } = useConvexQuery(api.users.getCurrentUser);
 
-  // If already signed in and is admin, redirect to dashboard
-  if (!isLoading && isSignedIn && currentUser?.role === "super_admin") {
+  // If already signed in and is an admin, redirect to dashboard
+  if (
+    !isLoading &&
+    isSignedIn &&
+    (currentUser?.role === "admin" || currentUser?.role === "super_admin")
+  ) {
     router.replace("/admin/dashboard");
     return null;
   }
