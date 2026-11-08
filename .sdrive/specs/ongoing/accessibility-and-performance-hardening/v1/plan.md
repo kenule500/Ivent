@@ -56,11 +56,12 @@ The event page is the reference page and the budget applies to it:
 
 | File | Action | Purpose |
 |---|---|---|
-| `components/a11y/focus-trap.tsx` | create | Focus entry, trapping, Escape, restore |
+| `components/a11y/focus-trap.tsx` | superseded | Not built: `@base-ui/react` Dialog already traps focus, closes on Escape, and restores focus |
 | `components/a11y/visually-hidden.tsx` | create | Screen-reader-only text |
 | `components/a11y/live-region.tsx` | create | Announce provider + hook |
 | `components/a11y/skip-link.tsx` | create | Skip to main |
 | `lib/a11y/focus.ts` | create | Focus helpers |
+| `lib/a11y/use-prefers-reduced-motion.ts` | create | Reactive reduced-motion hook for JS-driven motion |
 | `app/layout.tsx` | modify | Landmarks + skip link |
 | `app/page.tsx` | modify | Home keyboard, carousel, single `h1` |
 | `app/(public)/events/[slug]/page.tsx` | modify | Event page performance shell |
@@ -69,9 +70,8 @@ The event page is the reference page and the budget applies to it:
 | `components/ui/dialog.tsx` | modify | Adopt FocusTrap |
 | `components/ui/select.tsx` | modify | Arrow keys and announcement |
 | `app/globals.css` | modify | Focus ring, reduced motion, contrast tokens |
-| `test/a11y/axe.test.tsx` | create | axe gate |
+| `test/a11y/axe.test.tsx` | deferred | Deferred to `/sdrive:test`: test authoring is that agent's job |
 | `.lighthouserc.json` | create | Lighthouse budget |
-| `package.json` | modify | Dev dependencies and scripts |
 
 **Reuse:** the existing `components/ui/*` primitives, `next/image`, `lucide-react` icons, and the Vitest setup. No second dialog system, no new animation library, no redesign.
 

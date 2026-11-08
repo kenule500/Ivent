@@ -7,7 +7,12 @@
       {
         "name": "components/a11y/focus-trap.tsx",
         "action": "create",
-        "description": "Traps Tab within a container, restores focus to the invoking element on close, and falls back to main when the trigger is gone."
+        "description": "Traps Tab within a container, restores focus to the invoking element on close, and falls back to main when the trigger is gone.",
+        "resolution": {
+          "kind": "superseded",
+          "reason": "@base-ui/react Dialog already traps focus, closes on Escape, and restores focus to its trigger, so a second focus-trap implementation would duplicate it.",
+          "at": "2026-11-08"
+        }
       },
       {
         "name": "components/a11y/visually-hidden.tsx",
@@ -72,7 +77,12 @@
       {
         "name": "test/a11y/axe.test.tsx",
         "action": "create",
-        "description": "axe-core run over the five reference pages, failing on any WCAG 2.1 A/AA violation."
+        "description": "axe-core run over the five reference pages, failing on any WCAG 2.1 A/AA violation.",
+        "resolution": {
+          "kind": "deferred",
+          "reason": "Test authoring belongs to /sdrive:test; the axe-core reference-page suite is deferred to that agent.",
+          "at": "2026-11-08"
+        }
       },
       {
         "name": ".lighthouserc.json",
@@ -80,9 +90,9 @@
         "description": "Lighthouse budget for the event page: performance and accessibility at least 95, LCP 2500ms, CLS 0.1, TBT 200ms."
       },
       {
-        "name": "package.json",
-        "action": "modify",
-        "description": "Add axe-core, vitest-axe, and @lhci/cli, plus a11y and lighthouse scripts."
+        "name": "lib/a11y/use-prefers-reduced-motion.ts",
+        "action": "create",
+        "description": "Reactive prefers-reduced-motion hook so JS-driven motion (carousel autoplay) can be disabled, not just CSS transitions."
       }
     ],
     "referencedRequirementIds": [

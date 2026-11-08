@@ -225,9 +225,10 @@ function scanCode() {
 
   // Root-level source files (proxy.ts, middleware.ts, next.config.ts) belong to
   // no scanned root, so a plan that names them reported them as missing even
-  // though they sit right there. Only real source extensions are picked up
-  // here - documents and lockfiles at the root are not components.
-  const ROOT_SOURCE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs"];
+  // though they sit right there. JSON is included because tool configuration
+  // that a plan legitimately owns (.lighthouserc.json) lives at the root; the
+  // known manifests are excluded by IGNORED_FILES above.
+  const ROOT_SOURCE_EXTENSIONS = [".ts", ".tsx", ".js", ".jsx", ".mjs", ".cjs", ".json"];
   for (const entry of fs.readdirSync(projectRoot, { withFileTypes: true })) {
     if (!entry.isFile()) continue;
     if (IGNORED_FILES.has(entry.name)) continue;

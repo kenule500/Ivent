@@ -5,6 +5,7 @@ import { useConvexQuery } from '@/hooks/useConvexQuery'
 import { useRouter } from 'next/navigation'
 import React, { useState } from 'react'
 import Autoplay from "embla-carousel-autoplay";
+import { usePrefersReducedMotion } from "@/lib/a11y/use-prefers-reduced-motion";
 import { Carousel, CarouselContent, CarouselItem, CarouselPrevious, CarouselNext } from '@/components/ui/carousel'
 import { ArrowRight, Calendar, MapPin, Users, Loader2 } from 'lucide-react'
 import { format } from 'date-fns'
@@ -21,6 +22,9 @@ import Link from 'next/link'
 const ExplorePage = () => {
     const router = useRouter();
     const [plugin] = useState(() => Autoplay({ delay: 2000, stopOnInteraction: true }));
+    // Autoplay is JS-driven, so the CSS reduced-motion block cannot stop it
+    // (AC-007, T3.1). Omit the plugin entirely when the OS asks for less motion.
+    const reducedMotion = usePrefersReducedMotion();
   
     const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
     const { data: featuredEvents, isLoading: loadingFeatured } = useConvexQuery(api.explore.getFeaturedEvents, { limit: 4 })
@@ -79,10 +83,10 @@ const ExplorePage = () => {
                     </div>
                 ) : featuredEvents && featuredEvents.length > 0 ? (
                     <Carousel
-                        plugins={[plugin]}
+                        plugins={reducedMotion ? [] : [plugin]}
                         className="w-full"
-                        onMouseEnter={() => plugin.stop()}
-                        onMouseLeave={() => plugin.reset()}
+                        onMouseEnter={reducedMotion ? undefined : () => plugin.stop()}
+                        onMouseLeave={reducedMotion ? undefined : () => plugin.reset()}
                     >
                         <CarouselContent>
                             {featuredEvents.map((event: Doc<"events">) => (

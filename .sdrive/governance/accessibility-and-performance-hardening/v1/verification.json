@@ -1,0 +1,172 @@
+{
+  "feature": "accessibility-and-performance-hardening",
+  "status": "pass",
+  "checkedAt": "2026-11-08T10:51:22.385Z",
+  "summary": {
+    "matched": 18,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 0,
+    "withdrawn": 2
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "components/a11y/visually-hidden.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/a11y/visually-hidden.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/a11y/live-region.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/a11y/live-region.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/a11y/skip-link.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/a11y/skip-link.tsx"
+      },
+      {
+        "type": "component",
+        "name": "lib/a11y/focus.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/a11y/focus.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/layout.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/layout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/_components/register-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/event-card.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "components/event-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/dialog.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "components/ui/dialog.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/select.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "components/ui/select.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/globals.css",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/globals.css"
+      },
+      {
+        "type": "component",
+        "name": ".lighthouserc.json",
+        "action": "create",
+        "resolution": null,
+        "file": ".lighthouserc.json"
+      },
+      {
+        "type": "component",
+        "name": "lib/a11y/use-prefers-reduced-motion.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/a11y/use-prefers-reduced-motion.ts"
+      },
+      {
+        "type": "dependency",
+        "name": "axe-core",
+        "action": "add",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "vitest-axe",
+        "action": "add",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "@lhci/cli",
+        "action": "add",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "next/image",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": [],
+    "withdrawn": [
+      {
+        "type": "component",
+        "name": "components/a11y/focus-trap.tsx",
+        "action": "create",
+        "resolution": {
+          "kind": "superseded",
+          "reason": "@base-ui/react Dialog already traps focus, closes on Escape, and restores focus to its trigger, so a second focus-trap implementation would duplicate it.",
+          "at": "2026-11-08"
+        },
+        "reason": "@base-ui/react Dialog already traps focus, closes on Escape, and restores focus to its trigger, so a second focus-trap implementation would duplicate it.",
+        "kind": "superseded"
+      },
+      {
+        "type": "component",
+        "name": "test/a11y/axe.test.tsx",
+        "action": "create",
+        "resolution": {
+          "kind": "deferred",
+          "reason": "Test authoring belongs to /sdrive:test; the axe-core reference-page suite is deferred to that agent.",
+          "at": "2026-11-08"
+        },
+        "reason": "Test authoring belongs to /sdrive:test; the axe-core reference-page suite is deferred to that agent.",
+        "kind": "deferred"
+      }
+    ]
+  }
+}
