@@ -4,7 +4,9 @@
       "name": "accessibility-and-performance-hardening",
       "branch": "feature/backlog-wave-1",
       "base": "main",
-      "productItems": ["BP-015"],
+      "productItems": [
+        "BP-015"
+      ],
       "currentVersion": "v1",
       "versions": [
         {
@@ -12,7 +14,7 @@
           "phase": "ongoing",
           "currentStep": "implementation",
           "gates": {
-            "specification": "pending",
+            "specification": "approved",
             "planning": "pending",
             "implementation": "pending",
             "review": "pending"
@@ -32,6 +34,13 @@
               "event": "implementation_started",
               "by": "sdrive:apply",
               "timestamp": "2026-11-08T10:25:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-08T10:58:59.922Z"
             }
           ]
         }
