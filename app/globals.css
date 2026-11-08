@@ -171,3 +171,28 @@
     scroll-behavior: auto !important;
   }
 }
+
+/* Keyboard focus must always be visible, including inside dark cards (AC-001). */
+:where(
+    a,
+    button,
+    [role="button"],
+    input,
+    select,
+    textarea,
+    [tabindex]:not([tabindex="-1"])
+  ):focus-visible {
+  outline: 2px solid oklch(0.72 0.19 300);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* The skip link targets the main landmark; keep it clear of the sticky header
+   and avoid drawing a focus ring around the whole page (AC-003). */
+#main {
+  scroll-margin-top: 6rem;
+}
+
+#main:focus {
+  outline: none;
+}

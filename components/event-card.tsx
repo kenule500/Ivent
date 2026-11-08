@@ -25,13 +25,29 @@ export default function EventCard({
   action = null,
   className = "",
 }: EventCardProps) {
-  
+  // A card with an onClick is a control, not a picture: it needs a role, a tab
+  // stop, an accessible name, and Enter/Space activation (AC-001, T2.2).
+  const interactiveProps = onClick
+    ? {
+        role: "button" as const,
+        tabIndex: 0,
+        "aria-label": `View ${event.title}`,
+        onKeyDown: (keyEvent: React.KeyboardEvent) => {
+          if (keyEvent.key === "Enter" || keyEvent.key === " ") {
+            keyEvent.preventDefault();
+            onClick(keyEvent);
+          }
+        },
+      }
+    : {};
+
   // List variant (compact horizontal layout)
   if (variant === "list") {
     return (
       <Card
-        className={`py-0 group cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50 ${className}`}
+        className={`py-0 group cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50 focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 ${className}`}
         onClick={onClick}
+        {...interactiveProps}
       >
         <CardContent className="p-3 flex gap-3">
           {/* Event Image */}
@@ -80,10 +96,11 @@ export default function EventCard({
   // Grid variant (updated with flex-col layout to make flex-1 fill space)
   return (
     <Card
-      className={`overflow-hidden group pt-0 h-full flex flex-col justify-between ${
+      className={`overflow-hidden group pt-0 h-full flex flex-col justify-between focus-visible:ring-2 focus-visible:ring-purple-400 focus-visible:ring-offset-2 focus-visible:ring-offset-gray-950 ${
         onClick ? "cursor-pointer hover:shadow-lg transition-all hover:border-purple-500/50" : ""
       } ${className}`}
       onClick={onClick}
+      {...interactiveProps}
     >
       <div>
         <div className="relative h-48 overflow-hidden">
@@ -93,7 +110,6 @@ export default function EventCard({
               alt={event.title}
               fill
               className="object-cover group-hover:scale-105 transition-transform"
-              priority
             />
           ) : (
             <div
