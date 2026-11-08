@@ -2,6 +2,7 @@ import { query } from "./_generated/server";
 import { requireAdmin } from "./helpers";
 import { getPlatformTimezone } from "./analyticsFilters";
 import { assertFeatureEnabled } from "./platformData";
+import { isSandboxEnabled } from "./mailtrap";
 
 /**
  * System health signals (FR-036, FR-037, NFR-006).
@@ -112,13 +113,15 @@ export const getOverview = query({
         buckets: bucketRows,
       },
       config: {
-        resendApiKeyPresent: Boolean(process.env.RESEND_API_KEY),
-        resendFromAddressPresent: Boolean(process.env.RESEND_FROM_EMAIL),
+        mailtrapApiKeyPresent: Boolean(process.env.MAILTRAP_API_KEY),
+        mailtrapBulkApiKeyPresent: Boolean(process.env.MAILTRAP_BULK_API_KEY),
+        mailtrapFromAddressPresent: Boolean(process.env.MAILTRAP_FROM_EMAIL),
+        mailtrapSandbox: isSandboxEnabled(process.env),
         siteUrlPresent: Boolean(process.env.SITE_URL),
       },
       // Broadcast sending intentionally defaults off until the sending domain
-      // is verified with Resend.
-      broadcastSendingEnabled: false,
+      // is verified with Mailtrap.
+      broadcastSendingEnabled: process.env.BROADCAST_SENDING_ENABLED === "true",
     };
   },
 });

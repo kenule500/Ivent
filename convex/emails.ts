@@ -5,7 +5,7 @@ import { action } from "./_generated/server";
 import { sendEmail } from "./emailService";
 
 /**
- * Send an admin invite email.
+ * Send an admin invite email through Mailtrap.
  * Called from the frontend after generating an invite.
  */
 export const sendInviteEmail = action({
@@ -88,6 +88,6 @@ export const sendInviteEmail = action({
       `,
     });
 
-    return { success: true, emailId: data.emailId };
+    return { success: true, messageId: data.messageId };
   },
 });

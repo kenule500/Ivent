@@ -39,6 +39,17 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Transactional email moved from Resend to Mailtrap.** `convex/mailtrap.ts` posts
+  straight to the Mailtrap Email Sending API, so no SDK is bundled into the Convex
+  action. Invites go out on the transactional stream while announcements use the
+  Bulk stream once `MAILTRAP_BULK_API_KEY` is set, and fall back to transactional
+  when it is not. The Email Testing sandbox is one flag away
+  (`MAILTRAP_USE_SANDBOX` plus `MAILTRAP_INBOX_ID`), provider error text lands in
+  `emailEvents` and `/admin/health`, and `/admin/health` reports the Mailtrap
+  config plus which transport mode is active. `RESEND_API_KEY` /
+  `RESEND_FROM_EMAIL` are replaced by `MAILTRAP_API_KEY`,
+  `MAILTRAP_BULK_API_KEY`, `MAILTRAP_FROM_EMAIL`, and `MAILTRAP_FROM_NAME`, and
+  the `resend` dependency is removed.
 - **`next` upgraded to 16.4.3** from 16.2.9, clearing the critical advisories against
   the App Router, Server Actions, and the Image Optimization API.
 - **`zod` upgraded to ^4.6.6** from ^4.4.3, clearing the memory-exhaustion advisory in

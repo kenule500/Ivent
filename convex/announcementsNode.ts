@@ -7,8 +7,10 @@ import { sendEmail } from "./emailService";
 
 /**
  * Node-runtime delivery for broadcast announcements (FR-028).
- * Batches keep Resend calls predictable; every outcome is recorded per
- * recipient and the announcement is finalised once all batches finish.
+ * Announcements ask for the bulk stream (used when MAILTRAP_BULK_API_KEY is set,
+ * otherwise transactional). Batches keep Mailtrap calls predictable; every
+ * outcome is recorded per recipient and the announcement is finalised once all
+ * batches finish.
  */
 
 const BATCH_SIZE = 50;

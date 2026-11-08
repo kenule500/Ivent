@@ -34,8 +34,12 @@ Copy the variables below into `.env.local`. All of them are server-side except t
 | `NEXT_PUBLIC_UNSPLASH_SECRET_KEY` | Unsplash cover-image search |
 | `GEMINI_API_KEY` | Google AI |
 | `CEREBRAS_API_KEY` | AI event generation (`/api/generate-event`) |
-| `RESEND_API_KEY` | Transactional email |
-| `RESEND_FROM_EMAIL` | From address for outbound email |
+| `MAILTRAP_API_KEY` | Transactional email (Mailtrap Email Sending token) |
+| `MAILTRAP_BULK_API_KEY` | Optional bulk-stream token; when set, announcements use the Bulk stream |
+| `MAILTRAP_FROM_EMAIL` | From address for outbound email, on a domain verified in Mailtrap |
+| `MAILTRAP_FROM_NAME` | Sender display name (defaults to `Ivent`) |
+| `MAILTRAP_USE_SANDBOX` | `true` routes mail to a Mailtrap Email Testing inbox instead of real recipients |
+| `MAILTRAP_INBOX_ID` | Mailtrap test inbox id, required only when `MAILTRAP_USE_SANDBOX=true` |
 | `BROADCAST_SENDING_ENABLED` | Set to `true` to enable admin broadcasts |
 
 ## Scripts
@@ -115,6 +119,26 @@ Key conventions:
   entry through `logAdminAction`.
 - Convex function arguments are declared with `convex/values` validators.
 - Cross-directory imports use the `@/*` alias.
+
+### Email (Mailtrap)
+
+Invite and announcement email goes through [Mailtrap](https://mailtrap.io)
+Email Sending, spoken as plain HTTP from `convex/mailtrap.ts` — no SDK, so
+nothing extra is bundled into the Convex Node action.
+
+- Create an API token at <https://mailtrap.io/api-tokens> and set `MAILTRAP_API_KEY`.
+- `MAILTRAP_FROM_EMAIL` must sit on a domain verified under Sending Domains.
+- To keep test traffic out of real inboxes, set `MAILTRAP_USE_SANDBOX=true` and
+  `MAILTRAP_INBOX_ID` to an inbox id from Email Testing. In sandbox mode nothing
+  is delivered; messages appear in the Mailtrap inbox UI.
+- Announcements send on Mailtrap's Bulk stream when `MAILTRAP_BULK_API_KEY` is
+  set (a token with bulk-sending access); otherwise they fall back to the
+  transactional stream. Invites always use the transactional stream. Sandbox mode
+  always uses the transactional stream, because Mailtrap rejects bulk sends to a
+  test inbox.
+- Every send is logged (recipient, template, status, provider error) to the
+  `emailEvents` table, and `/admin/health` reports the active transport and
+  failures from it.
 
 ## Testing
 

@@ -1,13 +1,13 @@
 "use node";
 
-import { Resend } from "resend";
 import { internal } from "./_generated/api";
 import type { ActionCtx } from "./_generated/server";
+import { sendMailtrapEmail } from "./mailtrap";
 
 /**
- * Shared Resend transport (T5.6).
+ * Shared Mailtrap transport (T5.6).
  * Every send is logged to emailEvents so system health can report failures.
- * The API key is read here and never returned to callers.
+ * The API token is read inside the transport and never returned to callers.
  */
 
 export type EmailTemplate = "invite" | "announcement";
@@ -15,35 +15,25 @@ export type EmailTemplate = "invite" | "announcement";
 interface SendEmailArgs {
   to: string;
   subject: string;
-  html: string;
+  html?: string;
   text?: string;
   template: EmailTemplate;
 }
 
 export async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
-  const apiKey = process.env.RESEND_API_KEY;
-  if (!apiKey) {
-    await ctx.runMutation(internal.emailLog.recordEmailEvent, {
-      template: args.template,
-      recipient: args.to,
-      status: "failed",
-      error: "RESEND_API_KEY is not configured",
-    });
-    throw new Error("RESEND_API_KEY is not configured");
-  }
+  let messageId: string | null;
 
-  const resend = new Resend(apiKey);
-  const fromEmail = process.env.RESEND_FROM_EMAIL || "onboarding@resend.dev";
-
-  let result;
   try {
-    result = await resend.emails.send({
-      from: fromEmail,
+    const result = await sendMailtrapEmail({
       to: args.to,
       subject: args.subject,
       html: args.html,
       text: args.text,
+      category: args.template,
+      // Announcements belong on the bulk stream; invites stay transactional.
+      stream: args.template === "announcement" ? "bulk" : "transactional",
     });
+    messageId = result.messageId;
   } catch (sendError) {
     const message =
       sendError instanceof Error ? sendError.message : "Unknown email error";
@@ -56,21 +46,11 @@ export async function sendEmail(ctx: ActionCtx, args: SendEmailArgs) {
     throw new Error(message);
   }
 
-  if (result.error) {
-    await ctx.runMutation(internal.emailLog.recordEmailEvent, {
-      template: args.template,
-      recipient: args.to,
-      status: "failed",
-      error: result.error.message,
-    });
-    throw new Error(`Resend error: ${result.error.message}`);
-  }
-
   await ctx.runMutation(internal.emailLog.recordEmailEvent, {
     template: args.template,
     recipient: args.to,
     status: "sent",
   });
 
-  return { emailId: result.data?.id ?? null };
+  return { messageId };
 }
