@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/purity */
 "use client";
 
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
 import { Calendar, MapPin, Loader2, Ticket } from "lucide-react";
 import { useConvexQuery, useConvexMutation } from "@/hooks/useConvexQuery";
@@ -19,6 +19,7 @@ import {
 } from "@/components/ui/dialog";
 import Link from "next/link";
 import EventCard from "@/components/event-card";
+import { useAnnounce } from "@/components/a11y/live-region";
 import type { FunctionReturnType } from "convex/server";
 import { Id } from "@/convex/_generated/dataModel";
 
@@ -37,6 +38,22 @@ export default function MyTicketsPage() {
     api.registrations.getMyRegistrations
   );
 
+  const announce = useAnnounce();
+  const announcedReady = useRef(false);
+
+  // Announce once when the tickets arrive, not on every re-render (AC-005, T2.5).
+  useEffect(() => {
+    if (isLoading || !registrations || announcedReady.current) return;
+
+    announcedReady.current = true;
+    const count = registrations.length;
+    announce(
+      count === 0
+        ? "No tickets yet. When you register for an event, the ticket appears here."
+        : `Your tickets are ready. ${count} registration${count === 1 ? "" : "s"}.`
+    );
+  }, [announce, isLoading, registrations]);
+
   const { mutate: cancelRegistration } =
     useConvexMutation(api.registrations.cancelRegistration);
 
@@ -47,16 +64,23 @@ export default function MyTicketsPage() {
     try {
       await cancelRegistration({ registrationId });
       toast.success("Registration cancelled successfully.");
+      announce("Registration cancelled.");
     } catch (error) {
       const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
       toast.error(errorMessage);
+      announce(`Could not cancel the registration. ${errorMessage}`, "assertive");
     }
   };
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-3"
+        role="status"
+        aria-live="polite"
+      >
+        <Loader2 className="w-8 h-8 animate-spin text-purple-500" aria-hidden="true" />
+        <span className="text-sm text-muted-foreground">Loading your tickets…</span>
       </div>
     );
   }

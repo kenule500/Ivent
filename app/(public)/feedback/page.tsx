@@ -22,6 +22,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import { Textarea } from "@/components/ui/textarea";
+import { useAnnounce } from "@/components/a11y/live-region";
 
 /**
  * Public feedback form (FR-030, FR-031).
@@ -41,6 +42,7 @@ function FeedbackForm() {
   const searchParams = useSearchParams();
   const { isLoaded, isSignedIn } = useAuth();
   const submit = useMutation(api.feedback.submit);
+  const announce = useAnnounce();
 
   const eventIdParam = searchParams.get("eventId");
 
@@ -102,7 +104,9 @@ function FeedbackForm() {
 
     const parsed = feedbackSchema.safeParse({ type, message });
     if (!parsed.success) {
-      setError(parsed.error.issues[0]?.message ?? "Check the form.");
+      const message = parsed.error.issues[0]?.message ?? "Check the form.";
+      setError(message);
+      announce(message, "assertive");
       return;
     }
 
@@ -116,17 +120,20 @@ function FeedbackForm() {
 
       if (!result.ok) {
         setError(result.message);
+        announce(result.message, "assertive");
         return;
       }
 
       toast.success("Thanks — your feedback was sent.");
+      announce("Thanks — your feedback was sent.");
       setSubmitted(true);
     } catch (submitError) {
-      setError(
+      const message =
         submitError instanceof Error
           ? submitError.message
-          : "Your feedback could not be sent."
-      );
+          : "Your feedback could not be sent.";
+      setError(message);
+      announce(message, "assertive");
     } finally {
       setIsSubmitting(false);
     }

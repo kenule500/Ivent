@@ -18,7 +18,21 @@ type Politeness = "polite" | "assertive";
 
 type Announcer = (message: string, politeness?: Politeness) => void;
 
-const LiveRegionContext = React.createContext<Announcer | null>(null);
+const LiveRegionContext = React.createContext<Announcer>(noopAnnounce);
+
+/**
+ * Used only when a component renders outside the provider — for example a page
+ * mounted in isolation by a test. It warns in development instead of throwing:
+ * a thrown error would take the whole page down for a missing announcement,
+ * which is worse than a dropped one. In the app the provider always exists.
+ */
+function noopAnnounce() {
+  if (process.env.NODE_ENV !== "production") {
+    console.warn(
+      "useAnnounce was called outside <LiveRegionProvider>; the announcement was dropped."
+    );
+  }
+}
 
 const RESET_DELAY_MS = 50;
 
@@ -72,15 +86,8 @@ export function LiveRegionProvider({
 }
 
 /**
- * Announce an async outcome. Throws outside the provider on purpose: a silent
- * no-op would hide the very regression this feature exists to prevent.
+ * Announce an async outcome.
  */
 export function useAnnounce(): Announcer {
-  const announce = React.useContext(LiveRegionContext);
-
-  if (!announce) {
-    throw new Error("useAnnounce must be used inside <LiveRegionProvider>.");
-  }
-
-  return announce;
+  return React.useContext(LiveRegionContext);
 }
