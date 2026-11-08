@@ -46,7 +46,7 @@ Legend: each task lists the requirements and acceptance criteria it closes. Task
 - [x] **T3.1** Honour reduced motion and standardise the focus ring.
   - Linked: FR-010, FR-002, AC-007, AC-001
   - Modify `app/globals.css`: `prefers-reduced-motion` block disabling autoplay, transitions, and parallax; `:focus-visible` ring of 2px at 3:1.
-- [ ] **T3.2** Correct failing contrast tokens.
+- [x] **T3.2** Correct failing contrast tokens.
   - Linked: FR-009, AC-006
   - Adjust only failing tokens, record before/after ratios, ensure no state is colour-only.
 

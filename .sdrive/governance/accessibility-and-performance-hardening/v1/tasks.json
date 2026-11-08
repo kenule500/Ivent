@@ -190,7 +190,7 @@
           "linkedAcceptanceCriteria": [
             "AC-006"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
