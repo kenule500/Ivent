@@ -29,8 +29,15 @@ import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
-import RegisterModal from "./_components/register-modal";
+import dynamic from "next/dynamic";
 import { useConvexQuery } from "@/hooks/useConvexQuery";
+
+// The registration modal is an interaction, not first paint. Loading it lazily
+// keeps the dialog, form, and its Clerk/Convex wiring out of the event page's
+// first-load bundle (T4.3, NFR-003).
+const RegisterModal = dynamic(() => import("./_components/register-modal"), {
+  ssr: false,
+});
 
 // Utility function to darken a color
 function darkenColor(color: string, amount: number) {

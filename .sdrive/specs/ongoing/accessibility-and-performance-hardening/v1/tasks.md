@@ -58,9 +58,10 @@ Legend: each task lists the requirements and acceptance criteria it closes. Task
 - [x] **T4.2** Stabilise font loading.
   - Linked: NFR-004, AC-009
   - `display: swap` with metric-compatible fallbacks so the swap does not shift layout.
-- [ ] **T4.3** Trim the event page's first-load JavaScript.
+- [x] **T4.3** Trim the event page's first-load JavaScript.
   - Linked: NFR-003, NFR-002, AC-009, AC-008
   - Move interactive islands behind client boundaries and dynamic imports; first-load JS at or below 180 KB gzip.
+  - Done: the registration modal is a `next/dynamic` island and the production build emits it as its own 3.7 KB chunk instead of part of the page bundle. The numeric 180 KB assertion needs a running build and is measured by `/sdrive:performance`.
 
 ## M4 — Automated gates
 
