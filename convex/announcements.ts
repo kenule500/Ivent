@@ -1,4 +1,4 @@
-﻿import { v } from "convex/values";
+import { v } from "convex/values";
 import {
   internalMutation,
   internalQuery,
@@ -157,7 +157,7 @@ export const send = mutation({
       return {
         ok: false as const,
         message:
-          "Broadcast sending is disabled until the sending domain is verified. Set BROADCAST_SENDING_ENABLED=true once Resend is ready.",
+          "Broadcast sending is disabled until the sending domain is verified. Set BROADCAST_SENDING_ENABLED=true once Mailtrap is ready.",
       };
     }
 

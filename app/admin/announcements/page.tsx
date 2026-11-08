@@ -28,7 +28,7 @@ import { formatNumber, formatRelativeTime } from "@/lib/format";
 /**
  * Broadcast announcements (FR-027 to FR-029).
  * Sending is super-admin only, requires the typed phrase, and is disabled until
- * the Resend sending domain is verified (BROADCAST_SENDING_ENABLED).
+ * the Mailtrap sending domain is verified (BROADCAST_SENDING_ENABLED).
  */
 
 const composeSchema = z.object({
@@ -304,7 +304,7 @@ export default function AnnouncementsPage() {
               {!preview?.sendingEnabled && (
                 <p className="flex items-start gap-1.5 text-xs text-orange-500">
                   <AlertTriangle className="mt-0.5 size-3.5 shrink-0" aria-hidden="true" />
-                  Sending is disabled until the Resend sending domain is verified
+                  Sending is disabled until the Mailtrap sending domain is verified
                   (BROADCAST_SENDING_ENABLED).
                 </p>
               )}

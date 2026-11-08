@@ -172,37 +172,49 @@ describe("system health", () => {
     const now = Date.now();
     await seedAdmin(t, now);
 
-    vi.stubEnv("RESEND_API_KEY", "");
-    vi.stubEnv("RESEND_FROM_EMAIL", "");
+    vi.stubEnv("MAILTRAP_API_KEY", "");
+    vi.stubEnv("MAILTRAP_BULK_API_KEY", "");
+    vi.stubEnv("MAILTRAP_FROM_EMAIL", "");
+    vi.stubEnv("MAILTRAP_USE_SANDBOX", "");
     vi.stubEnv("SITE_URL", "");
+    vi.stubEnv("BROADCAST_SENDING_ENABLED", "");
 
     const absent = await t
       .withIdentity(adminIdentity)
       .query(api.health.getOverview, {});
     expect(absent.config).toEqual({
-      resendApiKeyPresent: false,
-      resendFromAddressPresent: false,
+      mailtrapApiKeyPresent: false,
+      mailtrapBulkApiKeyPresent: false,
+      mailtrapFromAddressPresent: false,
+      mailtrapSandbox: false,
       siteUrlPresent: false,
     });
     expect(absent.broadcastSendingEnabled).toBe(false);
 
-    vi.stubEnv("RESEND_API_KEY", "re_live_secret_value");
-    vi.stubEnv("RESEND_FROM_EMAIL", "sender@example.com");
+    vi.stubEnv("MAILTRAP_API_KEY", "mt_live_secret_value");
+    vi.stubEnv("MAILTRAP_BULK_API_KEY", "mt_bulk_secret_value");
+    vi.stubEnv("MAILTRAP_FROM_EMAIL", "sender@example.com");
+    vi.stubEnv("MAILTRAP_USE_SANDBOX", "true");
     vi.stubEnv("SITE_URL", "https://ivent.example.com");
+    vi.stubEnv("BROADCAST_SENDING_ENABLED", "true");
 
     const present = await t
       .withIdentity(adminIdentity)
       .query(api.health.getOverview, {});
     expect(present.config).toEqual({
-      resendApiKeyPresent: true,
-      resendFromAddressPresent: true,
+      mailtrapApiKeyPresent: true,
+      mailtrapBulkApiKeyPresent: true,
+      mailtrapFromAddressPresent: true,
+      mailtrapSandbox: true,
       siteUrlPresent: true,
     });
+    expect(present.broadcastSendingEnabled).toBe(true);
 
     const serialized = JSON.stringify(present);
-    expect(serialized).not.toContain("re_live_secret_value");
+    expect(serialized).not.toContain("mt_live_secret_value");
+    expect(serialized).not.toContain("mt_bulk_secret_value");
     expect(serialized).not.toContain("sender@example.com");
     expect(serialized).not.toContain("https://ivent.example.com");
-    expect(serialized).toContain("resendApiKeyPresent");
+    expect(serialized).toContain("mailtrapApiKeyPresent");
   });
 });

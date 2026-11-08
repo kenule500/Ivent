@@ -30,16 +30,21 @@ export default function SystemHealthPage() {
   const asOf = data?.asOf;
 
   const config = data?.config;
+  const messagingTransport = config?.mailtrapSandbox
+    ? "Mailtrap Email Testing (sandbox)"
+    : config?.mailtrapBulkApiKeyPresent
+      ? "Mailtrap Email Sending (bulk stream for announcements)"
+      : "Mailtrap Email Sending (transactional stream)";
   const configRows = [
     {
-      label: "Resend API key",
-      present: config?.resendApiKeyPresent ?? false,
+      label: "Mailtrap API key",
+      present: config?.mailtrapApiKeyPresent ?? false,
       hint: "Required for invite and announcement email",
     },
     {
-      label: "Resend from address",
-      present: config?.resendFromAddressPresent ?? false,
-      hint: "Falls back to the Resend test sender",
+      label: "Mailtrap from address",
+      present: config?.mailtrapFromAddressPresent ?? false,
+      hint: "Must sit on a domain verified in Mailtrap",
     },
     {
       label: "Site URL",
@@ -257,6 +262,10 @@ export default function SystemHealthPage() {
               ))}
             </ul>
             <p className="mt-3 text-xs text-muted-foreground">
+              Messaging transport:{" "}
+              <span className="font-medium">{messagingTransport}</span>.
+            </p>
+            <p className="mt-1 text-xs text-muted-foreground">
               Announcement sending:{" "}
               <span className="font-medium">
                 {data?.broadcastSendingEnabled ? "enabled" : "disabled until the sending domain is verified"}
