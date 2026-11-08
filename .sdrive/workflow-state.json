@@ -9,8 +9,8 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "backlog",
-          "currentStep": "planning",
+          "phase": "ongoing",
+          "currentStep": "implementation",
           "gates": {
             "specification": "pending",
             "planning": "pending",
@@ -27,6 +27,11 @@
               "event": "plan_and_tasks_drafted",
               "by": "sdrive:propose",
               "timestamp": "2026-11-08T10:15:00.000Z"
+            },
+            {
+              "event": "implementation_started",
+              "by": "sdrive:apply",
+              "timestamp": "2026-11-08T10:25:00.000Z"
             }
           ]
         }

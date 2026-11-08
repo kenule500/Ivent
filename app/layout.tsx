@@ -6,6 +6,7 @@ import { ClerkProvider } from '@clerk/nextjs';
 import { dark } from '@clerk/themes';
 import { Toaster } from "@/components/ui/sonner";
 import AdminAwareLayout from "@/components/AdminAwareLayout";
+import { LiveRegionProvider } from "@/components/a11y/live-region";
 
 export const metadata: Metadata = {
   title: "Ivent",
@@ -28,7 +29,9 @@ export default function RootLayout({
         >
           <ClerkProvider appearance={{ theme: dark }}>
             <ConvexClientProvider>
-              <AdminAwareLayout>{children}</AdminAwareLayout>
+              <LiveRegionProvider>
+                <AdminAwareLayout>{children}</AdminAwareLayout>
+              </LiveRegionProvider>
               <Toaster position="top-center" richColors />
             </ConvexClientProvider>
           </ClerkProvider>

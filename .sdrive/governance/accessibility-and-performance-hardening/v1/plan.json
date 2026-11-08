@@ -40,12 +40,12 @@
         "description": "Home page: keyboard-operable cards, reduced-motion carousel, one h1, and labelled sections."
       },
       {
-        "name": "app/events/[slug]/page.tsx",
+        "name": "app/(public)/events/[slug]/page.tsx",
         "action": "modify",
         "description": "Event page: performance shell, hero sizing, contrast and focus, single h1."
       },
       {
-        "name": "app/events/[slug]/register/page.tsx",
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
         "action": "modify",
         "description": "Registration form: programmatic labels, aria-describedby for hints and errors, focus to the first invalid field."
       },

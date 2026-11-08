@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import Header from "@/components/header";
 import Footer from "@/components/footer";
 import { MaintenanceGate } from "@/components/maintenance-gate";
+import { SkipLink } from "@/components/a11y/skip-link";
 
 export default function AdminAwareLayout({ children }: { children: React.ReactNode }) {
   const pathname = usePathname();
@@ -16,8 +17,13 @@ export default function AdminAwareLayout({ children }: { children: React.ReactNo
 
   return (
     <>
+      <SkipLink />
       {!isAdminRoute && <Header />}
-      <main className={isAdminRoute ? "min-h-screen" : "relative min-h-screen container mx-auto pt-40 md:pt-32"}>
+      <main
+        id="main"
+        tabIndex={-1}
+        className={isAdminRoute ? "min-h-screen" : "relative min-h-screen container mx-auto pt-40 md:pt-32"}
+      >
         {!isAdminRoute && (
           <div className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
             <div className="absolute top-0 left-1/4 w-96 h-96 bg-pink-600/20 rounded-full blur-3xl" />
@@ -31,8 +37,8 @@ export default function AdminAwareLayout({ children }: { children: React.ReactNo
             <MaintenanceGate>{children}</MaintenanceGate>
           )}
         </div>
-        {!isAdminRoute && <Footer />}
       </main>
+      {!isAdminRoute && <Footer />}
     </>
   );
 }

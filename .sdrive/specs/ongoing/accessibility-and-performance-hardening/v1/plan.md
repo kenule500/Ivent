@@ -63,8 +63,8 @@ The event page is the reference page and the budget applies to it:
 | `lib/a11y/focus.ts` | create | Focus helpers |
 | `app/layout.tsx` | modify | Landmarks + skip link |
 | `app/page.tsx` | modify | Home keyboard, carousel, single `h1` |
-| `app/events/[slug]/page.tsx` | modify | Event page performance shell |
-| `app/events/[slug]/register/page.tsx` | modify | Labels, errors, focus |
+| `app/(public)/events/[slug]/page.tsx` | modify | Event page performance shell |
+| `app/(public)/events/[slug]/_components/register-modal.tsx` | modify | Labels, errors, focus |
 | `components/event-card.tsx` | modify | Keyboard + accessible name |
 | `components/ui/dialog.tsx` | modify | Adopt FocusTrap |
 | `components/ui/select.tsx` | modify | Arrow keys and announcement |
