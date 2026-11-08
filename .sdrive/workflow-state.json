@@ -1,6 +1,38 @@
 {
   "features": [
     {
+      "name": "accessibility-and-performance-hardening",
+      "branch": "feature/backlog-wave-1",
+      "base": "main",
+      "productItems": ["BP-015"],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "backlog",
+          "currentStep": "planning",
+          "gates": {
+            "specification": "pending",
+            "planning": "pending",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-08T09:55:00.000Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-08T10:15:00.000Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "event-discovery-and-registration",
       "currentVersion": "v1",
       "versions": [

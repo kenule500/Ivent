@@ -1,0 +1,185 @@
+{
+  "feature": "accessibility-and-performance-hardening",
+  "version": 1,
+  "architecture": {
+    "approach": "Ship the floor before new features. Extract four accessibility primitives (focus trap, visually hidden text, skip link, live region) into one module, adopt them screen by screen across the five reference pages, enforce contrast and reduced-motion in the shared stylesheet, then bring the event page inside an explicit performance budget and wire axe-core plus Lighthouse as non-interactive gates. No schema, API, or Convex change is involved.",
+    "components": [
+      {
+        "name": "components/a11y/focus-trap.tsx",
+        "action": "create",
+        "description": "Traps Tab within a container, restores focus to the invoking element on close, and falls back to main when the trigger is gone."
+      },
+      {
+        "name": "components/a11y/visually-hidden.tsx",
+        "action": "create",
+        "description": "Screen-reader-only text for icon buttons, counters, and contextual labels."
+      },
+      {
+        "name": "components/a11y/live-region.tsx",
+        "action": "create",
+        "description": "Provider plus hook that announce polite or assertive async outcomes without moving focus."
+      },
+      {
+        "name": "components/a11y/skip-link.tsx",
+        "action": "create",
+        "description": "First focusable element on every page, targeting the main landmark."
+      },
+      {
+        "name": "lib/a11y/focus.ts",
+        "action": "create",
+        "description": "Focus helpers: remember/restore trigger, move focus to the first invalid field, and resolve a safe fallback target."
+      },
+      {
+        "name": "app/layout.tsx",
+        "action": "modify",
+        "description": "Render the skip link and the header, main, and footer landmarks once for every page."
+      },
+      {
+        "name": "app/page.tsx",
+        "action": "modify",
+        "description": "Home page: keyboard-operable cards, reduced-motion carousel, one h1, and labelled sections."
+      },
+      {
+        "name": "app/events/[slug]/page.tsx",
+        "action": "modify",
+        "description": "Event page: performance shell, hero sizing, contrast and focus, single h1."
+      },
+      {
+        "name": "app/events/[slug]/register/page.tsx",
+        "action": "modify",
+        "description": "Registration form: programmatic labels, aria-describedby for hints and errors, focus to the first invalid field."
+      },
+      {
+        "name": "components/event-card.tsx",
+        "action": "modify",
+        "description": "Card link and actions keyboard reachable with a visible focus ring and an accessible name."
+      },
+      {
+        "name": "components/ui/dialog.tsx",
+        "action": "modify",
+        "description": "Adopt FocusTrap so every dialog shares focus entry, trapping, Escape, and return behaviour."
+      },
+      {
+        "name": "components/ui/select.tsx",
+        "action": "modify",
+        "description": "Arrow-key movement, Home/End, Escape, and an announced active option."
+      },
+      {
+        "name": "app/globals.css",
+        "action": "modify",
+        "description": "Focus-visible ring token, reduced-motion media query, and contrast token corrections."
+      },
+      {
+        "name": "test/a11y/axe.test.tsx",
+        "action": "create",
+        "description": "axe-core run over the five reference pages, failing on any WCAG 2.1 A/AA violation."
+      },
+      {
+        "name": ".lighthouserc.json",
+        "action": "create",
+        "description": "Lighthouse budget for the event page: performance and accessibility at least 95, LCP 2500ms, CLS 0.1, TBT 200ms."
+      },
+      {
+        "name": "package.json",
+        "action": "modify",
+        "description": "Add axe-core, vitest-axe, and @lhci/cli, plus a11y and lighthouse scripts."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "FR-010",
+      "FR-011",
+      "FR-012",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004",
+      "NFR-005",
+      "NFR-006"
+    ]
+  },
+  "dataModel": {
+    "entities": [],
+    "flowDescription": "No persistence, schema, or API change. The feature changes presentation, focus management, and the client bundle of existing pages."
+  },
+  "apiContracts": [],
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-006",
+      "description": "Announced and visually-hidden text render as text; no dangerouslySetInnerHTML is introduced (CON-517)."
+    },
+    {
+      "requirementId": "NFR-006",
+      "description": "Existing CSP and security headers are untouched; no inline script or style is added that would require relaxing them (CON-513, CON-520)."
+    },
+    {
+      "requirementId": "NFR-001",
+      "description": "Form validation stays Zod plus Convex validators; the feature only connects messages to inputs (CON-515)."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-002",
+      "strategy": "Event page Lighthouse mobile performance and accessibility at least 95, LCP at most 2.5s, CLS at most 0.1, TBT at most 200ms on a 4x CPU / 1.6 Mbps profile against the production build."
+    },
+    {
+      "requirementId": "NFR-003",
+      "strategy": "First-load JavaScript at or below 180KB gzip; interactive islands behind client boundaries and dynamic imports."
+    },
+    {
+      "requirementId": "NFR-004",
+      "strategy": "next/image with explicit dimensions and priority for the hero; display swap with metric-compatible fallbacks for fonts."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "axe-core",
+      "type": "library",
+      "action": "add",
+      "notes": "Automated WCAG rule engine; dev dependency only."
+    },
+    {
+      "name": "vitest-axe",
+      "type": "library",
+      "action": "add",
+      "notes": "Matcher for axe results inside Vitest."
+    },
+    {
+      "name": "@lhci/cli",
+      "type": "library",
+      "action": "add",
+      "notes": "Lighthouse CI runner used for the event page budget; dev dependency only."
+    },
+    {
+      "name": "next/image",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "Already available; used for hero sizing."
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "Accessibility work is invisible in a demo and gets deprioritised.",
+      "mitigation": "Implement the automated gates in the same change so regressions fail the build."
+    },
+    {
+      "id": "RISK-002",
+      "description": "Lighthouse results are noisy across machines.",
+      "mitigation": "Pin the mobile profile, measure the production build, and assert budgets rather than a single score."
+    },
+    {
+      "id": "RISK-003",
+      "description": "Changing every dialog at once risks the registration and ticket flows.",
+      "mitigation": "Adopt FocusTrap screen by screen, keeping the existing suites green."
+    }
+  ]
+}

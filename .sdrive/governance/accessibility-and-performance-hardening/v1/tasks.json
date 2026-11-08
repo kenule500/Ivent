@@ -1,0 +1,289 @@
+{
+  "feature": "accessibility-and-performance-hardening",
+  "version": 1,
+  "phases": [
+    {
+      "phaseId": "P0",
+      "name": "Shared primitives",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Build the FocusTrap primitive",
+          "description": "Create components/a11y/focus-trap.tsx: save the invoking element, move focus to the first focusable node inside, cycle Tab/Shift+Tab, close on Escape, restore focus on unmount, and fall back to main when the trigger is gone.",
+          "linkedRequirements": [
+            "FR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.2",
+          "title": "Build VisuallyHidden and SkipLink",
+          "description": "Create components/a11y/visually-hidden.tsx and skip-link.tsx: clip-based hidden text, and a skip link rendered as the first focusable element targeting #main.",
+          "linkedRequirements": [
+            "FR-005",
+            "FR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-001"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.3",
+          "title": "Build the LiveRegion provider and hook",
+          "description": "Create components/a11y/live-region.tsx exposing announce(message, politeness) with a polite and an assertive region; mount once in the root layout.",
+          "linkedRequirements": [
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.4",
+          "title": "Add focus helpers",
+          "description": "Create lib/a11y/focus.ts with rememberFocus, restoreFocus, and focusFirstInvalid(container) so dialogs and forms share one implementation.",
+          "linkedRequirements": [
+            "FR-003",
+            "FR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002",
+            "AC-004"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P1",
+      "name": "Reference pages",
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Add landmarks and the skip link to the root layout",
+          "description": "Modify app/layout.tsx to render the skip link once and wrap content in header, main#main, and footer landmarks; keep exactly one h1 per page by moving titles into pages.",
+          "linkedRequirements": [
+            "FR-005",
+            "FR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.2",
+          "title": "Make the home page keyboard operable",
+          "description": "Modify app/page.tsx and components/event-card.tsx: keyboard-operable cards with a visible focus ring and accessible names; the carousel becomes manual under prefers-reduced-motion and announces its position.",
+          "linkedRequirements": [
+            "FR-001",
+            "FR-002",
+            "FR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-007"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.3",
+          "title": "Harden the event page semantics and hero shell",
+          "description": "Modify app/events/[slug]/page.tsx: single h1, heading order, contrast and focus fixes, and a hero shell that reserves its box with next/image dimensions and priority.",
+          "linkedRequirements": [
+            "FR-006",
+            "FR-009",
+            "FR-012"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-006",
+            "AC-009"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.4",
+          "title": "Label the registration form and connect its errors",
+          "description": "Modify app/events/[slug]/register/page.tsx: programmatic labels, aria-describedby for hints and errors, aria-invalid on failure, and focus to the first invalid field.",
+          "linkedRequirements": [
+            "FR-007",
+            "FR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004",
+            "AC-001"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.5",
+          "title": "Announce ticket readiness",
+          "description": "Wire the ticket view to announce readiness once through the live region, without moving focus or re-announcing on re-render.",
+          "linkedRequirements": [
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.6",
+          "title": "Announce feedback submission outcomes",
+          "description": "Announce feedback success and failure through the live region and keep focus in place; adopt the shared label and error pattern.",
+          "linkedRequirements": [
+            "FR-008",
+            "FR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005",
+            "AC-004"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.7",
+          "title": "Make dropdown menus keyboard operable",
+          "description": "Modify components/ui/select.tsx: arrow-key movement, Home/End, Escape, and an announced active option, using the shared dialog and focus primitives.",
+          "linkedRequirements": [
+            "FR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P2",
+      "name": "Motion and contrast",
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Honour reduced motion and standardise the focus ring",
+          "description": "Modify app/globals.css: a prefers-reduced-motion block that disables autoplay, transitions, and parallax, and a :focus-visible ring token of 2px at 3:1 contrast.",
+          "linkedRequirements": [
+            "FR-010",
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-001"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.2",
+          "title": "Correct failing contrast tokens",
+          "description": "Adjust only the colour tokens that fail 4.5:1 text or 3:1 UI contrast and record the before/after ratios; ensure no state relies on colour alone.",
+          "linkedRequirements": [
+            "FR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P3",
+      "name": "Event page performance",
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Serve the hero image through next/image",
+          "description": "Use next/image with explicit dimensions and priority so the hero reserves its box and does not shift layout; verify CLS on a throttled profile.",
+          "linkedRequirements": [
+            "FR-012",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009",
+            "AC-008"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T4.2",
+          "title": "Stabilise font loading",
+          "description": "Use display: swap with metric-compatible fallbacks so the web font swap does not shift layout.",
+          "linkedRequirements": [
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T4.3",
+          "title": "Trim the event page's first-load JavaScript",
+          "description": "Move interactive islands behind client boundaries and dynamic imports so first-load JS stays at or below 180KB gzip while first paint remains server-rendered.",
+          "linkedRequirements": [
+            "NFR-003",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009",
+            "AC-008"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P4",
+      "name": "Automated gates",
+      "tasks": [
+        {
+          "id": "T5.1",
+          "title": "Add the axe-core reference-page suite",
+          "description": "Create test/a11y/axe.test.tsx rendering home, event detail, registration, ticket, and feedback, asserting zero WCAG 2.1 A/AA violations.",
+          "linkedRequirements": [
+            "FR-011",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-010"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.2",
+          "title": "Add the Lighthouse budget",
+          "description": "Create .lighthouserc.json for the event page on the pinned mobile profile: performance and accessibility at least 95, LCP at most 2500ms, CLS at most 0.1, TBT at most 200ms.",
+          "linkedRequirements": [
+            "FR-012",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-010",
+            "AC-008"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.3",
+          "title": "Wire the scripts and development dependencies",
+          "description": "Add axe-core, vitest-axe, and @lhci/cli as dev dependencies plus a11y and lighthouse scripts so both gates run non-interactively.",
+          "linkedRequirements": [
+            "NFR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-010"
+          ],
+          "completed": false
+        }
+      ]
+    }
+  ]
+}
