@@ -142,6 +142,7 @@ export default function EventDetailPage() {
               src={event.coverImage}
               alt={event.title}
               fill
+              sizes="(max-width: 768px) 100vw, 1024px"
               className="object-cover"
               priority
             />

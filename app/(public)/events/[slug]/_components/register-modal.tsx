@@ -16,8 +16,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { useAnnounce } from "@/components/a11y/live-region";
 import { Id } from "@/convex/_generated/dataModel";
 
 interface RegisterModalProps {
@@ -35,6 +35,8 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
   const router = useRouter();
   const { user } = useUser();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const announce = useAnnounce();
 
   const attendeeName = user?.fullName ?? user?.username ?? "Guest";
   const attendeeEmail = user?.primaryEmailAddress?.emailAddress ?? "";
@@ -45,6 +47,7 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setErrorMessage(null);
 
     try {
       await registerForEvent({
@@ -53,10 +56,17 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
 
       setIsSuccess(true);
       toast.success("Registration successful! 🎉");
+      announce("Registration confirmed. Your ticket is in My Tickets.");
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "Registration failed. Please try again.";
-      toast.error(errorMessage);
-      
+      const message =
+        error instanceof Error
+          ? error.message
+          : "Registration failed. Please try again.";
+      // Show the reason inline and announce it, so the failure is not a
+      // transient toast that a screen reader never reaches (AC-004, AC-005).
+      setErrorMessage(message);
+      announce(`Registration failed. ${message}`, "assertive");
+      toast.error(message);
     }
   };
 
@@ -72,14 +82,16 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
         <DialogContent className="sm:max-w-md">
           <div className="flex flex-col items-center text-center space-y-4 py-6">
             <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
-              <CheckCircle className="w-8 h-8 text-green-600" />
+              <CheckCircle className="w-8 h-8 text-green-600" aria-hidden="true" />
             </div>
             <div>
-              <h2 className="text-2xl font-bold mb-2">You&apos;re All Set!</h2>
-              <p className="text-muted-foreground">
+              <DialogTitle className="text-2xl font-bold mb-2">
+                You&apos;re All Set!
+              </DialogTitle>
+              <DialogDescription>
                 Your registration is confirmed. Check your Tickets for event
                 details and your QR code ticket.
-              </p>
+              </DialogDescription>
             </div>
             <Separator />
             <div className="w-full space-y-2">
@@ -126,7 +138,7 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
 
           {/* Ticket holder (from the signed-in account) */}
           <div className="space-y-2">
-            <Label>Ticket holder</Label>
+            <p className="text-sm font-medium">Ticket holder</p>
             <div className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
               <p className="font-medium">{attendeeName}</p>
               {attendeeEmail && (
@@ -143,6 +155,13 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
             By registering, you agree to receive event updates and reminders via
             email.
           </p>
+
+          {/* Inline, announced failure reason (AC-004, AC-005) */}
+          {errorMessage && (
+            <p role="alert" className="text-sm text-red-400">
+              {errorMessage}
+            </p>
+          )}
 
           {/* Actions */}
           <div className="flex gap-2 pt-2">
