@@ -11,18 +11,24 @@ const Footer = () => {
       <div className="flex gap-4 items-center">
         <a
           href="https://www.youtube.com/roadsidecoder"
-          className="text-gray-400"
+          aria-label="Ivent on YouTube"
+          className="rounded p-2 text-gray-400 focus-visible:ring-2 focus-visible:ring-purple-400"
         >
-          <Video className="w-5 h-5" />
+          <Video className="w-5 h-5" aria-hidden="true" />
         </a>
         <a
           href="https://www.instagram.com/roadsidecoder"
-          className="text-gray-400"
+          aria-label="Ivent on Instagram"
+          className="rounded p-2 text-gray-400 focus-visible:ring-2 focus-visible:ring-purple-400"
         >
-          <Play className="w-5 h-5" />
+          <Play className="w-5 h-5" aria-hidden="true" />
         </a>
-        <a href="https://x.com/Piyush_eon" className="text-gray-400">
-          <X className="w-5 h-5" />
+        <a
+          href="https://x.com/Piyush_eon"
+          aria-label="Ivent on X"
+          className="rounded p-2 text-gray-400 focus-visible:ring-2 focus-visible:ring-purple-400"
+        >
+          <X className="w-5 h-5" aria-hidden="true" />
         </a>
       </div>
     </footer>

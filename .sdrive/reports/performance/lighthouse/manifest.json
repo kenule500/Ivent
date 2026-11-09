@@ -1,0 +1,80 @@
+[
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_42_04.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_42_04.report.json",
+    "summary": {
+      "performance": 0.27,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_43_06.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_43_06.report.json",
+    "summary": {
+      "performance": 0.37,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/explore",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_44_37.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_44_37.report.json",
+    "summary": {
+      "performance": 0.29,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/explore",
+    "isRepresentativeRun": false,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_45_43.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_45_43.report.json",
+    "summary": {
+      "performance": 0.29,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/",
+    "isRepresentativeRun": true,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_43_57.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost--2026_11_09_12_43_57.report.json",
+    "summary": {
+      "performance": 0.36,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  },
+  {
+    "url": "http://localhost:3000/explore",
+    "isRepresentativeRun": true,
+    "htmlPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_46_38.report.html",
+    "jsonPath": "C:\\Users\\KENULE-NWINEE\\Documents\\vscode-projs\\Gomyc0de-project\\Ivent\\.sdrive\\reports\\performance\\lighthouse\\localhost-explore-2026_11_09_12_46_38.report.json",
+    "summary": {
+      "performance": 0.28,
+      "accessibility": 0.96,
+      "best-practices": 0.77,
+      "seo": 1,
+      "agentic-browsing": 1
+    }
+  }
+]

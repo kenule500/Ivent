@@ -192,7 +192,10 @@ export default function SearchLocationBar() {
           setSelectedCity("");
         }}
       >
-        <SelectTrigger className="w-32 h-9 border-l-0 rounded-none">
+        <SelectTrigger
+          aria-label="Filter by state"
+          className="w-32 h-9 border-l-0 rounded-none"
+        >
           <SelectValue placeholder="State" />
         </SelectTrigger>
         <SelectContent>
@@ -216,7 +219,10 @@ export default function SearchLocationBar() {
         }}
         disabled={!selectedState}
       >
-        <SelectTrigger className="w-32 h-9 rounded-none rounded-r-md ">
+        <SelectTrigger
+          aria-label="Filter by city"
+          className="w-32 h-9 rounded-none rounded-r-md "
+        >
           <SelectValue placeholder="City" />
         </SelectTrigger>
         <SelectContent>

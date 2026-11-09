@@ -223,7 +223,7 @@
       "taskIds": [
         "T4.3"
       ],
-      "status": "not_started",
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -237,7 +237,7 @@
         "T4.1",
         "T4.2"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
