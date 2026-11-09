@@ -1,0 +1,260 @@
+{
+  "feature": "accessibility-and-performance-hardening",
+  "version": "v1",
+  "status": "FAIL",
+  "commit": "51271077b1676ad9c1ba4b2b7a6301b786739c4a",
+  "base": "main",
+  "branch": "feature/backlog-wave-1",
+  "reviewedBy": "kenule500",
+  "reviewedAt": "2026-11-09T14:10:00.000Z",
+  "coverage": 90,
+  "criteria": [
+    {
+      "id": "spec-convergence",
+      "status": "pass",
+      "detail": "All 10 ACs have an implementation; 8 are exercised by tests and the a11y half of AC-008 is measured."
+    },
+    {
+      "id": "task-completion",
+      "status": "pass",
+      "detail": "19/19 tasks are completed:true and every tasks.md checkbox is checked."
+    },
+    {
+      "id": "traceability",
+      "status": "pass",
+      "detail": "18 rows, 15 carrying test IDs; NFR rows updated with measured status."
+    },
+    {
+      "id": "coverage",
+      "status": "fail",
+      "detail": "9 of 10 ACs carry a linked test (90%). AC-009 has no test and its budget is only asserted in configuration."
+    },
+    {
+      "id": "test-report",
+      "status": "pass",
+      "detail": "test-report-accessibility-and-performance-hardening-v1-2026-11-08.md exists and is newer than spec.md."
+    },
+    {
+      "id": "test-evidence",
+      "status": "pass",
+      "detail": "test-evidence.json records exit 0, 24 passed / 0 failed, commit 5127107 = HEAD."
+    },
+    {
+      "id": "change-scope",
+      "status": "pass",
+      "detail": "One feature on the shared branch; no other feature's commits. Raw Lighthouse traces removed from the repo and git-ignored."
+    },
+    {
+      "id": "test-quality",
+      "status": "pass",
+      "detail": "No .only, xit, or skips; every test name carries its AC ID."
+    },
+    {
+      "id": "code-quality",
+      "status": "pass",
+      "detail": "tsc --noEmit exit 0; eslint 0 errors."
+    },
+    {
+      "id": "security",
+      "status": "pass",
+      "detail": "npm audit --omit=dev reports 0 vulnerabilities; secret scan clean apart from base64 false positives in generated Lighthouse JSON, which is no longer committed."
+    },
+    {
+      "id": "testing",
+      "status": "pass",
+      "detail": "24/24 feature tests and 181/181 repository-wide."
+    },
+    {
+      "id": "documentation",
+      "status": "fail",
+      "detail": "README.md and CHANGELOG.md were not updated for this feature."
+    },
+    {
+      "id": "nfr-evidence",
+      "status": "fail",
+      "detail": "NFR-002 performance 28-37 (target >=95) and NFR-003 2592KB (target <=180KB) are measured and unmet; NFR-004 CLS 0.002 passes."
+    },
+    {
+      "id": "definition-of-done",
+      "status": "fail",
+      "detail": "Inherits the NFR and documentation failures."
+    },
+    {
+      "id": "spec-to-code-verification",
+      "status": "pass",
+      "detail": "sdrive verify returns pass: 18 matched, 0 missing, 0 renamed, 0 extra, 2 withdrawn."
+    },
+    {
+      "id": "ci",
+      "status": "not_verified",
+      "detail": "No CI workflow exists, so the axe and Lighthouse gates do not run automatically."
+    },
+    {
+      "id": "permission",
+      "status": "pass",
+      "detail": "kenule500 (admin) is allowed to review."
+    },
+    {
+      "id": "reviewer-independence",
+      "status": "pass",
+      "detail": "No assignee is recorded, so there is no self-approval conflict."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "issue": "Lighthouse performance 28-37 against a >=95 target, with total blocking time 5.0-6.6s against 200ms and LCP 5.8-6.4s on /explore.",
+      "location": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "First-load JavaScript is 2592KB across 23 scripts against a 180KB budget. The bundle size is a code fact and explains the blocking time.",
+      "location": "package.json, app/layout.tsx, components/search-location-bar.tsx",
+      "fixRequired": true
+    },
+    {
+      "severity": "medium",
+      "issue": "AC-009 has no automated or measured coverage; the 180KB budget is asserted only in .lighthouserc.json.",
+      "location": "traceability.json",
+      "fixRequired": true
+    },
+    {
+      "severity": "medium",
+      "issue": "README.md and CHANGELOG.md were not updated for this feature.",
+      "location": "README.md, CHANGELOG.md",
+      "fixRequired": true
+    },
+    {
+      "severity": "info",
+      "issue": "LCP on / measured 41s because no Convex deployment is reachable; the number reflects a missing backend, not the page.",
+      "location": "environment",
+      "fixRequired": false
+    },
+    {
+      "severity": "info",
+      "issue": "CI is not configured, so the accessibility and Lighthouse gates do not run on pull requests.",
+      "location": "repository",
+      "fixRequired": false
+    }
+  ],
+  "security": {
+    "status": "pass",
+    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). Secret scan found no credentials; four pattern matches were base64 noise inside generated Lighthouse JSON, and that directory is now git-ignored. No dangerouslySetInnerHTML was introduced and announced text renders as text.",
+    "secrets": "clean",
+    "dependencies": "clean",
+    "baseline": [
+      {
+        "id": "CON-511",
+        "status": "not_applicable",
+        "detail": "No authentication change; Clerk flows untouched."
+      },
+      {
+        "id": "CON-512",
+        "status": "not_applicable",
+        "detail": "No authorization change."
+      },
+      {
+        "id": "CON-513",
+        "status": "not_applicable",
+        "detail": "No middleware or header change."
+      },
+      {
+        "id": "CON-514",
+        "status": "not_applicable",
+        "detail": "No new mutation or submission surface."
+      },
+      {
+        "id": "CON-515",
+        "status": "pass",
+        "detail": "Existing Zod and Convex validation unchanged; the feature only associated messages with inputs."
+      },
+      {
+        "id": "CON-516",
+        "status": "not_applicable",
+        "detail": "No query construction change."
+      },
+      {
+        "id": "CON-517",
+        "status": "pass",
+        "detail": "Announced and hidden text is rendered as text; no dangerouslySetInnerHTML added."
+      },
+      {
+        "id": "CON-518",
+        "status": "not_applicable",
+        "detail": "No new state-changing HTTP form post."
+      },
+      {
+        "id": "CON-519",
+        "status": "pass",
+        "detail": "No secrets involved; .env* remains git-ignored."
+      }
+    ]
+  },
+  "performance": {
+    "status": "fail",
+    "reason": "Measured against the production build with Lighthouse CI. NFR-002 performance is 28-37 against >=95 while accessibility reaches 96; NFR-003 is 2592KB against 180KB; NFR-004 CLS is 0.002 and passes. The bundle weight is hardware-independent and explains the blocking time.",
+    "method": "Lighthouse CI 0.16, default mobile form factor with simulated throttling, production build served by next start, 3 runs per URL, medians recorded. No Convex deployment is reachable, which inflates LCP on /.",
+    "nfr": [
+      {
+        "id": "NFR-002",
+        "target": "Lighthouse performance and accessibility at least 95",
+        "measured": "performance 28-37, accessibility 96",
+        "status": "fail"
+      },
+      {
+        "id": "NFR-003",
+        "target": "first-load JavaScript at most 180KB gzip",
+        "measured": "2592KB across 23 local script files",
+        "status": "fail"
+      },
+      {
+        "id": "NFR-004",
+        "target": "cumulative layout shift at most 0.1",
+        "measured": "0.002",
+        "status": "pass"
+      }
+    ],
+    "seo": "not_applicable",
+    "report": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md"
+  },
+  "remediation": {
+    "round": 1,
+    "items": [
+      {
+        "id": "F-001",
+        "finding": "Lighthouse performance 28-37 against >=95 with TBT 5.0-6.6s",
+        "severity": "high",
+        "fixWith": "/sdrive:performance accessibility-and-performance-hardening",
+        "roundsFailed": 1
+      },
+      {
+        "id": "F-002",
+        "finding": "First-load JS 2592KB against a 180KB budget",
+        "severity": "high",
+        "fixWith": "/sdrive:performance accessibility-and-performance-hardening",
+        "roundsFailed": 1
+      },
+      {
+        "id": "F-003",
+        "finding": "AC-009 has no automated or measured coverage",
+        "severity": "medium",
+        "fixWith": "/sdrive:performance then sdrive test",
+        "roundsFailed": 1
+      },
+      {
+        "id": "F-004",
+        "finding": "README and CHANGELOG not updated for this feature",
+        "severity": "medium",
+        "fixWith": "/sdrive:docs accessibility-and-performance-hardening",
+        "roundsFailed": 1
+      }
+    ]
+  },
+  "evidence": {
+    "testEvidence": ".sdrive/governance/accessibility-and-performance-hardening/v1/test-evidence.json",
+    "testReport": ".sdrive/reports/tests/test-report-accessibility-and-performance-hardening-v1-2026-11-08.md",
+    "verification": ".sdrive/governance/accessibility-and-performance-hardening/v1/verification.json",
+    "audit": ".sdrive/audit-log.json"
+  }
+}
