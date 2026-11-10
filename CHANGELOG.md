@@ -39,6 +39,21 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ### Changed
 
+- **Accessibility and performance hardening (BP-015).** Shared accessibility
+  primitives — `LiveRegionProvider`/`useAnnounce`, `SkipLink`, `VisuallyHidden`,
+  focus helpers, and a reactive `prefers-reduced-motion` hook — replace per-screen
+  ad-hoc behaviour. Event cards became real controls (`role`, tab stop, Enter/Space),
+  async registration, ticket, and feedback outcomes now announce instead of relying
+  on toasts, the layout exposes skip link and landmark structure with the footer no
+  longer nested inside `<main>`, and icon-only controls carry accessible names.
+  Two gates now enforce the floor: `npm run a11y` (axe-core, WCAG 2.1 A/AA) and
+  `npm run lighthouse` (budgets in `.lighthouserc.json`).
+  Measured: Lighthouse accessibility 87 → **96**; event-page first-load JavaScript
+  **2,592 KB → 331 KB** after the onboarding modal stopped preloading its worldwide
+  `country-state-city` dataset. The 180 KB JS budget remains **unmet** because
+  Clerk's UI bundles alone are ~343 KB — recorded, not waived, in
+  `.sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md`.
+
 - **Transactional email moved from Resend to Mailtrap.** `convex/mailtrap.ts` posts
   straight to the Mailtrap Email Sending API, so no SDK is bundled into the Convex
   action. Invites go out on the transactional stream while announcements use the

@@ -52,6 +52,8 @@ Copy the variables below into `.env.local`. All of them are server-side except t
 | `npm run lint` | ESLint |
 | `npm test` | Vitest, single run |
 | `npm run test:watch` | Vitest, watch mode |
+| `npm run a11y` | axe-core WCAG 2.1 A/AA suite over the accessibility primitives and reference components |
+| `npm run lighthouse` | Lighthouse CI budget check (performance ≥ 95, LCP ≤ 2.5 s, CLS ≤ 0.1, TBT ≤ 200 ms) against the production build |
 
 ## Surfaces
 
@@ -139,6 +141,35 @@ nothing extra is bundled into the Convex Node action.
 - Every send is logged (recipient, template, status, provider error) to the
   `emailEvents` table, and `/admin/health` reports the active transport and
   failures from it.
+
+## Accessibility and performance
+
+The accessibility layer is a small set of shared primitives rather than per-screen fixes:
+
+| Module | Purpose |
+|--------|---------|
+| `components/a11y/live-region.tsx` | `LiveRegionProvider` + `useAnnounce` — polite and assertive announcements for async outcomes |
+| `components/a11y/focus-trap.tsx` | *Not present on purpose* — `@base-ui/react` Dialog already traps and restores focus |
+| `components/a11y/skip-link.tsx` | First focusable element, targets `#main` |
+| `components/a11y/visually-hidden.tsx` | Screen-reader-only text |
+| `lib/a11y/focus.ts` | `rememberFocus`, `restoreFocus`, `focusFirstInvalid`, `prefersReducedMotion` |
+| `lib/a11y/use-prefers-reduced-motion.ts` | Reactive reduced-motion flag for JS-driven motion (carousel autoplay) |
+
+Conventions worth keeping:
+
+- Every async outcome that changes the screen announces through `useAnnounce`; nothing relies on a toast alone.
+- Icon-only controls carry an `aria-label`; decorative icons are `aria-hidden="true"`.
+- Motion honours `prefers-reduced-motion` in both CSS (`app/globals.css`) and JS.
+- Focus is never hidden: `:focus-visible` renders a 2px ring at 3:1 contrast.
+
+Two gates enforce this: `npm run a11y` (axe-core, WCAG 2.1 A/AA) and `npm run lighthouse`
+(budgets declared in `.lighthouserc.json`). Both run against the production build.
+
+**Known budget position:** first-load JavaScript is ~331 KB, of which Clerk's UI
+bundles are ~343 KB — so the 180 KB budget in `.lighthouserc.json` cannot be met
+while `@clerk/nextjs` loads its UI on public pages. The measured history and the
+remaining options are in
+`.sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md`.
 
 ## Testing
 
