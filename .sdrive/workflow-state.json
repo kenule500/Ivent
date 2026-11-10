@@ -14,8 +14,8 @@
           "phase": "ongoing",
           "currentStep": "specification",
           "gates": {
-            "specification": "pending",
-            "planning": "pending",
+            "specification": "approved",
+            "planning": "approved",
             "implementation": "approved",
             "review": "pending"
           },
@@ -86,6 +86,20 @@
               "by": "sdrive:update-propose",
               "timestamp": "2026-11-10T13:10:00.000Z",
               "reason": "Revised NFR-007/AC-011 application budget 250KB -> 350KB after measuring the framework floor (react-dom 202KB raw, scheduler 128KB raw, convex client 118KB raw dominate the 331KB gzip first load)."
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T14:03:55.421Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T14:04:02.437Z"
             }
           ]
         }

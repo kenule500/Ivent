@@ -294,6 +294,28 @@
       "event": "gate_approved",
       "prevHash": "247f2dc0978a1cfc61853e1e66493adcdd277b5a1db50d4cf24fad82ae0f0969",
       "hash": "26adfd9cb1e23d07c778769ffd18a7af0fcc9171ca8f9d4387ea5fe6fa1224ac"
+    },
+    {
+      "timestamp": "2026-11-10T14:03:55.655Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "gate": "specification",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "26adfd9cb1e23d07c778769ffd18a7af0fcc9171ca8f9d4387ea5fe6fa1224ac",
+      "hash": "ce3c8f2ba688455a87dfaeecb6f049c6e8e78adce8a060b040ffa633b8f1ea08"
+    },
+    {
+      "timestamp": "2026-11-10T14:04:02.695Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "gate": "planning",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "ce3c8f2ba688455a87dfaeecb6f049c6e8e78adce8a060b040ffa633b8f1ea08",
+      "hash": "91b4ff54c212b396d0f892ca6fb38a9c2185a7ffbce8725c65a2b509c4605be6"
     }
   ]
 }
