@@ -12,10 +12,10 @@
         {
           "id": "v1",
           "phase": "ongoing",
-          "currentStep": "review",
+          "currentStep": "specification",
           "gates": {
-            "specification": "approved",
-            "planning": "approved",
+            "specification": "pending",
+            "planning": "pending",
             "implementation": "approved",
             "review": "pending"
           },
@@ -60,6 +60,12 @@
               "actor": "kenule500",
               "previousValue": "pending",
               "timestamp": "2026-11-08T12:24:46.404Z"
+            },
+            {
+              "event": "spec_amended",
+              "by": "sdrive:update-propose",
+              "timestamp": "2026-11-10T12:20:00.000Z",
+              "reason": "Withdrew AC-009 (180KB unattainable with Clerk) and added NFR-007/AC-011 with a vendor-accounted budget: 700KB total, 250KB application code."
             }
           ]
         }

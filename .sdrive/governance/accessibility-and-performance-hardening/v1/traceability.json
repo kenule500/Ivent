@@ -223,7 +223,7 @@
       "taskIds": [
         "T4.3"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -268,6 +268,19 @@
       "testIds": [
         "TEST-039"
       ]
+    },
+    {
+      "requirementId": "NFR-007",
+      "acceptanceCriteriaIds": [
+        "AC-011"
+      ],
+      "planSection": "Architecture > Performance",
+      "taskIds": [
+        "T4.3",
+        "T5.2"
+      ],
+      "status": "not_started",
+      "testIds": []
     }
   ]
 }

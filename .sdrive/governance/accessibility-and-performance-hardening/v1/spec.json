@@ -89,7 +89,14 @@
         },
         {
           "id": "AC-009",
-          "text": "Given the event page, first-load JavaScript is at most 180KB gzip, the hero image is served through next/image with explicit dimensions and priority, and no web font swap shifts the layout."
+          "text": "Given the event page, first-load JavaScript is at most 180KB gzip, the hero image is served through next/image with explicit dimensions and priority, and no web font swap shifts the layout.",
+          "withdrawn": true,
+          "withdrawnReason": "Unattainable as written: Clerk UI bundles alone are about 343KB, so a 180KB first-load JavaScript budget cannot be met while @clerk/nextjs loads its UI on public pages.",
+          "withdrawnEvidence": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md (round 2: 331KB application JS plus about 343KB Clerk)"
+        },
+        {
+          "id": "AC-011",
+          "text": "Given the production build, first-load JavaScript is at most 700KB gzip including Clerk UI and at most 250KB excluding it, and both numbers are recorded in the performance report."
         }
       ]
     },
@@ -111,94 +118,140 @@
     {
       "id": "FR-001",
       "text": "Every interactive element on public pages MUST be keyboard reachable, in an order that matches the visual order.",
-      "linkedAcceptanceCriteria": ["AC-001"]
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
     },
     {
       "id": "FR-002",
       "text": "Focus MUST be visible on every focusable element, with a ring of at least 2px at 3:1 contrast.",
-      "linkedAcceptanceCriteria": ["AC-001"]
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
     },
     {
       "id": "FR-003",
       "text": "Dialogs MUST move focus inside on open, trap it, close on Escape, and return focus to their trigger.",
-      "linkedAcceptanceCriteria": ["AC-002"]
+      "linkedAcceptanceCriteria": [
+        "AC-002"
+      ]
     },
     {
       "id": "FR-004",
       "text": "Menus MUST support arrow-key movement, Home/End, and Escape, with the active item announced.",
-      "linkedAcceptanceCriteria": ["AC-002"]
+      "linkedAcceptanceCriteria": [
+        "AC-002"
+      ]
     },
     {
       "id": "FR-005",
       "text": "Every page MUST expose header, nav, main, and footer landmarks plus a skip-to-content link.",
-      "linkedAcceptanceCriteria": ["AC-003"]
+      "linkedAcceptanceCriteria": [
+        "AC-003"
+      ]
     },
     {
       "id": "FR-006",
       "text": "Every page MUST have exactly one h1 and a heading order without skipped levels.",
-      "linkedAcceptanceCriteria": ["AC-003"]
+      "linkedAcceptanceCriteria": [
+        "AC-003"
+      ]
     },
     {
       "id": "FR-007",
       "text": "Form controls MUST have programmatic labels and associated hint and error text.",
-      "linkedAcceptanceCriteria": ["AC-004"]
+      "linkedAcceptanceCriteria": [
+        "AC-004"
+      ]
     },
     {
       "id": "FR-008",
       "text": "Async outcomes MUST be announced through a polite or assertive live region, without stealing focus.",
-      "linkedAcceptanceCriteria": ["AC-005"]
+      "linkedAcceptanceCriteria": [
+        "AC-005"
+      ]
     },
     {
       "id": "FR-009",
       "text": "Colour usage MUST meet the contrast thresholds and MUST NOT be the only signal for state.",
-      "linkedAcceptanceCriteria": ["AC-006"]
+      "linkedAcceptanceCriteria": [
+        "AC-006"
+      ]
     },
     {
       "id": "FR-010",
       "text": "Motion MUST honour prefers-reduced-motion, disabling autoplay, transitions, and parallax.",
-      "linkedAcceptanceCriteria": ["AC-007"]
+      "linkedAcceptanceCriteria": [
+        "AC-007"
+      ]
     },
     {
       "id": "FR-011",
       "text": "An axe-core check over the five reference pages MUST run as a gate and report zero violations.",
-      "linkedAcceptanceCriteria": ["AC-010"]
+      "linkedAcceptanceCriteria": [
+        "AC-010"
+      ]
     },
     {
       "id": "FR-012",
       "text": "A Lighthouse budget check MUST fail when the event page misses its performance thresholds.",
-      "linkedAcceptanceCriteria": ["AC-008", "AC-010"]
+      "linkedAcceptanceCriteria": [
+        "AC-008",
+        "AC-010"
+      ]
     }
   ],
   "nonFunctionalRequirements": [
     {
       "id": "NFR-001",
       "text": "The five reference pages MUST conform to WCAG 2.1 Level AA, verified by axe-core plus a documented manual checklist.",
-      "linkedAcceptanceCriteria": ["AC-001", "AC-006"]
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-006"
+      ]
     },
     {
       "id": "NFR-002",
       "text": "The event page MUST score at least 95 for Lighthouse performance and accessibility on the defined mobile profile.",
-      "linkedAcceptanceCriteria": ["AC-008"]
+      "linkedAcceptanceCriteria": [
+        "AC-008"
+      ]
     },
     {
       "id": "NFR-003",
       "text": "The event page's first-load JavaScript MUST stay at or below 180KB gzip.",
-      "linkedAcceptanceCriteria": ["AC-009"]
+      "linkedAcceptanceCriteria": [
+        "AC-009"
+      ]
     },
     {
       "id": "NFR-004",
       "text": "Cumulative layout shift MUST stay at or below 0.1, including font and image loading.",
-      "linkedAcceptanceCriteria": ["AC-008", "AC-009"]
+      "linkedAcceptanceCriteria": [
+        "AC-008",
+        "AC-009"
+      ]
     },
     {
       "id": "NFR-005",
       "text": "The accessibility and Lighthouse checks MUST be runnable non-interactively so CI can enforce them.",
-      "linkedAcceptanceCriteria": ["AC-010"]
+      "linkedAcceptanceCriteria": [
+        "AC-010"
+      ]
     },
     {
       "id": "NFR-006",
       "text": "The hardening MUST NOT weaken the existing CSP, security headers, or input handling, and MUST NOT introduce dangerouslySetInnerHTML.",
-      "linkedAcceptanceCriteria": ["AC-005"]
+      "linkedAcceptanceCriteria": [
+        "AC-005"
+      ]
+    },
+    {
+      "id": "NFR-007",
+      "text": "First-load JavaScript on the reference pages MUST be at most 700KB gzip including third-party auth UI, and application code excluding Clerk MUST be at most 250KB gzip. NFR-003 is superseded by this requirement.",
+      "linkedAcceptanceCriteria": [
+        "AC-011"
+      ]
     }
   ],
   "edgeCases": [
