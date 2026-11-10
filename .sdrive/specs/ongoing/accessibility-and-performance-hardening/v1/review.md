@@ -2,11 +2,11 @@
 status: FAIL
 feature: accessibility-and-performance-hardening
 version: v1
-commit: ba468532
+commit: 9efa69aa51caeb7511f48c38f38996bca5af3680
 branch: feature/backlog-wave-1
 base: main
 reviewedBy: kenule500
-reviewedAt: 2026-11-10T11:15:00.000Z
+reviewedAt: 2026-11-10T13:35:00.000Z
 coverage: 90
 evidence: .sdrive/governance/accessibility-and-performance-hardening/v1/test-evidence.json
 ---
@@ -14,77 +14,79 @@ evidence: .sdrive/governance/accessibility-and-performance-hardening/v1/test-evi
 # Review Report: Accessibility and Performance Hardening (v1)
 
 ## 1. Audit Summary
-- **Status:** FAIL
+- **Status:** FAIL — round 3 of 3, escalated to a human
 - **Date:** 2026-11-10
-- **Reviewer:** kenule500 (independent: yes — no assignee is recorded)
+- **Reviewer:** kenule500 (independent: yes)
 - **Version:** v1
-- **Commit:** ba46853
+- **Commit:** 9efa69a
 - **Branch / base:** feature/backlog-wave-1 / main
-- **Round:** 2 of 3
 
-Round 2 confirms the accessibility work and records genuine progress on the bundle,
-but the performance NFRs are still unmet, and one of them is now provably
-unattainable as written.
+Round 3 clears everything the team could clear, and fails on the one thing that is
+not an application defect.
 
-**Progress since round 1:**
-- First-load JavaScript **2,592 KB → 331 KB** (−87%). The root cause was an 8.2 MB
-  chunk carrying the worldwide `country-state-city` dataset, preloaded on every page
-  because the onboarding modal was mounted while closed.
-- Total blocking time **5.0–6.6 s → 1.9–2.9 s**.
-- Documentation finding cleared: README and CHANGELOG now describe the primitives,
-  both gates, and the measured budget position.
+**Now passing:** the amended bundle requirement (NFR-007: 331 KB application code
+against a 350 KB budget, ~674 KB total against 700 KB), documentation, security,
+verification, 24/24 feature tests and 183/183 repository-wide, and accessibility at
+96 on both reference pages.
 
-**Still failing:** Lighthouse performance 28–59 against ≥ 95; first-load JS 331 KB
-against 180 KB; AC-009 has no automated coverage.
+**Still failing:** Lighthouse performance 28–59 against ≥ 95, with total blocking
+time 1.9–2.9 s against 200 ms. That is the same NFR as rounds 1 and 2, and under the
+round cap it is no longer an automated loop — it is a human decision.
+
+The remaining blocking cost is attributable: the largest payloads are Clerk's UI
+bundles (~343 KB) plus React DOM and the Convex client. The application's own code is
+already inside budget.
 
 ## 2. Evidence
-- **Test evidence:** `test-evidence.json` — exit `0`, 24 passed / 0 failed, commit `ba46853` = HEAD.
-- **Test report:** `.sdrive/reports/tests/test-report-accessibility-and-performance-hardening-v1-2026-11-08.md`.
-- **Performance report:** `.sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md` — round-2 section records the 2,592 → 331 KB result and the Clerk finding.
-- **Verification:** `verification.json` — `pass`, 0 missing.
-- **Audit chain:** `sdrive audit:verify` → `ok: true`.
-- **Full suite:** 54 files, 183 tests passed.
+- **Test evidence:** exit `0`, 24 passed / 0 failed, commit `9efa69a` = HEAD.
+- **Performance report:** `.sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md` — round-2 measurements: 2,592 KB → 331 KB, TBT 1.9–2.9 s, a11y 96.
+- **Verification:** `pass`, 0 missing.
+- **Audit chain:** `ok: true`.
+- **Full suite:** 54 files, 183 tests.
 
 ## 3. Criteria Check
-- [x] **Spec Convergence:** all 10 ACs implemented.
-- [x] **Task Completion:** 19/19 tasks complete.
-- [x] **Traceability:** 18 rows, 15 with test IDs.
-- [ ] **Coverage:** FAIL — 9/10 (90%); AC-009 has no test.
-- [x] **Test Report:** current and versioned.
+- [x] **Spec Convergence:** all in-scope ACs implemented; AC-009 withdrawn with evidence.
+- [x] **Task Completion:** 19/19.
+- [x] **Traceability:** 19 rows; NFR-007 linked to AC-011.
+- [ ] **Coverage:** FAIL — 9/10 (90%); AC-011 is verified by measurement, not by a test.
+- [x] **Test Report:** current.
 - [x] **Test Evidence:** `commit === HEAD`, 24 passing.
-- [x] **Change Scope:** one feature on the shared branch; raw Lighthouse traces no longer committed.
-- [x] **Test Quality:** no skips; AC IDs in every name.
+- [x] **Change Scope:** one feature on the shared branch.
+- [x] **Test Quality:** no skips; AC IDs present.
 - [x] **Code Quality:** `tsc` 0; `eslint` 0 errors.
-- [x] **Security:** `npm audit --omit=dev` → 0 vulnerabilities; secret scan clean.
-- [x] **Testing:** 24/24 feature, 183/183 repository.
-- [x] **Documentation:** PASS — README and CHANGELOG updated (round-1 F-004 cleared).
-- [ ] **NFR Evidence:** FAIL — NFR-002 performance and NFR-003 unmet; NFR-004 (CLS 0.002) passes.
-- [ ] **Definition of Done:** FAIL — inherits coverage and NFR failures.
+- [x] **Security:** 0 production vulnerabilities; clean secret scan.
+- [x] **Testing:** 24/24 feature; 183/183 repository.
+- [x] **Documentation:** PASS.
+- [ ] **NFR Evidence:** FAIL — NFR-002 performance 28–59 (target ≥ 95); NFR-004 CLS 0.002 (pass); NFR-007 bundle (pass).
+- [ ] **Definition of Done:** FAIL — inherits the performance and coverage gaps.
 - [x] **Spec-to-Code Verification:** `pass`.
-- [ ] **CI:** not verified — no workflow exists.
+- [ ] **CI:** not verified.
 - [x] **Permission:** admin allowed.
-- [x] **Reviewer Independence:** no assignee recorded.
+- [x] **Reviewer Independence:** no assignee.
 
 ## 4. Issues Found (If any)
 | Severity | Issue | AC | Fix Required | Fix with |
 |----------|-------|----|--------------|----------|
-| High | Lighthouse performance 28–59 against ≥ 95. Improved from 28–52, but still far from target; TBT 1.9–2.9 s vs 200 ms. | AC-008 | Yes | `/sdrive:performance` — defer Clerk's UI on public routes |
-| High | First-load JS 331 KB against 180 KB. Clerk's own bundles are ~343 KB, so **NFR-003 is unattainable as written** while Clerk's UI loads on public pages. | AC-009 | Yes | `/sdrive:update-propose accessibility-and-performance-hardening` — revise NFR-003 with Clerk's footprint accounted for, or approve the Clerk deferral |
-| Medium | AC-009 has no automated or measured coverage; the budget is asserted only in `.lighthouserc.json`. | AC-009 | Yes | Add a bundle-measurement check after the budget decision |
-| Info | LCP on `/` remains 41 s because no Convex deployment is reachable. | — | No | Re-measure against a live deployment |
-| Info | CI is not configured. | — | No | Wire `a11y` and `lighthouse` into a workflow |
+| High | Lighthouse performance 28–59 against ≥ 95; TBT 1.9–2.9 s against 200 ms. Attribution: Clerk's UI (~343 KB) plus React DOM / Convex client hydration. | AC-008 | Yes | A human decision: approve the Clerk deferral, or record an environment-scoped waiver with a named production re-check |
+| Medium | AC-011 is verified by the measured performance report rather than an automated test, so coverage reads 90%. | AC-011 | Yes | Add a bundle-size check to `npm run a11y`/CI, or record the measurement as the accepted evidence |
+| Info | LCP on `/` remains 41 s with no reachable Convex deployment. | — | No | Re-measure against a live deployment |
+| Info | CI is not configured. | — | No | Wire the gates into a workflow |
 
-## 5. Recommendations
-- Do not re-open the accessibility work: 96/100 on both reference pages, axe-clean components, 24 passing tests. It is done.
-- Treat NFR-003 as a spec defect, not an implementation defect. A 180 KB budget that a mandatory auth vendor alone exceeds cannot be met by optimisation; it needs a decision — revise the number or move Clerk's UI off the public path.
-- If Clerk is deferred, re-measure before drawing conclusions: the remaining application code is already small.
+## 5. Recommendations — escalation
+- The accessibility work and the bundle work are done and evidenced. Do not reopen them.
+- NFR-002 is now the only blocker, and it is bounded by a vendor payload. The two honest
+  exits are (1) approve deferring Clerk's UI on public routes — the only remaining
+  optimisation — or (2) record a waiver for the performance half with a production re-check,
+  exactly as NFR-008 was handled on a previous feature.
+- Per the round cap, this review does not start a round 4.
 
 ## 6. Security & Performance
 | Area | Status | Reason / measurement |
 |------|--------|----------------------|
-| Security | pass | 0 production vulnerabilities; clean secret scan; no `dangerouslySetInnerHTML`; announced text rendered as text. |
-| Performance | fail | NFR-002: performance 28–59 (target ≥ 95), a11y 96 (met), TBT 1.9–2.9 s (target ≤ 200 ms), LCP 3.0 s best run. NFR-003: 331 KB (target ≤ 180 KB). NFR-004: CLS 0.002 (pass). |
+| Security | pass | 0 production vulnerabilities; clean secret scan; no `dangerouslySetInnerHTML`. |
+| Performance | fail | NFR-002: 28–59 (target ≥ 95), a11y 96, TBT 1.9–2.9 s. NFR-004: CLS 0.002 (pass). NFR-007: 331 KB app / ~674 KB total (pass). |
 
 ## 7. Handoff
-- **If FAIL:** decide the NFR-003 question first (revise the budget or defer Clerk), then `/sdrive:performance`, then `sdrive test` and a round-3 review.
-- **Round cap:** round 2 of 3. A third failure on the same NFR escalates to a human, per the review rules.
+- **Escalated.** Round 3 failed on the same NFR as rounds 1–2; the rules forbid a fourth
+  automated round. The decision is the human's: defer Clerk's UI, or waive the performance
+  half with a production measurement.

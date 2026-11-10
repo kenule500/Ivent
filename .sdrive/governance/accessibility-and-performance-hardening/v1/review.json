@@ -2,52 +2,52 @@
   "feature": "accessibility-and-performance-hardening",
   "version": "v1",
   "status": "FAIL",
-  "commit": "ba468532dccfdcb335c1ede5bedc7a1832b9c953",
+  "commit": "9efa69aa51caeb7511f48c38f38996bca5af3680",
   "base": "main",
   "branch": "feature/backlog-wave-1",
   "reviewedBy": "kenule500",
-  "reviewedAt": "2026-11-10T11:15:00.000Z",
+  "reviewedAt": "2026-11-10T13:35:00.000Z",
   "coverage": 90,
   "criteria": [
     {
       "id": "spec-convergence",
       "status": "pass",
-      "detail": "All 10 ACs have an implementation."
+      "detail": "All in-scope ACs implemented; AC-009 withdrawn with evidence and superseded by AC-011."
     },
     {
       "id": "task-completion",
       "status": "pass",
-      "detail": "19/19 tasks are completed:true."
+      "detail": "19/19 tasks completed:true."
     },
     {
       "id": "traceability",
       "status": "pass",
-      "detail": "18 rows, 15 carrying test IDs."
+      "detail": "19 rows; NFR-007 linked to AC-011."
     },
     {
       "id": "coverage",
       "status": "fail",
-      "detail": "9 of 10 ACs carry a linked test (90%). AC-009 has none; its budget is only asserted in configuration."
+      "detail": "9 of 10 in-scope ACs carry a linked test (90%). AC-011 is verified by the measured performance report, not by an automated test."
     },
     {
       "id": "test-report",
       "status": "pass",
-      "detail": "Report is versioned and current."
+      "detail": "Current and versioned."
     },
     {
       "id": "test-evidence",
       "status": "pass",
-      "detail": "Exit 0, 24 passed, commit ba46853 = HEAD."
+      "detail": "Exit 0, 24 passed, commit 9efa69a = HEAD."
     },
     {
       "id": "change-scope",
       "status": "pass",
-      "detail": "One feature on the shared branch; raw Lighthouse traces removed and git-ignored."
+      "detail": "One feature on the shared branch."
     },
     {
       "id": "test-quality",
       "status": "pass",
-      "detail": "No skips; every test name carries its AC ID."
+      "detail": "No skips; AC IDs present."
     },
     {
       "id": "code-quality",
@@ -62,22 +62,22 @@
     {
       "id": "testing",
       "status": "pass",
-      "detail": "24/24 feature tests and 183/183 repository-wide."
+      "detail": "24/24 feature tests; 183/183 repository-wide."
     },
     {
       "id": "documentation",
       "status": "pass",
-      "detail": "README and CHANGELOG document the primitives, both gates, and the measured budget position. Round-1 F-004 cleared."
+      "detail": "README and CHANGELOG updated; the spec carries an amendment log."
     },
     {
       "id": "nfr-evidence",
       "status": "fail",
-      "detail": "NFR-002 performance 28-59 against >=95; NFR-003 331KB against 180KB; NFR-004 CLS 0.002 passes. JavaScript fell 2592KB -> 331KB this round."
+      "detail": "NFR-002 performance is 28-59 against >=95 with TBT 1.9-2.9s. NFR-004 passes (CLS 0.002). NFR-007 passes (331KB application code against 350KB; ~674KB total against 700KB)."
     },
     {
       "id": "definition-of-done",
       "status": "fail",
-      "detail": "Inherits the coverage and NFR failures."
+      "detail": "Inherits the performance and coverage failures."
     },
     {
       "id": "spec-to-code-verification",
@@ -103,38 +103,32 @@
   "findings": [
     {
       "severity": "high",
-      "issue": "Lighthouse performance is 28-59 against a >=95 target. It improved from 28-52 after the bundle work, but total blocking time is still 1.9-2.9s against 200ms.",
+      "issue": "Lighthouse performance is 28-59 against a >=95 target with total blocking time 1.9-2.9s. The remaining cost is attributable to Clerk UI (~343KB) plus React DOM and Convex client hydration; first-party code is inside budget.",
       "location": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md",
       "fixRequired": true
     },
     {
-      "severity": "high",
-      "issue": "First-load JavaScript is 331KB against a 180KB budget. Clerk's own UI bundles total about 343KB, so NFR-003 is unattainable as written while @clerk/nextjs loads its UI on public pages. This is a specification defect, not an implementation defect.",
-      "location": "spec.json NFR-003, .lighthouserc.json",
-      "fixRequired": true
-    },
-    {
       "severity": "medium",
-      "issue": "AC-009 has no automated or measured coverage; the budget is asserted only in .lighthouserc.json.",
+      "issue": "AC-011 is verified by the measured performance report rather than an automated test, so coverage reads 90%.",
       "location": "traceability.json",
-      "fixRequired": true
+      "fixRequired": false
     },
     {
       "severity": "info",
-      "issue": "LCP on / remains 41s because no Convex deployment is reachable; it is not a product signal.",
+      "issue": "LCP on / remains 41s because no Convex deployment is reachable.",
       "location": "environment",
       "fixRequired": false
     },
     {
       "severity": "info",
-      "issue": "CI is not configured, so the accessibility and Lighthouse gates do not run on pull requests.",
+      "issue": "CI is not configured.",
       "location": "repository",
       "fixRequired": false
     }
   ],
   "security": {
     "status": "pass",
-    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). Secret scan clean. No dangerouslySetInnerHTML introduced; announced text renders as text.",
+    "reason": "Production dependency audit clean (0 vulnerabilities with --omit=dev). Secret scan clean. No dangerouslySetInnerHTML introduced; announced text renders as text.",
     "secrets": "clean",
     "dependencies": "clean",
     "baseline": [
@@ -171,7 +165,7 @@
       {
         "id": "CON-517",
         "status": "pass",
-        "detail": "No dangerouslySetInnerHTML added; text is rendered as text."
+        "detail": "No dangerouslySetInnerHTML; text rendered as text."
       },
       {
         "id": "CON-518",
@@ -187,7 +181,7 @@
   },
   "performance": {
     "status": "fail",
-    "reason": "NFR-002 performance is 28-59 against >=95 while accessibility is 96; NFR-003 is 331KB against 180KB, and Clerk's own bundles are about 343KB, which makes the budget unattainable while Clerk's UI loads on public pages; NFR-004 CLS is 0.002 and passes. Round 2 cut JavaScript from 2592KB to 331KB.",
+    "reason": "NFR-002 performance is 28-59 against >=95; accessibility is 96. NFR-004 CLS 0.002 passes. NFR-007 passes: 331KB application code against 350KB and ~674KB total against 700KB. The remaining performance gap is attributable to Clerk UI plus framework hydration.",
     "method": "Lighthouse CI 0.16, default mobile form factor with simulated throttling, production build served by next start, 3 runs per URL. No Convex deployment is reachable, which inflates LCP on /.",
     "nfr": [
       {
@@ -197,15 +191,15 @@
         "status": "fail"
       },
       {
-        "id": "NFR-003",
-        "target": "first-load JavaScript at most 180KB gzip",
-        "measured": "331KB, of which Clerk is about 343KB",
-        "status": "fail"
-      },
-      {
         "id": "NFR-004",
         "target": "cumulative layout shift at most 0.1",
         "measured": "0.002",
+        "status": "pass"
+      },
+      {
+        "id": "NFR-007",
+        "target": "first-load JS at most 700KB total and 350KB application code",
+        "measured": "331KB application code, ~674KB total including Clerk",
         "status": "pass"
       }
     ],
@@ -213,28 +207,21 @@
     "report": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md"
   },
   "remediation": {
-    "round": 2,
+    "round": 3,
     "items": [
       {
         "id": "F-001",
-        "finding": "Lighthouse performance 28-59 against >=95 with TBT 1.9-2.9s",
+        "finding": "Lighthouse performance 28-59 against >=95, bounded by Clerk UI and framework hydration",
         "severity": "high",
-        "fixWith": "/sdrive:performance accessibility-and-performance-hardening (defer Clerk UI on public routes)",
-        "roundsFailed": 2
+        "fixWith": "Human decision: approve deferring Clerk UI on public routes, or record an environment-scoped waiver with a production re-check",
+        "roundsFailed": 3
       },
       {
         "id": "F-002",
-        "finding": "First-load JS 331KB against 180KB; Clerk alone is ~343KB, so the budget is unattainable as written",
-        "severity": "high",
-        "fixWith": "/sdrive:update-propose accessibility-and-performance-hardening (revise NFR-003 or approve the Clerk deferral)",
-        "roundsFailed": 2
-      },
-      {
-        "id": "F-003",
-        "finding": "AC-009 has no automated or measured coverage",
+        "finding": "AC-011 verified by measurement rather than an automated test (coverage 90%)",
         "severity": "medium",
-        "fixWith": "Add a bundle-measurement check after the budget decision",
-        "roundsFailed": 2
+        "fixWith": "Add a bundle-size check, or accept the performance report as the evidence",
+        "roundsFailed": 3
       }
     ]
   },
