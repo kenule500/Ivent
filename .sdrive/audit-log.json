@@ -369,6 +369,17 @@
       "event": "gate_approved",
       "prevHash": "c89fb4b44fdd5abc573805215cd6840bc42c3c2e1d0104c162da8a22a8661fc5",
       "hash": "a9f9f5415afedfce747576900fee5e50a198c79dc4b2fa8a2e890c21db3d4359"
+    },
+    {
+      "timestamp": "2026-11-10T16:32:12.454Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "gate": "planning",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "a9f9f5415afedfce747576900fee5e50a198c79dc4b2fa8a2e890c21db3d4359",
+      "hash": "7167bd69a563f6f5f1beef3638b26431e7f99c50e018cc4fddb8eff46272a85f"
     }
   ]
 }

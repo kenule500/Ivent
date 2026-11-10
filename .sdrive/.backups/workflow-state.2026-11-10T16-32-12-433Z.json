@@ -1,6 +1,126 @@
 {
   "features": [
     {
+      "name": "accessibility-and-performance-hardening",
+      "branch": "feature/backlog-wave-1",
+      "base": "main",
+      "productItems": [
+        "BP-015"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "specification",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "approved"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-08T09:55:00.000Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-08T10:15:00.000Z"
+            },
+            {
+              "event": "implementation_started",
+              "by": "sdrive:apply",
+              "timestamp": "2026-11-08T10:25:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-08T10:58:59.922Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-08T11:37:12.110Z"
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-11-08T11:55:00.000Z"
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-08T12:24:46.404Z"
+            },
+            {
+              "event": "spec_amended",
+              "by": "sdrive:update-propose",
+              "timestamp": "2026-11-10T12:20:00.000Z",
+              "reason": "Withdrew AC-009 (180KB unattainable with Clerk) and added NFR-007/AC-011 with a vendor-accounted budget: 700KB total, 250KB application code."
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T12:26:24.479Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T12:27:51.401Z"
+            },
+            {
+              "event": "spec_amended",
+              "by": "sdrive:update-propose",
+              "timestamp": "2026-11-10T13:10:00.000Z",
+              "reason": "Revised NFR-007/AC-011 application budget 250KB -> 350KB after measuring the framework floor (react-dom 202KB raw, scheduler 128KB raw, convex client 118KB raw dominate the 331KB gzip first load)."
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T14:03:55.421Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T14:04:02.437Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T15:07:06.625Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "a530b77",
+              "timestamp": "2026-11-10T15:23:26.549Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
       "name": "event-discovery-and-registration",
       "currentVersion": "v1",
       "versions": [
@@ -78,13 +198,13 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "ongoing",
+          "phase": "completed",
           "currentStep": "review",
           "gates": {
             "specification": "approved",
             "planning": "approved",
             "implementation": "approved",
-            "review": "rejected"
+            "review": "approved"
           },
           "history": [
             {
@@ -144,6 +264,21 @@
               "actor": "kenule500",
               "previousValue": "in_progress",
               "timestamp": "2026-11-07T13:38:01.167Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "rejected",
+              "timestamp": "2026-11-07T15:57:56.836Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "e2bee03",
+              "timestamp": "2026-11-07T16:15:12.715Z"
             }
           ]
         }
@@ -170,6 +305,47 @@
               "event": "feature_documented_retroactively",
               "by": "onboarding",
               "timestamp": "2026-10-18T13:58:00.158Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "registration-ux-polish",
+      "branch": "feature/backlog-wave-2",
+      "base": "main",
+      "productItems": [
+        "BP-016"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "planning",
+          "gates": {
+            "specification": "approved",
+            "planning": "pending",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:00:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T16:20:03.552Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:30:00.000Z"
             }
           ]
         }
