@@ -358,6 +358,17 @@
       "event": "feature_archived",
       "prevHash": "34f0dd949a0ab558514028243a739c23871f90b51fc1af6e5db060915bd70ca2",
       "hash": "c89fb4b44fdd5abc573805215cd6840bc42c3c2e1d0104c162da8a22a8661fc5"
+    },
+    {
+      "timestamp": "2026-11-10T16:20:03.963Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "gate": "specification",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "c89fb4b44fdd5abc573805215cd6840bc42c3c2e1d0104c162da8a22a8661fc5",
+      "hash": "a9f9f5415afedfce747576900fee5e50a198c79dc4b2fa8a2e890c21db3d4359"
     }
   ]
 }

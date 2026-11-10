@@ -7,9 +7,11 @@
       "acceptanceCriteriaIds": [
         "AC-001"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P0",
+      "taskIds": [
+        "T1.1"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -17,9 +19,12 @@
       "acceptanceCriteriaIds": [
         "AC-001"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P1",
+      "taskIds": [
+        "T2.1",
+        "T2.2"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -27,9 +32,11 @@
       "acceptanceCriteriaIds": [
         "AC-002"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P2",
+      "taskIds": [
+        "T3.1"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -38,9 +45,12 @@
         "AC-003",
         "AC-004"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P2",
+      "taskIds": [
+        "T3.2",
+        "T3.3"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -48,9 +58,11 @@
       "acceptanceCriteriaIds": [
         "AC-004"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P2",
+      "taskIds": [
+        "T3.3"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -58,9 +70,12 @@
       "acceptanceCriteriaIds": [
         "AC-005"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P3",
+      "taskIds": [
+        "T4.1",
+        "T4.2"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -68,9 +83,12 @@
       "acceptanceCriteriaIds": [
         "AC-006"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P4",
+      "taskIds": [
+        "T1.2",
+        "T5.1"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -78,9 +96,11 @@
       "acceptanceCriteriaIds": [
         "AC-008"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P0",
+      "taskIds": [
+        "T1.1"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -88,9 +108,13 @@
       "acceptanceCriteriaIds": [
         "AC-007"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P1",
+      "taskIds": [
+        "T2.1",
+        "T2.2",
+        "T5.3"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -99,9 +123,11 @@
         "AC-001",
         "AC-006"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P4",
+      "taskIds": [
+        "T5.3"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -111,9 +137,11 @@
         "AC-004",
         "AC-005"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P4",
+      "taskIds": [
+        "T5.2"
+      ],
+      "status": "in_progress",
       "testIds": []
     },
     {
@@ -122,9 +150,11 @@
         "AC-003",
         "AC-004"
       ],
-      "planSection": "",
-      "taskIds": [],
-      "status": "not_started",
+      "planSection": "P2",
+      "taskIds": [
+        "T3.2"
+      ],
+      "status": "in_progress",
       "testIds": []
     }
   ]

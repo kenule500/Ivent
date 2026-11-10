@@ -322,9 +322,9 @@
         {
           "id": "v1",
           "phase": "ongoing",
-          "currentStep": "specification",
+          "currentStep": "planning",
           "gates": {
-            "specification": "pending",
+            "specification": "approved",
             "planning": "pending",
             "implementation": "pending",
             "review": "pending"
@@ -334,6 +334,18 @@
               "event": "spec_drafted",
               "by": "sdrive:propose",
               "timestamp": "2026-11-10T16:00:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T16:20:03.552Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:30:00.000Z"
             }
           ]
         }

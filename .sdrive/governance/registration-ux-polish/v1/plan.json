@@ -1,0 +1,114 @@
+{
+  "feature": "registration-ux-polish",
+  "version": 1,
+  "architecture": {
+    "approach": "Client-side only. One skeleton primitive and one empty-state component are added under components/ui/, then consumed by route-level loading/error files and by the existing event and ticket screens. Optimistic updates are a thin layer over the existing Convex mutations: the client writes an optimistic entry, the server stays authoritative, and a rejection rolls the entry back and announces the reason. No Convex function, validator, or authorization check changes.",
+    "components": [
+      {
+        "name": "Skeleton primitives",
+        "action": "create",
+        "description": "components/ui/skeleton.tsx — one shimmer implementation, motion-aware, aria-hidden. Single source of loading placeholders."
+      },
+      {
+        "name": "Empty state",
+        "action": "create",
+        "description": "components/ui/empty-state.tsx — reason, optional action, consistent sentence structure. Used by tickets, search results, announcements."
+      },
+      {
+        "name": "Event route skeleton",
+        "action": "create",
+        "description": "app/(public)/events/[slug]/loading.tsx — mirrors the real header, detail column and register panel using the same spacing tokens."
+      },
+      {
+        "name": "Tickets route skeleton",
+        "action": "create",
+        "description": "app/(main)/my-tickets/loading.tsx — mirrors the ticket grid."
+      },
+      {
+        "name": "Event and ticket error boundaries",
+        "action": "create",
+        "description": "app/(public)/events/[slug]/error.tsx and app/(main)/my-tickets/error.tsx — recovery copy, retry, working home link, no internal detail."
+      },
+      {
+        "name": "Registration dialog pending state",
+        "action": "modify",
+        "description": "app/(public)/events/[slug]/_components/register-modal.tsx — disable submit while in flight, show progress, ignore repeat taps."
+      },
+      {
+        "name": "Optimistic registration",
+        "action": "modify",
+        "description": "The register flow applies an optimistic ticket entry, reconciles on success, rolls back and announces on failure."
+      },
+      {
+        "name": "Optimistic cancellation",
+        "action": "modify",
+        "description": "app/(main)/my-tickets/page.tsx — removing a ticket updates optimistically with rollback on failure."
+      },
+      {
+        "name": "Empty states wired",
+        "action": "modify",
+        "description": "my-tickets, explore results, and announcements use the shared empty-state component with a reason and an action."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004"
+    ]
+  },
+  "dataModel": {
+    "entities": [],
+    "flowDescription": "No persistence change. Optimistic entries live only in the Convex client cache for the lifetime of the request; the server remains the source of truth, and every optimistic entry is either confirmed or rolled back. No table, index, or validator is added or altered."
+  },
+  "dependencies": [
+    {
+      "name": "Convex optimistic updates",
+      "type": "library",
+      "action": "no_change",
+      "notes": "The installed Convex client must expose optimistic updates for the mutation path in use."
+    },
+    {
+      "name": "BP-015 live region",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "useAnnounce from components/a11y/live-region.tsx is the only announcement channel; no toast-only fallback."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "strategy": "Skeletons reuse the final layout tokens; CLS asserted at 0.02 on both routes."
+    },
+    {
+      "requirementId": "NFR-002",
+      "strategy": "One skeleton module and one empty-state module, both static blocks; size measured against the 5KB budget."
+    },
+    {
+      "requirementId": "NFR-004",
+      "strategy": "Optimistic entries are client-cache only; no server contract changes."
+    }
+  ],
+  "risks": [
+    {
+      "description": "Optimistic state diverges from the server after a partial failure.",
+      "mitigation": "Roll back on any error and reconcile on settle; keep the optimistic layer to a single mutation wrapper."
+    },
+    {
+      "description": "Skeleton layout differs from real content, reintroducing shift.",
+      "mitigation": "Build skeletons from the same Tailwind spacing tokens as the real components and assert CLS in the performance check."
+    },
+    {
+      "description": "Error boundary swallows a genuine defect.",
+      "mitigation": "Log to the console in development and keep the boundary at the route segment."
+    }
+  ]
+}
