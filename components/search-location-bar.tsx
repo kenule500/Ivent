@@ -1,10 +1,9 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 "use client";
 
-import { useState, useEffect, useRef, useMemo } from "react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Search, MapPin, Calendar, Loader2 } from "lucide-react";
-import { State, City } from "country-state-city";
 import { format } from "date-fns";
 import { api } from "@/convex/_generated/api";
 import { createLocationSlug } from "@/lib/location-utils";
@@ -39,7 +38,29 @@ export default function SearchLocationBar() {
     searchQuery.trim().length >= 2 ? { query: searchQuery, limit: 5 } : "skip"
   );
 
-  const userStates = useMemo(() => State.getStatesOfCountry("NG"), []);
+  // `country-state-city` ships a worldwide dataset (megabytes). It is fetched
+  // only when the location picker is first opened — never on page load — so it
+  // cannot affect LCP or first-load JS (NFR-003).
+  const [geo, setGeo] = useState<typeof import("country-state-city") | null>(null);
+  const geoRequested = useRef(false);
+
+  const ensureGeo = useCallback(() => {
+    if (geo || geoRequested.current) return;
+
+    geoRequested.current = true;
+    import("country-state-city")
+      .then((module) => setGeo(module))
+      .catch(() => {
+        // Leave the picker empty rather than breaking the page; the retry is
+        // allowed on the next open.
+        geoRequested.current = false;
+      });
+  }, [geo]);
+
+  const userStates = useMemo(
+    () => (geo ? geo.State.getStatesOfCountry("NG") : []),
+    [geo]
+  );
 
   const [selectedState, setSelectedState] = useState("");
   const [selectedCity, setSelectedCity] = useState("");
@@ -70,11 +91,12 @@ export default function SearchLocationBar() {
   }
 
   const cities = useMemo(() => {
+    if (!geo) return [];
     if (!selectedState) return [];
     const state = userStates.find((s) => s.name === selectedState);
     if (!state) return [];
-    return City.getCitiesOfState("NG", state.isoCode);
-  }, [selectedState, userStates]);
+    return geo.City.getCitiesOfState("NG", state.isoCode);
+  }, [geo, selectedState, userStates]);
 
   const debouncedSetQuery = useRef(
     debounce ((value: string) => setSearchQuery(value), 300)
@@ -187,6 +209,9 @@ export default function SearchLocationBar() {
       {/* State Select */}
       <Select
         value={selectedState}
+        onOpenChange={(open) => {
+          if (open) ensureGeo();
+        }}
         onValueChange={(value) => {
           setSelectedState(value ?? "");
           setSelectedCity("");

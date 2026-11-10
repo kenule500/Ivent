@@ -1,13 +1,12 @@
 /* eslint-disable react-hooks/incompatible-library */
 "use client";
 
-import { useState, useMemo } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import * as z from "zod";
 import { format } from "date-fns";
-import { State, City } from "country-state-city";
 import { CalendarIcon, Loader2, Sparkles } from "lucide-react";
 import { useConvexMutation, useConvexQuery } from '@/hooks/useConvexQuery';
 import { api } from "@/convex/_generated/api";
@@ -93,13 +92,37 @@ export default function CreateEventPage() {
   const endDate = watch("endDate");
   const coverImage = watch("coverImage");
 
-  const userStates = useMemo(() => State.getStatesOfCountry("NG"), []);
+  // `country-state-city` ships a worldwide dataset. Loading it lazily keeps it
+  // out of this route's first-load bundle, which Next would otherwise prefetch
+  // from every public page that links here (NFR-003).
+  const [geo, setGeo] = useState<typeof import("country-state-city") | null>(null);
+
+  useEffect(() => {
+    let cancelled = false;
+
+    import("country-state-city")
+      .then((module) => {
+        if (!cancelled) setGeo(module);
+      })
+      .catch(() => {
+        /* the picker stays empty rather than breaking the form */
+      });
+
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
+  const userStates = useMemo(
+    () => (geo ? geo.State.getStatesOfCountry("NG") : []),
+    [geo]
+  );
   const cities = useMemo(() => {
-    if (!selectedState) return [];
+    if (!geo || !selectedState) return [];
     const st = userStates.find((s) => s.name === selectedState);
     if (!st) return [];
-    return City.getCitiesOfState("NG", st.isoCode);
-  }, [selectedState, userStates]);
+    return geo.City.getCitiesOfState("NG", st.isoCode);
+  }, [geo, selectedState, userStates]);
 
   // Color presets - show all for Pro, only default for Free
   const colorPresets = [

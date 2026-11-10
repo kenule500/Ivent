@@ -7,7 +7,7 @@ import { Loader2, MapPin } from "lucide-react";
 import { useConvexQuery } from '@/hooks/useConvexQuery';
 import { api } from "@/convex/_generated/api";
 import { CATEGORIES } from "@/lib/data";
-import { parseLocationSlug } from "@/lib/location-utils";
+import { parseLocationSlug } from "@/lib/location-slug";
 import { Badge } from "@/components/ui/badge";
 import EventCard from "@/components/event-card";
 import { Doc } from "@/convex/_generated/dataModel";
@@ -225,7 +225,7 @@ function PaginationWrapper({ currentPage, hasMore, onPageChange }: {
 // import { useConvexQuery } from '@/hooks/useConvexQuery'
 // import { api } from "@/convex/_generated/api";
 // import { CATEGORIES } from "@/lib/data";
-// import { parseLocationSlug } from "@/lib/location-utils";
+// import { parseLocationSlug } from "@/lib/location-slug";
 // import { Badge } from "@/components/ui/badge";
 // import EventCard from "@/components/event-card";
 // import { Doc } from "@/convex/_generated/dataModel" 

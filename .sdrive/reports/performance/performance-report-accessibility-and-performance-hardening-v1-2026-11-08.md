@@ -76,3 +76,37 @@ None of these are applied: each is an architectural change that needs its own ap
 
 - The `target-size` audit (WCAG 2.2 AA) is outside this feature's WCAG 2.1 AA target; it was fixed anyway where cheap.
 - `NFR-008`-style environment waivers from other features do not apply here — the bundle weight is a code fact, not a deployment fact.
+
+## 8. Optimisation Round 2 (after the review's remediation)
+
+### Root cause found
+
+The 2,592 KB was almost entirely **one async chunk of 8.2 MB** (2,258 KB transferred) that carried the worldwide `country-state-city` dataset. It was being fetched on every page load for a different reason than expected: the onboarding modal was rendered unconditionally in the header (closed), and `next/dynamic` preloads a mounted component's chunk during hydration. The dataset also reached public pages through three static imports: `lib/location-utils.ts` (slug parsing), `components/search-location-bar.tsx`, and `app/(main)/create-event/page.tsx`.
+
+### Changes applied
+
+| Change | File |
+|---|---|
+| Onboarding modal mounted only while open | `components/header.tsx` |
+| Dataset imported on picker open, not on mount | `components/search-location-bar.tsx` |
+| Dataset imported lazily on the create-event form | `app/(main)/create-event/page.tsx` |
+| Slug parsing validates against a static NG state list instead of the dataset | `lib/location-slug.ts` (split from `lib/location-utils.ts`) |
+
+### Measured result
+
+| Metric | Before round 2 | After round 2 |
+|---|---|---|
+| Local script transfer | 2,592 KB / 23 files | **331 KB / 22 files** |
+| Total blocking time | 5.0–6.6 s | **1.9–2.9 s** |
+| Performance score | 28–52 | **28–59** |
+| Accessibility | 96 | **96** |
+| LCP (`/explore`, best run) | 5.8 s | **3.0 s** |
+
+That is an **87% reduction in JavaScript** and roughly a two-thirds cut in blocking time — but it still misses NFR-003 (331 KB vs 180 KB) and NFR-002 (performance < 95).
+
+### The budget is now dominated by Clerk
+
+The remaining 331 KB is mostly Clerk: `ui-common` 132 KB, `clerk.browser` 84 KB, `ui.browser` 46 KB, `framework_ui` 43 KB, `vendors_ui` 38 KB — about **343 KB**, which on its own exceeds the 180 KB budget before any application code is counted. Deferring Clerk's UI bundle on public routes is the only remaining lever, and it is a provider restructuring that risks auth state on public pages.
+
+**Recommendation to the reviewer:** NFR-003 as written (≤ 180 KB first-load JS) is not attainable while `@clerk/nextjs` loads its UI on public pages. Either the budget is revised with that dependency in mind, or Clerk is deferred — a decision above this agent's scope. The honest recorded position: 331 KB, a 87% improvement, budget still unmet.
+

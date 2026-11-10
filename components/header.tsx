@@ -9,11 +9,18 @@ import { Authenticated, Unauthenticated } from 'convex/react';
 import { BarLoader } from 'react-spinners';
 import { useStoreUser } from '@/hooks/useStoreUser';
 import { CalendarDays, Crown, Plus, Ticket } from 'lucide-react';
-import OnboardingModal from './onboarding-modal';
+import dynamic from 'next/dynamic';
 import { useOnboarding } from '@/hooks/use-onboarding';
 import SearchLocationBar from './search-location-bar';
 import { Badge } from './ui/badge';
 import UpgradeModal from './upgrade-modal';
+
+// The onboarding modal pulls in the worldwide location dataset for its picker.
+// It is only ever shown to a signed-in attendee who has not finished onboarding,
+// so loading it lazily keeps that dataset out of every public page (NFR-003).
+const OnboardingModal = dynamic(() => import('./onboarding-modal'), {
+  ssr: false,
+});
 
 const Header = () => {
   const { isLoading } = useStoreUser();
@@ -87,12 +94,15 @@ const Header = () => {
           <BarLoader color="#4F46E5" width="100%" />
         )}
 
-        {/* Onboarding Modal */}
-        <OnboardingModal
-          isOpen={showOnboarding}
-          onClose={handleOnboardingSkip}
-          onComplete={handleOnboardingComplete}
-        />
+        {/* Onboarding Modal — mounted only while it is open, so its chunk (and
+            the location dataset it carries) is never preloaded on a page load. */}
+        {showOnboarding && (
+          <OnboardingModal
+            isOpen={showOnboarding}
+            onClose={handleOnboardingSkip}
+            onComplete={handleOnboardingComplete}
+          />
+        )}
 
         {/* Upgrade Modal */}
         <UpgradeModal
