@@ -1,0 +1,184 @@
+{
+  "feature": "registration-ux-polish",
+  "title": "Registration UX Polish",
+  "version": 1,
+  "overview": {
+    "problemStatement": "The registration path shows its seams: blank screens while Convex data loads, actions that wait for a round-trip, white screens when a query throws, and empty states that say nothing useful.",
+    "proposedSolution": "Add a reusable skeleton primitive and route-level loading skeletons, optimistic registration and cancellation with rollback and announcement, route error boundaries with retry, and one empty-state component that names the reason and the next action.",
+    "targetAudience": "Attendees registering on mid-range phones and unreliable networks, and organisers affected by duplicate registrations from impatient double taps.",
+    "assumptions": [
+      "The installed Convex client supports optimistic updates.",
+      "BP-015 delivered the live-region provider and useAnnounce hook.",
+      "No backend or schema change is required."
+    ],
+    "outOfScope": [
+      "Offline registration and check-in (BP-004).",
+      "Wallet passes (BP-003).",
+      "Lifecycle emails (BP-001).",
+      "Event page marketing polish (BP-005)."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "See the shape of the page immediately",
+      "role": "attendee on a slow connection",
+      "want": "the page structure to appear while data loads",
+      "benefit": "I know the page is working and can start reading headings",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given a cold load of an event or ticket page, a skeleton that mirrors the final layout renders within the first frame and is replaced by real content without the page jumping."
+        },
+        {
+          "id": "AC-002",
+          "text": "Given the registration dialog, the submit control shows a pending state and ignores further taps until the request settles."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Act without waiting for the network",
+      "role": "attendee",
+      "want": "the ticket to appear the moment I confirm",
+      "benefit": "I trust that the registration worked",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-003",
+          "text": "Given a confirmed registration, the ticket appears in my-tickets immediately and remains once the server confirms."
+        },
+        {
+          "id": "AC-004",
+          "text": "Given a failed registration or cancellation, the optimistic change rolls back and the reason is announced."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Recover from a broken render",
+      "role": "attendee",
+      "want": "a way out when a page fails",
+      "benefit": "one bad query does not strand me",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given a render error on an event or ticket route, an error boundary shows a recovery message with retry and a working link home, and navigation stays usable."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Understand an empty screen",
+      "role": "attendee",
+      "want": "to know why a list is empty and what to do next",
+      "benefit": "I do not assume the app is broken",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-006",
+          "text": "Given an empty ticket list, search result set, or announcements list, the state names its cause and offers the relevant next action."
+        },
+        {
+          "id": "AC-007",
+          "text": "Given skeleton and optimistic transitions, cumulative layout shift on the affected routes stays at or below 0.02."
+        },
+        {
+          "id": "AC-008",
+          "text": "Given a user with prefers-reduced-motion: reduce, skeleton shimmer and transition motion are suppressed."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "A reusable skeleton primitive MUST exist under components/ui/ and be the only shimmer implementation.",
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
+    },
+    {
+      "id": "FR-002",
+      "text": "The event page and my-tickets MUST render route-level loading skeletons that match their final layout.",
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
+    },
+    {
+      "id": "FR-003",
+      "text": "The registration dialog MUST disable its submit control and show progress while a request is in flight, and MUST NOT send a second request.",
+      "linkedAcceptanceCriteria": [
+        "AC-002"
+      ]
+    },
+    {
+      "id": "FR-004",
+      "text": "Registration and cancellation MUST apply optimistically through the Convex client and reconcile with the server result.",
+      "linkedAcceptanceCriteria": [
+        "AC-003",
+        "AC-004"
+      ]
+    },
+    {
+      "id": "FR-005",
+      "text": "Optimistic updates MUST roll back on error and announce the failure through the existing live region.",
+      "linkedAcceptanceCriteria": [
+        "AC-004"
+      ]
+    },
+    {
+      "id": "FR-006",
+      "text": "Event and ticket routes MUST provide error boundaries that keep the header and navigation usable and offer retry.",
+      "linkedAcceptanceCriteria": [
+        "AC-005"
+      ]
+    },
+    {
+      "id": "FR-007",
+      "text": "Empty states MUST be produced by one component that takes a reason and an optional action.",
+      "linkedAcceptanceCriteria": [
+        "AC-006"
+      ]
+    },
+    {
+      "id": "FR-008",
+      "text": "Skeleton and transition animation MUST be suppressed when the user prefers reduced motion.",
+      "linkedAcceptanceCriteria": [
+        "AC-008"
+      ]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Cumulative layout shift on the affected routes MUST stay at or below 0.02.",
+      "linkedAcceptanceCriteria": [
+        "AC-007"
+      ]
+    },
+    {
+      "id": "NFR-002",
+      "text": "The skeleton and empty-state primitives MUST add at most 5 KB gzip to first-load JavaScript.",
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-006"
+      ]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Skeletons MUST be hidden from assistive technology and the loading state announced once; errors MUST be announced.",
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-004",
+        "AC-005"
+      ]
+    },
+    {
+      "id": "NFR-004",
+      "text": "No Convex function signature, validator, or authorization check may change; this feature is client presentation.",
+      "linkedAcceptanceCriteria": [
+        "AC-003",
+        "AC-004"
+      ]
+    }
+  ]
+}

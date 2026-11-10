@@ -309,6 +309,35 @@
           ]
         }
       ]
+    },
+    {
+      "name": "registration-ux-polish",
+      "branch": "feature/backlog-wave-2",
+      "base": "main",
+      "productItems": [
+        "BP-016"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "specification",
+          "gates": {
+            "specification": "pending",
+            "planning": "pending",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:00:00.000Z"
+            }
+          ]
+        }
+      ]
     }
   ],
   "onboarding": {
