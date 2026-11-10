@@ -279,8 +279,10 @@
         "T4.3",
         "T5.2"
       ],
-      "status": "not_started",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-043"
+      ]
     }
   ]
 }
