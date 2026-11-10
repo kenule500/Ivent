@@ -10,17 +10,27 @@
           "id": "T1.1",
           "title": "Build the skeleton primitive",
           "description": "Create components/ui/skeleton.tsx: one shimmer block, aria-hidden, static when prefers-reduced-motion is set, accepting width/height/rounded props so routes can mirror their layout without inventing variants.",
-          "linkedRequirements": ["FR-001", "FR-008"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-008"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-001",
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-008"
+          ],
+          "completed": true
         },
         {
           "id": "T1.2",
           "title": "Build the empty-state component",
           "description": "Create components/ui/empty-state.tsx taking a reason and an optional action (label + href or onClick), rendering a heading, explanatory sentence and the action, with consistent spacing across surfaces.",
-          "linkedRequirements": ["FR-007"],
-          "linkedAcceptanceCriteria": ["AC-006"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": true
         }
       ]
     },
@@ -32,17 +42,29 @@
           "id": "T2.1",
           "title": "Add the event page loading skeleton",
           "description": "Create app/(public)/events/[slug]/loading.tsx composing the skeleton primitive into the hero, detail column and register panel using the same spacing tokens as the real page.",
-          "linkedRequirements": ["FR-002", "NFR-001"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-007"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-002",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-007"
+          ],
+          "completed": true
         },
         {
           "id": "T2.2",
           "title": "Add the tickets loading skeleton",
           "description": "Create app/(main)/my-tickets/loading.tsx mirroring the ticket grid and the filter row.",
-          "linkedRequirements": ["FR-002", "NFR-001"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-007"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-002",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-007"
+          ],
+          "completed": true
         }
       ]
     },
@@ -54,25 +76,39 @@
           "id": "T3.1",
           "title": "Give the registration dialog a pending state",
           "description": "In register-modal.tsx, disable the submit control while a request is in flight, show progress, and guard against a second submission from a double tap.",
-          "linkedRequirements": ["FR-003"],
-          "linkedAcceptanceCriteria": ["AC-002"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": true
         },
         {
           "id": "T3.2",
           "title": "Apply registration optimistically",
           "description": "Wrap the registration mutation so the ticket appears in the client cache immediately, is reconciled on success, and is removed on failure without touching the server contract.",
-          "linkedRequirements": ["FR-004", "NFR-004"],
-          "linkedAcceptanceCriteria": ["AC-003"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-004",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003"
+          ],
+          "completed": true
         },
         {
           "id": "T3.3",
           "title": "Roll back and announce failures",
           "description": "On a rejected registration or cancellation, remove the optimistic entry and announce the server reason through useAnnounce, keeping the dialog open with a retry path.",
-          "linkedRequirements": ["FR-004", "FR-005"],
-          "linkedAcceptanceCriteria": ["AC-004"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-004",
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004"
+          ],
+          "completed": true
         }
       ]
     },
@@ -84,17 +120,25 @@
           "id": "T4.1",
           "title": "Add the event route error boundary",
           "description": "Create app/(public)/events/[slug]/error.tsx with recovery copy, a retry that re-mounts the segment, and a working link home; no error message, stack trace, or internal id reaches the user.",
-          "linkedRequirements": ["FR-006"],
-          "linkedAcceptanceCriteria": ["AC-005"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
         },
         {
           "id": "T4.2",
           "title": "Add the tickets route error boundary",
           "description": "Create app/(main)/my-tickets/error.tsx with the same recovery contract, keeping the header and navigation usable.",
-          "linkedRequirements": ["FR-006"],
-          "linkedAcceptanceCriteria": ["AC-005"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
         }
       ]
     },
@@ -106,25 +150,40 @@
           "id": "T5.1",
           "title": "Wire the empty states",
           "description": "Replace the ad-hoc empty copy in my-tickets, explore results and announcements with the shared component, each naming its cause and offering the relevant action.",
-          "linkedRequirements": ["FR-007"],
-          "linkedAcceptanceCriteria": ["AC-006"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": true
         },
         {
           "id": "T5.2",
           "title": "Make loading and failure accessible",
           "description": "Mark skeletons aria-hidden, announce the loading state once, and ensure the error boundary and optimistic failure reach the live region.",
-          "linkedRequirements": ["NFR-003"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-004", "AC-005"],
-          "completed": false
+          "linkedRequirements": [
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-004",
+            "AC-005"
+          ],
+          "completed": true
         },
         {
           "id": "T5.3",
           "title": "Verify CLS and the JavaScript budget",
           "description": "Confirm the skeleton and empty-state primitives stay within 5 KB gzip and that the affected routes keep CLS at or below 0.02 in the Lighthouse run.",
-          "linkedRequirements": ["NFR-001", "NFR-002"],
-          "linkedAcceptanceCriteria": ["AC-007"],
-          "completed": false
+          "linkedRequirements": [
+            "NFR-001",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007"
+          ],
+          "completed": true
         }
       ]
     }

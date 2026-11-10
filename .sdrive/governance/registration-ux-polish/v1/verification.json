@@ -1,0 +1,295 @@
+{
+  "feature": "registration-ux-polish",
+  "status": "warn",
+  "checkedAt": "2026-11-10T17:33:54.328Z",
+  "summary": {
+    "matched": 14,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 35,
+    "withdrawn": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "components/ui/skeleton.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/ui/skeleton.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/empty-state.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/ui/empty-state.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/skeletons/event-skeleton.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/skeletons/event-skeleton.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/skeletons/tickets-skeleton.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/skeletons/tickets-skeleton.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/route-error.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/route-error.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/loading.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/loading.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/loading.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-tickets/loading.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/error.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/error.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/error.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-tickets/error.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/_components/register-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(main)/my-tickets/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/explore/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/explore/page.tsx"
+      },
+      {
+        "type": "dependency",
+        "name": "Convex optimistic updates",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "BP-015 live region",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": [
+      {
+        "type": "component",
+        "name": "components/AdminAwareLayout.tsx",
+        "file": "components/AdminAwareLayout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminGuard.tsx",
+        "file": "components/AdminGuard.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminSidebar.tsx",
+        "file": "components/AdminSidebar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/event-card.tsx",
+        "file": "components/event-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/footer.tsx",
+        "file": "components/footer.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/header.tsx",
+        "file": "components/header.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ImagePicker.tsx",
+        "file": "components/ImagePicker.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/maintenance-gate.tsx",
+        "file": "components/maintenance-gate.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/onboarding-modal.tsx",
+        "file": "components/onboarding-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/search-location-bar.tsx",
+        "file": "components/search-location-bar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/SmartImage.tsx",
+        "file": "components/SmartImage.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/theme-provider.tsx",
+        "file": "components/theme-provider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/avatar.tsx",
+        "file": "components/ui/avatar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/badge.tsx",
+        "file": "components/ui/badge.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/button.tsx",
+        "file": "components/ui/button.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/calendar.tsx",
+        "file": "components/ui/calendar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/card.tsx",
+        "file": "components/ui/card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/carousel.tsx",
+        "file": "components/ui/carousel.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/chart.tsx",
+        "file": "components/ui/chart.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/dialog.tsx",
+        "file": "components/ui/dialog.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/input.tsx",
+        "file": "components/ui/input.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/label.tsx",
+        "file": "components/ui/label.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/pagination.tsx",
+        "file": "components/ui/pagination.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/popover.tsx",
+        "file": "components/ui/popover.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/progress.tsx",
+        "file": "components/ui/progress.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/select.tsx",
+        "file": "components/ui/select.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/separator.tsx",
+        "file": "components/ui/separator.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/sonner.tsx",
+        "file": "components/ui/sonner.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/switch.tsx",
+        "file": "components/ui/switch.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/table.tsx",
+        "file": "components/ui/table.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/tabs.tsx",
+        "file": "components/ui/tabs.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/textarea.tsx",
+        "file": "components/ui/textarea.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ui/tooltip.tsx",
+        "file": "components/ui/tooltip.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/upgrade-modal.tsx",
+        "file": "components/upgrade-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "file": "app/(public)/events/[slug]/page.tsx"
+      }
+    ],
+    "withdrawn": []
+  }
+}

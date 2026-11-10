@@ -12,12 +12,12 @@ import { format } from 'date-fns'
 import Image from 'next/image'
 import { Doc } from "@/convex/_generated/dataModel" 
 import { Badge } from '@/components/ui/badge'
+import { EmptyState } from '@/components/ui/empty-state'
 import { Card, CardContent } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import { createLocationSlug } from '@/lib/location-utils'
 import { CATEGORIES } from '@/lib/data'
 import EventCard from '@/components/event-card'
-import Link from 'next/link'
 
 const ExplorePage = () => {
     const router = useRouter();
@@ -185,9 +185,11 @@ const ExplorePage = () => {
                         ))}
                     </div>
                 ) : (
-                    <Card className="p-8 text-center">
-                        <p className="text-muted-foreground">No events near you yet.</p>
-                    </Card>
+                    <EmptyState
+                        title="No events near you yet"
+                        reason="No one has published an event in your area. Browse another location, or host the first one."
+                        action={{ label: "Create an event", href: "/create-event" }}
+                    />
                 )}
             </div>
 
@@ -257,18 +259,11 @@ const ExplorePage = () => {
                 (!featuredEvents || featuredEvents.length === 0) &&
                 (!localEvents || localEvents.length === 0) &&
                 (!popularEvents || popularEvents.length === 0) && (
-                <Card className="p-12 text-center">
-                    <div className="max-w-md mx-auto space-y-4">
-                        <div className="text-6xl mb-4">🎉</div>
-                        <h2 className="text-2xl font-bold">No events yet</h2>
-                        <p className="text-muted-foreground">
-                            Be the first to create an event in your area!
-                        </p>
-                        <Button render={<Link href="/create-event" />} className="gap-2">
-                            Create Event
-                        </Button>
-                    </div>
-                </Card>
+                <EmptyState
+                    title="No events yet"
+                    reason="Nothing has been published yet. Be the first to create an event in your area."
+                    action={{ label: "Create an event", href: "/create-event" }}
+                />
             )} 
         </>
     )

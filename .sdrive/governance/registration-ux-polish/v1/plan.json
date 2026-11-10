@@ -5,49 +5,64 @@
     "approach": "Client-side only. One skeleton primitive and one empty-state component are added under components/ui/, then consumed by route-level loading/error files and by the existing event and ticket screens. Optimistic updates are a thin layer over the existing Convex mutations: the client writes an optimistic entry, the server stays authoritative, and a rejection rolls the entry back and announces the reason. No Convex function, validator, or authorization check changes.",
     "components": [
       {
-        "name": "Skeleton primitives",
+        "name": "components/ui/skeleton.tsx",
         "action": "create",
-        "description": "components/ui/skeleton.tsx — one shimmer implementation, motion-aware, aria-hidden. Single source of loading placeholders."
+        "description": "The single shimmer implementation; reduced-motion aware and aria-hidden."
       },
       {
-        "name": "Empty state",
+        "name": "components/ui/empty-state.tsx",
         "action": "create",
-        "description": "components/ui/empty-state.tsx — reason, optional action, consistent sentence structure. Used by tickets, search results, announcements."
+        "description": "Reason plus optional action, used by tickets and explore results."
       },
       {
-        "name": "Event route skeleton",
+        "name": "components/skeletons/event-skeleton.tsx",
         "action": "create",
-        "description": "app/(public)/events/[slug]/loading.tsx — mirrors the real header, detail column and register panel using the same spacing tokens."
+        "description": "Event page placeholder shared by the route loading file and the page query state."
       },
       {
-        "name": "Tickets route skeleton",
+        "name": "components/skeletons/tickets-skeleton.tsx",
         "action": "create",
-        "description": "app/(main)/my-tickets/loading.tsx — mirrors the ticket grid."
+        "description": "Ticket grid placeholder shared by the route loading file and the page query state."
       },
       {
-        "name": "Event and ticket error boundaries",
+        "name": "components/route-error.tsx",
         "action": "create",
-        "description": "app/(public)/events/[slug]/error.tsx and app/(main)/my-tickets/error.tsx — recovery copy, retry, working home link, no internal detail."
+        "description": "Shared recovery surface: announced, retry, working home link, no internal detail."
       },
       {
-        "name": "Registration dialog pending state",
+        "name": "app/(public)/events/[slug]/loading.tsx",
+        "action": "create",
+        "description": "Route-level skeleton for the event page."
+      },
+      {
+        "name": "app/(main)/my-tickets/loading.tsx",
+        "action": "create",
+        "description": "Route-level skeleton for my tickets."
+      },
+      {
+        "name": "app/(public)/events/[slug]/error.tsx",
+        "action": "create",
+        "description": "Event route recovery boundary."
+      },
+      {
+        "name": "app/(main)/my-tickets/error.tsx",
+        "action": "create",
+        "description": "Tickets route recovery boundary."
+      },
+      {
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
         "action": "modify",
-        "description": "app/(public)/events/[slug]/_components/register-modal.tsx — disable submit while in flight, show progress, ignore repeat taps."
+        "description": "Pending state, double-submit guard, inline announced failure."
       },
       {
-        "name": "Optimistic registration",
+        "name": "app/(main)/my-tickets/page.tsx",
         "action": "modify",
-        "description": "The register flow applies an optimistic ticket entry, reconciles on success, rolls back and announces on failure."
+        "description": "Optimistic cancellation with rollback, skeleton during query load, shared empty state."
       },
       {
-        "name": "Optimistic cancellation",
+        "name": "app/(public)/explore/page.tsx",
         "action": "modify",
-        "description": "app/(main)/my-tickets/page.tsx — removing a ticket updates optimistically with rollback on failure."
-      },
-      {
-        "name": "Empty states wired",
-        "action": "modify",
-        "description": "my-tickets, explore results, and announcements use the shared empty-state component with a reason and an action."
+        "description": "Empty results use the shared empty-state component."
       }
     ],
     "referencedRequirementIds": [

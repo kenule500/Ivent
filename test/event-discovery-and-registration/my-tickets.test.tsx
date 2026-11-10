@@ -12,6 +12,14 @@ vi.mock("@/hooks/useConvexQuery", () => ({
   useConvexQuery: mocks.useConvexQuery,
   useConvexMutation: () => ({ mutate: vi.fn(), isLoading: false }),
 }));
+// Cancellation now goes through convex/react directly so it can carry an
+// optimistic update; the test provides the same shape without a provider.
+vi.mock("convex/react", () => ({
+  useMutation: () =>
+    Object.assign(vi.fn(async () => undefined), {
+      withOptimisticUpdate: () => vi.fn(async () => undefined),
+    }),
+}));
 vi.mock("@/convex/_generated/api", () => ({
   api: { registrations: { getMyRegistrations: { __apiName: "registrations.getMyRegistrations" } } },
 }));

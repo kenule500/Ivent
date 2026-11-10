@@ -47,6 +47,11 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+
+    // Guard against a second submission from an impatient double tap or Enter
+    // while the first request is still in flight (AC-002).
+    if (isLoading) return;
+
     setErrorMessage(null);
 
     try {

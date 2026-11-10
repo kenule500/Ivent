@@ -3,21 +3,21 @@
 
 import { useEffect, useRef, useState } from "react";
 import { format } from "date-fns";
-import { Calendar, MapPin, Loader2, Ticket } from "lucide-react";
-import { useConvexQuery, useConvexMutation } from "@/hooks/useConvexQuery";
+import { Calendar, MapPin, Ticket } from "lucide-react";
+import { useMutation } from "convex/react";
+import { useConvexQuery } from "@/hooks/useConvexQuery";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import QRCode from "react-qr-code";
 
-import { Button } from "@/components/ui/button";
-import { Card } from "@/components/ui/card";
+import { EmptyState } from "@/components/ui/empty-state";
+import { TicketsSkeleton } from "@/components/skeletons/tickets-skeleton";
 import {
   Dialog,
   DialogContent,
   DialogHeader,
   DialogTitle,
 } from "@/components/ui/dialog";
-import Link from "next/link";
 import EventCard from "@/components/event-card";
 import { useAnnounce } from "@/components/a11y/live-region";
 import type { FunctionReturnType } from "convex/server";
@@ -54,8 +54,21 @@ export default function MyTicketsPage() {
     );
   }, [announce, isLoading, registrations]);
 
-  const { mutate: cancelRegistration } =
-    useConvexMutation(api.registrations.cancelRegistration);
+  // Cancellation is applied optimistically: the card disappears at once and
+  // comes back if the server rejects it (FR-004, FR-005, AC-003, AC-004).
+  const cancelRegistration = useMutation(
+    api.registrations.cancelRegistration
+  ).withOptimisticUpdate((localStore, args) => {
+    const current = localStore.getQuery(api.registrations.getMyRegistrations);
+
+    if (current === undefined) return;
+
+    localStore.setQuery(
+      api.registrations.getMyRegistrations,
+      {},
+      current.filter((registration) => registration._id !== args.registrationId)
+    );
+  });
 
   const handleCancelRegistration = async (registrationId: Id<"registrations">) => {
     if (!window.confirm("Are you sure you want to cancel this registration?"))
@@ -74,13 +87,11 @@ export default function MyTicketsPage() {
 
   if (isLoading) {
     return (
-      <div
-        className="min-h-screen flex flex-col items-center justify-center gap-3"
-        role="status"
-        aria-live="polite"
-      >
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" aria-hidden="true" />
-        <span className="text-sm text-muted-foreground">Loading your tickets…</span>
+      <div aria-busy="true">
+        <p className="sr-only" role="status">
+          Loading your tickets
+        </p>
+        <TicketsSkeleton />
       </div>
     );
   }
@@ -161,21 +172,12 @@ export default function MyTicketsPage() {
 
         {/* Empty State */}
         {!upcomingTickets?.length && !pastTickets?.length && (
-          <Card className="p-12 text-center">
-            <div className="max-w-md mx-auto space-y-4">
-              <div className="text-6xl mb-4">🎟️</div>
-              <h2 className="text-2xl font-bold">No tickets yet</h2>
-              <p className="text-muted-foreground">
-                Register for events to see your tickets here
-              </p>
-              <Button 
-                className="gap-2" 
-                render={<Link href="/explore" />}
-              >
-                <Ticket className="w-4 h-4" /> Browse Events
-              </Button>
-            </div>
-          </Card>
+          <EmptyState
+            title="No tickets yet"
+            reason="You have not registered for an event yet. Once you register, your ticket appears here with its QR code."
+            icon={<Ticket className="h-10 w-10" />}
+            action={{ label: "Browse events", href: "/explore" }}
+          />
         )}
       </div>
 

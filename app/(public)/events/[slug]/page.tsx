@@ -16,7 +16,6 @@ import {
   Ticket,
   ExternalLink,
   Flag,
-  Loader2,
   CheckCircle,
 } from "lucide-react";
 import { api } from "@/convex/_generated/api";
@@ -25,6 +24,7 @@ import { useUser } from "@clerk/nextjs";
 
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
+import { EventSkeleton } from "@/components/skeletons/event-skeleton";
 import { Card, CardContent } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
@@ -99,8 +99,11 @@ export default function EventDetailPage() {
 
   if (isLoading) {
     return (
-      <div className="min-h-screen flex items-center justify-center">
-        <Loader2 className="w-8 h-8 animate-spin text-purple-500" />
+      <div aria-busy="true">
+        <p className="sr-only" role="status">
+          Loading event details
+        </p>
+        <EventSkeleton />
       </div>
     );
   }
