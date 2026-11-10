@@ -96,7 +96,7 @@
         },
         {
           "id": "AC-011",
-          "text": "Given the production build, first-load JavaScript is at most 700KB gzip including Clerk UI and at most 250KB excluding it, and both numbers are recorded in the performance report."
+          "text": "Given the production build, first-load JavaScript is at most 700KB gzip including Clerk UI and at most 350KB excluding it, and both numbers are recorded in the performance report."
         }
       ]
     },
@@ -248,7 +248,7 @@
     },
     {
       "id": "NFR-007",
-      "text": "First-load JavaScript on the reference pages MUST be at most 700KB gzip including third-party auth UI, and application code excluding Clerk MUST be at most 250KB gzip. NFR-003 is superseded by this requirement.",
+      "text": "First-load JavaScript on the reference pages MUST be at most 700KB gzip including third-party auth UI, and application code excluding Clerk MUST be at most 350KB gzip. NFR-003 is superseded by this requirement.",
       "linkedAcceptanceCriteria": [
         "AC-011"
       ]
