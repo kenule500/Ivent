@@ -283,6 +283,17 @@
       "event": "gate_approved",
       "prevHash": "141adef27d8c4207a44d302dbb4985f5aedad53f6731280b44e876714c175642",
       "hash": "247f2dc0978a1cfc61853e1e66493adcdd277b5a1db50d4cf24fad82ae0f0969"
+    },
+    {
+      "timestamp": "2026-11-10T12:27:51.616Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "gate": "planning",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "247f2dc0978a1cfc61853e1e66493adcdd277b5a1db50d4cf24fad82ae0f0969",
+      "hash": "26adfd9cb1e23d07c778769ffd18a7af0fcc9171ca8f9d4387ea5fe6fa1224ac"
     }
   ]
 }
