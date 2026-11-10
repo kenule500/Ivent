@@ -47,3 +47,7 @@ next-env.d.ts
 pm run lighthouse\; keep only the analysed report.
 .sdrive/reports/performance/lighthouse/
 
+
+# Lighthouse CI default output directory (raw traces, regenerated).
+.lighthouseci/
+
