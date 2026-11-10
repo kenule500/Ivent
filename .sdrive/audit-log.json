@@ -327,6 +327,37 @@
       "event": "test_passed",
       "prevHash": "91b4ff54c212b396d0f892ca6fb38a9c2185a7ffbce8725c65a2b509c4605be6",
       "hash": "f5c73634156fb8e29a3f45322b112e23015553e65337bb87d1f2c6d7fc3f55f8"
+    },
+    {
+      "timestamp": "2026-11-10T14:21:31.157Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "total": 27,
+      "durationMs": 29230,
+      "event": "test_passed",
+      "prevHash": "f5c73634156fb8e29a3f45322b112e23015553e65337bb87d1f2c6d7fc3f55f8",
+      "hash": "3d0330b5f1ae67383f2b55ad84b73abd4bf88e86b9a70b19fb2216f11cf1ff38"
+    },
+    {
+      "timestamp": "2026-11-10T15:07:06.922Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "gate": "review",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "3d0330b5f1ae67383f2b55ad84b73abd4bf88e86b9a70b19fb2216f11cf1ff38",
+      "hash": "34f0dd949a0ab558514028243a739c23871f90b51fc1af6e5db060915bd70ca2"
+    },
+    {
+      "timestamp": "2026-11-10T15:23:26.570Z",
+      "actor": "kenule500",
+      "feature": "accessibility-and-performance-hardening",
+      "version": "v1",
+      "event": "feature_archived",
+      "prevHash": "34f0dd949a0ab558514028243a739c23871f90b51fc1af6e5db060915bd70ca2",
+      "hash": "c89fb4b44fdd5abc573805215cd6840bc42c3c2e1d0104c162da8a22a8661fc5"
     }
   ]
 }
