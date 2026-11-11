@@ -73,7 +73,7 @@ export const runReminderSweep = internalMutation({
             .withIndex("by_idempotencyKey", (q) => q.eq("idempotencyKey", key))
             .unique();
 
-          if (already) continue;
+          if (already && already.status !== "failed") continue;
 
           await ctx.scheduler.runAfter(
             0,
@@ -132,7 +132,7 @@ export const runFollowUpSweep = internalMutation({
             .withIndex("by_idempotencyKey", (q) => q.eq("idempotencyKey", key))
             .unique();
 
-          if (already) continue;
+          if (already && already.status !== "failed") continue;
 
           await ctx.scheduler.runAfter(
             0,

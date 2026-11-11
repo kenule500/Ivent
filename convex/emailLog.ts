@@ -2,6 +2,8 @@ import { v } from "convex/values";
 import { internalMutation, internalQuery } from "./_generated/server";
 import { lifecycleTemplateValidator } from "./lifecycleTemplates";
 
+export const MAX_LIFECYCLE_ATTEMPTS = 3;
+
 const emailTemplateValidator = v.union(
   v.literal("invite"),
   v.literal("announcement"),
@@ -61,7 +63,22 @@ export const claimLifecycleSend = internalMutation({
       )
       .unique();
 
-    if (existing) return false;
+    if (existing) {
+      // A failed send may be retried, but only within the bounded budget
+      // (FR-006, NFR-004). Anything sent, queued, or exhausted is final.
+      const attempts = existing.attempts ?? 0;
+
+      if (existing.status === "failed" && attempts < MAX_LIFECYCLE_ATTEMPTS) {
+        await ctx.db.patch(existing._id, {
+          status: "queued",
+          error: undefined,
+          attempts: attempts + 1,
+        });
+        return true;
+      }
+
+      return false;
+    }
 
     await ctx.db.insert("emailEvents", {
       template: args.template,
@@ -70,7 +87,7 @@ export const claimLifecycleSend = internalMutation({
       createdAt: Date.now(),
       registrationId: args.registrationId,
       idempotencyKey: args.idempotencyKey,
-      attempts: 0,
+      attempts: 1,
     });
 
     return true;
@@ -102,7 +119,6 @@ export const settleLifecycleSend = internalMutation({
     await ctx.db.patch(existing._id, {
       status: args.status,
       error: args.error,
-      attempts: (existing.attempts ?? 0) + 1,
     });
   },
 });

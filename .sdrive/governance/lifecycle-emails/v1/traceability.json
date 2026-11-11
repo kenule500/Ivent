@@ -15,7 +15,9 @@
         "T1.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-051"
+      ]
     },
     {
       "requirementId": "FR-002",
@@ -28,7 +30,9 @@
         "T3.1"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-003",
@@ -40,7 +44,9 @@
         "T3.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-004",
@@ -52,7 +58,9 @@
         "T3.3"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-005",
@@ -68,7 +76,9 @@
         "T3.3"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-006",
@@ -81,7 +91,9 @@
         "T2.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-007",
@@ -93,7 +105,9 @@
         "T4.1"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-008",
@@ -105,7 +119,9 @@
         "T4.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "FR-009",
@@ -118,8 +134,10 @@
         "T2.1",
         "T5.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-051"
+      ]
     },
     {
       "requirementId": "NFR-001",
@@ -130,8 +148,10 @@
       "taskIds": [
         "T4.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-051"
+      ]
     },
     {
       "requirementId": "NFR-002",
@@ -144,7 +164,9 @@
         "T3.1"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-052"
+      ]
     },
     {
       "requirementId": "NFR-003",
@@ -155,8 +177,10 @@
       "taskIds": [
         "T5.1"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-051"
+      ]
     },
     {
       "requirementId": "NFR-004",
@@ -168,8 +192,10 @@
         "T2.2",
         "T5.2"
       ],
-      "status": "in_progress",
-      "testIds": []
+      "status": "complete",
+      "testIds": [
+        "TEST-052"
+      ]
     }
   ]
 }

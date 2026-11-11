@@ -166,7 +166,7 @@
           "linkedAcceptanceCriteria": [
             "AC-008"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.2",
@@ -181,7 +181,7 @@
             "AC-004",
             "AC-005"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     }

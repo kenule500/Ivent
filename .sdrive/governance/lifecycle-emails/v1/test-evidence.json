@@ -1,0 +1,34 @@
+{
+  "feature": "lifecycle-emails",
+  "version": "v1",
+  "command": "node .sdrive/reports/tests/run-feature-evidence.js lifecycle-emails",
+  "source": "--cmd",
+  "exitCode": 0,
+  "timedOut": false,
+  "signal": null,
+  "commit": "0f0460196d748ec138801dc3a2b631c6d840715a",
+  "branch": "feature/backlog-wave-3",
+  "startedAt": "2026-11-11T12:11:08.641Z",
+  "finishedAt": "2026-11-11T12:11:13.338Z",
+  "durationMs": 4694,
+  "outputHash": "sha256:e6a424b8afe4a9eee6252f8793fd6b2a4fabd234e9a0f0a7cd3dbece2ba45db0",
+  "summary": {
+    "passed": 16,
+    "failed": 0,
+    "skipped": 0,
+    "total": 16
+  },
+  "testIds": [],
+  "acIds": [
+    "AC-001",
+    "AC-002",
+    "AC-003",
+    "AC-004",
+    "AC-005",
+    "AC-006",
+    "AC-007",
+    "AC-008"
+  ],
+  "outputTail": "JSON report written to C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/.sdrive/reports/tests/raw/lifecycle-emails-vitest.json\nTests: 0 failed, 16 passed, 16 total\nACs exercised: AC-001 AC-002 AC-003 AC-004 AC-005 AC-006 AC-007 AC-008\n\nnpm info using npm@11.21.0\nnpm info using node@v24.20.0\nnpm info ok\n",
+  "recordedAt": "2026-11-11T12:11:13.447Z"
+}
