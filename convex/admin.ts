@@ -675,3 +675,24 @@ export const getAdminInvites = query({
     return invitesWithUsers;
   },
 });
+
+/**
+ * Lifecycle email deliveries for one registration (BP-001, AC-007).
+ *
+ * Admin-only: the organiser asks "did this attendee get the email?" and gets
+ * one row per lifecycle template with its status and timestamp.
+ */
+export const getRegistrationEmailDeliveries = query({
+  args: { registrationId: v.id("registrations") },
+  handler: async (ctx, args) => {
+    await requireAdmin(ctx);
+
+    return await ctx.db
+      .query("emailEvents")
+      .withIndex("by_registration", (q) =>
+        q.eq("registrationId", args.registrationId)
+      )
+      .order("desc")
+      .take(50);
+  },
+});

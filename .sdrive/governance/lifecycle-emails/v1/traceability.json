@@ -120,7 +120,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-052"
+        "TEST-052",
+        "TEST-053"
       ]
     },
     {

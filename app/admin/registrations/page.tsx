@@ -32,7 +32,15 @@ import {
   Loader2,
   Calendar,
   X,
+  Mail,
 } from "lucide-react";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import {
   Card,
   CardContent,
@@ -67,6 +75,17 @@ export default function AdminRegistrationsPage() {
     attendeeName: string;
     eventTitle: string;
   } | null>(null);
+
+  // Per-registration lifecycle deliveries (AC-007).
+  const [emailTarget, setEmailTarget] = useState<{
+    id: Id<"registrations">;
+    attendeeName: string;
+  } | null>(null);
+
+  const { data: deliveries } = useConvexQuery(
+    api.admin.getRegistrationEmailDeliveries,
+    emailTarget ? { registrationId: emailTarget.id } : "skip"
+  );
 
   const { data: registrations, isLoading } = useConvexQuery(
     api.admin.getAllRegistrations,
@@ -342,6 +361,20 @@ export default function AdminRegistrationsPage() {
                           )}
                         </TableCell>
                         <TableCell className="text-right">
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() =>
+                              setEmailTarget({
+                                id: reg._id,
+                                attendeeName: reg.attendeeName,
+                              })
+                            }
+                            className="whitespace-nowrap"
+                          >
+                            <Mail className="w-4 h-4" />
+                            <span className="hidden sm:inline ml-1">Emails</span>
+                          </Button>
                           {reg.status === "confirmed" && (
                             <Button
                               variant="ghost"
@@ -385,6 +418,49 @@ export default function AdminRegistrationsPage() {
         eventTitle={registrationToCancel?.eventTitle || ""}
         isLoading={cancelling}
       />
+
+      {/* Lifecycle email deliveries for one attendee (AC-007) */}
+      <Dialog
+        open={!!emailTarget}
+        onOpenChange={(open) => {
+          if (!open) setEmailTarget(null);
+        }}
+      >
+        <DialogContent className="sm:max-w-lg">
+          <DialogHeader>
+            <DialogTitle>Lifecycle emails</DialogTitle>
+            <DialogDescription>
+              What was sent to {emailTarget?.attendeeName ?? "this attendee"}.
+            </DialogDescription>
+          </DialogHeader>
+
+          {!emailTarget ? null : deliveries === undefined ? (
+            <p className="text-sm text-muted-foreground">Loading deliveries…</p>
+          ) : deliveries.length === 0 ? (
+            <p className="text-sm text-muted-foreground">
+              No lifecycle email has been queued for this registration yet.
+            </p>
+          ) : (
+            <ul className="space-y-2">
+              {deliveries.map((delivery) => (
+                <li
+                  key={delivery._id}
+                  className="flex items-center justify-between gap-3 rounded-md border px-3 py-2 text-sm"
+                >
+                  <span className="font-medium">{delivery.template}</span>
+                  <span className="text-muted-foreground">
+                    {delivery.status}
+                    {delivery.attempts ? ` · ${delivery.attempts} attempt(s)` : ""}
+                  </span>
+                  <span className="text-xs text-muted-foreground">
+                    {format(delivery.createdAt, "MMM dd, HH:mm")}
+                  </span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </DialogContent>
+      </Dialog>
     </>
   );
 }

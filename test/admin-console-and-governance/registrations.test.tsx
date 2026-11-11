@@ -23,6 +23,7 @@ vi.mock("@/convex/_generated/api", () => ({
     admin: {
       getAllRegistrations: { __apiName: "admin.getAllRegistrations" },
       getAllEvents: { __apiName: "admin.getAllEvents" },
+      getRegistrationEmailDeliveries: { __apiName: "admin.getRegistrationEmailDeliveries" },
     },
     registrations: { cancelRegistration: { __apiName: "registrations.cancelRegistration" } },
     exports: { generate: { __apiName: "exports.generate" } },

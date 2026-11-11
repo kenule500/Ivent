@@ -273,3 +273,49 @@ describe("AC-006: the preference suppresses optional email only", () => {
     expect(result.status).not.toBe("skipped");
   });
 });
+
+describe("AC-007: the admin view is authorised and complete", () => {
+  test("AC-007: an admin reads the delivery rows for one registration", async () => {
+    const { t, registrationId } = await setup();
+    const key = `${registrationId}:registration_confirmation`;
+
+    await t.mutation(internal.emailLog.claimLifecycleSend, {
+      registrationId,
+      template: "registration_confirmation",
+      idempotencyKey: key,
+      recipient: identity.email,
+    });
+    await t.mutation(internal.emailLog.settleLifecycleSend, {
+      idempotencyKey: key,
+      status: "failed",
+      error: "provider timeout",
+    });
+
+    await t.run(async (ctx) => {
+      await seedUser(ctx, {
+        name: "Admin",
+        tokenIdentifier: "token|admin",
+        email: "admin@example.com",
+        role: "admin",
+      });
+    });
+
+    const rows = await t
+      .withIdentity(identityFor("token|admin", "Admin", "admin@example.com"))
+      .query(api.admin.getRegistrationEmailDeliveries, { registrationId });
+
+    expect(rows).toHaveLength(1);
+    expect(rows[0].status).toBe("failed");
+    expect(rows[0].error).toBe("provider timeout");
+  });
+
+  test("AC-007: a non-admin cannot read deliveries", async () => {
+    const { t, registrationId } = await setup();
+
+    await expect(
+      t
+        .withIdentity(identity)
+        .query(api.admin.getRegistrationEmailDeliveries, { registrationId })
+    ).rejects.toThrow();
+  });
+});

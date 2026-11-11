@@ -53,6 +53,16 @@
         "name": "app/admin/health/page.tsx",
         "action": "modify",
         "description": "Lifecycle templates appear in the delivery counts and failure list."
+      },
+      {
+        "name": "app/admin/registrations/page.tsx",
+        "action": "modify",
+        "description": "Per-registration delivery view: an Emails action opening the lifecycle rows for that attendee."
+      },
+      {
+        "name": "convex/admin.ts",
+        "action": "modify",
+        "description": "Admin-only query returning the lifecycle deliveries for one registration."
       }
     ],
     "referencedRequirementIds": [
