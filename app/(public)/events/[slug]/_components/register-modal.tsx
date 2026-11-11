@@ -3,7 +3,8 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Loader2, Ticket, CheckCircle } from "lucide-react";
-import { useConvexMutation } from "@/hooks/useConvexQuery";
+import { useMutation } from "convex/react";
+import type { FunctionReturnType } from "convex/server";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import { useUser } from "@clerk/nextjs";
@@ -26,33 +27,73 @@ interface RegisterModalProps {
     title: string;
     ticketType: string;
     ticketPrice?: number;
-  };
+  } & Record<string, unknown>;
   isOpen: boolean;
   onClose: () => void;
 }
+
+type RegistrationWithEvent = FunctionReturnType<
+  typeof api.registrations.getMyRegistrations
+>[number];
 
 export default function RegisterModal({ event, isOpen, onClose }: RegisterModalProps) {
   const router = useRouter();
   const { user } = useUser();
   const [isSuccess, setIsSuccess] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
   const announce = useAnnounce();
 
   const attendeeName = user?.fullName ?? user?.username ?? "Guest";
   const attendeeEmail = user?.primaryEmailAddress?.emailAddress ?? "";
 
-  const { mutate: registerForEvent, isLoading } = useConvexMutation(
+  // The ticket appears in My Tickets immediately: an optimistic entry is placed
+  // in the cache the query reads, and Convex discards it on success or failure
+  // (FR-004, AC-003). The entry is cast because a pending ticket has no server
+  // identity yet — it never reaches the backend, and the ticket card tolerates
+  // the placeholder id.
+  const registerForEvent = useMutation(
     api.registrations.registerForEvent
-  );
+  ).withOptimisticUpdate((localStore, args) => {
+    const current = localStore.getQuery(api.registrations.getMyRegistrations);
+
+    if (current === undefined) return;
+
+    const alreadyRegistered = current.some(
+      (registration) =>
+        registration.eventId === args.eventId &&
+        registration.status === "confirmed"
+    );
+
+    if (alreadyRegistered) return;
+
+    const optimisticTicket = {
+      _id: `optimistic-${args.eventId}` as Id<"registrations">,
+      eventId: args.eventId,
+      userId: "optimistic" as Id<"users">,
+      attendeeName,
+      attendeeEmail,
+      qrCode: "pending",
+      checkedIn: false,
+      status: "confirmed",
+      event,
+    } as unknown as RegistrationWithEvent;
+
+    localStore.setQuery(api.registrations.getMyRegistrations, {}, [
+      optimisticTicket,
+      ...current,
+    ]);
+  });
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     // Guard against a second submission from an impatient double tap or Enter
     // while the first request is still in flight (AC-002).
-    if (isLoading) return;
+    if (isSubmitting) return;
 
     setErrorMessage(null);
+    setIsSubmitting(true);
 
     try {
       await registerForEvent({
@@ -72,6 +113,8 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
       setErrorMessage(message);
       announce(`Registration failed. ${message}`, "assertive");
       toast.error(message);
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
@@ -175,12 +218,12 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
               variant="outline"
               onClick={onClose}
               className="flex-1"
-              disabled={isLoading}
+              disabled={isSubmitting}
             >
               Cancel
             </Button>
-            <Button type="submit" className="flex-1 gap-2" disabled={isLoading}>
-              {isLoading ? (
+            <Button type="submit" className="flex-1 gap-2" disabled={isSubmitting}>
+              {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
                   Registering...

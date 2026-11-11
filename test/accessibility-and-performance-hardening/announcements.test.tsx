@@ -37,7 +37,13 @@ vi.mock("sonner", () => ({
   toast: { success: vi.fn(), error: vi.fn() },
 }));
 vi.mock("convex/react", () => ({
-  useMutation: () => vi.fn().mockResolvedValue({ ok: true }),
+  useMutation: () => {
+    // Delegate to the hoisted spy so the test can control the outcome.
+    const mutation = (args: unknown) => mocks.register(args);
+    (mutation as unknown as { withOptimisticUpdate: unknown }).withOptimisticUpdate =
+      () => mutation;
+    return mutation;
+  },
 }));
 
 import RegisterModal from "@/app/(public)/events/[slug]/_components/register-modal";

@@ -58,7 +58,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-047"
+        "TEST-047",
+        "TEST-050"
       ]
     },
     {
