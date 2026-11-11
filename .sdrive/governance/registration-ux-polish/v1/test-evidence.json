@@ -1,0 +1,33 @@
+{
+  "feature": "registration-ux-polish",
+  "version": "v1",
+  "command": "node .sdrive/reports/tests/run-feature-evidence.js registration-ux-polish",
+  "source": "--cmd",
+  "exitCode": 0,
+  "timedOut": false,
+  "signal": null,
+  "commit": "d65ffc344dc73b5cc4849fcc7210d6d42cae4ae5",
+  "branch": "feature/backlog-wave-2",
+  "startedAt": "2026-11-11T10:12:19.187Z",
+  "finishedAt": "2026-11-11T10:12:53.353Z",
+  "durationMs": 34160,
+  "outputHash": "sha256:8252047985506feb580f30337f84d5fdfc333eccaf84cc0d91654211f1db653a",
+  "summary": {
+    "passed": 17,
+    "failed": 0,
+    "skipped": 0,
+    "total": 17
+  },
+  "testIds": [],
+  "acIds": [
+    "AC-001",
+    "AC-002",
+    "AC-004",
+    "AC-005",
+    "AC-006",
+    "AC-007",
+    "AC-008"
+  ],
+  "outputTail": "JSON report written to C:/Users/KENULE-NWINEE/Documents/vscode-projs/Gomyc0de-project/Ivent/.sdrive/reports/tests/raw/registration-ux-polish-vitest.json\nTests: 0 failed, 17 passed, 17 total\nACs exercised: AC-001 AC-002 AC-004 AC-005 AC-006 AC-007 AC-008\n\nnpm info using npm@11.21.0\nnpm info using node@v24.20.0\nnpm info ok\n",
+  "recordedAt": "2026-11-11T10:12:53.663Z"
+}
