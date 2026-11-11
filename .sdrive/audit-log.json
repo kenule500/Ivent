@@ -521,6 +521,37 @@
       "event": "test_passed",
       "prevHash": "7020340746cdc9537b091e4a254a531b3bbb15e90dce4386ed102949c6682653",
       "hash": "d14d4fddbbe64664739e006cce00c65f9df8fa259edab4d1f8980c8a593913a0"
+    },
+    {
+      "timestamp": "2026-11-11T13:42:28.136Z",
+      "actor": "kenule500",
+      "feature": "lifecycle-emails",
+      "version": "v1",
+      "total": 18,
+      "durationMs": 8673,
+      "event": "test_passed",
+      "prevHash": "d14d4fddbbe64664739e006cce00c65f9df8fa259edab4d1f8980c8a593913a0",
+      "hash": "74eee3041528edb99b7e5dc445e2d6eba770c8f6b0415d7b76ee79cbe1ce7e91"
+    },
+    {
+      "timestamp": "2026-11-11T13:52:56.723Z",
+      "actor": "kenule500",
+      "feature": "lifecycle-emails",
+      "version": "v1",
+      "gate": "review",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "74eee3041528edb99b7e5dc445e2d6eba770c8f6b0415d7b76ee79cbe1ce7e91",
+      "hash": "127203b37b5f6bcce19a952f8373683db75194607fa453904f8df2ead825c44c"
+    },
+    {
+      "timestamp": "2026-11-11T13:56:57.301Z",
+      "actor": "kenule500",
+      "feature": "lifecycle-emails",
+      "version": "v1",
+      "event": "feature_archived",
+      "prevHash": "127203b37b5f6bcce19a952f8373683db75194607fa453904f8df2ead825c44c",
+      "hash": "34268b875756333c2248abb46bfa31a0e8029a01510b49620dd78a160d2622d5"
     }
   ]
 }

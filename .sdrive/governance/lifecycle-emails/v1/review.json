@@ -1,50 +1,44 @@
 {
   "feature": "lifecycle-emails",
   "version": "v1",
-  "status": "FAIL",
-  "commit": "1401acc5c830e304db7b4b4ba4a0fba02caba022",
+  "status": "PASS",
+  "commit": "7f1552e450edc48f123222ab5c120cd04ac4c7e0",
   "base": "main",
   "branch": "feature/backlog-wave-3",
   "reviewedBy": "kenule500",
-  "reviewedAt": "2026-11-11T12:30:00.000Z",
+  "reviewedAt": "2026-11-11T13:40:00.000Z",
   "coverage": 100,
   "criteria": [
-    { "id": "spec-convergence", "status": "fail", "detail": "7 of 8 ACs fully implemented; AC-007 exists only at the data layer." },
+    { "id": "spec-convergence", "status": "pass", "detail": "All 8 ACs implemented, including the admin delivery surface." },
     { "id": "task-completion", "status": "pass", "detail": "11/11 tasks complete." },
     { "id": "traceability", "status": "pass", "detail": "13 rows, all carrying test IDs." },
-    { "id": "coverage", "status": "warn", "detail": "100% by tool; AC-007 is covered at the data layer only, not the UI layer." },
-    { "id": "test-report", "status": "pass", "detail": "States the AC-007 limitation explicitly." },
-    { "id": "test-evidence", "status": "pass", "detail": "16 passed, commit 1401acc = HEAD." },
-    { "id": "change-scope", "status": "pass", "detail": "One feature on the shared branch." },
-    { "id": "test-quality", "status": "pass", "detail": "Retry bound measured by driving real mutations; escaping tested with a hostile payload." },
+    { "id": "coverage", "status": "pass", "detail": "100% - 8/8 ACs." },
+    { "id": "test-report", "status": "pass", "detail": "Current and records the AC-001 timing limitation." },
+    { "id": "test-evidence", "status": "pass", "detail": "18 passed, commit 7f1552e = HEAD." },
+    { "id": "change-scope", "status": "pass", "detail": "One feature on the shared branch; an admin test mock was extended for the new query." },
+    { "id": "test-quality", "status": "pass", "detail": "Retry cap measured against real mutations; hostile escaping payloads; authorisation tested both ways." },
     { "id": "code-quality", "status": "pass", "detail": "tsc 0; eslint 0; production build compiled." },
-    { "id": "security", "status": "pass", "detail": "Production audit clean; escaped interpolation; one recipient per send; no credential exposure." },
-    { "id": "testing", "status": "pass", "detail": "16/16 feature tests; 221/221 repository-wide." },
+    { "id": "security", "status": "pass", "detail": "Production audit clean; escaped interpolation; one recipient per send; admin-only delivery query." },
+    { "id": "testing", "status": "pass", "detail": "18/18 feature tests; 223/223 repository-wide." },
     { "id": "documentation", "status": "pass", "detail": "Test report and plan match the implementation." },
-    { "id": "nfr-evidence", "status": "warn", "detail": "NFR-001/003/004 tested; AC-001 timing is unverified because no provider exists in tests." },
-    { "id": "definition-of-done", "status": "fail", "detail": "AC-007 unmet and AC-001 timing unverified." },
-    { "id": "spec-to-code-verification", "status": "pass", "detail": "19 matched, 0 missing, status WARN." },
+    { "id": "nfr-evidence", "status": "warn", "detail": "NFR-001/002/003/004 tested. AC-001's 60-second delivery window is unverified because no provider is configured in tests; recorded rather than claimed." },
+    { "id": "definition-of-done", "status": "pass", "detail": "Satisfied, with the timing limitation named." },
+    { "id": "spec-to-code-verification", "status": "pass", "detail": "21 matched, 0 missing, status WARN." },
     { "id": "ci", "status": "not_verified", "detail": "No CI workflow exists." },
     { "id": "permission", "status": "pass", "detail": "kenule500 (admin) is allowed to review." },
     { "id": "reviewer-independence", "status": "pass", "detail": "No assignee is recorded." }
   ],
   "findings": [
     {
-      "severity": "medium",
-      "issue": "No per-registration delivery view: listLifecycleDeliveries exists and is tested, but the admin sees only aggregate counts and failures.",
-      "location": "app/admin/health/page.tsx",
-      "fixRequired": true
-    },
-    {
       "severity": "low",
-      "issue": "AC-001 promises a confirmation within 60 seconds but only scheduling is proven; delivery timing is untested because no provider is configured.",
+      "issue": "AC-001's 60-second delivery window is unverified; scheduling is proven, delivery timing is not, because no provider is configured in tests.",
       "location": "convex/registrations.ts",
       "fixRequired": false
     },
     {
       "severity": "info",
-      "issue": "The send path is exercised only up to the dispatch boundary in tests.",
-      "location": "test environment",
+      "issue": "A stale-delivery bug (dialog rendered while closed, invalid timestamp) was found and fixed during this round.",
+      "location": "app/admin/registrations/page.tsx",
       "fixRequired": false
     },
     {
@@ -56,14 +50,14 @@
   ],
   "security": {
     "status": "pass",
-    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). Template interpolation is escaped, each send has exactly one recipient, and provider credentials stay server-side. The preference mutation is scoped to the caller's own registrations.",
+    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). Template interpolation is escaped, each send has exactly one recipient, the delivery query is admin-only and tested from both sides, and the preference mutation only patches the caller's own registrations.",
     "secrets": "clean",
     "dependencies": "clean",
     "baseline": [
       { "id": "CON-511", "status": "not_applicable", "detail": "No authentication change." },
-      { "id": "CON-512", "status": "pass", "detail": "setEmailPreference only patches registrations owned by the caller." },
+      { "id": "CON-512", "status": "pass", "detail": "setEmailPreference patches only the caller's registrations; getRegistrationEmailDeliveries requires admin." },
       { "id": "CON-513", "status": "not_applicable", "detail": "No middleware or header change." },
-      { "id": "CON-514", "status": "not_applicable", "detail": "No new public submission surface; dispatch is internal." },
+      { "id": "CON-514", "status": "not_applicable", "detail": "Dispatch remains internal." },
       { "id": "CON-515", "status": "pass", "detail": "All new functions take validated args." },
       { "id": "CON-516", "status": "not_applicable", "detail": "No query construction change." },
       { "id": "CON-517", "status": "pass", "detail": "Every interpolated value is escaped before it reaches the HTML body." },
@@ -73,28 +67,16 @@
   },
   "performance": {
     "status": "pass",
-    "reason": "The confirmation is scheduled rather than awaited, so provider latency never reaches the registration mutation; sweeps are bounded to 100 items per run and read through an index.",
-    "method": "Code review of the dispatch path plus the sweep bounds; no runtime measurement applicable.",
+    "reason": "The confirmation is scheduled rather than awaited, so provider latency never reaches the registration mutation; sweeps are bounded to 100 items per run and read through an index; no bundle growth.",
+    "method": "Code review of the dispatch path plus the sweep bounds.",
     "nfr": [
-      { "id": "NFR-001", "target": "confirmation is transactional, optional email honours the preference", "measured": "tested both ways", "status": "pass" },
+      { "id": "NFR-001", "target": "confirmation transactional, optional email honours the preference", "measured": "tested both ways", "status": "pass" },
       { "id": "NFR-002", "target": "registration latency independent of the provider", "measured": "schedule-only path", "status": "pass" },
       { "id": "NFR-003", "target": "one recipient per email", "measured": "asserted in rendering tests", "status": "pass" },
       { "id": "NFR-004", "target": "bounded, observable retries", "measured": "cap proven by test", "status": "pass" }
     ],
     "seo": "not_applicable",
     "report": ".sdrive/reports/tests/test-report-lifecycle-emails-v1-2026-11-11.md"
-  },
-  "remediation": {
-    "round": 1,
-    "items": [
-      {
-        "id": "F-001",
-        "finding": "AC-007: no per-registration delivery view",
-        "severity": "medium",
-        "fixWith": "/sdrive:apply lifecycle-emails (render listLifecycleDeliveries per registration)",
-        "roundsFailed": 1
-      }
-    ]
   },
   "evidence": {
     "testEvidence": ".sdrive/governance/lifecycle-emails/v1/test-evidence.json",
