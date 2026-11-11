@@ -396,7 +396,7 @@
           "gates": {
             "specification": "approved",
             "planning": "approved",
-            "implementation": "pending",
+            "implementation": "approved",
             "review": "pending"
           },
           "history": [
@@ -423,6 +423,13 @@
               "actor": "kenule500",
               "previousValue": "pending",
               "timestamp": "2026-11-11T11:38:51.959Z"
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T12:20:00.023Z"
             }
           ]
         }
