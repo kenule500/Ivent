@@ -1,235 +1,66 @@
 {
   "feature": "registration-ux-polish",
   "version": "v1",
-  "status": "FAIL",
-  "commit": "5eac74d6fd32af4f17e93f27dfbd5539912fa265",
+  "status": "PASS",
+  "commit": "87be2cccad9600f468d1ae6e57da3ef0dc9f3e45",
   "base": "main",
   "branch": "feature/backlog-wave-2",
   "reviewedBy": "kenule500",
-  "reviewedAt": "2026-11-11T10:40:00.000Z",
+  "reviewedAt": "2026-11-11T11:25:00.000Z",
   "coverage": 100,
   "criteria": [
-    {
-      "id": "spec-convergence",
-      "status": "fail",
-      "detail": "7 of 8 ACs implemented; AC-003 (optimistic registration before server confirmation) is not, and was disclosed rather than claimed."
-    },
-    {
-      "id": "task-completion",
-      "status": "fail",
-      "detail": "12/12 tasks marked complete, but T3.2 asserts an AC that is unmet - the task list overstates progress."
-    },
-    {
-      "id": "traceability",
-      "status": "pass",
-      "detail": "12 rows, all carrying test IDs."
-    },
-    {
-      "id": "coverage",
-      "status": "warn",
-      "detail": "The tool reports 100%, but AC-003 is covered only by inheritance from FR-004's cancellation test; its own behaviour has no test."
-    },
-    {
-      "id": "test-report",
-      "status": "pass",
-      "detail": "Present and explicit about the AC-003 gap."
-    },
-    {
-      "id": "test-evidence",
-      "status": "pass",
-      "detail": "17 passed, commit 5eac74d = HEAD."
-    },
-    {
-      "id": "change-scope",
-      "status": "pass",
-      "detail": "One feature on the shared branch; the single test edit repaired a mock broken by the refactor."
-    },
-    {
-      "id": "test-quality",
-      "status": "pass",
-      "detail": "No skips; AC IDs present; the optimistic test asserts the real updater against a fake store."
-    },
-    {
-      "id": "code-quality",
-      "status": "pass",
-      "detail": "tsc 0; eslint 0 errors."
-    },
-    {
-      "id": "security",
-      "status": "pass",
-      "detail": "Production audit clean; no new endpoint, secret, or injection surface; error boundaries withhold messages and digests."
-    },
-    {
-      "id": "testing",
-      "status": "pass",
-      "detail": "17/17 feature tests; 203/203 repository-wide."
-    },
-    {
-      "id": "documentation",
-      "status": "pass",
-      "detail": "Test report documents the gap and the measurement basis."
-    },
-    {
-      "id": "nfr-evidence",
-      "status": "pass",
-      "detail": "CLS 0.002 against 0.02; first-load JS unchanged at 331KB; accessibility 96."
-    },
-    {
-      "id": "definition-of-done",
-      "status": "fail",
-      "detail": "AC-003 unmet."
-    },
-    {
-      "id": "spec-to-code-verification",
-      "status": "pass",
-      "detail": "sdrive verify: 14 matched, 0 missing, status WARN."
-    },
-    {
-      "id": "ci",
-      "status": "not_verified",
-      "detail": "No CI workflow exists."
-    },
-    {
-      "id": "permission",
-      "status": "pass",
-      "detail": "kenule500 (admin) is allowed to review."
-    },
-    {
-      "id": "reviewer-independence",
-      "status": "pass",
-      "detail": "No assignee is recorded."
-    }
+    { "id": "spec-convergence", "status": "pass", "detail": "All 8 ACs implemented, including AC-003 after the round-1 fix." },
+    { "id": "task-completion", "status": "pass", "detail": "12/12 tasks complete; T3.2 is now truthful." },
+    { "id": "traceability", "status": "pass", "detail": "12 rows, all carrying test IDs; FR-004 carries cancellation and optimism tests." },
+    { "id": "coverage", "status": "pass", "detail": "100% - 8/8 ACs; AC-003 covered by two dedicated tests." },
+    { "id": "test-report", "status": "pass", "detail": "Updated to record AC-003 as resolved." },
+    { "id": "test-evidence", "status": "pass", "detail": "19 passed, commit 87be2cc = HEAD." },
+    { "id": "change-scope", "status": "pass", "detail": "One feature; test edits repair mocks broken by the refactor." },
+    { "id": "test-quality", "status": "pass", "detail": "No skips; the optimism tests exercise the real updater." },
+    { "id": "code-quality", "status": "pass", "detail": "tsc 0; eslint 0 errors." },
+    { "id": "security", "status": "pass", "detail": "Production audit clean; no new endpoint or secret; no dangerouslySetInnerHTML." },
+    { "id": "testing", "status": "pass", "detail": "19/19 feature tests; 205/205 repository-wide." },
+    { "id": "documentation", "status": "pass", "detail": "Test report and plan reflect the final behaviour." },
+    { "id": "nfr-evidence", "status": "pass", "detail": "CLS 0.002 against 0.02; JS unchanged at 331KB; accessibility 96." },
+    { "id": "definition-of-done", "status": "pass", "detail": "Satisfied." },
+    { "id": "spec-to-code-verification", "status": "pass", "detail": "0 missing; status WARN due to repository-wide extras only." },
+    { "id": "ci", "status": "not_verified", "detail": "No CI workflow exists." },
+    { "id": "permission", "status": "pass", "detail": "kenule500 (admin) is allowed to review." },
+    { "id": "reviewer-independence", "status": "pass", "detail": "No assignee is recorded." }
   ],
   "findings": [
-    {
-      "severity": "high",
-      "issue": "Registration is not optimistic: the ticket appears only after the server confirms, because an optimistic entry would need joined event data that the modal does not hold.",
-      "location": "app/(public)/events/[slug]/_components/register-modal.tsx",
-      "fixRequired": true
-    },
-    {
-      "severity": "medium",
-      "issue": "T3.2 is marked completed although its acceptance criterion is unmet, so the task list overstates progress.",
-      "location": ".sdrive/governance/registration-ux-polish/v1/tasks.json",
-      "fixRequired": true
-    },
-    {
-      "severity": "low",
-      "issue": "Coverage is computed per requirement row, so FR-004's cancellation test makes AC-003 look covered.",
-      "location": ".sdrive/governance/registration-ux-polish/v1/traceability.json",
-      "fixRequired": false
-    },
-    {
-      "severity": "info",
-      "issue": "A transient collection failure occurred under full-suite load and did not reproduce.",
-      "location": "test run",
-      "fixRequired": false
-    },
-    {
-      "severity": "info",
-      "issue": "CI is not configured.",
-      "location": "repository",
-      "fixRequired": false
-    }
+    { "severity": "info", "issue": "The optimistic ticket omits _creationTime because React's purity rule forbids Date.now() in the callback; nothing reads it.", "location": "register-modal.tsx", "fixRequired": false },
+    { "severity": "info", "issue": "A transient collection failure under full-suite load did not reproduce.", "location": "test run", "fixRequired": false },
+    { "severity": "info", "issue": "CI is not configured.", "location": "repository", "fixRequired": false }
   ],
   "security": {
     "status": "pass",
-    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). No new endpoint, secret, or HTML injection surface. The error boundaries deliberately withhold error messages and digests.",
+    "reason": "Production dependency audit is clean (0 vulnerabilities with --omit=dev). No new endpoint, secret, or HTML injection surface. Error boundaries withhold messages and digests.",
     "secrets": "clean",
     "dependencies": "clean",
     "baseline": [
-      {
-        "id": "CON-511",
-        "status": "not_applicable",
-        "detail": "No authentication change."
-      },
-      {
-        "id": "CON-512",
-        "status": "not_applicable",
-        "detail": "No authorization change."
-      },
-      {
-        "id": "CON-513",
-        "status": "not_applicable",
-        "detail": "No middleware or header change."
-      },
-      {
-        "id": "CON-514",
-        "status": "not_applicable",
-        "detail": "No new mutation surface; the existing registration mutation is reused."
-      },
-      {
-        "id": "CON-515",
-        "status": "pass",
-        "detail": "Existing Convex validators unchanged."
-      },
-      {
-        "id": "CON-516",
-        "status": "not_applicable",
-        "detail": "No query construction change."
-      },
-      {
-        "id": "CON-517",
-        "status": "pass",
-        "detail": "No dangerouslySetInnerHTML; recovery copy is static text."
-      },
-      {
-        "id": "CON-518",
-        "status": "not_applicable",
-        "detail": "No new state-changing form post."
-      },
-      {
-        "id": "CON-519",
-        "status": "pass",
-        "detail": ".env* remains git-ignored."
-      }
+      { "id": "CON-511", "status": "not_applicable", "detail": "No authentication change." },
+      { "id": "CON-512", "status": "not_applicable", "detail": "No authorization change." },
+      { "id": "CON-513", "status": "not_applicable", "detail": "No middleware or header change." },
+      { "id": "CON-514", "status": "not_applicable", "detail": "The existing registration mutation is reused; no new surface." },
+      { "id": "CON-515", "status": "pass", "detail": "Convex validators unchanged." },
+      { "id": "CON-516", "status": "not_applicable", "detail": "No query construction change." },
+      { "id": "CON-517", "status": "pass", "detail": "No dangerouslySetInnerHTML; recovery copy is static text." },
+      { "id": "CON-518", "status": "not_applicable", "detail": "No new state-changing form post." },
+      { "id": "CON-519", "status": "pass", "detail": ".env* remains git-ignored." }
     ]
   },
   "performance": {
     "status": "pass",
-    "reason": "CLS is 0.002 against the 0.02 budget; first-load JavaScript is unchanged at 331KB because the primitives are static blocks; accessibility remains 96 on both reference pages.",
-    "method": "Lighthouse CI against the production build after the change; CLS and script transfer recorded per URL.",
+    "reason": "CLS is 0.002 against the 0.02 budget; first-load JavaScript is unchanged at 331KB; accessibility remains 96 on both reference pages.",
+    "method": "Lighthouse CI against the production build after the change.",
     "nfr": [
-      {
-        "id": "NFR-001",
-        "target": "CLS at most 0.02",
-        "measured": "0.002",
-        "status": "pass"
-      },
-      {
-        "id": "NFR-002",
-        "target": "primitives add at most 5KB",
-        "measured": "no measurable delta (331KB unchanged)",
-        "status": "pass"
-      },
-      {
-        "id": "NFR-003",
-        "target": "loading and failure announced",
-        "measured": "asserted by tests; skeletons aria-hidden",
-        "status": "pass"
-      }
+      { "id": "NFR-001", "target": "CLS at most 0.02", "measured": "0.002", "status": "pass" },
+      { "id": "NFR-002", "target": "primitives add at most 5KB", "measured": "no measurable delta", "status": "pass" },
+      { "id": "NFR-003", "target": "loading and failure announced", "measured": "asserted by tests", "status": "pass" }
     ],
     "seo": "not_applicable",
     "report": ".sdrive/reports/performance/performance-report-accessibility-and-performance-hardening-v1-2026-11-08.md"
-  },
-  "remediation": {
-    "round": 1,
-    "items": [
-      {
-        "id": "F-001",
-        "finding": "AC-003: registration is not optimistic before server confirmation",
-        "severity": "high",
-        "fixWith": "/sdrive:apply registration-ux-polish (widen the modal's event prop and insert a correctly shaped optimistic entry), or narrow AC-003 in the spec",
-        "roundsFailed": 1
-      },
-      {
-        "id": "F-002",
-        "finding": "T3.2 marked complete while its AC is unmet",
-        "severity": "medium",
-        "fixWith": "/sdrive:apply registration-ux-polish (reopen T3.2)",
-        "roundsFailed": 1
-      }
-    ]
   },
   "evidence": {
     "testEvidence": ".sdrive/governance/registration-ux-polish/v1/test-evidence.json",

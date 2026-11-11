@@ -424,6 +424,37 @@
       "event": "test_passed",
       "prevHash": "803ebf3272352a5aeaa64953ce71d50b6902e760a26ec988e13f575c2e59b2a5",
       "hash": "a682202e4b9b6cf7efe8718bc2756ff2c382624a5b2fe97b9db5c808d77a9fa5"
+    },
+    {
+      "timestamp": "2026-11-11T11:16:41.261Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "total": 19,
+      "durationMs": 23439,
+      "event": "test_passed",
+      "prevHash": "a682202e4b9b6cf7efe8718bc2756ff2c382624a5b2fe97b9db5c808d77a9fa5",
+      "hash": "18e19c6bcc12acb99e0628aa5f3cd0ff3f5620b1e9ba188f3566df53cec54417"
+    },
+    {
+      "timestamp": "2026-11-11T11:17:42.822Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "gate": "review",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "18e19c6bcc12acb99e0628aa5f3cd0ff3f5620b1e9ba188f3566df53cec54417",
+      "hash": "2875c215612de59641b34246d99564c0bb32b0f3d7cde811fcb93f70a8a80241"
+    },
+    {
+      "timestamp": "2026-11-11T11:18:24.353Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "event": "feature_archived",
+      "prevHash": "2875c215612de59641b34246d99564c0bb32b0f3d7cde811fcb93f70a8a80241",
+      "hash": "69a0824cf78309dbe963f45d913d05b9582b254166cc45a2088635e8a15fb6b0"
     }
   ]
 }
