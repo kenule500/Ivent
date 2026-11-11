@@ -1,0 +1,161 @@
+{
+  "feature": "lifecycle-emails",
+  "version": 1,
+  "architecture": {
+    "approach": "Four lifecycle templates live in one server-side registry that renders subject plus HTML/text from a fully escaped context. Dispatch goes through an idempotent record-then-send action: the key (registrationId + template) is written before the provider call, so a repeated cron sweep or a retry finds it and returns early. Two cron sweeps enqueue reminders and follow-ups; the registration mutation only schedules the confirmation, so provider latency never reaches the mutation. A single preference check in the dispatch path suppresses optional email, while the confirmation template is marked transactional and bypasses it.",
+    "components": [
+      {
+        "name": "convex/lifecycleTemplates.ts",
+        "action": "create",
+        "description": "Template registry (confirmation, reminder_24h, post_event_thankyou, feedback_request) plus the escaping renderer and the idempotency key builder."
+      },
+      {
+        "name": "convex/lifecycleDispatch.ts",
+        "action": "create",
+        "description": "Idempotent dispatch: record the key, honour the preference for optional templates, send through Mailtrap, record the outcome, retry within a bounded budget."
+      },
+      {
+        "name": "convex/emailLog.ts",
+        "action": "modify",
+        "description": "Record lifecycle templates with registrationId and idempotencyKey, and expose the per-registration delivery rows."
+      },
+      {
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "description": "Extend emailEvents.template with the four lifecycle values and add registrationId/idempotencyKey; add registrations.emailOptOut."
+      },
+      {
+        "name": "convex/crons.ts",
+        "action": "modify",
+        "description": "Hourly reminder sweep (events starting in 24 plus or minus 1 hours) and follow-up sweep (events ended), both idempotent."
+      },
+      {
+        "name": "convex/registrations.ts",
+        "action": "modify",
+        "description": "Schedule the confirmation after a successful registration and expose the email-preference mutation."
+      },
+      {
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "modify",
+        "description": "Attendee control to opt out of reminders and follow-ups, with the confirmation explicitly unaffected."
+      },
+      {
+        "name": "app/admin/health/page.tsx",
+        "action": "modify",
+        "description": "Surface lifecycle delivery rows per registration in the existing email-log view."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "emailEvents",
+        "action": "update",
+        "fields": [
+          {
+            "name": "template",
+            "type": "union(invite, announcement, registration_confirmation, reminder_24h, post_event_thankyou, feedback_request)",
+            "action": "modify"
+          },
+          {
+            "name": "registrationId",
+            "type": "id(registrations)",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "idempotencyKey",
+            "type": "string",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "attempts",
+            "type": "number",
+            "action": "add"
+          }
+        ]
+      },
+      {
+        "name": "registrations",
+        "action": "update",
+        "fields": [
+          {
+            "name": "emailOptOut",
+            "type": "boolean",
+            "nullable": true,
+            "action": "add"
+          }
+        ]
+      }
+    ],
+    "flowDescription": "A registration triggers an internal scheduling call; the dispatch action writes an emailEvents row keyed by registrationId + template before contacting Mailtrap, then updates that row to sent or failed. The two cron sweeps call internal queries that only return registrations without a row for the template in question, so repeats are no-ops. Cancellation stops future reminders because the sweeps filter on confirmed status."
+  },
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-003",
+      "description": "One send per recipient: the dispatch action takes a single registration and derives the recipient from it; no BCC and no caller-supplied address."
+    },
+    {
+      "requirementId": "NFR-003",
+      "description": "The renderer escapes every interpolated value and receives only that registration's context, so cross-recipient data cannot enter a body."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-002",
+      "strategy": "The registration mutation schedules and returns; the provider call happens in a separate action, so provider latency and outages never reach the mutation."
+    },
+    {
+      "requirementId": "NFR-004",
+      "strategy": "Retries use a bounded attempt counter stored on the emailEvents row; the sweep skips rows at the limit and leaves them visible as failed."
+    },
+    {
+      "requirementId": "NFR-002",
+      "strategy": "The reminder sweep is batched per run and keyed on an indexed time window so a large event does not produce an unbounded scan."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Mailtrap transport",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "convex/mailtrap.ts supplies endpoint selection, payload building and the sandbox switch; lifecycle email reuses it unchanged."
+    },
+    {
+      "name": "Cron infrastructure",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "convex/crons.ts and cronRuns already record scheduled runs."
+    }
+  ],
+  "risks": [
+    {
+      "description": "A cron restart double-sends a reminder.",
+      "mitigation": "Idempotency key is written before dispatch; the sweep only selects registrations with no row for that template."
+    },
+    {
+      "description": "Email latency or an outage blocks registration.",
+      "mitigation": "Scheduling only; the action runs afterwards and failures are recorded rather than thrown."
+    },
+    {
+      "description": "Opt-out is honoured inconsistently across templates.",
+      "mitigation": "One preference check in the dispatch path, with the transactional flag on the confirmation template."
+    }
+  ]
+}
