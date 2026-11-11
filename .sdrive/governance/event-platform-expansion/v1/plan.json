@@ -1,0 +1,713 @@
+{
+  "feature": "event-platform-expansion",
+  "version": 1,
+  "architecture": {
+    "approach": "One feature branch carries five connected product items because they share the event record, registration record, public event route and organizer event surface. The implementation is additive: new fields are optional, legacy rows fall back to platform defaults, and no destructive backfill is required. Schema and shared contracts land first; then the share-ready event page and sponsors; then indexed live/offline door mode; then a server-only Google Wallet provider with idempotent issuance; then versioned custom questions and dynamic exports; then event currency, location and English/French localization. No new runtime dependency is planned: Google Wallet uses server-side fetch plus Node crypto, offline mode uses raw IndexedDB and a service worker, and English/French uses typed dictionaries plus a cookie.",
+    "components": [
+      {
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "description": "Additive event, registration, platformSettings and audit unions plus door indexes."
+      },
+      {
+        "name": "convex/validators.ts",
+        "action": "create",
+        "description": "Shared validators, allowlists and typed contracts for currencies, locales, questions, sponsors and offline items."
+      },
+      {
+        "name": "convex/platformData.ts",
+        "action": "modify",
+        "description": "Supported currency and locale constants and defaults."
+      },
+      {
+        "name": "convex/helpers.ts",
+        "action": "modify",
+        "description": "Add requireEventOrganizer while reusing secureQuery and secureMutation."
+      },
+      {
+        "name": "convex/rateLimiter.ts",
+        "action": "modify",
+        "description": "Add wallet, door sync, sponsor write and question write buckets."
+      },
+      {
+        "name": "lib/i18n/index.ts",
+        "action": "create",
+        "description": "Locale resolution and typed dictionary access with English fallback."
+      },
+      {
+        "name": "lib/i18n/en.ts",
+        "action": "create",
+        "description": "English copy for changed UI and system email."
+      },
+      {
+        "name": "lib/i18n/fr.ts",
+        "action": "create",
+        "description": "French copy for changed UI and system email."
+      },
+      {
+        "name": "lib/event-format.ts",
+        "action": "create",
+        "description": "Event-aware currency and timezone formatting on top of lib/format.ts."
+      },
+      {
+        "name": "lib/offline/db.ts",
+        "action": "create",
+        "description": "IndexedDB snapshot, queue and metadata stores for one event."
+      },
+      {
+        "name": "lib/offline/sync.ts",
+        "action": "create",
+        "description": "Bounded queue replay, retry and conflict marking."
+      },
+      {
+        "name": "app/manifest.ts",
+        "action": "create",
+        "description": "Web app manifest for installability."
+      },
+      {
+        "name": "public/sw.js",
+        "action": "create",
+        "description": "Versioned app-shell cache that never caches API JSON."
+      },
+      {
+        "name": "components/locale-provider.tsx",
+        "action": "create",
+        "description": "Client locale context and cookie persistence."
+      },
+      {
+        "name": "app/layout.tsx",
+        "action": "modify",
+        "description": "Set metadataBase and mount the locale provider."
+      },
+      {
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "action": "modify",
+        "description": "Server wrapper with generateMetadata."
+      },
+      {
+        "name": "app/(public)/events/[slug]/event-detail.tsx",
+        "action": "create",
+        "description": "Existing interactive event body moved behind the server wrapper."
+      },
+      {
+        "name": "app/(public)/events/[slug]/opengraph-image.tsx",
+        "action": "create",
+        "description": "1200x630 ImageResponse with static fallback."
+      },
+      {
+        "name": "app/(public)/events/[slug]/_components/event-json-ld.tsx",
+        "action": "create",
+        "description": "Escaped schema.org Event JSON-LD."
+      },
+      {
+        "name": "app/(public)/events/[slug]/_components/sponsor-strip.tsx",
+        "action": "create",
+        "description": "Public ordered sponsor logos."
+      },
+      {
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "modify",
+        "description": "Custom questions, privacy note and locale-aware copy."
+      },
+      {
+        "name": "convex/events.ts",
+        "action": "modify",
+        "description": "Create and focused settings mutation for sponsors, questions, currency, country, timezone and capabilities."
+      },
+      {
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "modify",
+        "description": "Currency, full country/state/city, timezone, sponsor and question setup."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/page.tsx",
+        "action": "modify",
+        "description": "Door entry point and focused settings links."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/door/page.tsx",
+        "action": "create",
+        "description": "Dedicated door-mode route."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/_components/door-dashboard.tsx",
+        "action": "create",
+        "description": "Live counters, recent check-ins, scanner and manual search."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/_components/offline-controls.tsx",
+        "action": "create",
+        "description": "Cache opt-in, age, queue status and clear action."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/_components/sponsor-editor.tsx",
+        "action": "create",
+        "description": "Add, reorder and remove sponsors with validation."
+      },
+      {
+        "name": "app/(main)/my-events/[eventId]/_components/question-builder.tsx",
+        "action": "create",
+        "description": "Question add/edit/reorder/archive and attendee preview."
+      },
+      {
+        "name": "convex/door.ts",
+        "action": "create",
+        "description": "Snapshot, attendee search and idempotent batch sync."
+      },
+      {
+        "name": "convex/registrations.ts",
+        "action": "modify",
+        "description": "Answers, wallet state, locale and distinct check-in outcomes."
+      },
+      {
+        "name": "convex/wallet.ts",
+        "action": "create",
+        "description": "Public issue and void mutations with eligibility and rate limits."
+      },
+      {
+        "name": "convex/walletNode.ts",
+        "action": "create",
+        "description": "Server-only Google Wallet OAuth, save-JWT and REST provider."
+      },
+      {
+        "name": "convex/lifecycleTemplates.ts",
+        "action": "modify",
+        "description": "English and French lifecycle email copy."
+      },
+      {
+        "name": "convex/lifecycleEmails.ts",
+        "action": "modify",
+        "description": "Select locale from the registration snapshot."
+      },
+      {
+        "name": "convex/exports.ts",
+        "action": "modify",
+        "description": "Dynamic question columns with archived labels and stable order."
+      },
+      {
+        "name": "convex/platform.ts",
+        "action": "modify",
+        "description": "defaultLocale and supported-currency validation."
+      },
+      {
+        "name": "app/admin/settings/page.tsx",
+        "action": "modify",
+        "description": "Locale and currency defaults with validation."
+      },
+      {
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "modify",
+        "description": "Google Wallet control, answers and event timezone/locale."
+      },
+      {
+        "name": "convex/audit.ts",
+        "action": "modify",
+        "description": "Wallet, sponsor, question and settings audit actions."
+      }
+    ],
+    "referencedRequirementIds": [
+      "FR-001",
+      "FR-002",
+      "FR-003",
+      "FR-004",
+      "FR-005",
+      "FR-006",
+      "FR-007",
+      "FR-008",
+      "FR-009",
+      "FR-010",
+      "FR-011",
+      "FR-012",
+      "FR-013",
+      "FR-014",
+      "FR-015",
+      "FR-016",
+      "FR-017",
+      "FR-018",
+      "FR-019",
+      "FR-020",
+      "FR-021",
+      "FR-022",
+      "FR-023",
+      "FR-024",
+      "FR-025",
+      "FR-026",
+      "FR-027",
+      "FR-028",
+      "FR-029",
+      "FR-030",
+      "FR-031",
+      "NFR-001",
+      "NFR-002",
+      "NFR-003",
+      "NFR-004",
+      "NFR-005",
+      "NFR-006",
+      "NFR-007",
+      "NFR-008",
+      "NFR-009",
+      "NFR-010",
+      "NFR-011",
+      "NFR-012",
+      "NFR-013",
+      "NFR-014"
+    ]
+  },
+  "dataModel": {
+    "entities": [
+      {
+        "name": "events",
+        "action": "update",
+        "fields": [
+          {
+            "name": "currency",
+            "type": "string",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "countryCode",
+            "type": "string",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "sponsors",
+            "type": "array<object>",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "registrationQuestions",
+            "type": "array<object>",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "walletEnabled",
+            "type": "boolean",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "doorModeEnabled",
+            "type": "boolean",
+            "nullable": true,
+            "action": "add"
+          }
+        ]
+      },
+      {
+        "name": "registrations",
+        "action": "update",
+        "fields": [
+          {
+            "name": "answers",
+            "type": "array<object>",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "wallet",
+            "type": "object",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "locale",
+            "type": "string",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "offlineScannedAt",
+            "type": "number",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "by_event_checkedIn",
+            "type": "index(eventId, checkedIn)",
+            "action": "add"
+          },
+          {
+            "name": "by_event_checkedInAt",
+            "type": "index(eventId, checkedInAt)",
+            "action": "add"
+          },
+          {
+            "name": "search_attendee",
+            "type": "searchIndex(attendeeName, filter eventId)",
+            "action": "add"
+          }
+        ]
+      },
+      {
+        "name": "platformSettings",
+        "action": "update",
+        "fields": [
+          {
+            "name": "defaultLocale",
+            "type": "string",
+            "nullable": true,
+            "action": "add"
+          },
+          {
+            "name": "defaultCurrency",
+            "type": "string",
+            "action": "no_change"
+          }
+        ]
+      },
+      {
+        "name": "auditLogs",
+        "action": "update",
+        "fields": [
+          {
+            "name": "action",
+            "type": "union",
+            "action": "modify"
+          },
+          {
+            "name": "targetType",
+            "type": "union",
+            "action": "no_change"
+          }
+        ]
+      }
+    ],
+    "flowDescription": "Schema deploys first with optional fields and new indexes. Reads fall back to platform defaults, so existing events and registrations need no backfill. The public event page queries getEventBySlug for metadata and JSON-LD. Door snapshots derive counts from by_event_checkedIn, recent rows from by_event_checkedInAt, and attendee search from search_attendee. Offline snapshots and queues live only in IndexedDB; the batch sync mutation is idempotent and the server remains the source of truth. Wallet state lives on the registration row and question definitions live on the event row with versioned archived entries. Exports read current and archived definitions to build stable columns. No new table is required."
+  },
+  "apiContracts": [
+    {
+      "method": "GET",
+      "path": "app/(public)/events/[slug]/page",
+      "action": "modify",
+      "authenticationRequired": false,
+      "linkedRequirements": [
+        "FR-001"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "app/(public)/events/[slug]/opengraph-image",
+      "action": "create",
+      "authenticationRequired": false,
+      "linkedRequirements": [
+        "FR-002"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "convex/events:getEventBySlug",
+      "action": "reuse",
+      "authenticationRequired": false,
+      "linkedRequirements": [
+        "FR-001",
+        "FR-003"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/events:createEvent",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-020",
+        "FR-026"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/events:updateEventSettings",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-004",
+        "FR-005",
+        "FR-020",
+        "FR-022",
+        "FR-026"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "convex/door:getDoorSnapshot",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-006"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "convex/door:searchDoorAttendees",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-007"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/door:syncOfflineCheckIns",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-011"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/registrations:checkInAttendee",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-007"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/registrations:registerForEvent",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-021",
+        "FR-024"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/registrations:cancelRegistration",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-017"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/wallet:issueWalletPass",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-014",
+        "FR-015"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/wallet:voidWalletPass",
+      "action": "create",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-017"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/walletNode:issueGooglePass",
+      "action": "create",
+      "authenticationRequired": false,
+      "linkedRequirements": [
+        "FR-014",
+        "FR-015"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/exports:generate",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-023"
+      ]
+    },
+    {
+      "method": "POST",
+      "path": "convex/platform:updateSettings",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-025"
+      ]
+    },
+    {
+      "method": "GET",
+      "path": "convex/platform:getOptions",
+      "action": "modify",
+      "authenticationRequired": true,
+      "linkedRequirements": [
+        "FR-025"
+      ]
+    }
+  ],
+  "securityConsiderations": [
+    {
+      "requirementId": "NFR-001",
+      "description": "All new Convex functions use secureQuery or secureMutation. Door, sponsor, question and wallet operations require the event organizer; platform settings require admin. Public metadata reads only the public event query."
+    },
+    {
+      "requirementId": "NFR-002",
+      "description": "Google Wallet service-account and issuer credentials stay in server environment variables. Save JWTs are short-lived and audience-bound; secrets, private keys and full tokens are never logged or sent to the client."
+    },
+    {
+      "requirementId": "NFR-003",
+      "description": "Offline snapshots are opt-in, limited to one event, visibly aged, cleared on sign-out and expiry, and never include payment data. Registration remains online-only."
+    },
+    {
+      "requirementId": "NFR-005",
+      "description": "Wallet issuance, door sync, sponsor writes and question writes use shared rate-limit buckets; check-in retains its existing bucket."
+    },
+    {
+      "requirementId": "NFR-006",
+      "description": "Shared validators enforce currencies, locales, question definitions, answers, sponsors, URLs and offline items. JSON-LD escapes less-than characters, sponsor URLs allow only HTTP(S), and CSV exports reuse the existing injection protection."
+    },
+    {
+      "requirementId": "NFR-012",
+      "description": "Production traffic must be served over HTTPS for PWA installability and service-worker scope; HSTS remains at the hosting layer (CON-520). The service worker caches only same-origin static assets and never API JSON."
+    },
+    {
+      "requirementId": "NFR-013",
+      "description": "Audit entries record wallet issued/voided, sponsor updates, question updates and settings changes with the acting organizer or admin."
+    }
+  ],
+  "performanceConsiderations": [
+    {
+      "requirementId": "NFR-004",
+      "strategy": "Idempotent object IDs, registration wallet state, first-check-in-wins logic and batch item keys prevent duplicate passes and check-ins on retry."
+    },
+    {
+      "requirementId": "NFR-007",
+      "strategy": "Server metadata reuses the public event query; Open Graph images are cached by event updatedAt and fall back to a static card."
+    },
+    {
+      "requirementId": "NFR-008",
+      "strategy": "Door counts use by_event_checkedIn, recent rows use by_event_checkedInAt with a limit, attendee search uses search_attendee, and sync batches cap at 500 items."
+    },
+    {
+      "requirementId": "NFR-010",
+      "strategy": "All new fields are optional with platform-default fallbacks, so deployment does not require a blocking migration or backfill."
+    },
+    {
+      "requirementId": "NFR-014",
+      "strategy": "Counts are derived from indexed registrations; exports read definitions once and build columns in stable order."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Google Wallet API",
+      "type": "external",
+      "action": "add",
+      "notes": "New service integration requiring an issuer account and service account. No npm package; use Node crypto and server-side fetch. Skill expected: none."
+    },
+    {
+      "name": "Apple Wallet / PassKit",
+      "type": "external",
+      "action": "no_change",
+      "notes": "Blocked by missing Apple credentials; no code or control promises Apple support."
+    },
+    {
+      "name": "next/og ImageResponse",
+      "type": "library",
+      "action": "no_change",
+      "notes": "Built into Next.js 16."
+    },
+    {
+      "name": "Next.js metadata and manifest conventions",
+      "type": "library",
+      "action": "no_change",
+      "notes": "Built in; use the bundled Next.js docs."
+    },
+    {
+      "name": "country-state-city",
+      "type": "library",
+      "action": "no_change",
+      "notes": "Already installed and used for location data."
+    },
+    {
+      "name": "Convex file storage",
+      "type": "service",
+      "action": "no_change",
+      "notes": "Already used for uploads; sponsor logos reuse it."
+    },
+    {
+      "name": "@convex-dev/rate-limiter",
+      "type": "library",
+      "action": "no_change",
+      "notes": "Existing shared limiter; add buckets only."
+    },
+    {
+      "name": "Node crypto",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "Built-in; signs service-account and save JWTs."
+    },
+    {
+      "name": "Browser APIs (IndexedDB, Service Worker, Manifest, Intl)",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "Native; no PWA or i18n package."
+    },
+    {
+      "name": "Existing internal utilities",
+      "type": "internal",
+      "action": "no_change",
+      "notes": "lib/csv.ts, lib/format.ts, convex/helpers.ts and convex/platformData.ts are reused."
+    },
+    {
+      "name": "schema.org Event vocabulary",
+      "type": "external",
+      "action": "no_change",
+      "notes": "Vocabulary only; no runtime dependency."
+    },
+    {
+      "name": "Hosting HTTPS/HSTS",
+      "type": "service",
+      "action": "no_change",
+      "notes": "Production prerequisite for PWA and CON-520; confirmed in T7.4."
+    }
+  ],
+  "risks": [
+    {
+      "description": "Apple Wallet cannot ship without Apple Pass Type ID and signing credentials.",
+      "mitigation": "Keep Apple unavailable, omit any Apple control, and revisit when credentials exist."
+    },
+    {
+      "description": "Google Wallet onboarding or API changes delay launch.",
+      "mitigation": "Gate wallet acceptance criteria on credentials, keep the QR ticket primary, and isolate the provider behind walletNode."
+    },
+    {
+      "description": "Offline attendee PII remains on a shared door device.",
+      "mitigation": "Opt-in, single-event cache, visible age, sign-out and 24-hour expiry cleanup, plus a manual clear action."
+    },
+    {
+      "description": "A stale service worker serves an old shell or hides a deployment.",
+      "mitigation": "Versioned caches, update activation that preserves the queue, and a service-worker kill switch."
+    },
+    {
+      "description": "French copy is incomplete or overflows small layouts.",
+      "mitigation": "Typed dictionaries, coverage checks, English fallback, and manual 360/768/1280 review."
+    },
+    {
+      "description": "Changing an event currency is mistaken for FX conversion.",
+      "mitigation": "Store amount and currency together, label the amount as entered, and never rewrite ticketPrice."
+    },
+    {
+      "description": "Open Graph image generation adds latency or fails for a legacy event.",
+      "mitigation": "Cache by updatedAt, limit fonts and assets, and fall back to a static branded card."
+    },
+    {
+      "description": "Legacy rows break on the additive schema.",
+      "mitigation": "Optional fields, platform defaults and no destructive backfill."
+    },
+    {
+      "description": "Editing or archiving a question orphans historical answers.",
+      "mitigation": "Stable IDs, versioned definitions, archive instead of delete, and archived export columns."
+    },
+    {
+      "description": "Door queries become expensive at scale.",
+      "mitigation": "Indexed counts, limited recent and search rows, and a capped sync batch."
+    }
+  ]
+}

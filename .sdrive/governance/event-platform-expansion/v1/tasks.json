@@ -1,0 +1,605 @@
+{
+  "feature": "event-platform-expansion",
+  "version": 1,
+  "phases": [
+    {
+      "phaseId": "P0",
+      "name": "Foundation, schema, and shared contracts",
+      "tasks": [
+        {
+          "id": "T1.1",
+          "title": "Extend the Convex schema and audit unions",
+          "description": "Add optional currency, countryCode, sponsors, registrationQuestions, walletEnabled and doorModeEnabled to events; answers, wallet, locale and offlineScannedAt to registrations; defaultLocale to platformSettings; new audit action literals; and the by_event_checkedIn, by_event_checkedInAt and search_attendee indexes. Keep every field optional and add no required migration.",
+          "linkedRequirements": [
+            "FR-004",
+            "FR-009",
+            "FR-016",
+            "FR-020",
+            "FR-025",
+            "FR-026",
+            "NFR-010",
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004",
+            "AC-010",
+            "AC-016",
+            "AC-020",
+            "AC-026",
+            "AC-027",
+            "AC-030"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.2",
+          "title": "Add shared constants, validators, and typed contracts",
+          "description": "Create convex/validators.ts with the ISO currency allowlist (NGN, USD, GBP, EUR), locale allowlist (en, fr), question types and limits, sponsor limits and MIME types, wallet statuses, and the offline queue item schema. Export shared TypeScript types so server and client validation agree.",
+          "linkedRequirements": [
+            "FR-020",
+            "FR-025",
+            "FR-026",
+            "FR-027",
+            "FR-028",
+            "NFR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-020",
+            "AC-026",
+            "AC-027",
+            "AC-034"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.3",
+          "title": "Enforce authorization and rate-limit buckets for new mutations",
+          "description": "Add requireEventOrganizer to convex/helpers.ts, keep all new Convex functions on secureQuery/secureMutation, and register wallet issuance, door sync, sponsor write and question write buckets in convex/rateLimiter.ts. Admin settings remain requireAdmin; no public mutation is introduced.",
+          "linkedRequirements": [
+            "FR-008",
+            "FR-018",
+            "NFR-001",
+            "NFR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-009",
+            "AC-018"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.4",
+          "title": "Add English/French dictionary scaffolding and locale resolution",
+          "description": "Create lib/i18n with typed English and French dictionaries, a locale resolver that accepts en/fr and falls back to English, and a cookie-backed client provider. Keep organizer-entered content outside the dictionary and expose one translation function for changed surfaces.",
+          "linkedRequirements": [
+            "FR-029",
+            "FR-030",
+            "FR-031",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-031",
+            "AC-032",
+            "AC-033",
+            "AC-034"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T1.5",
+          "title": "Add event-aware currency and timezone formatting helpers",
+          "description": "Create lib/event-format.ts with formatEventPrice(amount, currency, locale) and formatEventDate(date, timeZone, locale), delegating number and date formatting to Intl and preserving the existing major-unit ticketPrice convention.",
+          "linkedRequirements": [
+            "FR-027",
+            "FR-028"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-028",
+            "AC-029"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P1",
+      "name": "Share-ready event page and sponsors",
+      "dependencies": [
+        "P0"
+      ],
+      "tasks": [
+        {
+          "id": "T2.1",
+          "title": "Add server metadata to the public event route",
+          "description": "Split app/(public)/events/[slug]/page.tsx into a server wrapper that loads the public event and exports generateMetadata for title, description, canonical, Open Graph and Twitter fields, plus the existing interactive body as a client component. Set metadataBase in app/layout.tsx.",
+          "linkedRequirements": [
+            "FR-001",
+            "NFR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.2",
+          "title": "Generate per-event Open Graph images",
+          "description": "Add app/(public)/events/[slug]/opengraph-image.tsx using ImageResponse at 1200x630 with event title, date, venue and cover image. Cache by event updatedAt and fall back to a static branded card when the event or image is missing.",
+          "linkedRequirements": [
+            "FR-002",
+            "NFR-007"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.3",
+          "title": "Add escaped Event JSON-LD",
+          "description": "Add a server component that builds schema.org Event JSON-LD from the public event query, escapes less-than characters in the serialized JSON, and renders only on the public event page. Do not include registration counts or attendee data.",
+          "linkedRequirements": [
+            "FR-003",
+            "NFR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.4",
+          "title": "Add sponsor persistence and upload validation",
+          "description": "Add sponsor persistence and validation to createEvent and updateEventSettings: maximum six sponsors, ordered, with name, optional HTTP(S) URL, alt text and a Convex storage logo. Validate MIME type (PNG, JPEG, WebP) and the 2 MB limit server-side, and audit event.sponsors_updated.",
+          "linkedRequirements": [
+            "FR-004",
+            "FR-005",
+            "NFR-006",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004",
+            "AC-005",
+            "AC-006"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T2.5",
+          "title": "Build the sponsor editor and public sponsor strip",
+          "description": "Build the organizer sponsor editor for add, upload, reorder and remove, plus the public sponsor strip. Use keyboard-operable controls, descriptive alt text, lazy images and a responsive layout; omit the section when no sponsors are configured.",
+          "linkedRequirements": [
+            "FR-004",
+            "FR-005",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004",
+            "AC-005",
+            "AC-006"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P2",
+      "name": "Live and offline door mode",
+      "dependencies": [
+        "P0"
+      ],
+      "tasks": [
+        {
+          "id": "T3.1",
+          "title": "Add indexed door snapshot and attendee search queries",
+          "description": "Create convex/door.ts with getDoorSnapshot (checked-in count, total, recent check-ins and event timezone) and searchDoorAttendees (name search scoped to the event, limited rows) using by_event_checkedIn, by_event_checkedInAt and search_attendee. Require the event organizer.",
+          "linkedRequirements": [
+            "FR-006",
+            "FR-007",
+            "NFR-008",
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-008"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.2",
+          "title": "Extend check-in outcomes and add idempotent batch sync",
+          "description": "Extend checkInAttendee to return checked_in, already_checked_in, not_found, cancelled and not_eligible outcomes with the original timestamp on duplicates, and record source and offlineScannedAt. Add syncOfflineCheckIns accepting up to 500 device items and returning per-item outcomes without aborting the batch.",
+          "linkedRequirements": [
+            "FR-007",
+            "FR-011",
+            "NFR-004",
+            "NFR-005",
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008",
+            "AC-012"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.3",
+          "title": "Build the live door-mode dashboard",
+          "description": "Create the organizer door route and dashboard with total and checked-in counters, recent check-ins, manual search, scan input, connection status and distinct result messages. Use server-derived counts and keep previous values stable while refreshing.",
+          "linkedRequirements": [
+            "FR-006",
+            "FR-007",
+            "FR-008",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007",
+            "AC-008",
+            "AC-009"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.4",
+          "title": "Add the web manifest and service worker",
+          "description": "Add app/manifest.ts and public/sw.js. Cache a versioned app shell and static assets, never cache Convex or API JSON, activate updates without deleting the IndexedDB queue, and expose a kill switch for the service worker.",
+          "linkedRequirements": [
+            "FR-013",
+            "NFR-012"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-014"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.5",
+          "title": "Add the IndexedDB attendee cache and opt-in flow",
+          "description": "Add lib/offline/db.ts for a single-event snapshot store, queue store and metadata store, plus the organizer opt-in control showing attendee count and cache age. Clear the cache on sign-out and event change; registration remains online-only.",
+          "linkedRequirements": [
+            "FR-009",
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-010",
+            "AC-013"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.6",
+          "title": "Add the offline scan queue and sync client",
+          "description": "Add lib/offline/sync.ts to replay queued scans in bounded batches, retry transient failures, mark permanent conflicts, refresh the snapshot after sync, and keep duplicate scans idempotent.",
+          "linkedRequirements": [
+            "FR-010",
+            "FR-011",
+            "NFR-004",
+            "NFR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-011",
+            "AC-012"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T3.7",
+          "title": "Add offline data cleanup and expiry",
+          "description": "Add cleanup that deletes the cached snapshot, queue and metadata 24 hours after event end, on explicit clear and on sign-out; surface the stored age and a manual clear action.",
+          "linkedRequirements": [
+            "FR-012",
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-013"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P3",
+      "name": "Google Wallet passes",
+      "dependencies": [
+        "P0",
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T4.1",
+          "title": "Add the server-only Google Wallet provider and credential handling",
+          "description": "Create convex/walletNode.ts as a server-only Node action that reads Google Wallet issuer and service-account config from environment variables, signs a service-account JWT with Node crypto, exchanges it for an access token, and calls the Wallet REST API. Document names in .env.example and never log secrets.",
+          "linkedRequirements": [
+            "FR-014",
+            "FR-015",
+            "NFR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-015",
+            "AC-018"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T4.2",
+          "title": "Add idempotent pass issuance and registration wallet state",
+          "description": "Create convex/wallet.ts issueWalletPass mutation: require a signed-in attendee, confirmed registration, walletEnabled event and configured provider; derive a stable object ID; return an existing pass on retry; persist wallet state on the registration and audit wallet.issued.",
+          "linkedRequirements": [
+            "FR-015",
+            "FR-016",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-015",
+            "AC-016"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T4.3",
+          "title": "Add pass void/expire on cancellation and event deletion",
+          "description": "On cancelRegistration and deleteEvent, void or expire the Google Wallet object when one exists, persist status and lastError, bound retries and audit wallet.voided. A provider failure must not block cancellation.",
+          "linkedRequirements": [
+            "FR-017",
+            "FR-018",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-017",
+            "AC-018"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T4.4",
+          "title": "Add the ticket wallet control and unavailable-Apple state",
+          "description": "Add the ticket control: show Add to Google Wallet only when eligible, show an unavailable state for Apple Wallet without implying support, and show issued, failed and voided states. Keep the QR ticket primary.",
+          "linkedRequirements": [
+            "FR-014",
+            "FR-019"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-015",
+            "AC-018",
+            "AC-019"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P4",
+      "name": "Custom registration questions",
+      "dependencies": [
+        "P0",
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T5.1",
+          "title": "Add question definition validation, versioning, and event persistence",
+          "description": "Add question definitions to events with types short text, long text, single select, multi-select, number and date; maximum ten active; required flag; option validation; stable IDs; versioning and archived flags on edit. Reject definitions that would orphan answers and audit event.questions_updated.",
+          "linkedRequirements": [
+            "FR-020",
+            "FR-022",
+            "NFR-001",
+            "NFR-006",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-020",
+            "AC-021"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.2",
+          "title": "Build the organizer question builder and preview",
+          "description": "Build the organizer question builder for add, edit, reorder and archive with a live attendee preview, keyboard controls, validation messages and a confirmation before archiving a question that has answers.",
+          "linkedRequirements": [
+            "FR-020",
+            "FR-022",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-020",
+            "AC-021"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.3",
+          "title": "Add answer validation, storage, and the registration form fields",
+          "description": "Render active questions in the registration form, validate required, type, option and length constraints on the client and server, store answers on the registration, and show a privacy note. Archived questions do not appear for new registrations.",
+          "linkedRequirements": [
+            "FR-021",
+            "FR-024",
+            "NFR-006",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-023",
+            "AC-024",
+            "AC-025"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T5.4",
+          "title": "Add per-question columns to the registration CSV export",
+          "description": "Extend the registration CSV export with one column per current and archived question, stable order, archived label suffix, and escaped labels and answers. Preserve existing columns and CSV injection protection.",
+          "linkedRequirements": [
+            "FR-023",
+            "NFR-006",
+            "NFR-014"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-022"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P5",
+      "name": "Currency, locations, and localization",
+      "dependencies": [
+        "P0",
+        "P1"
+      ],
+      "tasks": [
+        {
+          "id": "T6.1",
+          "title": "Add platform locale/currency settings and admin controls",
+          "description": "Add defaultLocale to platform settings and the admin settings UI, validate en/fr and NGN/USD/GBP/EUR, and keep missing values falling back to English and NGN. Audit settings changes.",
+          "linkedRequirements": [
+            "FR-025",
+            "NFR-010",
+            "NFR-013"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-026",
+            "AC-030"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T6.2",
+          "title": "Add event currency, country code, and full location/timezone selection",
+          "description": "Add currency selection (NGN, USD, GBP, EUR), ISO countryCode, full country/state/city selection using country-state-city, and an IANA timezone picker to createEvent and the focused event settings surface. Validate the combination server-side.",
+          "linkedRequirements": [
+            "FR-026",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-027",
+            "AC-030"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T6.3",
+          "title": "Migrate event surfaces to event-aware currency and timezone formatting",
+          "description": "Replace hardcoded naira and local-date formatting on the public event page, registration confirmation, ticket, door dashboard and CSV export with formatEventPrice and formatEventDate using the event currency, timezone and locale. Do not convert amounts.",
+          "linkedRequirements": [
+            "FR-027",
+            "FR-028"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-028",
+            "AC-029"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T6.4",
+          "title": "Add the UI locale switcher, cookie persistence, and French dictionary",
+          "description": "Add a locale switcher for en/fr, persist it in a cookie, resolve it on the server for the initial render, and translate changed UI chrome, form labels, validation messages, door states and empty states. Organizer content is not translated.",
+          "linkedRequirements": [
+            "FR-029",
+            "FR-030",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-031",
+            "AC-032",
+            "AC-034"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T6.5",
+          "title": "Localize lifecycle email templates and select the registration locale",
+          "description": "Add English and French lifecycle email copy and select the locale from the registration snapshot at send time, falling back to the platform default then English. Keep HTML/text escaping and idempotency unchanged.",
+          "linkedRequirements": [
+            "FR-029",
+            "FR-031",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-031",
+            "AC-033"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T6.6",
+          "title": "Add fallback notices and French layout safeguards",
+          "description": "Add a fallback notice for unsupported requested locales, keep English fallback copy complete, and adjust French layouts at 360/768/1280 for overflow, wrapping and tap targets. Ensure the locale switcher is keyboard accessible.",
+          "linkedRequirements": [
+            "FR-030",
+            "FR-031",
+            "NFR-009",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-032",
+            "AC-034"
+          ],
+          "completed": false
+        }
+      ]
+    },
+    {
+      "phaseId": "P6",
+      "name": "Verification and governance",
+      "dependencies": [
+        "P1",
+        "P2",
+        "P3",
+        "P4",
+        "P5"
+      ],
+      "tasks": [
+        {
+          "id": "T7.1",
+          "title": "Run formatter, linter, and typecheck",
+          "description": "Run the existing formatter if configured, npm run lint and npx tsc --noEmit; fix only issues introduced by this feature.",
+          "linkedRequirements": [
+            "NFR-006",
+            "NFR-009",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [],
+          "completed": false
+        },
+        {
+          "id": "T7.2",
+          "title": "Run governance validation and sdrive verify",
+          "description": "Run node .sdrive/scripts/validate-governance.js and sdrive verify event-platform-expansion; fix governance or plan mismatches without adding test tasks.",
+          "linkedRequirements": [
+            "NFR-001",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [],
+          "completed": false
+        },
+        {
+          "id": "T7.3",
+          "title": "Manually check responsive, keyboard, and French layouts",
+          "description": "Manually check the public event page, registration form, door dashboard, ticket and settings at 360/768/1280 in English and French, with keyboard-only navigation, visible focus and JavaScript-disabled public metadata.",
+          "linkedRequirements": [
+            "NFR-009",
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-032"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T7.4",
+          "title": "Confirm HTTPS/HSTS and PWA deployment prerequisites",
+          "description": "Confirm the production host serves HTTPS with HSTS, the manifest and service worker are same-origin, and the PWA install prerequisites are documented; record wallet credential availability as an external prerequisite.",
+          "linkedRequirements": [
+            "NFR-012"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-014"
+          ],
+          "completed": false
+        }
+      ]
+    }
+  ]
+}

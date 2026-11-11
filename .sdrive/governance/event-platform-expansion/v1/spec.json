@@ -1,0 +1,814 @@
+{
+  "feature": "event-platform-expansion",
+  "title": "Event Platform Expansion",
+  "version": 1,
+  "overview": {
+    "problemStatement": "The public event page is client-rendered with a hardcoded naira symbol, no per-event Open Graph image, no structured event data, and no sponsor surface. Door check-in is a client-side list with no dedicated live view and no offline path. Ticketing stops at the in-app QR code with no Google Wallet pass, registration cannot collect organizer-defined answers, and event currency/location/language are framed for Nigeria only.",
+    "proposedSolution": "Deliver five connected surfaces on one feature branch: server-generated event metadata with a per-event OG image and sponsors; a live door dashboard with an idempotent offline check-in queue; Google Wallet event-ticket issuance with update/void; ordered custom registration questions with per-question CSV columns; and event-level currency plus English/French localization with full country data. All changes are additive and fall back to platform defaults.",
+    "targetAudience": "Organizers who publish and run events, attendees who register and carry tickets, sponsors who need visible credit, and administrators who set platform locale/currency defaults.",
+    "assumptions": [
+      "Google Wallet issuer credentials will be provisioned before wallet ACs are implemented; if not, the wallet control stays unavailable and the rest ships.",
+      "Apple Wallet credentials are unavailable and Apple remains out of scope for v1.",
+      "Supported UI/system locales are English (en) and French (fr); supported event currencies are NGN, USD, GBP, and EUR.",
+      "Amounts remain in the currency's major unit in ticketPrice; no FX conversion is performed when an organizer changes currency.",
+      "Offline mode is check-in only, for one event per device, and only for confirmed attendees.",
+      "Custom questions are limited to ten active definitions and six types; file upload and conditional logic are excluded.",
+      "Sponsors are limited to six per event; logos are uploaded through Convex storage and rendered with alt text.",
+      "Existing events without currency/locale/country fields fall back to platform defaults; no destructive migration is required.",
+      "The public event route can be restructured behind a server wrapper without changing its URL or interactive behavior.",
+      "No new runtime dependency is required for PWA, i18n, or OG images; any Google Wallet signing library must be approved in the plan.",
+      "No new billing/Pro gate is introduced in this version; wallet and door are per-event capabilities, not a paywall change.",
+      "Admins may view door data only through an explicit admin path if the plan adds one; the default door authorization is the event organizer."
+    ],
+    "outOfScope": [
+      "Apple Wallet issuance (no Apple Pass Type ID or signing credentials).",
+      "Event editing, rescheduling, and cancellation (BP-009); wallet update/void for a rescheduled event waits for that feature.",
+      "Offline registration, offline payment, and offline event creation.",
+      "FX conversion, crypto payments, tax/VAT, and payment-provider changes.",
+      "Machine translation of organizer-entered content.",
+      "File-upload questions, conditional logic, question quotas, waitlists, and ticketing tiers.",
+      "SMS, WhatsApp, or push notifications for door mode.",
+      "Sponsor analytics, ad serving, impression billing, and sponsor self-service.",
+      "Multi-event offline caching and offline attendee search beyond the cached snapshot.",
+      "Smart Tap/NFC and rotating barcodes; the in-app QR and Google Wallet static barcode are the supported redemption paths.",
+      "Template editing UI for lifecycle emails."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Share an event that looks credible",
+      "role": "organizer",
+      "want": "every event page to produce a rich preview and valid event structured data",
+      "benefit": "a shared link looks trustworthy and search engines can surface the event",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given a public event with a title, start/end date, and location, the page emits a unique title, meta description, canonical URL, Open Graph title/description/image/url/type, and Twitter card title/description/image derived from that event, with no site-wide placeholder text."
+        },
+        {
+          "id": "AC-002",
+          "text": "Given an event with a cover image, the Open Graph/Twitter image is a 1200x630 generated card containing the event title, date, city/country, organizer name, and cover image; given an event without a cover image, a branded fallback card with the title and date is generated instead."
+        },
+        {
+          "id": "AC-003",
+          "text": "Given a public event, the page includes valid schema.org/Event JSON-LD with name, startDate, endDate, eventStatus, location, image, organizer, and offers (price and priceCurrency, or a free offer) whose values match the event and use ISO 8601 dates in the event timezone."
+        },
+        {
+          "id": "AC-004",
+          "text": "Given an event with sponsor logos, the public page renders up to six sponsors in organizer order with a visible name and alt text; a sponsor with a URL links to it in a new tab with rel noopener noreferrer, and the sponsor section is omitted when there are no sponsors."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Credit the sponsors who made the event possible",
+      "role": "organizer",
+      "want": "to add, reorder, and remove sponsor logos",
+      "benefit": "the public page credits them accurately",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-005",
+          "text": "Given the event management surface, the organizer can add up to six sponsors with a name, logo upload, optional URL, and alt text; the save rejects an empty name, an unsupported image type, an image over the size limit, or a non-HTTP(S) URL with an inline, accessible error."
+        },
+        {
+          "id": "AC-006",
+          "text": "Given a sponsor added, reordered, or removed, the public event page reflects the current order on the next load; removing one sponsor MUST NOT remove the event or any other sponsor, and the change is attributed to the acting organizer."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Run the door from one live screen",
+      "role": "organizer",
+      "want": "a dedicated live check-in dashboard for one event",
+      "benefit": "I can see throughput and intervene at the door",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-007",
+          "text": "Given a door-mode route for an event, the organizer sees the checked-in count, confirmed total, check-in rate, last check-in time, connection status, and the ten most recent check-ins; a check-in made on another device is reflected within 2 seconds without a manual refresh."
+        },
+        {
+          "id": "AC-008",
+          "text": "Given a QR code, ticket code, or attendee-name search, the organizer can check in a confirmed attendee; a duplicate check-in returns already checked in with the original timestamp and does not increment the checked-in count; a cancelled or unknown ticket is rejected with a distinct message."
+        },
+        {
+          "id": "AC-009",
+          "text": "Given a caller who is not the event organizer, every door-mode query and mutation is denied server-side; an unauthenticated caller receives an authentication error, and hiding the UI is never the only control."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Keep checking people in when the network drops",
+      "role": "door operator",
+      "want": "check-in to keep working offline and reconcile when connectivity returns",
+      "benefit": "a queue does not stop because the venue Wi-Fi failed",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-010",
+          "text": "Given the organizer explicitly enables offline mode for one event while online, the app caches the confirmed attendee snapshot (name, ticket code, QR code, confirmation status) in IndexedDB and shows the cache age, attendee count, and event name."
+        },
+        {
+          "id": "AC-011",
+          "text": "Given offline mode is enabled and the device loses connectivity, scanning a cached confirmed ticket records a local check-in with a pending state and a captured timestamp; scanning an unknown or cancelled ticket shows the appropriate error and writes nothing."
+        },
+        {
+          "id": "AC-012",
+          "text": "Given queued offline check-ins and restored connectivity, the app syncs them idempotently; every item resolves to checked-in, already-checked-in, cancelled, not-found, or wrong-event, the server count equals the union of successful check-ins, and no registration is counted twice."
+        },
+        {
+          "id": "AC-013",
+          "text": "Given sign-out, 24 hours after the event ends, or an explicit clear offline data action, the cached attendee snapshot and pending queue are deleted; the app MUST NOT cache more than one event at a time."
+        },
+        {
+          "id": "AC-014",
+          "text": "Given the app is installed or the door route is opened offline, the door route shell and the cached attendee list load without a network request; an uncached route shows an offline fallback instead of a browser network error."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "Carry the ticket in Google Wallet",
+      "role": "attendee",
+      "want": "to add my ticket to Google Wallet",
+      "benefit": "I can enter without opening the app or finding an email",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-015",
+          "text": "Given a confirmed registration for a wallet-enabled event and a configured Google Wallet issuer, the ticket screen shows an Add to Google Wallet control whose save link is a signed JWT containing the event title, start/end in the event timezone, venue/city, attendee name, ticket code, and a scannable barcode."
+        },
+        {
+          "id": "AC-016",
+          "text": "Given a pass already issued for a registration, a repeat request returns the same Google Wallet object and does not create a duplicate; the registration stores the provider, object ID, status, and issued/updated timestamps."
+        },
+        {
+          "id": "AC-017",
+          "text": "Given a registration cancellation or an event deletion, the corresponding Google Wallet object is expired or voided within 60 seconds so that it no longer admits entry; a provider failure is recorded and retried within a bounded budget without blocking the cancellation."
+        },
+        {
+          "id": "AC-018",
+          "text": "Given missing or invalid Google Wallet credentials, a provider timeout, or a quota error, the wallet control is hidden or shows a recoverable error, the in-app QR ticket remains usable, and no secret appears in the client, logs, or the error message."
+        },
+        {
+          "id": "AC-019",
+          "text": "Given an Apple device, no Apple Wallet control is shown in this version; the wallet provider surface reports Apple as unavailable, and the specification records Apple as blocked pending credentials."
+        }
+      ]
+    },
+    {
+      "id": "US-006",
+      "title": "Ask the questions my event needs",
+      "role": "organizer",
+      "want": "to define custom registration questions",
+      "benefit": "I collect the information my event actually requires",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-020",
+          "text": "Given the event management surface, the organizer can define up to ten active questions, choose one of short_text, long_text, single_select, multi_select, number, or date, mark each required or optional, add options and help text for choice types, reorder them, and preview the attendee form; an empty label, a choice question with fewer than two unique options, or a duplicate active label is rejected inline and server-side."
+        },
+        {
+          "id": "AC-021",
+          "text": "Given a question edited or removed after answers exist, the existing answers remain readable and exportable under the question's original label and stable ID; the edit creates a new definition version and archives the old one, removal requires confirmation, and new registrations see only the current definitions."
+        },
+        {
+          "id": "AC-022",
+          "text": "Given a registration export, the CSV includes one column per current and archived question in stable order, with headers derived from the question labels and values escaped by the existing CSV serializer; no answer appears in another attendee's row."
+        }
+      ]
+    },
+    {
+      "id": "US-007",
+      "title": "Answer only what is asked, with confidence",
+      "role": "attendee",
+      "want": "to understand and answer the organizer's questions",
+      "benefit": "I can complete registration without guessing or exposing my answers to other attendees",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-023",
+          "text": "Given an event with custom questions, the registration form renders the current questions in order with their label, optional help text, required marker, and a plain-language privacy note; answers are not submitted until the attendee confirms registration."
+        },
+        {
+          "id": "AC-024",
+          "text": "Given an invalid required answer, an answer outside the allowed options, or a malformed number/date, the form shows an accessible error next to the field, keeps the entered values, and does not create a registration; the same validation runs server-side."
+        },
+        {
+          "id": "AC-025",
+          "text": "Given a successful registration, answers are stored keyed by stable question ID and are visible to the attendee on their own registration/ticket, to the event organizer, and to administrators; they are not visible to other attendees."
+        }
+      ]
+    },
+    {
+      "id": "US-008",
+      "title": "Price and locate the event in my market",
+      "role": "organizer",
+      "want": "to choose my event currency and real location",
+      "benefit": "the event is correct for the market it is in",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-026",
+          "text": "Given platform settings, an administrator can set the default locale (en or fr), default currency (NGN, USD, GBP, or EUR), default country, and default timezone; unsupported values are rejected with a clear message."
+        },
+        {
+          "id": "AC-027",
+          "text": "Given event creation or editing, the organizer can choose one of the four supported currencies and any country/state/city from the full country-state-city dataset; the event stores its currency, ISO country code, and IANA timezone, and no FX conversion is performed."
+        },
+        {
+          "id": "AC-028",
+          "text": "Given a published event, every price display uses the event currency and selected locale with locale-aware formatting (for example ₦5,000, $5,000, £5,000, €5,000), never a hardcoded naira symbol; free events show a localized Free."
+        },
+        {
+          "id": "AC-029",
+          "text": "Given an event, every date/time display on the event page, ticket, registration form, and door mode uses the event timezone and selected locale, shows the timezone explicitly, and is not shifted by the viewer's device timezone."
+        },
+        {
+          "id": "AC-030",
+          "text": "Given an existing event without the new currency/locale/country fields, the surfaces fall back to the platform defaults and continue to render; changing a platform default MUST NOT rewrite an existing event's stored currency, country, or timezone."
+        }
+      ]
+    },
+    {
+      "id": "US-009",
+      "title": "Use the product in English or French",
+      "role": "attendee or organizer",
+      "want": "the interface and system email in my language",
+      "benefit": "I can use the product without translating English in my head",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-031",
+          "text": "Given a locale selection of English or French (or an Accept-Language preference when no selection exists), the public event page, ticket, registration form, door mode, and system-generated lifecycle emails render copy in that language; the selection persists across navigation and sessions."
+        },
+        {
+          "id": "AC-032",
+          "text": "Given French copy, the new and changed surfaces do not overflow or clip at 360px, 768px, and 1280px; dates, numbers, and currency use locale-aware formatting, and every control keeps an accessible name."
+        },
+        {
+          "id": "AC-033",
+          "text": "Given organizer-entered event content, the system shows it exactly as entered and does not machine-translate it; only the product chrome and system-generated copy are localized."
+        },
+        {
+          "id": "AC-034",
+          "text": "Given an unsupported locale or currency, the system falls back to the platform default and shows a non-blocking notice; it MUST NOT render raw translation keys, crash, or display a blank price/date."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "The public event route MUST expose server-generated metadata (title, description, canonical URL, Open Graph, Twitter card) derived from the event, not a client-only or site-wide placeholder.",
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
+    },
+    {
+      "id": "FR-002",
+      "text": "The app MUST generate a deterministic 1200x630 Open Graph/Twitter image per event from the event title, date, location, organizer, and optional cover image, with a branded fallback when no cover exists.",
+      "linkedAcceptanceCriteria": [
+        "AC-002"
+      ]
+    },
+    {
+      "id": "FR-003",
+      "text": "The public event page MUST render schema.org/Event JSON-LD with ISO 8601 dates, location, organizer, image, eventStatus, and an Offer with price/currency or a free offer.",
+      "linkedAcceptanceCriteria": [
+        "AC-003"
+      ]
+    },
+    {
+      "id": "FR-004",
+      "text": "The events record and public page MUST support up to six ordered sponsors, each with a stable id, name, logo storage reference, optional HTTP(S) URL, and alt text; the public page MUST omit the section when the list is empty.",
+      "linkedAcceptanceCriteria": [
+        "AC-004",
+        "AC-006"
+      ]
+    },
+    {
+      "id": "FR-005",
+      "text": "The organizer event surface MUST allow adding, reordering, and removing sponsors, MUST validate image type/size and URL scheme on the client and server, and MUST preserve the event and remaining sponsors when one is removed.",
+      "linkedAcceptanceCriteria": [
+        "AC-005",
+        "AC-006"
+      ]
+    },
+    {
+      "id": "FR-006",
+      "text": "A dedicated organizer door-mode route MUST show checked-in count, confirmed total, check-in rate, last check-in time, connection state, and the ten most recent check-ins from a reactive event-scoped query.",
+      "linkedAcceptanceCriteria": [
+        "AC-007"
+      ]
+    },
+    {
+      "id": "FR-007",
+      "text": "Door mode MUST support QR scanning, ticket-code entry, and attendee-name search, and MUST use one server mutation for check-in that distinguishes success, already-checked-in, cancelled, unknown, and wrong-event outcomes.",
+      "linkedAcceptanceCriteria": [
+        "AC-008"
+      ]
+    },
+    {
+      "id": "FR-008",
+      "text": "Every door-mode query and mutation MUST verify that the caller is the event organizer (or an authorized administrator through an explicit admin path) server-side; no UI-only guard is sufficient.",
+      "linkedAcceptanceCriteria": [
+        "AC-009"
+      ]
+    },
+    {
+      "id": "FR-009",
+      "text": "The organizer MUST be able to opt in to offline mode for exactly one event while online; the client MUST cache only that event's confirmed attendee snapshot in IndexedDB and display its age and count.",
+      "linkedAcceptanceCriteria": [
+        "AC-010",
+        "AC-013"
+      ]
+    },
+    {
+      "id": "FR-010",
+      "text": "Offline scans MUST write a local pending check-in with an idempotency key and captured timestamp, and MUST NOT write for unknown, cancelled, or wrong-event tickets.",
+      "linkedAcceptanceCriteria": [
+        "AC-011"
+      ]
+    },
+    {
+      "id": "FR-011",
+      "text": "A batch sync mutation MUST accept queued check-ins, validate each item against the event and registration, apply the first successful check-in, return a per-item outcome, and keep server counts derived from registrations rather than a denormalized counter.",
+      "linkedAcceptanceCriteria": [
+        "AC-012"
+      ]
+    },
+    {
+      "id": "FR-012",
+      "text": "The client MUST delete offline attendee data and the pending queue on sign-out, 24 hours after the event ends, or an explicit clear action, and MUST NOT retain more than one event's snapshot.",
+      "linkedAcceptanceCriteria": [
+        "AC-013"
+      ]
+    },
+    {
+      "id": "FR-013",
+      "text": "The app MUST expose a web app manifest and a service worker that caches the door route shell and static assets, serves the cached shell offline, and never caches authenticated JSON or Convex responses.",
+      "linkedAcceptanceCriteria": [
+        "AC-014"
+      ]
+    },
+    {
+      "id": "FR-014",
+      "text": "Google Wallet configuration MUST be server-side only: issuer ID, service-account identity, and signing material MUST come from server environment configuration, and a per-event walletEnabled flag MUST gate eligibility.",
+      "linkedAcceptanceCriteria": [
+        "AC-015",
+        "AC-018"
+      ]
+    },
+    {
+      "id": "FR-015",
+      "text": "Issuance MUST create or reuse a Google Wallet event-ticket class and object with stable IDs, sign a save JWT, and return a save URL; repeated issuance for the same registration MUST be idempotent.",
+      "linkedAcceptanceCriteria": [
+        "AC-015",
+        "AC-016"
+      ]
+    },
+    {
+      "id": "FR-016",
+      "text": "The registrations record MUST store the wallet provider, object ID, pass status, and issued/updated timestamps so issuance, update, and void are traceable without re-deriving state.",
+      "linkedAcceptanceCriteria": [
+        "AC-016"
+      ]
+    },
+    {
+      "id": "FR-017",
+      "text": "Registration cancellation and event deletion MUST expire or void the corresponding Google Wallet object within 60 seconds; failures MUST be recorded and retried within a bounded budget without blocking the cancellation or deletion.",
+      "linkedAcceptanceCriteria": [
+        "AC-017"
+      ]
+    },
+    {
+      "id": "FR-018",
+      "text": "Wallet operations MUST be rate-limited, audited, and fail open for the ticket: a wallet failure MUST NOT invalidate the in-app QR ticket, and no secret may reach the client or logs.",
+      "linkedAcceptanceCriteria": [
+        "AC-018"
+      ]
+    },
+    {
+      "id": "FR-019",
+      "text": "Apple Wallet MUST NOT be offered while credentials are absent; the provider registry MUST return unavailable for Apple and the UI MUST NOT render an Apple Wallet control.",
+      "linkedAcceptanceCriteria": [
+        "AC-019"
+      ]
+    },
+    {
+      "id": "FR-020",
+      "text": "Events MUST support an ordered registrationQuestions definition (maximum ten active) with stable IDs, six allowed types, required flag, optional help text, and unique options for choice types; the server MUST validate every definition.",
+      "linkedAcceptanceCriteria": [
+        "AC-020"
+      ]
+    },
+    {
+      "id": "FR-021",
+      "text": "Registration MUST validate submitted answers against the event's current active definitions (required, type, option membership, number/date shape), store accepted answers keyed by question ID, and reject the registration atomically on any invalid answer.",
+      "linkedAcceptanceCriteria": [
+        "AC-023",
+        "AC-024",
+        "AC-025"
+      ]
+    },
+    {
+      "id": "FR-022",
+      "text": "Editing a question with answers MUST create a new definition version and archive the old one; historical answers MUST remain readable and exportable, and removing a question with answers MUST require explicit organizer confirmation.",
+      "linkedAcceptanceCriteria": [
+        "AC-021"
+      ]
+    },
+    {
+      "id": "FR-023",
+      "text": "The registration export MUST add one column per current and archived question in stable order, use the question label as the header, and escape every value through the existing CSV serializer.",
+      "linkedAcceptanceCriteria": [
+        "AC-022"
+      ]
+    },
+    {
+      "id": "FR-024",
+      "text": "The registration form MUST render labels, help text, required markers, and a privacy note, and MUST make answer visibility limited to the attendee, the event organizer, and administrators.",
+      "linkedAcceptanceCriteria": [
+        "AC-023",
+        "AC-025"
+      ]
+    },
+    {
+      "id": "FR-025",
+      "text": "Platform settings MUST add a default locale limited to en/fr and MUST validate the default currency against NGN/USD/GBP/EUR, while preserving the existing default country and timezone.",
+      "linkedAcceptanceCriteria": [
+        "AC-026",
+        "AC-030"
+      ]
+    },
+    {
+      "id": "FR-026",
+      "text": "Event creation and editing MUST persist currency, ISO countryCode, and IANA timezone, and the form MUST use the full country-state-city dataset and the four supported currencies.",
+      "linkedAcceptanceCriteria": [
+        "AC-027",
+        "AC-030"
+      ]
+    },
+    {
+      "id": "FR-027",
+      "text": "Every price display on public, ticket, registration, door, and export surfaces MUST use the event currency and selected locale through the shared formatter; no new hardcoded currency symbol is permitted.",
+      "linkedAcceptanceCriteria": [
+        "AC-028"
+      ]
+    },
+    {
+      "id": "FR-028",
+      "text": "Every event date/time display MUST use the event timezone and selected locale and MUST show the timezone explicitly; the viewer's device timezone MUST NOT silently override it.",
+      "linkedAcceptanceCriteria": [
+        "AC-029"
+      ]
+    },
+    {
+      "id": "FR-029",
+      "text": "UI chrome and system-generated lifecycle email copy MUST resolve from English and French dictionaries, with the locale selected from the user's choice, a persisted cookie, the platform default, or Accept-Language, in that order.",
+      "linkedAcceptanceCriteria": [
+        "AC-031",
+        "AC-033"
+      ]
+    },
+    {
+      "id": "FR-030",
+      "text": "Locale-aware layouts MUST remain usable at 360px, 768px, and 1280px, and an unsupported locale or currency MUST fall back to the platform default with a non-blocking notice rather than raw keys or a crash.",
+      "linkedAcceptanceCriteria": [
+        "AC-032",
+        "AC-034"
+      ]
+    },
+    {
+      "id": "FR-031",
+      "text": "Organizer-entered content MUST be rendered as entered and MUST NOT be machine-translated or rewritten by locale changes.",
+      "linkedAcceptanceCriteria": [
+        "AC-033"
+      ]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Authorization: every new query and mutation MUST use the existing secure wrappers or requireAdmin, MUST check event ownership server-side, and MUST NOT trust a client-supplied user or organizer ID.",
+      "linkedAcceptanceCriteria": [
+        "AC-009",
+        "AC-020",
+        "AC-022"
+      ]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Secret handling: Google Wallet signing material and any provider credentials MUST remain in server-side environment configuration, MUST NOT be committed, logged, or shipped to the browser, and signed save tokens MUST be short-lived and audience-bound.",
+      "linkedAcceptanceCriteria": [
+        "AC-015",
+        "AC-018"
+      ]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Offline PII: the cache MUST contain only the selected event's confirmed attendee data, MUST require an explicit opt-in, MUST be deleted on sign-out or 24 hours after the event ends, and MUST NOT be written into the service-worker cache.",
+      "linkedAcceptanceCriteria": [
+        "AC-010",
+        "AC-013"
+      ]
+    },
+    {
+      "id": "NFR-004",
+      "text": "Idempotency: wallet issuance, offline check-in sync, and registration submission MUST be idempotent under retries; a repeat MUST return the original outcome rather than create a duplicate pass, check-in, or registration.",
+      "linkedAcceptanceCriteria": [
+        "AC-012",
+        "AC-016"
+      ]
+    },
+    {
+      "id": "NFR-005",
+      "text": "Rate limiting: wallet issuance, manual/batch check-in, and question/sponsor mutations MUST use the shared rate limiter with a clear retryable error when exhausted.",
+      "linkedAcceptanceCriteria": [
+        "AC-008",
+        "AC-012",
+        "AC-018"
+      ]
+    },
+    {
+      "id": "NFR-006",
+      "text": "Input safety: all new inputs MUST be validated with Convex validators and Zod where applicable; sponsor URLs MUST be HTTP(S) only; JSON-LD MUST escape less-than; CSV output MUST use the existing injection-safe serializer.",
+      "linkedAcceptanceCriteria": [
+        "AC-005",
+        "AC-022",
+        "AC-024"
+      ]
+    },
+    {
+      "id": "NFR-007",
+      "text": "Metadata performance: event metadata MUST be server-rendered without blocking the interactive body; a cached OG image SHOULD complete within 1.5 seconds at p95 and an uncached image within 3 seconds, with a static fallback if generation fails.",
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-002"
+      ]
+    },
+    {
+      "id": "NFR-008",
+      "text": "Door responsiveness: live counts SHOULD reflect a remote check-in within 2 seconds at p95, an offline scan SHOULD acknowledge within 150 milliseconds, and a 500-item sync batch SHOULD complete within 5 seconds.",
+      "linkedAcceptanceCriteria": [
+        "AC-007",
+        "AC-011",
+        "AC-012"
+      ]
+    },
+    {
+      "id": "NFR-009",
+      "text": "Accessibility: new and changed surfaces MUST meet WCAG 2.1 AA, including keyboard operation, visible focus, screen-reader labels, live-region announcements for check-in/sync results, non-color-only status, and 4.5:1 text contrast.",
+      "linkedAcceptanceCriteria": [
+        "AC-023",
+        "AC-024",
+        "AC-032"
+      ]
+    },
+    {
+      "id": "NFR-010",
+      "text": "Backward compatibility: schema changes MUST be additive and optional; existing events, registrations, exports, and pages MUST continue to work with platform defaults, and no destructive backfill may be required to deploy.",
+      "linkedAcceptanceCriteria": [
+        "AC-026",
+        "AC-027",
+        "AC-030"
+      ]
+    },
+    {
+      "id": "NFR-011",
+      "text": "Localization completeness: new and changed surfaces MUST NOT contain hardcoded user-facing English or French strings; a missing key MUST fall back to English and be reported, never rendered as a raw key.",
+      "linkedAcceptanceCriteria": [
+        "AC-031",
+        "AC-034"
+      ]
+    },
+    {
+      "id": "NFR-012",
+      "text": "PWA cache safety: the service worker MUST cache only the static app shell and explicitly versioned assets, MUST NOT cache authenticated JSON or Convex traffic, and MUST preserve the offline queue across an app-shell update.",
+      "linkedAcceptanceCriteria": [
+        "AC-014"
+      ]
+    },
+    {
+      "id": "NFR-013",
+      "text": "Auditability: wallet issue/void, question definition changes, sponsor changes, and platform locale/currency changes MUST be attributable to an actor with a timestamp and outcome.",
+      "linkedAcceptanceCriteria": [
+        "AC-005",
+        "AC-017",
+        "AC-020",
+        "AC-026"
+      ]
+    },
+    {
+      "id": "NFR-014",
+      "text": "Data integrity: check-in counts MUST be derived from registration rows, CSV columns MUST follow question order, archived questions MUST remain exportable, and changing a currency MUST NOT silently convert stored amounts.",
+      "linkedAcceptanceCriteria": [
+        "AC-012",
+        "AC-022"
+      ]
+    }
+  ],
+  "edgeCases": [
+    {
+      "id": "EC-001",
+      "description": "Event has no cover image",
+      "expectedBehavior": "The OG image uses the branded fallback with the event title, date, and theme color; no broken image is emitted."
+    },
+    {
+      "id": "EC-002",
+      "description": "Event title/venue is very long or contains emoji/RTL text",
+      "expectedBehavior": "Metadata remains valid; the OG card truncates with an ellipsis; the page layout does not overflow."
+    },
+    {
+      "id": "EC-003",
+      "description": "Google Wallet credentials are missing or invalid",
+      "expectedBehavior": "The wallet control is hidden or shows a recoverable error; the QR ticket remains fully usable; the reason is logged without secrets."
+    },
+    {
+      "id": "EC-004",
+      "description": "Google Wallet API times out, returns 5xx, or hits quota",
+      "expectedBehavior": "The pass status becomes failed, a bounded retry is scheduled, no duplicate object is created, and the ticket is unaffected."
+    },
+    {
+      "id": "EC-005",
+      "description": "Registration is cancelled after a pass is issued",
+      "expectedBehavior": "The pass is voided/expired, the pass shows a cancelled state, and check-in rejects the ticket."
+    },
+    {
+      "id": "EC-006",
+      "description": "Event is deleted after a pass is issued",
+      "expectedBehavior": "The pass is voided/expired, the public page returns 404, and the next offline sync clears the event cache."
+    },
+    {
+      "id": "EC-007",
+      "description": "An already-checked-in ticket is scanned offline",
+      "expectedBehavior": "The local UI warns already checked in with the cached timestamp; sync returns already_checked_in and the count is unchanged."
+    },
+    {
+      "id": "EC-008",
+      "description": "The same ticket is scanned offline on two devices",
+      "expectedBehavior": "The first sync wins; the second returns already_checked_in with the original timestamp; no double count."
+    },
+    {
+      "id": "EC-009",
+      "description": "Attendee cancels after the offline snapshot was cached",
+      "expectedBehavior": "The offline scan may show the cached confirmed state; sync rejects it as cancelled and the UI marks the item for correction."
+    },
+    {
+      "id": "EC-010",
+      "description": "The service worker updates while the queue has pending items",
+      "expectedBehavior": "The queue is preserved in IndexedDB; sync continues after activation; no pending scan is lost."
+    },
+    {
+      "id": "EC-011",
+      "description": "IndexedDB is unavailable, quota is exceeded, or the browser is in private mode",
+      "expectedBehavior": "Enabling offline mode fails with a clear message; online door mode still works and no partial cache is left behind."
+    },
+    {
+      "id": "EC-012",
+      "description": "A required question is added after registrations exist",
+      "expectedBehavior": "Existing registrations remain valid; only new registrations must answer it; older rows export a blank value."
+    },
+    {
+      "id": "EC-013",
+      "description": "A question with answers is removed",
+      "expectedBehavior": "The organizer must confirm; the question is archived, historical answers remain exportable, and new registrations no longer see it."
+    },
+    {
+      "id": "EC-014",
+      "description": "A question has an empty label, duplicate label, or fewer than two choice options",
+      "expectedBehavior": "The definition is rejected inline and server-side; the previous valid definition remains."
+    },
+    {
+      "id": "EC-015",
+      "description": "An event has an unsupported currency or locale",
+      "expectedBehavior": "The surface falls back to the platform default, shows a non-blocking notice, and never renders a raw key or crash."
+    },
+    {
+      "id": "EC-016",
+      "description": "French copy overflows a button, table, or card at 360px",
+      "expectedBehavior": "Text wraps or truncates with an accessible full label; no control is clipped or pushed off-screen."
+    },
+    {
+      "id": "EC-017",
+      "description": "Event timezone differs from the viewer's device timezone",
+      "expectedBehavior": "The event page/ticket shows the event timezone explicitly and does not shift the time to the device zone."
+    },
+    {
+      "id": "EC-018",
+      "description": "Event is past or far in the future",
+      "expectedBehavior": "ISO 8601 dates remain valid, the OG image still renders, and no 500 is produced."
+    },
+    {
+      "id": "EC-019",
+      "description": "Sponsor logo upload has a wrong type or is too large",
+      "expectedBehavior": "The upload is rejected with an accessible message; existing sponsors and the event are unchanged."
+    },
+    {
+      "id": "EC-020",
+      "description": "A legacy event/registration lacks all new fields",
+      "expectedBehavior": "Platform defaults apply; wallet/door/question controls are hidden or disabled until configured; no migration failure."
+    }
+  ],
+  "dependencies": [
+    {
+      "name": "Google Wallet API",
+      "type": "external",
+      "notes": "Event-ticket class/object, save JWT, update/void. Requires issuer account and service account. https://developers.google.com/wallet/tickets/events"
+    },
+    {
+      "name": "Apple Wallet / PassKit",
+      "type": "external",
+      "notes": "Documented but blocked; no Apple Pass Type ID or signing credentials. https://developer.apple.com/wallet/"
+    },
+    {
+      "name": "Next.js next/og ImageResponse",
+      "type": "library",
+      "notes": "Built into Next.js 16; used for per-event OG images."
+    },
+    {
+      "name": "Next.js metadata and manifest conventions",
+      "type": "library",
+      "notes": "generateMetadata, metadataBase, and app/manifest.ts from the bundled Next.js 16 docs."
+    },
+    {
+      "name": "country-state-city",
+      "type": "library",
+      "notes": "Installed; supplies the full country/state/city dataset."
+    },
+    {
+      "name": "Convex file storage",
+      "type": "service",
+      "notes": "Installed; stores sponsor logo uploads."
+    },
+    {
+      "name": "Convex rate limiter",
+      "type": "library",
+      "notes": "@convex-dev/rate-limiter; shared buckets for wallet, door, and question/sponsor writes."
+    },
+    {
+      "name": "Browser platform APIs",
+      "type": "internal",
+      "notes": "IndexedDB, Service Worker, Web App Manifest, and Intl; no package dependency."
+    },
+    {
+      "name": "Existing internal utilities",
+      "type": "internal",
+      "notes": "lib/csv.ts, lib/format.ts, convex/helpers.ts, convex/rateLimiter.ts, convex/platformData.ts."
+    },
+    {
+      "name": "schema.org Event vocabulary",
+      "type": "external",
+      "notes": "JSON-LD vocabulary for event structured data. https://schema.org/Event"
+    }
+  ],
+  "risks": [
+    {
+      "id": "RISK-001",
+      "description": "Apple Wallet cannot be delivered without an Apple Developer Pass Type ID and certificate.",
+      "mitigation": "Keep Apple explicitly unavailable in v1; do not show an Apple control; revisit when credentials exist."
+    },
+    {
+      "id": "RISK-002",
+      "description": "Google Wallet issuer onboarding/verification or API policy changes delay launch.",
+      "mitigation": "Gate live issuance on credentials; keep the QR ticket as the primary path; isolate the provider behind one module."
+    },
+    {
+      "id": "RISK-003",
+      "description": "Offline attendee data is PII on a shared or lost device.",
+      "mitigation": "Explicit opt-in, single-event cache, cache-age display, sign-out/expiry deletion, manual clear, and no service-worker caching of rows."
+    },
+    {
+      "id": "RISK-004",
+      "description": "A stale service worker serves an old app shell or blocks updates.",
+      "mitigation": "Versioned caches, update activation that preserves the queue, a kill switch, and an update test in the plan."
+    },
+    {
+      "id": "RISK-005",
+      "description": "French copy is incomplete or breaks layouts.",
+      "mitigation": "Typed dictionaries, no hardcoded strings, a coverage check, fallback to English, and 360/768/1280 review."
+    },
+    {
+      "id": "RISK-006",
+      "description": "Currency changes are mistaken for FX conversion.",
+      "mitigation": "Store amount plus currency; document display-only, no conversion; never rewrite existing amounts on a currency change."
+    },
+    {
+      "id": "RISK-007",
+      "description": "OG image generation adds latency or cost.",
+      "mitigation": "Cache by event updatedAt, use a static fallback, limit fonts/assets, and keep metadata independent of the interactive body."
+    },
+    {
+      "id": "RISK-008",
+      "description": "Additive schema changes still break legacy rows or exports.",
+      "mitigation": "Optional fields, platform-default fallbacks, no destructive backfill, and legacy-row coverage in the plan."
+    },
+    {
+      "id": "RISK-009",
+      "description": "Question edits orphan historical answers.",
+      "mitigation": "Stable IDs, versioned definitions, archive instead of delete, and archived-label export columns."
+    },
+    {
+      "id": "RISK-010",
+      "description": "Door live queries become expensive at large events.",
+      "mitigation": "Indexed counts, paginated recent check-ins, capped search results, and a batch sync limit."
+    }
+  ]
+}

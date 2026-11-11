@@ -449,6 +449,65 @@
           ]
         }
       ]
+    },
+    {
+      "name": "event-platform-expansion",
+      "branch": "feature/event-platform-expansion",
+      "base": "main",
+      "productItems": [
+        "BP-005",
+        "BP-004",
+        "BP-003",
+        "BP-007",
+        "BP-014"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "implementation",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T15:14:46.476Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T16:30:00.000Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T16:44:46.626Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T16:46:00.000Z"
+            },
+            {
+              "event": "implementation_started",
+              "by": "sdrive:apply",
+              "from": "backlog",
+              "to": "ongoing",
+              "timestamp": "2026-11-11T16:51:41.072Z"
+            }
+          ]
+        }
+      ]
     }
   ],
   "onboarding": {
