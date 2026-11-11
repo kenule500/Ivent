@@ -14,7 +14,7 @@
         "T1.1",
         "T1.2"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -27,7 +27,7 @@
         "T2.1",
         "T3.1"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -39,7 +39,7 @@
       "taskIds": [
         "T3.2"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -51,7 +51,7 @@
       "taskIds": [
         "T3.3"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -67,7 +67,7 @@
         "T3.2",
         "T3.3"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -80,7 +80,7 @@
         "T2.1",
         "T2.2"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -92,7 +92,7 @@
       "taskIds": [
         "T4.1"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -104,7 +104,7 @@
       "taskIds": [
         "T4.2"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {
@@ -143,7 +143,7 @@
       "taskIds": [
         "T3.1"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": []
     },
     {

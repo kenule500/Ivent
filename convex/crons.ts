@@ -74,4 +74,19 @@ crons.daily(
   internal.crons.markExpiredInvites
 );
 
+
+// Lifecycle email sweeps (BP-001). Both are idempotent: the dispatch action
+// claims an idempotency key before sending, so a repeated run is a no-op.
+crons.hourly(
+  "lifecycle reminder sweep",
+  { minuteUTC: 5 },
+  internal.lifecycleSweeps.runReminderSweep
+);
+
+crons.daily(
+  "lifecycle follow-up sweep",
+  { hourUTC: 3, minuteUTC: 15 },
+  internal.lifecycleSweeps.runFollowUpSweep
+);
+
 export default crons;

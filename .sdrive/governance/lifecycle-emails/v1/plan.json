@@ -7,42 +7,52 @@
       {
         "name": "convex/lifecycleTemplates.ts",
         "action": "create",
-        "description": "Template registry (confirmation, reminder_24h, post_event_thankyou, feedback_request) plus the escaping renderer and the idempotency key builder."
+        "description": "Template registry, escaping renderer and idempotency key builder."
       },
       {
-        "name": "convex/lifecycleDispatch.ts",
+        "name": "convex/lifecycleEmails.ts",
         "action": "create",
-        "description": "Idempotent dispatch: record the key, honour the preference for optional templates, send through Mailtrap, record the outcome, retry within a bounded budget."
+        "description": "Node dispatch action: claim the key, honour the preference, send, settle the record."
+      },
+      {
+        "name": "convex/lifecycleSweeps.ts",
+        "action": "create",
+        "description": "Reminder and follow-up sweeps plus the per-registration context query."
       },
       {
         "name": "convex/emailLog.ts",
         "action": "modify",
-        "description": "Record lifecycle templates with registrationId and idempotencyKey, and expose the per-registration delivery rows."
+        "description": "Lifecycle rows: claim, settle, and per-registration delivery lookup."
+      },
+      {
+        "name": "convex/emailService.ts",
+        "action": "modify",
+        "description": "Transport accepts lifecycle templates and leaves the record to the caller."
       },
       {
         "name": "convex/schema.ts",
         "action": "modify",
-        "description": "Extend emailEvents.template with the four lifecycle values and add registrationId/idempotencyKey; add registrations.emailOptOut."
+        "description": "emailEvents template union plus registrationId/idempotencyKey/attempts; registrations.emailOptOut."
       },
       {
         "name": "convex/crons.ts",
         "action": "modify",
-        "description": "Hourly reminder sweep (events starting in 24 plus or minus 1 hours) and follow-up sweep (events ended), both idempotent."
+        "description": "Hourly reminder sweep and daily follow-up sweep."
       },
       {
         "name": "convex/registrations.ts",
         "action": "modify",
-        "description": "Schedule the confirmation after a successful registration and expose the email-preference mutation."
+        "description": "Schedules the confirmation and exposes setEmailPreference."
       },
       {
         "name": "app/(main)/my-tickets/page.tsx",
         "action": "modify",
-        "description": "Attendee control to opt out of reminders and follow-ups, with the confirmation explicitly unaffected."
+        "description": "Attendee control to opt out of reminders and follow-ups."
       },
       {
         "name": "app/admin/health/page.tsx",
         "action": "modify",
-        "description": "Surface lifecycle delivery rows per registration in the existing email-log view."
+        "description": "Lifecycle templates appear in the delivery counts and failure list."
       }
     ],
     "referencedRequirementIds": [

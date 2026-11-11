@@ -10,6 +10,7 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import QRCode from "react-qr-code";
 
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
 import { TicketsSkeleton } from "@/components/skeletons/tickets-skeleton";
 import {
@@ -34,9 +35,17 @@ type RegistrationTicket = RegistrationWithEvent & {
 export default function MyTicketsPage() {
   const [selectedTicket, setSelectedTicket] = useState<RegistrationTicket | null>(null);
 
+  // Optimistic override while the preference mutation settles; otherwise the
+  // stored value is the source of truth.
+  const [pendingOptOut, setPendingOptOut] = useState<boolean | null>(null);
+
   const { data: registrations, isLoading } = useConvexQuery(
     api.registrations.getMyRegistrations
   );
+
+  const optedOut =
+    pendingOptOut ?? registrations?.[0]?.emailOptOut ?? false;
+  const setEmailPreference = useMutation(api.registrations.setEmailPreference);
 
   const announce = useAnnounce();
   const announcedReady = useRef(false);
@@ -117,6 +126,30 @@ export default function MyTicketsPage() {
           <p className="text-muted-foreground">
             View and manage your event registrations
           </p>
+
+          {/* Reminders and follow-ups are optional; the confirmation is not
+              (FR-007, NFR-001). */}
+          <div className="mt-4 flex flex-wrap items-center gap-3">
+            <Button
+              variant="outline"
+              size="sm"
+              onClick={async () => {
+                const next = !optedOut;
+                await setEmailPreference({ emailOptOut: next });
+                setPendingOptOut(next);
+                announce(
+                  next
+                    ? "Email reminders turned off. Registration confirmations are still sent."
+                    : "Email reminders turned on."
+                );
+              }}
+            >
+              {optedOut ? "Turn on reminders" : "Turn off reminders"}
+            </Button>
+            <p className="text-xs text-muted-foreground">
+              Registration confirmations are always sent.
+            </p>
+          </div>
         </div>
 
         {/* Upcoming Tickets */}

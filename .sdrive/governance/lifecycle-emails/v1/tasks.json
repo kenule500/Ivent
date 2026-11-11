@@ -10,17 +10,30 @@
           "id": "T1.1",
           "title": "Extend the schema for lifecycle delivery",
           "description": "Add the four lifecycle values to emailEvents.template, add registrationId, idempotencyKey and attempts to emailEvents, and add the optional emailOptOut flag to registrations. Keep existing rows valid.",
-          "linkedRequirements": ["FR-001", "FR-005"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-004"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-001",
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-004"
+          ],
+          "completed": true
         },
         {
           "id": "T1.2",
           "title": "Build the template registry and escaping renderer",
           "description": "Create convex/lifecycleTemplates.ts with the four templates (subject, HTML, text), a renderer that escapes every interpolated value, and a key builder returning registrationId + template.",
-          "linkedRequirements": ["FR-001", "FR-009"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-003", "AC-008"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-001",
+            "FR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-003",
+            "AC-008"
+          ],
+          "completed": true
         }
       ]
     },
@@ -32,17 +45,31 @@
           "id": "T2.1",
           "title": "Build the idempotent dispatch action",
           "description": "Create convex/lifecycleDispatch.ts: write the emailEvents row for the key before sending, skip when a row already exists, honour the preference for optional templates, and send through the existing Mailtrap transport to exactly one recipient.",
-          "linkedRequirements": ["FR-002", "FR-005", "FR-006", "FR-009"],
-          "linkedAcceptanceCriteria": ["AC-001", "AC-004", "AC-005", "AC-008"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-002",
+            "FR-005",
+            "FR-006",
+            "FR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001",
+            "AC-004",
+            "AC-005",
+            "AC-008"
+          ],
+          "completed": true
         },
         {
           "id": "T2.2",
           "title": "Bound and record retries",
           "description": "Record the provider reason on failure, increment attempts, stop at the configured limit, and expose the failure in the admin delivery view. Never throw into the registration path.",
-          "linkedRequirements": ["FR-006"],
-          "linkedAcceptanceCriteria": ["AC-005"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-006"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-005"
+          ],
+          "completed": true
         }
       ]
     },
@@ -54,25 +81,42 @@
           "id": "T3.1",
           "title": "Schedule the confirmation at registration",
           "description": "After a successful registration, schedule the confirmation dispatch and return without awaiting the provider.",
-          "linkedRequirements": ["FR-002"],
-          "linkedAcceptanceCriteria": ["AC-001"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-002"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-001"
+          ],
+          "completed": true
         },
         {
           "id": "T3.2",
           "title": "Add the reminder sweep",
           "description": "Add a cron that selects confirmed registrations for events starting within 24 plus or minus 1 hours and dispatches the reminder for those without a delivery row.",
-          "linkedRequirements": ["FR-003", "FR-005"],
-          "linkedAcceptanceCriteria": ["AC-002", "AC-004"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-003",
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-002",
+            "AC-004"
+          ],
+          "completed": true
         },
         {
           "id": "T3.3",
           "title": "Add the follow-up sweep",
           "description": "Add a cron that selects registrations for events that have ended and dispatches the thank-you once, skipping opted-out attendees.",
-          "linkedRequirements": ["FR-004", "FR-005"],
-          "linkedAcceptanceCriteria": ["AC-003", "AC-004", "AC-006"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-004",
+            "FR-005"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-003",
+            "AC-004",
+            "AC-006"
+          ],
+          "completed": true
         }
       ]
     },
@@ -84,17 +128,26 @@
           "id": "T4.1",
           "title": "Add the attendee email preference",
           "description": "Expose a mutation that sets emailOptOut and a control in my-tickets, stating that the registration confirmation is not affected.",
-          "linkedRequirements": ["FR-007", "NFR-001"],
-          "linkedAcceptanceCriteria": ["AC-006"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-007",
+            "NFR-001"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006"
+          ],
+          "completed": true
         },
         {
           "id": "T4.2",
           "title": "Show lifecycle delivery in admin",
           "description": "Surface per-registration delivery rows (template, status, timestamp, error) in the existing admin email log.",
-          "linkedRequirements": ["FR-008"],
-          "linkedAcceptanceCriteria": ["AC-007"],
-          "completed": false
+          "linkedRequirements": [
+            "FR-008"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-007"
+          ],
+          "completed": true
         }
       ]
     },
@@ -106,16 +159,28 @@
           "id": "T5.1",
           "title": "Prove the one-recipient and escaping rules",
           "description": "Add a check that a rendered template contains only its own registration context and that interpolated values are escaped.",
-          "linkedRequirements": ["FR-009", "NFR-003"],
-          "linkedAcceptanceCriteria": ["AC-008"],
+          "linkedRequirements": [
+            "FR-009",
+            "NFR-003"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-008"
+          ],
           "completed": false
         },
         {
           "id": "T5.2",
           "title": "Prove idempotency and bounded retries",
           "description": "Prove that a repeated sweep sends nothing, that a cancelled registration gets no reminder, and that a failing send stops at the attempt limit and stays visible.",
-          "linkedRequirements": ["FR-005", "FR-006", "NFR-004"],
-          "linkedAcceptanceCriteria": ["AC-004", "AC-005"],
+          "linkedRequirements": [
+            "FR-005",
+            "FR-006",
+            "NFR-004"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-004",
+            "AC-005"
+          ],
           "completed": false
         }
       ]

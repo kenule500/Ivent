@@ -2,6 +2,7 @@ import { v } from "convex/values";
 import { MutationCtx } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { secureQuery, secureMutation } from "./helpers";
+import { internal } from "./_generated/api";
 
 // Cryptographically secure QR code generator
 function generateQRCode() {
@@ -60,6 +61,16 @@ export const registerForEvent = secureMutation({
         registeredAt: Date.now(),
       });
       await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
+
+      await ctx.scheduler.runAfter(
+        0,
+        internal.lifecycleEmails.sendLifecycleEmail,
+        {
+          registrationId: existingRegistration._id,
+          template: "registration_confirmation",
+        }
+      );
+
       return existingRegistration._id;
     }
 
@@ -75,7 +86,38 @@ export const registerForEvent = secureMutation({
     });
 
     await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
+
+    // Confirmation is scheduled, never awaited: provider latency must not
+    // become registration latency (FR-002, NFR-002).
+    await ctx.scheduler.runAfter(
+      0,
+      internal.lifecycleEmails.sendLifecycleEmail,
+      { registrationId, template: "registration_confirmation" }
+    );
+
     return registrationId;
+  },
+});
+
+/**
+ * Attendee email preference (FR-007).
+ *
+ * Turns reminders and follow-ups on or off for the caller's own registrations.
+ * The registration confirmation is transactional and is not affected (NFR-001).
+ */
+export const setEmailPreference = secureMutation({
+  args: { emailOptOut: v.boolean() },
+  handler: async (ctx, args) => {
+    const registrations = await ctx.db
+      .query("registrations")
+      .withIndex("by_user", (q) => q.eq("userId", ctx.user._id))
+      .collect();
+
+    for (const registration of registrations) {
+      await ctx.db.patch(registration._id, { emailOptOut: args.emailOptOut });
+    }
+
+    return { updated: registrations.length, emailOptOut: args.emailOptOut };
   },
 });
 

@@ -466,6 +466,17 @@
       "event": "gate_approved",
       "prevHash": "69a0824cf78309dbe963f45d913d05b9582b254166cc45a2088635e8a15fb6b0",
       "hash": "0fe25ecf272c8048dd4acb726f461b95035b43ce90caae9f11db0cd29df4227e"
+    },
+    {
+      "timestamp": "2026-11-11T11:38:52.407Z",
+      "actor": "kenule500",
+      "feature": "lifecycle-emails",
+      "version": "v1",
+      "gate": "planning",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "0fe25ecf272c8048dd4acb726f461b95035b43ce90caae9f11db0cd29df4227e",
+      "hash": "d7dc22307c2eafdfbddea0635349ef4635e3f9802859552a71de5d8dc0f8f7d1"
     }
   ]
 }

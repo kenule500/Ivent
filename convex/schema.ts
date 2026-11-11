@@ -113,6 +113,10 @@ export default defineSchema({
         //status
         status: v.union(v.literal("confirmed"), v.literal("cancelled")),
 
+        // Lifecycle email preference (BP-001). Absent means "receives
+        // reminders and follow-ups"; the confirmation is never suppressed.
+        emailOptOut: v.optional(v.boolean()),
+
         registeredAt: v.number()
     })
     .index("by_event", ["eventId"])
@@ -304,14 +308,33 @@ export default defineSchema({
 
     // Email delivery log used by the health panel and the action queue
     emailEvents: defineTable({
-        template: v.union(v.literal("invite"), v.literal("announcement")),
+        template: v.union(
+            v.literal("invite"),
+            v.literal("announcement"),
+            v.literal("registration_confirmation"),
+            v.literal("reminder_24h"),
+            v.literal("post_event_thankyou"),
+            v.literal("feedback_request")
+        ),
         recipient: v.string(),
-        status: v.union(v.literal("sent"), v.literal("failed")),
+        status: v.union(
+            v.literal("sent"),
+            v.literal("failed"),
+            v.literal("queued")
+        ),
         error: v.optional(v.string()),
         createdAt: v.number(),
+
+        // Lifecycle delivery (BP-001): which registration this belongs to, the
+        // key that makes a send idempotent, and how many attempts it took.
+        registrationId: v.optional(v.id("registrations")),
+        idempotencyKey: v.optional(v.string()),
+        attempts: v.optional(v.number()),
     })
     .index("by_createdAt", ["createdAt"])
-    .index("by_status_createdAt", ["status", "createdAt"]),
+    .index("by_status_createdAt", ["status", "createdAt"])
+    .index("by_idempotencyKey", ["idempotencyKey"])
+    .index("by_registration", ["registrationId"]),
 
     // Cron heartbeats
     cronRuns: defineTable({

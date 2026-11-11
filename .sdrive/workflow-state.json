@@ -395,7 +395,7 @@
           "currentStep": "planning",
           "gates": {
             "specification": "approved",
-            "planning": "pending",
+            "planning": "approved",
             "implementation": "pending",
             "review": "pending"
           },
@@ -416,6 +416,13 @@
               "event": "plan_and_tasks_drafted",
               "by": "sdrive:propose",
               "timestamp": "2026-11-11T12:45:00.000Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T11:38:51.959Z"
             }
           ]
         }

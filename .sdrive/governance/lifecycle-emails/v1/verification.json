@@ -1,0 +1,301 @@
+{
+  "feature": "lifecycle-emails",
+  "status": "warn",
+  "checkedAt": "2026-11-11T12:06:05.558Z",
+  "summary": {
+    "matched": 19,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 27,
+    "withdrawn": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "convex/lifecycleTemplates.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/lifecycleTemplates.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/lifecycleEmails.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/lifecycleEmails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/lifecycleSweeps.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/lifecycleSweeps.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailLog.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/emailLog.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailService.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/emailService.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/crons.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/crons.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(main)/my-tickets/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/health/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/health/page.tsx"
+      },
+      {
+        "type": "entity",
+        "name": "emailEvents",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "template",
+        "fieldType": "union(invite, announcement, registration_confirmation, reminder_24h, post_event_thankyou, feedback_request)",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "registrationId",
+        "fieldType": "id(registrations)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "idempotencyKey",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "emailEvents",
+        "name": "attempts",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "emailOptOut",
+        "fieldType": "boolean",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "dependency",
+        "name": "Mailtrap transport",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Cron infrastructure",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": [
+      {
+        "type": "component",
+        "name": "convex/admin.ts",
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analytics.ts",
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analyticsFilters.ts",
+        "file": "convex/analyticsFilters.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementAudience.ts",
+        "file": "convex/announcementAudience.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcements.ts",
+        "file": "convex/announcements.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementsNode.ts",
+        "file": "convex/announcementsNode.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/audit.ts",
+        "file": "convex/audit.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/auth.config.ts",
+        "file": "convex/auth.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/commandCenter.ts",
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/convex.config.ts",
+        "file": "convex/convex.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/dashboard.ts",
+        "file": "convex/dashboard.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emails.ts",
+        "file": "convex/emails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/events.ts",
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/explore.ts",
+        "file": "convex/explore.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/exports.ts",
+        "file": "convex/exports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/feedback.ts",
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/health.ts",
+        "file": "convex/health.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/helpers.ts",
+        "file": "convex/helpers.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/mailtrap.ts",
+        "file": "convex/mailtrap.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platform.ts",
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platformData.ts",
+        "file": "convex/platformData.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/rateLimiter.ts",
+        "file": "convex/rateLimiter.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/reports.ts",
+        "file": "convex/reports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/search.ts",
+        "file": "convex/search.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/seed.ts",
+        "file": "convex/seed.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/settings.ts",
+        "file": "convex/settings.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/users.ts",
+        "file": "convex/users.ts"
+      }
+    ],
+    "withdrawn": []
+  }
+}
