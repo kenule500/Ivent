@@ -1,0 +1,198 @@
+{
+  "feature": "lifecycle-emails",
+  "title": "Lifecycle Emails",
+  "version": 1,
+  "overview": {
+    "problemStatement": "Registration ends at the screen: no confirmation to keep, no reminder the day before, no follow-up afterwards, and organisers cannot tell whether anyone was emailed.",
+    "proposedSolution": "Four lifecycle templates sent through the existing Mailtrap transport: confirmation at registration, a 24-hour reminder, and a post-event thank-you with a feedback link. Idempotency keys prevent duplicates, failures are logged and retried within a bounded budget, and an opt-out suppresses optional email while confirmation still sends.",
+    "targetAudience": "Attendees who register for events and organisers who need to know delivery happened.",
+    "assumptions": [
+      "The Mailtrap transport and emailEvents log already exist and stay in place.",
+      "Cron infrastructure in convex/crons.ts can host the reminder and follow-up sweeps.",
+      "Templates live in code for this version."
+    ],
+    "outOfScope": [
+      "Broadcast announcements (existing feature).",
+      "Template editing UI.",
+      "SMS, push, or WhatsApp channels.",
+      "Per-event reminder timing configuration."
+    ]
+  },
+  "userStories": [
+    {
+      "id": "US-001",
+      "title": "Know my registration is real",
+      "role": "attendee",
+      "want": "a confirmation email with the event details and my ticket",
+      "benefit": "I have a record outside the app",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-001",
+          "text": "Given a successful registration, a confirmation email is sent to the attendee address within 60 seconds containing the event title, date, location, and a link to the ticket."
+        }
+      ]
+    },
+    {
+      "id": "US-002",
+      "title": "Be reminded before the event",
+      "role": "confirmed attendee",
+      "want": "a reminder about a day before",
+      "benefit": "I do not forget the event I registered for",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-002",
+          "text": "Given a confirmed registration for an event starting in roughly 24 hours, exactly one reminder is sent to attendees who have not opted out."
+        },
+        {
+          "id": "AC-003",
+          "text": "Given an event that has ended, a thank-you email with a feedback link is sent to confirmed attendees who have not opted out."
+        }
+      ]
+    },
+    {
+      "id": "US-003",
+      "title": "Trust that email is not duplicated or silently lost",
+      "role": "attendee",
+      "want": "each lifecycle email once",
+      "benefit": "I am not spammed and I do not miss one because a job re-ran",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-004",
+          "text": "Given the reminder job runs repeatedly, or a retry occurs, no registration receives the same lifecycle email twice."
+        },
+        {
+          "id": "AC-005",
+          "text": "Given a provider failure, the failure is recorded with its reason, retried within a bounded budget, and visible in the admin delivery log; the registration itself never fails because email did."
+        }
+      ]
+    },
+    {
+      "id": "US-004",
+      "title": "Control what I receive",
+      "role": "attendee",
+      "want": "to opt out of reminders and follow-ups",
+      "benefit": "my inbox stays mine while I still receive the confirmation I need",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-006",
+          "text": "Given an attendee who opts out of lifecycle email, reminders and thank-yous stop, and the registration confirmation is still delivered."
+        }
+      ]
+    },
+    {
+      "id": "US-005",
+      "title": "See what was sent",
+      "role": "organiser",
+      "want": "per-registration delivery status",
+      "benefit": "I can answer whether they got the email without guessing",
+      "acceptanceCriteria": [
+        {
+          "id": "AC-007",
+          "text": "Given a registration, the admin can see which lifecycle emails were sent, failed, or skipped, with timestamps."
+        },
+        {
+          "id": "AC-008",
+          "text": "Given any lifecycle email, the rendered content contains only that recipient data, and no message is addressed to more than one attendee."
+        }
+      ]
+    }
+  ],
+  "functionalRequirements": [
+    {
+      "id": "FR-001",
+      "text": "A lifecycle template registry MUST define four templates - registration_confirmation, reminder_24h, post_event_thankyou, feedback_request - each with subject, HTML, and text bodies.",
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-002",
+        "AC-003"
+      ]
+    },
+    {
+      "id": "FR-002",
+      "text": "Registration MUST schedule the confirmation asynchronously so the mutation returns without waiting on the provider.",
+      "linkedAcceptanceCriteria": [
+        "AC-001"
+      ]
+    },
+    {
+      "id": "FR-003",
+      "text": "A scheduled job MUST select confirmed registrations whose event starts within the reminder window of 24 plus or minus 1 hours and enqueue reminders.",
+      "linkedAcceptanceCriteria": [
+        "AC-002"
+      ]
+    },
+    {
+      "id": "FR-004",
+      "text": "A scheduled job MUST select registrations whose event ended within the follow-up window and enqueue the thank-you.",
+      "linkedAcceptanceCriteria": [
+        "AC-003"
+      ]
+    },
+    {
+      "id": "FR-005",
+      "text": "Each send MUST carry an idempotency key of registrationId plus template, recorded before dispatch, so a repeat run sends nothing.",
+      "linkedAcceptanceCriteria": [
+        "AC-004"
+      ]
+    },
+    {
+      "id": "FR-006",
+      "text": "A failed send MUST be recorded with the provider reason, retried with a bounded budget, and never throw into the registration path.",
+      "linkedAcceptanceCriteria": [
+        "AC-005"
+      ]
+    },
+    {
+      "id": "FR-007",
+      "text": "An attendee MUST be able to set an email preference that suppresses reminder and thank-you sends while leaving confirmation in place.",
+      "linkedAcceptanceCriteria": [
+        "AC-006"
+      ]
+    },
+    {
+      "id": "FR-008",
+      "text": "The admin MUST be able to read per-registration delivery rows for the lifecycle templates.",
+      "linkedAcceptanceCriteria": [
+        "AC-007"
+      ]
+    },
+    {
+      "id": "FR-009",
+      "text": "Templates MUST render through one escaping renderer; no recipient data may appear in another recipient message.",
+      "linkedAcceptanceCriteria": [
+        "AC-008"
+      ]
+    }
+  ],
+  "nonFunctionalRequirements": [
+    {
+      "id": "NFR-001",
+      "text": "Confirmation is transactional and MUST NOT be suppressed by the lifecycle preference; reminders and thank-yous are optional and MUST honour it.",
+      "linkedAcceptanceCriteria": [
+        "AC-006"
+      ]
+    },
+    {
+      "id": "NFR-002",
+      "text": "Registration latency MUST NOT depend on the email provider; the mutation completes before the send is attempted.",
+      "linkedAcceptanceCriteria": [
+        "AC-001",
+        "AC-005"
+      ]
+    },
+    {
+      "id": "NFR-003",
+      "text": "Every lifecycle email MUST be sent to exactly one recipient; no BCC fan-out, and no other attendee data in the body.",
+      "linkedAcceptanceCriteria": [
+        "AC-008"
+      ]
+    },
+    {
+      "id": "NFR-004",
+      "text": "Retries MUST be bounded and observable; a permanently failing registration MUST stop retrying and remain visible as failed rather than looping.",
+      "linkedAcceptanceCriteria": [
+        "AC-005"
+      ]
+    }
+  ]
+}

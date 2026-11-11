@@ -379,6 +379,35 @@
           ]
         }
       ]
+    },
+    {
+      "name": "lifecycle-emails",
+      "branch": "feature/backlog-wave-3",
+      "base": "main",
+      "productItems": [
+        "BP-001"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "specification",
+          "gates": {
+            "specification": "pending",
+            "planning": "pending",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T12:00:00.000Z"
+            }
+          ]
+        }
+      ]
     }
   ],
   "onboarding": {

@@ -1,0 +1,139 @@
+{
+  "feature": "lifecycle-emails",
+  "version": 1,
+  "rows": [
+    {
+      "requirementId": "FR-001",
+      "acceptanceCriteriaIds": [
+        "AC-001",
+        "AC-002",
+        "AC-003"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-002",
+      "acceptanceCriteriaIds": [
+        "AC-001"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-003",
+      "acceptanceCriteriaIds": [
+        "AC-002"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-004",
+      "acceptanceCriteriaIds": [
+        "AC-003"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-005",
+      "acceptanceCriteriaIds": [
+        "AC-004"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-006",
+      "acceptanceCriteriaIds": [
+        "AC-005"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-007",
+      "acceptanceCriteriaIds": [
+        "AC-006"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-008",
+      "acceptanceCriteriaIds": [
+        "AC-007"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "FR-009",
+      "acceptanceCriteriaIds": [
+        "AC-008"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "NFR-001",
+      "acceptanceCriteriaIds": [
+        "AC-006"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "NFR-002",
+      "acceptanceCriteriaIds": [
+        "AC-001",
+        "AC-005"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "NFR-003",
+      "acceptanceCriteriaIds": [
+        "AC-008"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    },
+    {
+      "requirementId": "NFR-004",
+      "acceptanceCriteriaIds": [
+        "AC-005"
+      ],
+      "planSection": "",
+      "taskIds": [],
+      "status": "not_started",
+      "testIds": []
+    }
+  ]
+}
