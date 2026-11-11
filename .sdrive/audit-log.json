@@ -391,6 +391,28 @@
       "event": "test_passed",
       "prevHash": "7167bd69a563f6f5f1beef3638b26431e7f99c50e018cc4fddb8eff46272a85f",
       "hash": "50b16a328518eaf87642cfe3568130121248d37d4201cecff8c2ec59579c17a5"
+    },
+    {
+      "timestamp": "2026-11-11T10:19:28.596Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "gate": "implementation",
+      "previousValue": "pending",
+      "event": "gate_approved",
+      "prevHash": "50b16a328518eaf87642cfe3568130121248d37d4201cecff8c2ec59579c17a5",
+      "hash": "de84b1b758be91c83851db342460b9ba8053d82c3f5a00154d9c28266386a0b2"
+    },
+    {
+      "timestamp": "2026-11-11T10:20:10.151Z",
+      "actor": "kenule500",
+      "feature": "registration-ux-polish",
+      "version": "v1",
+      "total": 17,
+      "durationMs": 30098,
+      "event": "test_passed",
+      "prevHash": "de84b1b758be91c83851db342460b9ba8053d82c3f5a00154d9c28266386a0b2",
+      "hash": "803ebf3272352a5aeaa64953ce71d50b6902e760a26ec988e13f575c2e59b2a5"
     }
   ]
 }
