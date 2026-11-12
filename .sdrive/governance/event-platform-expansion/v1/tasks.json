@@ -29,7 +29,7 @@
             "AC-027",
             "AC-030"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T1.2",
@@ -49,7 +49,7 @@
             "AC-027",
             "AC-034"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T1.3",
@@ -65,7 +65,7 @@
             "AC-009",
             "AC-018"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T1.4",
@@ -83,7 +83,7 @@
             "AC-033",
             "AC-034"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T1.5",
@@ -97,7 +97,7 @@
             "AC-028",
             "AC-029"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -119,7 +119,7 @@
           "linkedAcceptanceCriteria": [
             "AC-001"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T2.2",
@@ -132,7 +132,7 @@
           "linkedAcceptanceCriteria": [
             "AC-002"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T2.3",
@@ -145,7 +145,7 @@
           "linkedAcceptanceCriteria": [
             "AC-003"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T2.4",
@@ -162,7 +162,7 @@
             "AC-005",
             "AC-006"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T2.5",
@@ -178,7 +178,7 @@
             "AC-005",
             "AC-006"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -203,7 +203,7 @@
             "AC-007",
             "AC-008"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.2",
@@ -220,7 +220,7 @@
             "AC-008",
             "AC-012"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.3",
@@ -237,7 +237,7 @@
             "AC-008",
             "AC-009"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.4",
@@ -250,7 +250,7 @@
           "linkedAcceptanceCriteria": [
             "AC-014"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.5",
@@ -264,7 +264,7 @@
             "AC-010",
             "AC-013"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.6",
@@ -280,7 +280,7 @@
             "AC-011",
             "AC-012"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T3.7",
@@ -293,7 +293,7 @@
           "linkedAcceptanceCriteria": [
             "AC-013"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -318,7 +318,7 @@
             "AC-015",
             "AC-018"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.2",
@@ -333,7 +333,7 @@
             "AC-015",
             "AC-016"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.3",
@@ -348,7 +348,7 @@
             "AC-017",
             "AC-018"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T4.4",
@@ -363,7 +363,7 @@
             "AC-018",
             "AC-019"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -390,7 +390,7 @@
             "AC-020",
             "AC-021"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.2",
@@ -405,7 +405,7 @@
             "AC-020",
             "AC-021"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.3",
@@ -422,7 +422,7 @@
             "AC-024",
             "AC-025"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T5.4",
@@ -436,7 +436,7 @@
           "linkedAcceptanceCriteria": [
             "AC-022"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -461,7 +461,7 @@
             "AC-026",
             "AC-030"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.2",
@@ -475,7 +475,7 @@
             "AC-027",
             "AC-030"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.3",
@@ -489,7 +489,7 @@
             "AC-028",
             "AC-029"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.4",
@@ -505,7 +505,7 @@
             "AC-032",
             "AC-034"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.5",
@@ -520,7 +520,7 @@
             "AC-031",
             "AC-033"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T6.6",
@@ -536,7 +536,7 @@
             "AC-032",
             "AC-034"
           ],
-          "completed": false
+          "completed": true
         }
       ]
     },
@@ -561,7 +561,7 @@
             "NFR-010"
           ],
           "linkedAcceptanceCriteria": [],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T7.2",
@@ -572,7 +572,7 @@
             "NFR-010"
           ],
           "linkedAcceptanceCriteria": [],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T7.3",
@@ -585,7 +585,12 @@
           "linkedAcceptanceCriteria": [
             "AC-032"
           ],
-          "completed": false
+          "completed": false,
+          "resolution": {
+            "kind": "deferred",
+            "reason": "Requires a human visual and keyboard pass at 360/768/1280 in English and French against a running deployment; scheduled for review.",
+            "at": "2026-11-12"
+          }
         },
         {
           "id": "T7.4",
@@ -597,7 +602,12 @@
           "linkedAcceptanceCriteria": [
             "AC-014"
           ],
-          "completed": false
+          "completed": false,
+          "resolution": {
+            "kind": "deferred",
+            "reason": "HTTPS/HSTS is imposed by the production host and cannot be confirmed from this checkout; PWA prerequisites and wallet credential availability are documented in README.md.",
+            "at": "2026-11-12"
+          }
         }
       ]
     }

@@ -1,0 +1,1180 @@
+{
+  "feature": "event-platform-expansion",
+  "status": "warn",
+  "checkedAt": "2026-11-12T08:02:33.549Z",
+  "summary": {
+    "matched": 90,
+    "missing": 0,
+    "renamed": 0,
+    "extra": 85,
+    "withdrawn": 0
+  },
+  "items": {
+    "matched": [
+      {
+        "type": "component",
+        "name": "convex/schema.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/validators.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/validators.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platformData.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/platformData.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/helpers.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/helpers.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/rateLimiter.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/rateLimiter.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/i18n/index.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/i18n/index.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/i18n/en.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/i18n/en.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/i18n/fr.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/i18n/fr.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/event-format.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/event-format.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/offline/db.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/offline/db.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/offline/sync.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "lib/offline/sync.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/manifest.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "app/manifest.ts"
+      },
+      {
+        "type": "component",
+        "name": "public/sw.js",
+        "action": "create",
+        "resolution": null,
+        "file": "public/sw.js"
+      },
+      {
+        "type": "component",
+        "name": "components/locale-provider.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "components/locale-provider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/layout.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/layout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/event-detail.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/event-detail.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/opengraph-image.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/opengraph-image.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/event-json-ld.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/_components/event-json-ld.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/sponsor-strip.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/_components/sponsor-strip.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/_components/register-modal.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/_components/register-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/events.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/create-event/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(main)/create-event/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/door/page.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/door/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/_components/door-dashboard.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/_components/door-dashboard.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/_components/offline-controls.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/_components/offline-controls.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/_components/sponsor-editor.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/_components/sponsor-editor.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/_components/question-builder.tsx",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(main)/my-events/[eventId]/_components/question-builder.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/door.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/door.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/registrations.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/wallet.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/wallet.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/walletNode.ts",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/walletNode.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/lifecycleTemplates.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/lifecycleTemplates.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/lifecycleEmails.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/lifecycleEmails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/exports.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/exports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/platform.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "component",
+        "name": "app/admin/settings/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/admin/settings/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-tickets/page.tsx",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(main)/my-tickets/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "convex/audit.ts",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/audit.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET app/(public)/events/[slug]/page",
+        "method": "GET",
+        "path": "app/(public)/events/[slug]/page",
+        "action": "modify",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET app/(public)/events/[slug]/opengraph-image",
+        "method": "GET",
+        "path": "app/(public)/events/[slug]/opengraph-image",
+        "action": "create",
+        "resolution": null,
+        "file": "app/(public)/events/[slug]/opengraph-image.tsx"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/events:getEventBySlug",
+        "method": "GET",
+        "path": "convex/events:getEventBySlug",
+        "action": "reuse",
+        "resolution": null,
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/events:createEvent",
+        "method": "POST",
+        "path": "convex/events:createEvent",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/events:updateEventSettings",
+        "method": "POST",
+        "path": "convex/events:updateEventSettings",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/events.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/door:getDoorSnapshot",
+        "method": "GET",
+        "path": "convex/door:getDoorSnapshot",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/door.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/door:searchDoorAttendees",
+        "method": "GET",
+        "path": "convex/door:searchDoorAttendees",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/door.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/door:syncOfflineCheckIns",
+        "method": "POST",
+        "path": "convex/door:syncOfflineCheckIns",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/door.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/registrations:checkInAttendee",
+        "method": "POST",
+        "path": "convex/registrations:checkInAttendee",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/registrations:registerForEvent",
+        "method": "POST",
+        "path": "convex/registrations:registerForEvent",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/registrations:cancelRegistration",
+        "method": "POST",
+        "path": "convex/registrations:cancelRegistration",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/registrations.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/wallet:issueWalletPass",
+        "method": "POST",
+        "path": "convex/wallet:issueWalletPass",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/wallet.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/wallet:voidWalletPass",
+        "method": "POST",
+        "path": "convex/wallet:voidWalletPass",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/wallet.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/walletNode:issueGooglePass",
+        "method": "POST",
+        "path": "convex/walletNode:issueGooglePass",
+        "action": "create",
+        "resolution": null,
+        "file": "convex/walletNode.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/exports:generate",
+        "method": "POST",
+        "path": "convex/exports:generate",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/exports.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "POST convex/platform:updateSettings",
+        "method": "POST",
+        "path": "convex/platform:updateSettings",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "endpoint",
+        "name": "GET convex/platform:getOptions",
+        "method": "GET",
+        "path": "convex/platform:getOptions",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/platform.ts"
+      },
+      {
+        "type": "entity",
+        "name": "events",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "currency",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "countryCode",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "sponsors",
+        "fieldType": "array<object>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "registrationQuestions",
+        "fieldType": "array<object>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "walletEnabled",
+        "fieldType": "boolean",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "events",
+        "name": "doorModeEnabled",
+        "fieldType": "boolean",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "registrations",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "answers",
+        "fieldType": "array<object>",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "wallet",
+        "fieldType": "object",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "locale",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "offlineScannedAt",
+        "fieldType": "number",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "by_event_checkedIn",
+        "fieldType": "index(eventId, checkedIn)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "by_event_checkedInAt",
+        "fieldType": "index(eventId, checkedInAt)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "registrations",
+        "name": "search_attendee",
+        "fieldType": "searchIndex(attendeeName, filter eventId)",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "platformSettings",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "defaultLocale",
+        "fieldType": "string",
+        "action": "add",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "platformSettings",
+        "name": "defaultCurrency",
+        "fieldType": "string",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "entity",
+        "name": "auditLogs",
+        "action": "update",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "action",
+        "fieldType": "union",
+        "action": "modify",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "field",
+        "entity": "auditLogs",
+        "name": "targetType",
+        "fieldType": "union",
+        "action": "no_change",
+        "resolution": null,
+        "file": "convex/schema.ts"
+      },
+      {
+        "type": "dependency",
+        "name": "Google Wallet API",
+        "action": "add",
+        "depType": "external",
+        "resolution": null,
+        "note": "external dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Apple Wallet / PassKit",
+        "action": "no_change",
+        "depType": "external",
+        "resolution": null,
+        "note": "external dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "next/og ImageResponse",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "Next.js metadata and manifest conventions",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "country-state-city",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "Convex file storage",
+        "action": "no_change",
+        "depType": "service",
+        "resolution": null,
+        "note": "service dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "@convex-dev/rate-limiter",
+        "action": "no_change",
+        "depType": "library",
+        "resolution": null
+      },
+      {
+        "type": "dependency",
+        "name": "Node crypto",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Browser APIs (IndexedDB, Service Worker, Manifest, Intl)",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Existing internal utilities",
+        "action": "no_change",
+        "depType": "internal",
+        "resolution": null,
+        "note": "internal dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "schema.org Event vocabulary",
+        "action": "no_change",
+        "depType": "external",
+        "resolution": null,
+        "note": "external dependency; not manifest-verifiable"
+      },
+      {
+        "type": "dependency",
+        "name": "Hosting HTTPS/HSTS",
+        "action": "no_change",
+        "depType": "service",
+        "resolution": null,
+        "note": "service dependency; not manifest-verifiable"
+      }
+    ],
+    "missing": [],
+    "renamed": [],
+    "extra": [
+      {
+        "type": "component",
+        "name": "convex/admin.ts",
+        "file": "convex/admin.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analytics.ts",
+        "file": "convex/analytics.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/analyticsFilters.ts",
+        "file": "convex/analyticsFilters.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementAudience.ts",
+        "file": "convex/announcementAudience.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcements.ts",
+        "file": "convex/announcements.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/announcementsNode.ts",
+        "file": "convex/announcementsNode.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/auth.config.ts",
+        "file": "convex/auth.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/commandCenter.ts",
+        "file": "convex/commandCenter.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/convex.config.ts",
+        "file": "convex/convex.config.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/crons.ts",
+        "file": "convex/crons.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/dashboard.ts",
+        "file": "convex/dashboard.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailLog.ts",
+        "file": "convex/emailLog.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emails.ts",
+        "file": "convex/emails.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/emailService.ts",
+        "file": "convex/emailService.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/explore.ts",
+        "file": "convex/explore.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/feedback.ts",
+        "file": "convex/feedback.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/health.ts",
+        "file": "convex/health.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/lifecycleSweeps.ts",
+        "file": "convex/lifecycleSweeps.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/mailtrap.ts",
+        "file": "convex/mailtrap.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/reports.ts",
+        "file": "convex/reports.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/search.ts",
+        "file": "convex/search.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/seed.ts",
+        "file": "convex/seed.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/settings.ts",
+        "file": "convex/settings.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/users.ts",
+        "file": "convex/users.ts"
+      },
+      {
+        "type": "component",
+        "name": "convex/walletData.ts",
+        "file": "convex/walletData.ts"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminAwareLayout.tsx",
+        "file": "components/AdminAwareLayout.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminGuard.tsx",
+        "file": "components/AdminGuard.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/AdminSidebar.tsx",
+        "file": "components/AdminSidebar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/event-card.tsx",
+        "file": "components/event-card.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/footer.tsx",
+        "file": "components/footer.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/header.tsx",
+        "file": "components/header.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/ImagePicker.tsx",
+        "file": "components/ImagePicker.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/locale-switcher.tsx",
+        "file": "components/locale-switcher.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/maintenance-gate.tsx",
+        "file": "components/maintenance-gate.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/onboarding-modal.tsx",
+        "file": "components/onboarding-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/route-error.tsx",
+        "file": "components/route-error.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/search-location-bar.tsx",
+        "file": "components/search-location-bar.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/service-worker-register.tsx",
+        "file": "components/service-worker-register.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/SmartImage.tsx",
+        "file": "components/SmartImage.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/theme-provider.tsx",
+        "file": "components/theme-provider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "components/upgrade-modal.tsx",
+        "file": "components/upgrade-modal.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(main)/my-events/[eventId]/_components/event-settings-panel.tsx",
+        "file": "app/(main)/my-events/[eventId]/_components/event-settings-panel.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/error.tsx",
+        "file": "app/(public)/events/[slug]/error.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/(public)/events/[slug]/loading.tsx",
+        "file": "app/(public)/events/[slug]/loading.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/ConvexClientProvider.tsx",
+        "file": "app/ConvexClientProvider.tsx"
+      },
+      {
+        "type": "component",
+        "name": "app/globals.css",
+        "file": "app/globals.css"
+      },
+      {
+        "type": "component",
+        "name": "app/page.tsx",
+        "file": "app/page.tsx"
+      },
+      {
+        "type": "component",
+        "name": "lib/admin-nav.ts",
+        "file": "lib/admin-nav.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/analytics-filters.ts",
+        "file": "lib/analytics-filters.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/convex-server.ts",
+        "file": "lib/convex-server.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/csv.ts",
+        "file": "lib/csv.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/data.ts",
+        "file": "lib/data.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/format.ts",
+        "file": "lib/format.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/i18n/server.ts",
+        "file": "lib/i18n/server.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/location-slug.ts",
+        "file": "lib/location-slug.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/location-utils.ts",
+        "file": "lib/location-utils.ts"
+      },
+      {
+        "type": "component",
+        "name": "lib/utils.ts",
+        "file": "lib/utils.ts"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(auth)/signin/[[...signin]]/page",
+        "file": "app/(auth)/signin/[[...signin]]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(auth)/signup/[[...signup]]/page",
+        "file": "app/(auth)/signup/[[...signup]]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(main)/create-event/page",
+        "file": "app/(main)/create-event/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(main)/my-events/page",
+        "file": "app/(main)/my-events/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(main)/my-events/[eventId]/door/page",
+        "file": "app/(main)/my-events/[eventId]/door/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(main)/my-events/[eventId]/page",
+        "file": "app/(main)/my-events/[eventId]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(main)/my-tickets/page",
+        "file": "app/(main)/my-tickets/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(public)/explore/page",
+        "file": "app/(public)/explore/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(public)/explore/[slug]/page",
+        "file": "app/(public)/explore/[slug]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(public)/feedback/page",
+        "file": "app/(public)/feedback/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/(public)/offline/page",
+        "file": "app/(public)/offline/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/analytics/page",
+        "file": "app/admin/analytics/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/announcements/page",
+        "file": "app/admin/announcements/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/audit/page",
+        "file": "app/admin/audit/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/dashboard/page",
+        "file": "app/admin/dashboard/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/events/page",
+        "file": "app/admin/events/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/feedback/page",
+        "file": "app/admin/feedback/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/health/page",
+        "file": "app/admin/health/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/invites/page",
+        "file": "app/admin/invites/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/page",
+        "file": "app/admin/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/platform/page",
+        "file": "app/admin/platform/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/registrations/page",
+        "file": "app/admin/registrations/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/reports/page",
+        "file": "app/admin/reports/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/reports/[eventId]/page",
+        "file": "app/admin/reports/[eventId]/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/settings/page",
+        "file": "app/admin/settings/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/signup/page",
+        "file": "app/admin/signup/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/admin/users/page",
+        "file": "app/admin/users/page.tsx"
+      },
+      {
+        "type": "endpoint",
+        "method": "GET",
+        "path": "app/page",
+        "file": "app/page.tsx"
+      }
+    ],
+    "withdrawn": []
+  }
+}

@@ -106,7 +106,8 @@ const CANDIDATE_ROOTS = [
   "i18n",
   "content",
   "convex",
-  "hooks"
+  "hooks",
+  "public"
 ];
 
 const IGNORED_DIRS = new Set([
@@ -330,6 +331,20 @@ function detectEndpoints(files) {
       });
     }
 
+    // Next.js App Router pages and metadata image routes. Plans name these by
+    // file path (for example "app/(public)/events/[slug]/page"), so record the
+    // extension-less path as a GET endpoint.
+    if (
+      relative.startsWith("app/") &&
+      /(?:^|\/)(?:page|opengraph-image)\.(?:tsx|ts)$/.test(relative)
+    ) {
+      endpoints.push({
+        method: "GET",
+        path: relative.replace(/\.(tsx|ts)$/, ""),
+        file: relative
+      });
+    }
+
     // Convex functions. A plan names one as "convex/<module>:<function>", which is
     // exactly how the Convex client addresses it (`api.health.getOverview`).
     // Queries are read-only, so they take GET; mutations and actions take POST.
@@ -338,7 +353,7 @@ function detectEndpoints(files) {
     if (relative.startsWith("convex/") && /\.ts$/.test(relative)) {
       const moduleName = relative.replace(/\.ts$/, "");
       const convexFnMatches = content.matchAll(
-        /export\s+const\s+(\w+)\s*=\s*(internalQuery|internalMutation|internalAction|query|mutation|action)\s*\(/g
+        /export\s+const\s+(\w+)\s*=\s*(internalQuery|internalMutation|internalAction|secureQuery|secureMutation|secureAction|query|mutation|action)\s*\(/g
       );
 
       for (const match of convexFnMatches) {
@@ -558,7 +573,7 @@ function detectFields(files) {
 
       if (!convexTable) return;
 
-      const indexMatch = line.match(/\.index\(\s*["']([^"']+)["']/);
+      const indexMatch = line.match(/\.(?:index|searchIndex)\(\s*["']([^"']+)["']/);
       if (indexMatch) {
         fields.push({
           entity: convexTable,
