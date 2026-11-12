@@ -26,6 +26,7 @@ import { Button } from "@/components/ui/button";
 import { Calendar } from "@/components/ui/calendar";
 import ImagePicker from "@/components/ImagePicker";
 import { SmartImage } from "@/components/SmartImage";
+import { useI18n } from "@/components/locale-provider";
 
 // HH:MM in 24h format validator
 const timeRegex = /^([01]\d|2[0-3]):([0-5]\d)$/;
@@ -41,8 +42,12 @@ const eventSchema = z.object({
   locationType: z.enum(["physical", "online"]).default("physical"),
   venue: z.string().url("Must be a valid URL").optional().or(z.literal("")),
   address: z.string().optional(),
+  countryCode: z.string().min(2, "Country is required"),
   city: z.string().min(1, "City is required"),
   state: z.string().optional(),
+  currency: z.enum(["NGN", "USD", "GBP", "EUR"]),
+  timezone: z.string().min(1, "Timezone is required"),
+  locale: z.enum(["en", "fr"]),
   capacity: z.coerce.number().min(1, "Capacity must be at least 1"),
   ticketType: z.enum(["free", "paid"]).default("free"),
   ticketPrice: z.number().optional(),
@@ -52,6 +57,7 @@ const eventSchema = z.object({
 
 export default function CreateEventPage() {
   const router = useRouter();
+  const { t } = useI18n();
   const [showImagePicker, setShowImagePicker] = useState(false);
   const [showUpgradeModal, setShowUpgradeModal] = useState(false);
   const [upgradeReason, setUpgradeReason] = useState<"color" | "header" | "limit">("limit"); 
@@ -78,6 +84,13 @@ export default function CreateEventPage() {
       capacity: 50,
       themeColor: "#1e3a8a",
       category: "",
+      countryCode: "NG",
+      currency: "NGN",
+      timezone:
+        typeof Intl !== "undefined"
+          ? Intl.DateTimeFormat().resolvedOptions().timeZone
+          : "UTC",
+      locale: "en",
       state: "",
       city: "",
       startTime: "",
@@ -87,6 +100,9 @@ export default function CreateEventPage() {
 
   const themeColor = watch("themeColor");
   const ticketType = watch("ticketType");
+  const selectedCountryCode = watch("countryCode");
+  const currency = watch("currency");
+  const timezone = watch("timezone");
   const selectedState = watch("state");
   const startDate = watch("startDate");
   const endDate = watch("endDate");
@@ -113,16 +129,41 @@ export default function CreateEventPage() {
     };
   }, []);
 
+  const countries = useMemo(() => {
+    if (!geo) return [];
+    return geo.Country.getAllCountries()
+      .map((country) => ({ code: country.isoCode, name: country.name }))
+      .sort((a, b) => a.name.localeCompare(b.name));
+  }, [geo]);
+
   const userStates = useMemo(
-    () => (geo ? geo.State.getStatesOfCountry("NG") : []),
-    [geo]
+    () =>
+      geo && selectedCountryCode
+        ? geo.State.getStatesOfCountry(selectedCountryCode)
+        : [],
+    [geo, selectedCountryCode]
   );
   const cities = useMemo(() => {
-    if (!geo || !selectedState) return [];
+    if (!geo || !selectedState || !selectedCountryCode) return [];
     const st = userStates.find((s) => s.name === selectedState);
     if (!st) return [];
-    return geo.City.getCitiesOfState("NG", st.isoCode);
-  }, [geo, selectedState, userStates]);
+    return geo.City.getCitiesOfState(selectedCountryCode, st.isoCode);
+  }, [geo, selectedState, selectedCountryCode, userStates]);
+
+  const timezones = useMemo(() => {
+    try {
+      return Intl.supportedValuesOf("timeZone");
+    } catch {
+      return ["UTC", "Africa/Lagos", "Europe/London", "Europe/Paris"];
+    }
+  }, []);
+
+  const currencySymbol: Record<string, string> = {
+    NGN: "₦",
+    USD: "$",
+    GBP: "£",
+    EUR: "€",
+  };
 
   // Color presets - show all for Pro, only default for Free
   const colorPresets = [
@@ -172,6 +213,10 @@ export default function CreateEventPage() {
         return;
       }
 
+      const countryName =
+        countries.find((country) => country.code === data.countryCode)?.name ??
+        data.countryCode;
+
       await createEvent({
         title: data.title,
         description: data.description,
@@ -179,18 +224,23 @@ export default function CreateEventPage() {
         tags: [data.category],
         startDate: start.getTime(),
         endDate: end.getTime(),
-        timezone: Intl.DateTimeFormat().resolvedOptions().timeZone,
+        timezone: data.timezone,
         locationType: data.locationType || "physical",
         venue: data.venue || undefined,
         address: data.address || undefined,
         city: data.city,
         state: data.state || undefined,
-        country: "Nigeria",
+        country: countryName,
+        countryCode: data.countryCode,
+        currency: data.currency,
+        locale: data.locale,
         capacity: Number(data.capacity),
         ticketType: data.ticketType || "free",
         ticketPrice: data.ticketPrice || undefined,
         coverImage: data.coverImage || undefined,
         themeColor: data.themeColor,
+        walletEnabled: true,
+        doorModeEnabled: true,
         hasPro,
       });
 
@@ -422,7 +472,110 @@ export default function CreateEventPage() {
 
           {/* Location */}
           <div className="space-y-3">
-            <Label className="text-sm">Location</Label>
+            <Label className="text-sm">{t("event.location")}</Label>
+
+            <div className="grid gap-4 sm:grid-cols-3">
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">
+                  {t("settings.country")}
+                </Label>
+                <Select
+                  value={watch("countryCode") || "NG"}
+                  onValueChange={(value) => {
+                    setValue("countryCode", value || "NG");
+                    setValue("state", "");
+                    setValue("city", "");
+                  }}
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue placeholder="Select country" />
+                  </SelectTrigger>
+                  <SelectContent className="max-h-72">
+                    {countries.map((country) => (
+                      <SelectItem key={country.code} value={country.code}>
+                        {country.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+                {errors.countryCode && (
+                  <p className="text-sm text-red-400">
+                    {errors.countryCode.message}
+                  </p>
+                )}
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">
+                  {t("settings.currency")}
+                </Label>
+                <Select
+                  value={currency}
+                  onValueChange={(value) =>
+                    setValue(
+                      "currency",
+                      (value ?? "NGN") as "NGN" | "USD" | "GBP" | "EUR"
+                    )
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {(["NGN", "USD", "GBP", "EUR"] as const).map((option) => (
+                      <SelectItem key={option} value={option}>
+                        {option} ({currencySymbol[option]})
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="space-y-2">
+                <Label className="text-xs text-muted-foreground">
+                  {t("settings.locale")}
+                </Label>
+                <Select
+                  value={watch("locale")}
+                  onValueChange={(value) =>
+                    setValue("locale", value === "fr" ? "fr" : "en")
+                  }
+                >
+                  <SelectTrigger className="w-full">
+                    <SelectValue />
+                  </SelectTrigger>
+                  <SelectContent>
+                    <SelectItem value="en">English</SelectItem>
+                    <SelectItem value="fr">Français</SelectItem>
+                  </SelectContent>
+                </Select>
+              </div>
+            </div>
+
+            <div className="space-y-2">
+              <Label className="text-xs text-muted-foreground">
+                {t("settings.timezone")}
+              </Label>
+              <Select
+                value={timezone}
+                onValueChange={(value) => setValue("timezone", value ?? "UTC")}
+              >
+                <SelectTrigger className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="max-h-72">
+                  {timezones.map((option) => (
+                    <SelectItem key={option} value={option}>
+                      {option}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+              {errors.timezone && (
+                <p className="text-sm text-red-400">{errors.timezone.message}</p>
+              )}
+            </div>
+
             <div className="grid grid-cols-2 gap-4">
               <Select
                 value={watch("state") || ""}
@@ -521,7 +674,9 @@ export default function CreateEventPage() {
             {ticketType === "paid" && (
               <Input
                 type="number"
-                placeholder="Ticket price ₦"
+                placeholder={`Ticket price ${
+                  currencySymbol[currency] ?? currency
+                }`}
                 {...register("ticketPrice", { valueAsNumber: true })}
               />
             )}

@@ -41,6 +41,10 @@ Copy the variables below into `.env.local`. All of them are server-side except t
 | `MAILTRAP_USE_SANDBOX` | `true` routes mail to a Mailtrap Email Testing inbox instead of real recipients |
 | `MAILTRAP_INBOX_ID` | Mailtrap test inbox id, required only when `MAILTRAP_USE_SANDBOX=true` |
 | `BROADCAST_SENDING_ENABLED` | Set to `true` to enable admin broadcasts |
+| `GOOGLE_WALLET_ISSUER_ID` | Google Wallet issuer ID; when absent, the wallet control reports unavailable |
+| `GOOGLE_WALLET_SERVICE_ACCOUNT_EMAIL` | Service-account email used as the Wallet JWT issuer |
+| `GOOGLE_WALLET_PRIVATE_KEY` | Service-account private key (server only, newlines may be escaped as `\n`) |
+| `NEXT_PUBLIC_DISABLE_SERVICE_WORKER` | Set to `true` to deploy without the offline service worker (kill switch) |
 
 ## Scripts
 
@@ -185,3 +189,17 @@ npx vitest run test/admin-dashboard-update   # one feature
 
 The app builds with `npm run build` and deploys to Vercel. Convex functions deploy
 separately with the Convex CLI. Set the environment variables above in both places.
+
+### PWA and Google Wallet prerequisites
+
+- The production host must serve the app over HTTPS with HSTS; HSTS is set at the
+  hosting layer, not by the Next.js app.
+- `manifest.webmanifest` and `sw.js` must stay same-origin. The service worker
+  caches only the door shell and static assets, never Convex or API JSON.
+- The service-worker kill switch is available per deployment through
+  `NEXT_PUBLIC_DISABLE_SERVICE_WORKER=true`, or per device with `?sw=off`
+  (`?sw=on` re-enables it).
+- Google Wallet issuance needs an issuer account plus the three
+  `GOOGLE_WALLET_*` variables above. Without them the wallet control is hidden or
+  shows a recoverable unavailable message and the QR ticket remains primary.
+- Apple Wallet is not implemented in this version and is not shown as available.

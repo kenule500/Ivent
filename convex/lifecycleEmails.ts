@@ -6,6 +6,7 @@ import { internalAction } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { sendEmail } from "./emailService";
 import {
+  formatLifecycleDate,
   isTransactional,
   lifecycleKey,
   lifecycleTemplateValidator,
@@ -51,14 +52,21 @@ export const sendLifecycleEmail = internalAction({
     if (!claimed) return { status: "duplicate" as const };
 
     const siteUrl = process.env.SITE_URL || "http://localhost:3000";
+    const locale = context.locale === "fr" ? "fr" : "en";
     const rendered = renderLifecycleEmail(args.template, {
       attendeeName: context.attendeeName,
       eventTitle: context.eventTitle,
-      eventDate: context.eventDate,
+      eventDate: formatLifecycleDate(
+        context.eventStart,
+        context.eventEnd,
+        context.eventTimezone,
+        locale
+      ),
       eventLocation: context.eventLocation,
       ticketCode: context.ticketCode,
       ticketUrl: `${siteUrl}/my-tickets`,
       feedbackUrl: `${siteUrl}/feedback?event=${encodeURIComponent(context.eventSlug)}`,
+      locale,
       emailOptOut: context.emailOptOut,
     });
 

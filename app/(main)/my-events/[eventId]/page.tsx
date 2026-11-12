@@ -3,7 +3,6 @@
 import { useState } from "react";
 import { useParams, useRouter, notFound } from "next/navigation";
 import Image from "next/image";
-import { format } from "date-fns";
 import {
   ArrowLeft,
   Calendar,
@@ -25,19 +24,27 @@ import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 
 import { Button } from "@/components/ui/button";
-import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Input } from "@/components/ui/input";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
+import { useI18n } from "@/components/locale-provider";
+import {
+  formatEventDateTime,
+  formatEventLocation,
+  formatEventPrice,
+} from "@/lib/event-format";
 import QRScannerModal from "../_components/qr-scanner-modal";
 import { AttendeeCard } from "../_components/attendee-card";
+import { EventSettingsPanel } from "./_components/event-settings-panel";
 import { Id } from "@/convex/_generated/dataModel";
 
 export default function EventDashboardPage() {
   const params = useParams();
   const router = useRouter();
+  const { t } = useI18n();
   const eventId = params.eventId as Id<"events">;
 
   const [activeTab, setActiveTab] = useState("all");
@@ -83,6 +90,22 @@ export default function EventDashboardPage() {
       return;
     }
 
+    const questions = dashboardData?.event.registrationQuestions ?? [];
+    const escape = (value: unknown) => {
+      const text = value === null || value === undefined ? "" : String(value);
+      return /[",\n]/.test(text) ? `"${text.replace(/"/g, '""')}"` : text;
+    };
+    const answerFor = (
+      answers: { questionId: string; value: string | number | string[] }[] | undefined,
+      questionId: string
+    ) => {
+      const answer = answers?.find((entry) => entry.questionId === questionId);
+      if (!answer) return "";
+      return Array.isArray(answer.value)
+        ? answer.value.join("; ")
+        : String(answer.value);
+    };
+
     const csvContent = [
       [
         "Name",
@@ -91,6 +114,7 @@ export default function EventDashboardPage() {
         "Checked In",
         "Checked In At",
         "QR Code",
+        ...questions.map((question) => question.label),
       ],
       ...registrations.map((reg) => [
         reg.attendeeName,
@@ -99,9 +123,10 @@ export default function EventDashboardPage() {
         reg.checkedIn ? "Yes" : "No",
         reg.checkedInAt ? new Date(reg.checkedInAt).toLocaleString() : "-",
         reg.qrCode,
+        ...questions.map((question) => answerFor(reg.answers, question.id)),
       ]),
     ]
-      .map((row) => row.join(","))
+      .map((row) => row.map(escape).join(","))
       .join("\n");
 
     const blob = new Blob([csvContent], { type: "text/csv" });
@@ -182,15 +207,16 @@ export default function EventDashboardPage() {
               </Badge>
               <div className="flex items-center gap-1.5">
                 <Calendar className="w-4 h-4 text-muted-foreground" />
-                <span>{format(event.startDate, "PPP")}</span>
+                <span>
+                  {formatEventDateTime(event.startDate, {
+                    locale: event.locale,
+                    timezone: event.timezone,
+                  })}
+                </span>
               </div>
               <div className="flex items-center gap-1.5">
                 <MapPin className="w-4 h-4 text-muted-foreground" />
-                <span>
-                  {event.locationType === "online"
-                    ? "Online"
-                    : `${event.city}, ${event.state || event.country}`}
-                </span>
+                <span>{formatEventLocation(event)}</span>
               </div>
             </div>
           </div>
@@ -218,16 +244,31 @@ export default function EventDashboardPage() {
           </div>
         </div>
 
-        {/* Quick Actions - Show QR Scanner if event is today */}
-        {stats.isEventToday && !stats.isEventPast && (
-          <Button
-            size="lg"
-            className="w-full gap-2 h-12 text-base font-semibold bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 text-white shadow-md hover:opacity-95 transition-all"
-            onClick={() => setShowQRScanner(true)}
-          >
-            <QrCode className="w-5 h-5" />
-            Scan QR Code to Check-In
-          </Button>
+        {/* Quick Actions - door mode is available on the event day */}
+        {!stats.isEventPast && (
+          <div className="grid gap-3 sm:grid-cols-2">
+            {stats.isEventToday && (
+              <Button
+                size="lg"
+                className="w-full gap-2 h-12 text-base font-semibold bg-gradient-to-r from-orange-500 via-pink-500 to-red-500 text-white shadow-md hover:opacity-95 transition-all"
+                onClick={() => setShowQRScanner(true)}
+              >
+                <QrCode className="w-5 h-5" />
+                Scan QR Code to Check-In
+              </Button>
+            )}
+            {event.doorModeEnabled !== false && (
+              <Button
+                size="lg"
+                variant="outline"
+                className="w-full gap-2 h-12 text-base font-semibold"
+                onClick={() => router.push(`/my-events/${eventId}/door`)}
+              >
+                <QrCode className="w-5 h-5" />
+                {t("door.title")}
+              </Button>
+            )}
+          </div>
         )}
 
         {/* Stats Grid */}
@@ -268,7 +309,14 @@ export default function EventDashboardPage() {
               <div>
                 <p className="text-2xl font-bold tracking-tight">
                   {event.ticketType === "paid"
-                    ? `₦${stats.totalRevenue}`
+                    ? formatEventPrice(
+                        event.ticketType,
+                        stats.totalRevenue,
+                        {
+                          locale: event.locale,
+                          currency: event.currency,
+                        }
+                      )
                     : `${stats.checkInRate}%`}
                 </p>
                 <p className="text-xs text-muted-foreground">
@@ -298,6 +346,8 @@ export default function EventDashboardPage() {
             </CardContent>
           </Card>
         </div>
+
+        <EventSettingsPanel event={event} />
 
         {/* Attendee Management Block */}
         <div className="space-y-4">

@@ -3,6 +3,7 @@ import { internalMutation, internalQuery } from "./_generated/server";
 import type { MutationCtx } from "./_generated/server";
 import { internal } from "./_generated/api";
 import { lifecycleKey } from "./lifecycleTemplates";
+import { readSettings } from "./platformData";
 
 /**
  * Lifecycle sweeps (FR-003, FR-004).
@@ -171,13 +172,25 @@ export const loadContext = internalQuery({
     const event = await ctx.db.get(registration.eventId);
     if (!event) return null;
 
+    const settings = await readSettings(ctx);
+
     return {
       attendeeName: registration.attendeeName,
       attendeeEmail: registration.attendeeEmail,
       emailOptOut: registration.emailOptOut === true,
       ticketCode: registration.qrCode,
       eventTitle: event.title,
-      eventDate: new Date(event.startDate).toISOString(),
+      eventStart: event.startDate,
+      eventEnd: event.endDate,
+      eventTimezone: event.timezone,
+      locale:
+        registration.locale === "fr" || registration.locale === "en"
+          ? registration.locale
+          : event.locale === "fr" || event.locale === "en"
+            ? event.locale
+            : settings?.defaultLocale === "fr"
+              ? "fr"
+              : "en",
       eventLocation: [event.venue, event.city]
         .filter(Boolean)
         .join(", "),
