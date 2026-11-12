@@ -1,18 +1,13 @@
 {
-  "feature": "accessibility-and-performance-hardening",
+  "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-08T10:57:44.574Z",
-  "by": null,
+  "recordedAt": "2026-11-12T08:16:32.074Z",
+  "by": "sdrive:apply",
   "steps": [
     {
-      "command": "/sdrive:propose accessibility-and-performance-hardening",
+      "command": "/sdrive:test event-platform-expansion",
       "kind": "slash",
-      "why": "The \"specification\" gate needs the artifact that command writes."
-    },
-    {
-      "command": "sdrive approve accessibility-and-performance-hardening specification",
-      "kind": "human",
-      "why": "Approving is a sign-off, so it stays with you."
+      "why": "Generate and run tests, then record test-evidence.json for the implementation gate."
     }
   ]
 }
