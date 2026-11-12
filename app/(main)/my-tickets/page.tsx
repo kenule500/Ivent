@@ -2,13 +2,18 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import { format } from "date-fns";
-import { Calendar, MapPin, Ticket } from "lucide-react";
-import { useMutation } from "convex/react";
+import { Calendar, MapPin, Ticket, Wallet } from "lucide-react";
+import { useAction, useMutation } from "convex/react";
 import { useConvexQuery } from "@/hooks/useConvexQuery";
 import { api } from "@/convex/_generated/api";
 import { toast } from "sonner";
 import QRCode from "react-qr-code";
+import { useI18n } from "@/components/locale-provider";
+import { LocaleSwitcher } from "@/components/locale-switcher";
+import {
+  formatEventDateTime,
+  formatEventLocation,
+} from "@/lib/event-format";
 
 import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/empty-state";
@@ -33,11 +38,15 @@ type RegistrationTicket = RegistrationWithEvent & {
 
 
 export default function MyTicketsPage() {
+  const { t, locale } = useI18n();
   const [selectedTicket, setSelectedTicket] = useState<RegistrationTicket | null>(null);
+  const [walletLoading, setWalletLoading] = useState(false);
 
   // Optimistic override while the preference mutation settles; otherwise the
   // stored value is the source of truth.
   const [pendingOptOut, setPendingOptOut] = useState<boolean | null>(null);
+
+  const issueWalletPass = useAction(api.wallet.issueWalletPass);
 
   const { data: registrations, isLoading } = useConvexQuery(
     api.registrations.getMyRegistrations
@@ -58,10 +67,10 @@ export default function MyTicketsPage() {
     const count = registrations.length;
     announce(
       count === 0
-        ? "No tickets yet. When you register for an event, the ticket appears here."
-        : `Your tickets are ready. ${count} registration${count === 1 ? "" : "s"}.`
+        ? t("ticket.emptyBody")
+        : `${t("ticket.title")}: ${count}`
     );
-  }, [announce, isLoading, registrations]);
+  }, [announce, isLoading, registrations, t]);
 
   // Cancellation is applied optimistically: the card disappears at once and
   // comes back if the server rejects it (FR-004, FR-005, AC-003, AC-004).
@@ -80,17 +89,40 @@ export default function MyTicketsPage() {
   });
 
   const handleCancelRegistration = async (registrationId: Id<"registrations">) => {
-    if (!window.confirm("Are you sure you want to cancel this registration?"))
-      return;
+    if (!window.confirm(t("ticket.cancelConfirm"))) return;
 
     try {
       await cancelRegistration({ registrationId });
-      toast.success("Registration cancelled successfully.");
-      announce("Registration cancelled.");
+      toast.success(t("ticket.cancelled"));
+      announce(t("ticket.cancelled"));
     } catch (error) {
-      const errorMessage = error instanceof Error ? error.message : "An unknown error occurred";
+      const errorMessage =
+        error instanceof Error ? error.message : t("common.error");
       toast.error(errorMessage);
-      announce(`Could not cancel the registration. ${errorMessage}`, "assertive");
+      announce(`${t("ticket.cancelError")} ${errorMessage}`, "assertive");
+    }
+  };
+
+  const handleAddToWallet = async (registrationId: Id<"registrations">) => {
+    setWalletLoading(true);
+    announce(t("ticket.addingToWallet"));
+    try {
+      const result = await issueWalletPass({ registrationId });
+      if (result.ok) {
+        window.open(result.saveUrl, "_blank", "noopener,noreferrer");
+        announce(t("ticket.walletAdded"));
+        toast.success(t("ticket.walletAdded"));
+      } else {
+        toast.error(result.message || t("ticket.walletUnavailable"));
+        announce(result.message || t("ticket.walletUnavailable"), "assertive");
+      }
+    } catch (error) {
+      const message =
+        error instanceof Error ? error.message : t("ticket.walletError");
+      toast.error(message);
+      announce(message, "assertive");
+    } finally {
+      setWalletLoading(false);
     }
   };
 
@@ -98,7 +130,7 @@ export default function MyTicketsPage() {
     return (
       <div aria-busy="true">
         <p className="sr-only" role="status">
-          Loading your tickets
+          {t("common.loadingTickets")}
         </p>
         <TicketsSkeleton />
       </div>
@@ -122,9 +154,12 @@ export default function MyTicketsPage() {
     <div className="min-h-screen pb-20 px-4">
       <div className="max-w-7xl mx-auto">
         <div className="mb-8">
-          <h1 className="text-4xl font-bold mb-2">My Tickets</h1>
+          <div className="mb-2 flex items-center justify-between gap-3">
+            <h1 className="text-4xl font-bold">{t("ticket.title")}</h1>
+            <LocaleSwitcher />
+          </div>
           <p className="text-muted-foreground">
-            View and manage your event registrations
+            {t("ticket.subtitle")}
           </p>
 
           {/* Reminders and follow-ups are optional; the confirmation is not
@@ -144,10 +179,10 @@ export default function MyTicketsPage() {
                 );
               }}
             >
-              {optedOut ? "Turn on reminders" : "Turn off reminders"}
+              {optedOut ? t("ticket.remindersOff") : t("ticket.remindersOn")}
             </Button>
             <p className="text-xs text-muted-foreground">
-              Registration confirmations are always sent.
+              {t("ticket.confirmationsAlways")}
             </p>
           </div>
         </div>
@@ -155,7 +190,7 @@ export default function MyTicketsPage() {
         {/* Upcoming Tickets */}
         {upcomingTickets?.length > 0 && (
           <div className="mb-12">
-            <h2 className="text-2xl font-bold mb-4">Upcoming Events</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("ticket.upcoming")}</h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {upcomingTickets.map((registration) => {
@@ -184,7 +219,7 @@ export default function MyTicketsPage() {
         {/* Past Tickets */}
         {pastTickets?.length > 0 && (
           <div>
-            <h2 className="text-2xl font-bold mb-4">Past Events</h2>
+            <h2 className="text-2xl font-bold mb-4">{t("ticket.past")}</h2>
 
             <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
               {pastTickets.map((registration) => {
@@ -206,10 +241,10 @@ export default function MyTicketsPage() {
         {/* Empty State */}
         {!upcomingTickets?.length && !pastTickets?.length && (
           <EmptyState
-            title="No tickets yet"
-            reason="You have not registered for an event yet. Once you register, your ticket appears here with its QR code."
+            title={t("ticket.emptyTitle")}
+            reason={t("ticket.emptyBody")}
             icon={<Ticket className="h-10 w-10" />}
-            action={{ label: "Browse events", href: "/explore" }}
+            action={{ label: t("ticket.browse"), href: "/explore" }}
           />
         )}
       </div>
@@ -222,7 +257,7 @@ export default function MyTicketsPage() {
         >
           <DialogContent className="sm:max-w-md">
             <DialogHeader>
-              <DialogTitle>Your Ticket</DialogTitle>
+              <DialogTitle>{t("ticket.yourTicket")}</DialogTitle>
             </DialogHeader>
 
             <div className="space-y-4">
@@ -240,7 +275,9 @@ export default function MyTicketsPage() {
               </div>
 
               <div className="text-center">
-                <p className="text-xs text-muted-foreground mb-1">Ticket ID</p>
+                <p className="text-xs text-muted-foreground mb-1">
+                  {t("ticket.ticketId")}
+                </p>
                 <p className="font-mono text-sm">{selectedTicket.qrCode}</p>
               </div>
 
@@ -248,24 +285,98 @@ export default function MyTicketsPage() {
                 <div className="flex items-center gap-2">
                   <Calendar className="w-4 h-4" />
                   <span>
-                    {format(selectedTicket.event.startDate, "PPP, h:mm a")}
+                    {formatEventDateTime(selectedTicket.event.startDate, {
+                      locale:
+                        (selectedTicket.event.locale as string | undefined) ??
+                        locale,
+                      timezone: selectedTicket.event.timezone,
+                    })}
                   </span>
                 </div>
                 <div className="flex items-center gap-2">
                   <MapPin className="w-4 h-4" />
                   <span>
                     {selectedTicket.event.locationType === "online"
-                      ? "Online Event"
-                      : `${selectedTicket.event.city}, ${
-                          selectedTicket.event.state ||
-                          selectedTicket.event.country
-                        }`}
+                      ? t("event.onlineEvent")
+                      : formatEventLocation(selectedTicket.event)}
                   </span>
                 </div>
               </div>
 
               <p className="text-xs text-muted-foreground text-center">
-                Show this QR code at the event entrance for check-in
+                {t("ticket.showAtEntrance")}
+              </p>
+
+              {selectedTicket.answers && selectedTicket.answers.length > 0 && (
+                <div className="space-y-2 rounded-lg border p-3">
+                  <p className="text-sm font-medium">
+                    {t("ticket.answersTitle")}
+                  </p>
+                  <dl className="space-y-1.5 text-sm">
+                    {selectedTicket.answers.map((answer) => {
+                      const question =
+                        selectedTicket.event.registrationQuestions?.find(
+                          (item) => item.id === answer.questionId
+                        );
+                      const label = question?.label ?? answer.questionId;
+                      const value = Array.isArray(answer.value)
+                        ? answer.value.join(", ")
+                        : String(answer.value);
+                      return (
+                        <div key={answer.questionId}>
+                          <dt className="text-xs text-muted-foreground">
+                            {label}
+                          </dt>
+                          <dd>{value || "—"}</dd>
+                        </div>
+                      );
+                    })}
+                  </dl>
+                </div>
+              )}
+
+              {selectedTicket.status === "confirmed" &&
+                selectedTicket.event.walletEnabled !== false && (
+                  <div className="space-y-1.5">
+                    <Button
+                      className="w-full gap-2"
+                      onClick={() => handleAddToWallet(selectedTicket._id)}
+                      disabled={walletLoading}
+                    >
+                      <Wallet className="w-4 h-4" />
+                      {walletLoading
+                        ? t("ticket.addingToWallet")
+                        : t("ticket.addToWallet")}
+                    </Button>
+                    {selectedTicket.wallet?.status === "active" && (
+                      <p
+                        role="status"
+                        className="text-center text-xs text-muted-foreground"
+                      >
+                        {t("ticket.walletStatusActive")}
+                      </p>
+                    )}
+                    {selectedTicket.wallet?.status === "error" && (
+                      <p
+                        role="status"
+                        className="text-center text-xs text-destructive"
+                      >
+                        {t("ticket.walletStatusFailed")}
+                      </p>
+                    )}
+                    {selectedTicket.wallet?.status === "voided" && (
+                      <p
+                        role="status"
+                        className="text-center text-xs text-muted-foreground"
+                      >
+                        {t("ticket.walletStatusVoided")}
+                      </p>
+                    )}
+                  </div>
+                )}
+
+              <p className="text-center text-[11px] text-muted-foreground">
+                {t("ticket.appleUnavailable")}
               </p>
             </div>
           </DialogContent>
