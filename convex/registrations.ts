@@ -3,6 +3,11 @@ import { MutationCtx } from "./_generated/server";
 import { Id } from "./_generated/dataModel";
 import { secureQuery, secureMutation } from "./helpers";
 import { internal } from "./_generated/api";
+import {
+  localeValidator,
+  registrationAnswerValidator,
+  validateAnswers,
+} from "./validators";
 
 // Cryptographically secure QR code generator
 function generateQRCode() {
@@ -31,12 +36,20 @@ async function countConfirmedRegistrations(
 export const registerForEvent = secureMutation({
   args: {
     eventId: v.id("events"),
+    answers: v.optional(v.array(registrationAnswerValidator)),
+    locale: v.optional(localeValidator),
   },
   handler: async (ctx, args) => {
     const event = await ctx.db.get(args.eventId);
     if (!event) throw new Error("Event not found");
     const confirmedCount = await countConfirmedRegistrations(ctx, args.eventId);
     if (confirmedCount >= event.capacity) throw new Error("Event is full");
+
+    const answers = validateAnswers(
+      event.registrationQuestions ?? [],
+      args.answers
+    );
+    const locale = args.locale ?? event.locale ?? "en";
 
     const existingRegistration = await ctx.db
       .query("registrations")
@@ -59,6 +72,8 @@ export const registerForEvent = secureMutation({
         attendeeName: ctx.user.name,
         attendeeEmail: ctx.user.email,
         registeredAt: Date.now(),
+        answers: answers.length > 0 ? answers : undefined,
+        locale,
       });
       await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
 
@@ -83,6 +98,8 @@ export const registerForEvent = secureMutation({
       checkedIn: false,
       status: "confirmed",
       registeredAt: Date.now(),
+      answers: answers.length > 0 ? answers : undefined,
+      locale,
     });
 
     await ctx.db.patch(args.eventId, { registrationCount: confirmedCount + 1 });
@@ -170,7 +187,29 @@ export const cancelRegistration = secureMutation({
     const event = await ctx.db.get(registration.eventId);
     if (!event) throw new Error("Event not found");
 
-    await ctx.db.patch(args.registrationId, { status: "cancelled" });
+    const walletObjectId = registration.wallet?.objectId;
+    await ctx.db.patch(args.registrationId, {
+      status: "cancelled",
+      ...(registration.wallet
+        ? {
+            wallet: {
+              ...registration.wallet,
+              status: "voided" as const,
+              updatedAt: Date.now(),
+            },
+          }
+        : {}),
+    });
+
+    if (walletObjectId) {
+      // The provider call is best-effort: the local state is already voided,
+      // and a missing Google credential must not block cancellation.
+      await ctx.scheduler.runAfter(
+        0,
+        internal.walletNode.voidWalletPass,
+        { objectId: walletObjectId }
+      );
+    }
 
     const confirmedCount = await countConfirmedRegistrations(
       ctx,
@@ -202,9 +241,27 @@ export const getEventRegistrations = secureQuery({
   },
 });
 
-// Check in attendee via QR Code (rate limited to prevent brute forcing)
+/**
+ * Check in attendee via QR Code (rate limited to prevent brute forcing).
+ *
+ * `eventId` is optional for backward compatibility with the existing scanner,
+ * but the door console always supplies it so a ticket from another event cannot
+ * be checked in by mistake. The stable `success`/`message` shape is preserved;
+ * `outcome` adds machine-readable detail for the newer UI.
+ */
 export const checkInAttendee = secureMutation({
-  args: { qrCode: v.string() },
+  args: {
+    qrCode: v.string(),
+    eventId: v.optional(v.id("events")),
+    source: v.optional(
+      v.union(
+        v.literal("qr"),
+        v.literal("door"),
+        v.literal("manual"),
+        v.literal("offline")
+      )
+    ),
+  },
   rateLimitName: "checkInRateLimit", // 👈 Protects against ticket brute-forcing
   handler: async (ctx, args) => {
     const registration = await ctx.db
@@ -215,8 +272,28 @@ export const checkInAttendee = secureMutation({
     // Return instead of throwing so the consumed rate-limit token commits.
     // A thrown mutation rolls back its own writes, which would let an attacker
     // keep guessing QR codes without ever hitting the brute-force limit.
-    if (!registration || registration.status !== "confirmed") {
-      return { success: false, message: "Invalid or cancelled QR code" };
+    if (!registration) {
+      return {
+        success: false,
+        outcome: "not_found" as const,
+        message: "Invalid QR code",
+      };
+    }
+
+    if (registration.status !== "confirmed") {
+      return {
+        success: false,
+        outcome: "cancelled" as const,
+        message: "This registration was cancelled",
+      };
+    }
+
+    if (args.eventId && registration.eventId !== args.eventId) {
+      return {
+        success: false,
+        outcome: "wrong_event" as const,
+        message: "This ticket belongs to a different event",
+      };
     }
 
     const event = await ctx.db.get(registration.eventId);
@@ -224,7 +301,12 @@ export const checkInAttendee = secureMutation({
     if (event.organizerId !== ctx.user._id) throw new Error("Unauthorized organizer");
 
     if (registration.checkedIn) {
-      return { success: false, message: "Already checked in", registration };
+      return {
+        success: false,
+        outcome: "already_checked_in" as const,
+        message: "Already checked in",
+        registration,
+      };
     }
 
     const checkedInAt = Date.now();
@@ -232,6 +314,7 @@ export const checkInAttendee = secureMutation({
 
     return {
       success: true,
+      outcome: "checked_in" as const,
       message: "Check-in successful",
       registration: { ...registration, checkedIn: true, checkedInAt },
     };

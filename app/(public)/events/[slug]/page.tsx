@@ -1,388 +1,88 @@
-/* eslint-disable react-hooks/purity */
-"use client";
-
-import { useParams, useRouter } from "next/navigation";
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import Link from "next/link";
-import { useState } from "react";
-import Image from "next/image";
-import { format } from "date-fns";
-import {
-  Calendar,
-  MapPin,
-  Users,
-  Clock,
-  Share2,
-  Ticket,
-  ExternalLink,
-  Flag,
-  CheckCircle,
-} from "lucide-react";
+import type { FunctionReturnType } from "convex/server";
 import { api } from "@/convex/_generated/api";
-import { toast } from "sonner";
-import { useUser } from "@clerk/nextjs";
+import { getConvexServerClient } from "@/lib/convex-server";
+import { createTranslator } from "@/lib/i18n";
+import { getRequestLocale } from "@/lib/i18n/server";
+import EventDetail from "./event-detail";
+import EventJsonLd from "./_components/event-json-ld";
 
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { EventSkeleton } from "@/components/skeletons/event-skeleton";
-import { Card, CardContent } from "@/components/ui/card";
-import { Separator } from "@/components/ui/separator";
-import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { getCategoryIcon, getCategoryLabel } from "@/lib/data";
-import dynamic from "next/dynamic";
-import { useConvexQuery } from "@/hooks/useConvexQuery";
+type EventRecord = NonNullable<
+  FunctionReturnType<typeof api.events.getEventBySlug>
+>;
 
-// The registration modal is an interaction, not first paint. Loading it lazily
-// keeps the dialog, form, and its Clerk/Convex wiring out of the event page's
-// first-load bundle (T4.3, NFR-003).
-const RegisterModal = dynamic(() => import("./_components/register-modal"), {
-  ssr: false,
-});
-
-// Utility function to darken a color
-function darkenColor(color: string, amount: number) {
-  const colorWithoutHash = color.replace("#", "");
-  const num = parseInt(colorWithoutHash, 16);
-  const r = Math.max(0, (num >> 16) - amount * 255);
-  const g = Math.max(0, ((num >> 8) & 0x00ff) - amount * 255);
-  const b = Math.max(0, (num & 0x0000ff) - amount * 255);
-  return `#${((r << 16) | (g << 8) | b).toString(16).padStart(6, "0")}`;
+interface EventPageProps {
+  params: Promise<{ slug: string }>;
 }
 
-export default function EventDetailPage() {
-  const params = useParams();
-  const router = useRouter();
-  const { user } = useUser();
-  const [showRegisterModal, setShowRegisterModal] = useState(false);
-
-  // Fetch event details
-  const { data: event, isLoading } = useConvexQuery(api.events.getEventBySlug, {
-    slug: params.slug as string,
-  });
-
-  // Convex user record, needed to compare against event.organizerId
-  const { data: currentUser } = useConvexQuery(api.users.getCurrentUser);
-
-  // Check if user is already registered
-  const { data: registration } = useConvexQuery(
-    api.registrations.checkRegistration,
-    event?._id ? { eventId: event._id } : "skip"
-  );
-
-  const handleShare = async () => {
-    const url = window.location.href;
-    if (navigator.share) {
-      try {
-        await navigator.share({
-          title: event?.title,
-          text: event?.description.slice(0, 100) + "...",
-          url: url,
-        });
-      } catch (error) {
-        // User cancelled or error occurred
-        toast.error(error instanceof Error ? error.message : "Failed to share the event.");
-      }
-    } else {
-      // Fallback: copy to clipboard
-      navigator.clipboard.writeText(url);
-      toast.success("Link copied to clipboard!");
-    }
-  };
-
-  const handleRegister = () => {
-    if (!user) {
-      toast.error("Please sign in to register");
-      return;
-    }
-    setShowRegisterModal(true);
-  };
-
-  if (isLoading) {
-    return (
-      <div aria-busy="true">
-        <p className="sr-only" role="status">
-          Loading event details
-        </p>
-        <EventSkeleton />
-      </div>
-    );
+async function loadEvent(slug: string): Promise<EventRecord | null> {
+  try {
+    return await getConvexServerClient().query(api.events.getEventBySlug, {
+      slug,
+    });
+  } catch {
+    return null;
   }
+}
+
+export async function generateMetadata({
+  params,
+}: EventPageProps): Promise<Metadata> {
+  const { slug } = await params;
+  const event = await loadEvent(slug);
 
   if (!event) {
-    notFound();
+    const locale = await getRequestLocale();
+    const { t } = createTranslator(locale);
+    return {
+      title: t("event.notFoundTitle"),
+      description: t("event.notFoundBody"),
+      robots: { index: false, follow: false },
+    };
   }
 
-  const isEventFull = event.registrationCount >= event.capacity;
-  const isEventPast = event.endDate < Date.now();
-  const isOrganizer = currentUser?._id === event.organizerId;
+  const description = event.description.replace(/\s+/g, " ").slice(0, 160);
+  const canonical = `/events/${event.slug}`;
+  const image = `/events/${event.slug}/opengraph-image`;
+
+  return {
+    title: event.title,
+    description,
+    alternates: { canonical },
+    openGraph: {
+      type: "website",
+      title: event.title,
+      description,
+      url: canonical,
+      images: [
+        {
+          url: image,
+          width: 1200,
+          height: 630,
+          alt: event.title,
+        },
+      ],
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: event.title,
+      description,
+      images: [image],
+    },
+  };
+}
+
+export default async function EventPage({ params }: EventPageProps) {
+  const { slug } = await params;
+  const event = await loadEvent(slug);
+
+  if (!event) notFound();
 
   return (
-    <div
-      style={{
-        backgroundColor: event.themeColor || "#1e3a8a",
-      }}
-      className="min-h-screen py-8 -mt-6 md:-mt-16 lg:-mx-5"
-    >
-      <div className="max-w-7xl mx-auto px-8">
-        {/* Event Title & Info */}
-        <div className="mb-8">
-          <Badge variant="secondary" className="mb-3">
-            {getCategoryIcon(event.category)} {getCategoryLabel(event.category)}
-          </Badge>
-          <h1 className="text-4xl md:text-5xl font-bold mb-4">{event.title}</h1>
-          <div className="flex flex-wrap items-center gap-4 text-muted-foreground">
-            <div className="flex items-center gap-2">
-              <Calendar className="w-5 h-5" />
-              <span>{format(event.startDate, "EEEE, MMMM dd, yyyy")}</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <Clock className="w-5 h-5" />
-              <span>
-                {format(event.startDate, "h:mm a")} -{" "}
-                {format(event.endDate, "h:mm a")}
-              </span>
-            </div>
-          </div>
-        </div>
-
-        {/* Hero Image */}
-        {event.coverImage && (
-          <div className="relative h-[400px] rounded-2xl overflow-hidden mb-6">
-            <Image
-              src={event.coverImage}
-              alt={event.title}
-              fill
-              sizes="(max-width: 768px) 100vw, 1024px"
-              className="object-cover"
-              priority
-            />
-          </div>
-        )}
-
-        <div className="grid lg:grid-cols-[1fr_380px] gap-8">
-          {/* Main Content */}
-          <div className="space-y-8">
-            {/* Description */}
-            <Card
-              className={"pt-0"}
-              style={{
-                backgroundColor: event.themeColor
-                  ? darkenColor(event.themeColor, 0.04)
-                  : "#1e3a8a",
-              }}
-            >
-              <CardContent className="pt-6">
-                <h2 className="text-2xl font-bold mb-4">About This Event</h2>
-                <p className="text-muted-foreground whitespace-pre-wrap leading-relaxed">
-                  {event.description}
-                </p>
-              </CardContent>
-            </Card>
-
-            {/* Location Details */}
-            <Card
-              className={"pt-0"}
-              style={{
-                backgroundColor: event.themeColor
-                  ? darkenColor(event.themeColor, 0.04)
-                  : "#1e3a8a",
-              }}
-            >
-              <CardContent className="pt-6">
-                <h2 className="text-2xl font-bold mb-4 flex items-center gap-2">
-                  <MapPin className="w-6 h-6 text-purple-500" />
-                  Location
-                </h2>
-
-                <div className="space-y-3">
-                  <p className="font-medium">
-                    {event.city}, {event.state || event.country}
-                  </p>
-                  {event.address && (
-                    <p className="text-sm text-muted-foreground">
-                      {event.address}
-                    </p>
-                  )}
-                  {event.venue && (
-                    <Button 
-                        variant="outline" 
-                        className="gap-2"
-                        render={<a href={event.venue} target="_blank" rel="noopener noreferrer" />}
-                    >
-                        View on Map
-                        <ExternalLink className="w-4 h-4" />
-                    </Button>
-                )}
-                </div>
-              </CardContent>
-            </Card>
-
-            {/* Organizer Info */}
-            <Card
-              className={"pt-0"}
-              style={{
-                backgroundColor: event.themeColor
-                  ? darkenColor(event.themeColor, 0.04)
-                  : "#1e3a8a",
-              }}
-            >
-              <CardContent className="pt-6">
-                <h2 className="text-2xl font-bold mb-4">Organizer</h2>
-                <div className="flex items-center gap-3">
-                  <Avatar className="w-12 h-12">
-                    <AvatarImage src="" />
-                    <AvatarFallback>
-                      {event.organizerName.charAt(0).toUpperCase()}
-                    </AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <p className="font-semibold">{event.organizerName}</p>
-                    <p className="text-sm text-muted-foreground">
-                      Event Organizer
-                    </p>
-                  </div>
-                </div>
-              </CardContent>
-            </Card>
-          </div>
-
-          {/* Sidebar - Registration Card */}
-          <div className="lg:sticky lg:top-24 h-fit">
-            <Card
-              className={`overflow-hidden py-0`}
-              style={{
-                backgroundColor: event.themeColor
-                  ? darkenColor(event.themeColor, 0.04)
-                  : "#1e3a8a",
-              }}
-            >
-              <CardContent className="p-6 space-y-4">
-                {/* Price */}
-                <div>
-                  <p className="text-sm text-muted-foreground mb-1">Price</p>
-                  <p className="text-3xl font-bold">
-                    {event.ticketType === "free"
-                      ? "Free"
-                      : `₦${event.ticketPrice}`}
-                  </p>
-                  {event.ticketType === "paid" && (
-                    <p className="text-xs text-muted-foreground mt-1">
-                      Pay at event offline
-                    </p>
-                  )}
-                </div>
-
-                <Separator />
-
-                {/* Stats */}
-                <div className="space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Users className="w-4 h-4" />
-                      <span className="text-sm">Attendees</span>
-                    </div>
-                    <p className="font-semibold">
-                      {event.registrationCount} / {event.capacity}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Calendar className="w-4 h-4" />
-                      <span className="text-sm">Date</span>
-                    </div>
-                    <p className="font-semibold text-sm">
-                      {format(event.startDate, "MMM dd")}
-                    </p>
-                  </div>
-
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-muted-foreground">
-                      <Clock className="w-4 h-4" />
-                      <span className="text-sm">Time</span>
-                    </div>
-                    <p className="font-semibold text-sm">
-                      {format(event.startDate, "h:mm a")}
-                    </p>
-                  </div>
-                </div>
-
-                <Separator />
-
-                {/* Registration Button */}
-                {registration ? (
-                  <div className="space-y-3">
-                    <div className="flex items-center gap-2 text-green-600 bg-green-50 p-3 rounded-lg">
-                      <CheckCircle className="w-5 h-5" />
-                      <span className="font-medium">
-                        You&apos;re registered!
-                      </span>
-                    </div>
-                    <Button
-                      className="w-full gap-2"
-                      onClick={() => router.push("/my-tickets")}
-                    >
-                      <Ticket className="w-4 h-4" />
-                      View Ticket
-                    </Button>
-                  </div>
-                ) : isEventPast ? (
-                  <Button className="w-full" disabled>
-                    Event Ended
-                  </Button>
-                ) : isEventFull ? (
-                  <Button className="w-full" disabled>
-                    Event Full
-                  </Button>
-                ) : isOrganizer ? (
-                  <Button
-                    className="w-full"
-                    onClick={() => router.push(`/events/${event.slug}/manage`)}
-                  >
-                    Manage Event
-                  </Button>
-                ) : (
-                  <Button className="w-full gap-2" onClick={handleRegister}>
-                    <Ticket className="w-4 h-4" />
-                    Register for Event
-                  </Button>
-                )}
-
-                {/* Share Button */}
-                <Button
-                  variant="outline"
-                  className="w-full gap-2"
-                  onClick={handleShare}
-                >
-                  <Share2 className="w-4 h-4" />
-                  Share Event
-                </Button>
-
-                {/* Report link (FR-030) */}
-                <Button
-                  variant="ghost"
-                  className="w-full gap-2 text-xs text-muted-foreground"
-                  render={
-                    <Link href={`/feedback?eventId=${event._id}`} />
-                  }
-                >
-                  <Flag className="w-3.5 h-3.5" />
-                  Report this event
-                </Button>
-              </CardContent>
-            </Card>
-          </div>
-        </div>
-      </div>
-
-      {/* Register Modal */}
-      {showRegisterModal && (
-        <RegisterModal
-          event={event}
-          isOpen={showRegisterModal}
-          onClose={() => setShowRegisterModal(false)}
-        />
-      )}
-    </div>
+    <>
+      <EventJsonLd event={event} />
+      <EventDetail />
+    </>
   );
 }

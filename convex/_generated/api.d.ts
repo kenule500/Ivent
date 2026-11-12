@@ -18,6 +18,7 @@ import type * as audit from "../audit.js";
 import type * as commandCenter from "../commandCenter.js";
 import type * as crons from "../crons.js";
 import type * as dashboard from "../dashboard.js";
+import type * as door from "../door.js";
 import type * as emailLog from "../emailLog.js";
 import type * as emailService from "../emailService.js";
 import type * as emails from "../emails.js";
@@ -40,6 +41,10 @@ import type * as search from "../search.js";
 import type * as seed from "../seed.js";
 import type * as settings from "../settings.js";
 import type * as users from "../users.js";
+import type * as validators from "../validators.js";
+import type * as wallet from "../wallet.js";
+import type * as walletData from "../walletData.js";
+import type * as walletNode from "../walletNode.js";
 
 import type {
   ApiFromModules,
@@ -58,6 +63,7 @@ declare const fullApi: ApiFromModules<{
   commandCenter: typeof commandCenter;
   crons: typeof crons;
   dashboard: typeof dashboard;
+  door: typeof door;
   emailLog: typeof emailLog;
   emailService: typeof emailService;
   emails: typeof emails;
@@ -80,6 +86,10 @@ declare const fullApi: ApiFromModules<{
   seed: typeof seed;
   settings: typeof settings;
   users: typeof users;
+  validators: typeof validators;
+  wallet: typeof wallet;
+  walletData: typeof walletData;
+  walletNode: typeof walletNode;
 }>;
 
 /**
