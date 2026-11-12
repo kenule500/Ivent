@@ -36,6 +36,7 @@ interface PlatformSettings {
   defaultCountry: string;
   defaultCurrency: string;
   defaultTimezone: string;
+  defaultLocale: "en" | "fr";
   maintenanceMode: boolean;
   maintenanceMessage: string;
   featureFlags: {
@@ -53,6 +54,7 @@ interface PlatformOptions {
   countries: { code: string; name: string }[];
   currencies: string[];
   timezones: string[];
+  locales: string[];
   maintenanceConfirmation: string;
 }
 
@@ -142,6 +144,10 @@ function ReadOnlyView({ settings }: { settings: PlatformSettings }) {
             { label: "Default currency", value: settings.defaultCurrency },
             { label: "Default timezone", value: settings.defaultTimezone },
             {
+              label: "Default language",
+              value: settings.defaultLocale === "fr" ? "French" : "English",
+            },
+            {
               label: "Maintenance mode",
               value: settings.maintenanceMode ? "On" : "Off",
             },
@@ -168,6 +174,7 @@ const formSchema = z
       .string()
       .regex(/^[A-Z]{3}$/, "Use a three-letter ISO currency code."),
     defaultTimezone: z.string().min(1, "Choose a timezone."),
+    defaultLocale: z.enum(["en", "fr"]),
     maintenanceMode: z.boolean(),
     maintenanceMessage: z
       .string()
@@ -206,6 +213,7 @@ function PlatformForm({ settings, options }: PlatformFormProps) {
   const [country, setCountry] = React.useState(settings.defaultCountry);
   const [currency, setCurrency] = React.useState(settings.defaultCurrency);
   const [timezone, setTimezone] = React.useState(settings.defaultTimezone);
+  const [locale, setLocale] = React.useState<"en" | "fr">(settings.defaultLocale);
   const [maintenanceMode, setMaintenanceMode] = React.useState(
     settings.maintenanceMode
   );
@@ -227,6 +235,7 @@ function PlatformForm({ settings, options }: PlatformFormProps) {
       defaultCountry: country,
       defaultCurrency: currency.toUpperCase(),
       defaultTimezone: timezone,
+      defaultLocale: locale,
       maintenanceMode,
       maintenanceMessage,
       confirmation,
@@ -260,6 +269,7 @@ function PlatformForm({ settings, options }: PlatformFormProps) {
         defaultCountry: parsed.data.defaultCountry,
         defaultCurrency: parsed.data.defaultCurrency,
         defaultTimezone: parsed.data.defaultTimezone,
+        defaultLocale: parsed.data.defaultLocale,
         maintenanceMode: parsed.data.maintenanceMode,
         maintenanceMessage: parsed.data.maintenanceMessage,
         featureFlags: parsed.data.featureFlags,
@@ -349,6 +359,28 @@ function PlatformForm({ settings, options }: PlatformFormProps) {
               </SelectContent>
             </Select>
             {fieldError("defaultTimezone")}
+          </div>
+
+          <div className="space-y-1.5">
+            <Label htmlFor="locale">Default language</Label>
+            <Select
+              value={locale}
+              onValueChange={(value) =>
+                setLocale(value === "fr" ? "fr" : "en")
+              }
+            >
+              <SelectTrigger id="locale" className="w-full">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value="en">English</SelectItem>
+                <SelectItem value="fr">French</SelectItem>
+              </SelectContent>
+            </Select>
+            <p className="text-xs text-muted-foreground">
+              Used when an event or registration has no language of its own.
+            </p>
+            {fieldError("defaultLocale")}
           </div>
         </CardContent>
       </Card>

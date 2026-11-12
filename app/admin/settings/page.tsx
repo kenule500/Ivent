@@ -30,12 +30,19 @@ import {
   LogOut,
   ExternalLink,
   Save,
+  Languages,
 } from "lucide-react";
 
 export default function AdminSettingsPage() {
   const { openUserProfile, signOut } = useClerk();
 
   const { data: profile, isLoading } = useConvexQuery(api.settings.getMyProfile);
+  const isAdmin =
+    profile?.role === "admin" || profile?.role === "super_admin";
+  const { data: platformSettings } = useConvexQuery(
+    api.platform.getSettings,
+    isAdmin ? {} : "skip"
+  );
   const { mutate: updatePreferences, isLoading: saving } = useConvexMutation(
     api.settings.updateMyPreferences
   );
@@ -264,6 +271,52 @@ export default function AdminSettingsPage() {
               <InfoRow icon={Shield} label="Role" value={role.label} />
             </CardContent>
           </Card>
+
+          {platformSettings && (
+            <Card>
+              <CardHeader>
+                <CardTitle className="flex items-center gap-2">
+                  <Languages className="h-5 w-5 text-purple-500" />
+                  Platform defaults
+                </CardTitle>
+                <CardDescription>
+                  Fallbacks used when an event has no language, currency, or
+                  timezone of its own.
+                </CardDescription>
+              </CardHeader>
+              <CardContent className="space-y-4">
+                <InfoRow
+                  icon={Languages}
+                  label="Default language"
+                  value={
+                    platformSettings.defaultLocale === "fr"
+                      ? "French"
+                      : "English"
+                  }
+                />
+                <InfoRow
+                  icon={Shield}
+                  label="Default currency"
+                  value={platformSettings.defaultCurrency}
+                />
+                <InfoRow
+                  icon={Calendar}
+                  label="Default timezone"
+                  value={platformSettings.defaultTimezone}
+                />
+                <Button
+                  variant="outline"
+                  className="w-full gap-2"
+                  onClick={() => {
+                    window.location.href = "/admin/platform";
+                  }}
+                >
+                  <ExternalLink className="h-4 w-4" />
+                  Open platform settings
+                </Button>
+              </CardContent>
+            </Card>
+          )}
 
           {/* Notification Preferences */}
           <Card>

@@ -31,4 +31,37 @@ export const rateLimiter = new RateLimiter(components.rateLimiter, {
   feedbackWrite: { kind: "token bucket", rate: 30, period: 1 * MINUTE, capacity: 30 },
   // Public feedback submission from a signed-in user.
   feedbackSubmit: { kind: "fixed window", rate: 5, period: 60 * MINUTE },
+
+  // Event settings, sponsor, and question editors.
+  eventSettingsRateLimit: {
+    kind: "token bucket",
+    rate: 10,
+    period: 1 * MINUTE,
+    capacity: 10,
+  },
+  sponsorWriteRateLimit: {
+    kind: "token bucket",
+    rate: 10,
+    period: 1 * MINUTE,
+    capacity: 10,
+  },
+  questionWriteRateLimit: {
+    kind: "token bucket",
+    rate: 10,
+    period: 1 * MINUTE,
+    capacity: 10,
+  },
+  // Door sync batches and wallet issuance are deliberately bounded.
+  doorSyncRateLimit: {
+    kind: "token bucket",
+    rate: 20,
+    period: 1 * MINUTE,
+    capacity: 20,
+  },
+  walletIssueRateLimit: {
+    kind: "token bucket",
+    rate: 5,
+    period: 1 * MINUTE,
+    capacity: 5,
+  },
 });

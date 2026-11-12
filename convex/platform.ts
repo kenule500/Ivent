@@ -7,12 +7,14 @@ import {
   DEFAULT_MAINTENANCE_MESSAGE,
   MAINTENANCE_CONFIRMATION,
   MAX_MAINTENANCE_MESSAGE,
+  PLATFORM_LOCALES,
   featureFlagsValidator,
   readSettings,
   supportedCurrencies,
   supportedTimezones,
   withDefaults,
 } from "./platformData";
+import { localeValidator } from "./validators";
 
 /**
  * Platform settings singleton (FR-023 to FR-026, NFR-002).
@@ -36,6 +38,7 @@ export const getPublicStatus = query({
     return {
       maintenanceMode: doc?.maintenanceMode ?? false,
       maintenanceMessage: doc?.maintenanceMessage ?? DEFAULT_MAINTENANCE_MESSAGE,
+      defaultLocale: doc?.defaultLocale === "fr" ? "fr" : "en",
     };
   },
 });
@@ -54,6 +57,7 @@ export const getOptions = query({
         .sort((a, b) => a.name.localeCompare(b.name)),
       currencies: supportedCurrencies(),
       timezones: supportedTimezones(),
+      locales: [...PLATFORM_LOCALES],
       maintenanceConfirmation: MAINTENANCE_CONFIRMATION,
     };
   },
@@ -64,6 +68,7 @@ export const updateSettings = mutation({
     defaultCountry: v.string(),
     defaultCurrency: v.string(),
     defaultTimezone: v.string(),
+    defaultLocale: v.optional(localeValidator),
     maintenanceMode: v.boolean(),
     maintenanceMessage: v.optional(v.string()),
     featureFlags: featureFlagsValidator,
@@ -112,6 +117,7 @@ export const updateSettings = mutation({
       defaultCountry: country,
       defaultCurrency: currency,
       defaultTimezone: timezone,
+      defaultLocale: args.defaultLocale ?? before.defaultLocale,
       maintenanceMode: args.maintenanceMode,
       maintenanceMessage: message || before.maintenanceMessage,
       featureFlags: args.featureFlags,
@@ -130,6 +136,7 @@ export const updateSettings = mutation({
         "defaultCountry",
         "defaultCurrency",
         "defaultTimezone",
+        "defaultLocale",
         "maintenanceMode",
         "maintenanceMessage",
         "featureFlags",
@@ -167,6 +174,7 @@ export const updateSettings = mutation({
       defaultCountry: next.defaultCountry,
       defaultCurrency: next.defaultCurrency,
       defaultTimezone: next.defaultTimezone,
+      defaultLocale: next.defaultLocale,
       maintenanceMode: next.maintenanceMode,
       maintenanceMessage: next.maintenanceMessage,
       featureFlags: next.featureFlags,

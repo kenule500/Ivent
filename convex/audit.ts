@@ -23,7 +23,11 @@ export type AuditAction =
   | "feedback.updated"
   | "feedback.deleted"
   | "export.generated"
-  | "maintenance.changed";
+  | "maintenance.changed"
+  | "event.sponsors_updated"
+  | "event.questions_updated"
+  | "wallet.issued"
+  | "wallet.voided";
 
 /**
  * Valid target types.
@@ -36,7 +40,8 @@ export type AuditTargetType =
   | "settings"
   | "announcement"
   | "feedback"
-  | "export";
+  | "export"
+  | "wallet";
 
 /** Hard cap so a wide date range cannot stream the whole log to a client. */
 export const MAX_AUDIT_ROWS = 2000;

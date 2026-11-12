@@ -5,7 +5,7 @@ import {
   QueryCtx,
 } from "./_generated/server";
 import { PropertyValidators, ObjectType } from "convex/values";
-import { Doc } from "./_generated/dataModel";
+import { Doc, Id } from "./_generated/dataModel";
 import { rateLimiter } from "./rateLimiter";
 
 
@@ -54,6 +54,18 @@ export type AdminRateLimitName =
   | "feedbackWrite"
   | "feedbackSubmit";
 
+/** Rate-limit buckets used by event organizers and attendee-facing mutations. */
+export type EventRateLimitName =
+  | "eventSettingsRateLimit"
+  | "sponsorWriteRateLimit"
+  | "questionWriteRateLimit"
+  | "doorSyncRateLimit"
+  | "walletIssueRateLimit"
+  | "checkInRateLimit"
+  | "createEventRateLimit";
+
+export type RateLimitName = AdminRateLimitName | EventRateLimitName;
+
 /**
  * Consume a rate-limit bucket for a key (usually the acting user id).
  *
@@ -62,7 +74,7 @@ export type AdminRateLimitName =
  */
 export async function consumeRateLimit(
   ctx: MutationCtx,
-  name: AdminRateLimitName,
+  name: RateLimitName,
   key: string
 ): Promise<
   | { ok: true }
@@ -142,6 +154,27 @@ export async function getAuthenticatedUser(
   return user;
 }
 
+/**
+ * Resolve an event and assert that the authenticated user organizes it.
+ *
+ * Used by the event settings, sponsor/question editor, door console, and wallet
+ * flows. Public event reads intentionally do not use this guard.
+ */
+export async function requireEventOrganizer(
+  ctx: QueryCtx | MutationCtx,
+  eventId: Id<"events">
+) {
+  const user = await getAuthenticatedUser(ctx);
+  const event = await ctx.db.get(eventId);
+
+  if (!event) throw new Error("Event not found");
+  if (event.organizerId !== user._id) {
+    throw new Error("You are not authorized to manage this event");
+  }
+
+  return { user, event };
+}
+
 // 2. Custom Query Wrapper (Injects pre-authenticated ctx.user)
 export function secureQuery<Args extends PropertyValidators, Return>(options: {
   args: Args;
@@ -166,7 +199,7 @@ export function secureQuery<Args extends PropertyValidators, Return>(options: {
 // 3. Custom Mutation Wrapper (Injects user & handles optional rate limiting)
 export function secureMutation<Args extends PropertyValidators, Return>(options: {
   args: Args;
-  rateLimitName?: "checkInRateLimit" | "createEventRateLimit";
+  rateLimitName?: EventRateLimitName;
   handler: (
     ctx: MutationCtx & { user: Doc<"users"> },
     args: ObjectType<Args>

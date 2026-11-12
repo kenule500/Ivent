@@ -7,19 +7,41 @@ import { dark } from '@clerk/themes';
 import { Toaster } from "@/components/ui/sonner";
 import AdminAwareLayout from "@/components/AdminAwareLayout";
 import { LiveRegionProvider } from "@/components/a11y/live-region";
+import { LocaleProvider } from "@/components/locale-provider";
+import { ServiceWorkerRegister } from "@/components/service-worker-register";
+import { getLocaleResolution } from "@/lib/i18n/server";
+
+const siteUrl = process.env.NEXT_PUBLIC_SITE_URL || process.env.SITE_URL || "http://localhost:3000";
 
 export const metadata: Metadata = {
-  title: "Ivent",
+  metadataBase: new URL(siteUrl),
+  title: {
+    default: "Ivent",
+    template: "%s | Ivent",
+  },
   description: "Discover and create amazing events",
+  applicationName: "Ivent",
+  manifest: "/manifest.webmanifest",
+  appleWebApp: {
+    capable: true,
+    title: "Ivent",
+    statusBarStyle: "black-translucent",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const { locale, requested } = await getLocaleResolution();
+
   return (
-    <html lang="en" suppressHydrationWarning>
+    <html lang={locale} suppressHydrationWarning>
       <body className="bg-linear-to-br from-gray-950 via-zinc-900 to-stone-900 text-white">
         <ThemeProvider
           attribute="class"
@@ -27,14 +49,17 @@ export default function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <ClerkProvider appearance={{ theme: dark }}>
-            <ConvexClientProvider>
-              <LiveRegionProvider>
-                <AdminAwareLayout>{children}</AdminAwareLayout>
-              </LiveRegionProvider>
-              <Toaster position="top-center" richColors />
-            </ConvexClientProvider>
-          </ClerkProvider>
+          <LocaleProvider initialLocale={locale} unsupportedLocale={requested}>
+            <ClerkProvider appearance={{ theme: dark }}>
+              <ConvexClientProvider>
+                <LiveRegionProvider>
+                  <AdminAwareLayout>{children}</AdminAwareLayout>
+                </LiveRegionProvider>
+                <Toaster position="top-center" richColors />
+                <ServiceWorkerRegister />
+              </ConvexClientProvider>
+            </ClerkProvider>
+          </LocaleProvider>
         </ThemeProvider>
       </body>
     </html>

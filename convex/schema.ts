@@ -1,6 +1,12 @@
 
 import { defineSchema, defineTable } from "convex/server";
 import {v} from "convex/values";
+import {
+  questionDefinitionValidator,
+  registrationAnswerValidator,
+  sponsorValidator,
+  walletValidator,
+} from "./validators";
 
 export default defineSchema({
     //Users Table
@@ -80,6 +86,19 @@ export default defineSchema({
         coverImage: v.optional(v.string()),
         themeColor: v.optional(v.string()),
 
+        // Regional formatting and public-page localization (BP-014)
+        currency: v.optional(v.string()),
+        countryCode: v.optional(v.string()),
+        locale: v.optional(v.union(v.literal("en"), v.literal("fr"))),
+
+        // Sponsors and registration questions (BP-003, BP-004)
+        sponsors: v.optional(v.array(sponsorValidator)),
+        registrationQuestions: v.optional(v.array(questionDefinitionValidator)),
+
+        // Feature switches (BP-007, BP-005)
+        walletEnabled: v.optional(v.boolean()),
+        doorModeEnabled: v.optional(v.boolean()),
+
         //Timestamps
         createdAt: v.optional(v.number()),
         updatedAt: v.optional(v.number()),
@@ -117,6 +136,14 @@ export default defineSchema({
         // reminders and follow-ups"; the confirmation is never suppressed.
         emailOptOut: v.optional(v.boolean()),
 
+        // Registration answers and localized confirmation (BP-004, BP-014)
+        answers: v.optional(v.array(registrationAnswerValidator)),
+        locale: v.optional(v.union(v.literal("en"), v.literal("fr"))),
+
+        // Offline door mode and Google Wallet (BP-005, BP-007)
+        offlineScannedAt: v.optional(v.number()),
+        wallet: v.optional(walletValidator),
+
         registeredAt: v.number()
     })
     .index("by_event", ["eventId"])
@@ -124,7 +151,13 @@ export default defineSchema({
     .index("by_event_user", ["eventId", "userId"])
     .index("by_qrCode", ["qrCode"])
     .index("by_registeredAt", ["registeredAt"])
-    .index("by_event_status", ["eventId", "status"]),
+    .index("by_event_status", ["eventId", "status"])
+    .index("by_event_checkedIn", ["eventId", "checkedIn"])
+    .index("by_event_checkedInAt", ["eventId", "checkedInAt"])
+    .searchIndex("search_attendee", {
+        searchField: "attendeeName",
+        filterFields: ["eventId"],
+    }),
 
     // convex/schema.ts (Add this table)
     adminInvites: defineTable({
@@ -180,7 +213,11 @@ export default defineSchema({
             v.literal("feedback.updated"),
             v.literal("feedback.deleted"),
             v.literal("export.generated"),
-            v.literal("maintenance.changed")
+            v.literal("maintenance.changed"),
+            v.literal("event.sponsors_updated"),
+            v.literal("event.questions_updated"),
+            v.literal("wallet.issued"),
+            v.literal("wallet.voided")
         ),
         
         // What they acted on
@@ -192,7 +229,8 @@ export default defineSchema({
             v.literal("settings"),
             v.literal("announcement"),
             v.literal("feedback"),
-            v.literal("export")
+            v.literal("export"),
+            v.literal("wallet")
         ),
         targetId: v.string(),
         targetLabel: v.string(), // e.g. event title, user email, invite code
@@ -213,6 +251,7 @@ export default defineSchema({
         defaultCountry: v.string(),
         defaultCurrency: v.string(),
         defaultTimezone: v.string(),
+        defaultLocale: v.optional(v.union(v.literal("en"), v.literal("fr"))),
         maintenanceMode: v.boolean(),
         maintenanceMessage: v.optional(v.string()),
         featureFlags: v.object({

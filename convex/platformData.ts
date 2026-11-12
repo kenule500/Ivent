@@ -1,5 +1,6 @@
 import { v } from "convex/values";
 import { MutationCtx, QueryCtx } from "./_generated/server";
+import { SUPPORTED_LOCALES, type SupportedLocale } from "./validators";
 
 /**
  * Platform settings data and shared helpers (FR-023 to FR-026).
@@ -32,6 +33,8 @@ export const MAX_MAINTENANCE_MESSAGE = 280;
 
 export const DEFAULT_MAINTENANCE_MESSAGE =
   "We are performing scheduled maintenance. Please check back soon.";
+
+export const PLATFORM_LOCALES = SUPPORTED_LOCALES;
 
 export const FALLBACK_CURRENCIES = [
   "USD",
@@ -91,6 +94,7 @@ export interface PlatformSettingsView {
   defaultCountry: string;
   defaultCurrency: string;
   defaultTimezone: string;
+  defaultLocale: SupportedLocale;
   maintenanceMode: boolean;
   maintenanceMessage: string;
   featureFlags: {
@@ -119,6 +123,7 @@ export function withDefaults(
     defaultCountry: doc?.defaultCountry ?? "US",
     defaultCurrency: doc?.defaultCurrency ?? "USD",
     defaultTimezone: doc?.defaultTimezone ?? "UTC",
+    defaultLocale: doc?.defaultLocale === "fr" ? "fr" : "en",
     maintenanceMode: doc?.maintenanceMode ?? false,
     maintenanceMessage: doc?.maintenanceMessage ?? DEFAULT_MAINTENANCE_MESSAGE,
     featureFlags: doc?.featureFlags ?? { ...DEFAULT_FEATURE_FLAGS },
