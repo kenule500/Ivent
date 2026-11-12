@@ -84,8 +84,20 @@ function eventColumns(): CsvColumn<Doc<"events">>[] {
 }
 
 function registrationColumns(
-  eventTitles: Map<string, string>
+  eventTitles: Map<string, string>,
+  questions: Array<{ id: string; label: string }>
 ): CsvColumn<Doc<"registrations">>[] {
+  const answerText = (
+    answers: Doc<"registrations">["answers"],
+    questionId: string
+  ) => {
+    const answer = answers?.find((entry) => entry.questionId === questionId);
+    if (!answer) return "";
+    return Array.isArray(answer.value)
+      ? answer.value.join("; ")
+      : String(answer.value);
+  };
+
   return [
     { key: "name", header: "Attendee", value: (row) => row.attendeeName },
     { key: "email", header: "Email", value: (row) => row.attendeeEmail },
@@ -98,6 +110,14 @@ function registrationColumns(
     { key: "checkedIn", header: "Checked in", value: (row) => (row.checkedIn ? "yes" : "no") },
     { key: "registered", header: "Registered", value: (row) => iso(row.registeredAt) },
     { key: "checkedInAt", header: "Checked in at", value: (row) => iso(row.checkedInAt) },
+    // One column per active custom question (FR-023). Archived questions keep
+    // their stored answers but stop adding new export columns.
+    ...questions.map((question) => ({
+      key: `question_${question.id}`,
+      header: question.label,
+      value: (row: Doc<"registrations">) =>
+        answerText(row.answers, question.id),
+    })),
   ];
 }
 
@@ -293,16 +313,28 @@ export const generate = mutation({
       }
 
       const titles = new Map<string, string>();
+      const questionMap = new Map<string, { id: string; label: string }>();
       const eventIds = Array.from(
         new Set(registrations.map((registration) => registration.eventId))
       ).slice(0, 500);
       for (const eventId of eventIds) {
         const event = await ctx.db.get(eventId);
-        if (event) titles.set(eventId, event.title);
+        if (!event) continue;
+        titles.set(eventId, event.title);
+        for (const question of event.registrationQuestions ?? []) {
+          if (question.archived === true) continue;
+          questionMap.set(question.id, {
+            id: question.id,
+            label: question.label,
+          });
+        }
       }
 
       rows = registrations;
-      columns = registrationColumns(titles) as CsvColumn<unknown>[];
+      columns = registrationColumns(
+        titles,
+        Array.from(questionMap.values())
+      ) as CsvColumn<unknown>[];
     } else if (exportModule === "audit") {
       const from = args.filters?.start;
       const to = args.filters?.end;

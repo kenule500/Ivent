@@ -17,8 +17,13 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 import { Separator } from "@/components/ui/separator";
+import { Textarea } from "@/components/ui/textarea";
 import { useAnnounce } from "@/components/a11y/live-region";
+import { useI18n } from "@/components/locale-provider";
+import { formatEventPrice } from "@/lib/event-format";
 import { Id } from "@/convex/_generated/dataModel";
 
 interface RegisterModalProps {
@@ -36,16 +41,46 @@ type RegistrationWithEvent = FunctionReturnType<
   typeof api.registrations.getMyRegistrations
 >[number];
 
+interface RegistrationQuestion {
+  id: string;
+  label: string;
+  type:
+    | "short_text"
+    | "long_text"
+    | "single_select"
+    | "multi_select"
+    | "number"
+    | "date";
+  required: boolean;
+  helpText?: string;
+  options?: string[];
+  archived?: boolean;
+}
+
 export default function RegisterModal({ event, isOpen, onClose }: RegisterModalProps) {
   const router = useRouter();
   const { user } = useUser();
+  const { t, locale } = useI18n();
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const announce = useAnnounce();
 
   const attendeeName = user?.fullName ?? user?.username ?? "Guest";
   const attendeeEmail = user?.primaryEmailAddress?.emailAddress ?? "";
+  const questions = (
+    (event.registrationQuestions as RegistrationQuestion[] | undefined) ?? []
+  ).filter((question) => question.archived !== true);
+  const priceLabel = formatEventPrice(
+    String(event.ticketType),
+    typeof event.ticketPrice === "number" ? event.ticketPrice : undefined,
+    {
+      locale: (event.locale as string | undefined) ?? locale,
+      timezone: event.timezone as string | undefined,
+      currency: event.currency as string | undefined,
+    }
+  );
 
   // The ticket appears in My Tickets immediately: an optimistic entry is placed
   // in the cache the query reads, and Convex discards it on success or failure
@@ -96,18 +131,42 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
     setIsSubmitting(true);
 
     try {
+      const payload = questions.flatMap<{
+        questionId: string;
+        value: string | number | string[];
+      }>((question) => {
+        const raw = answers[question.id];
+        const empty =
+          raw === undefined ||
+          raw === "" ||
+          (Array.isArray(raw) && raw.length === 0);
+        if (empty) return [];
+
+        if (question.type === "number") {
+          const number = Number(raw);
+          if (!Number.isFinite(number)) {
+            throw new Error(`${question.label} must be a number.`);
+          }
+          return [{ questionId: question.id, value: number }];
+        }
+
+        return [{ questionId: question.id, value: raw }];
+      });
+
       await registerForEvent({
         eventId: event._id,
+        answers: payload,
+        locale,
       });
 
       setIsSuccess(true);
-      toast.success("Registration successful! 🎉");
-      announce("Registration confirmed. Your ticket is in My Tickets.");
+      toast.success(t("register.confirmedAnnouncement"));
+      announce(t("register.confirmedAnnouncement"));
     } catch (error) {
       const message =
         error instanceof Error
           ? error.message
-          : "Registration failed. Please try again.";
+          : t("register.failed");
       // Show the reason inline and announce it, so the failure is not a
       // transient toast that a screen reader never reaches (AC-004, AC-005).
       setErrorMessage(message);
@@ -134,21 +193,20 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
             </div>
             <div>
               <DialogTitle className="text-2xl font-bold mb-2">
-                You&apos;re All Set!
+                {t("register.successTitle")}
               </DialogTitle>
               <DialogDescription>
-                Your registration is confirmed. Check your Tickets for event
-                details and your QR code ticket.
+                {t("register.successBody")}
               </DialogDescription>
             </div>
             <Separator />
             <div className="w-full space-y-2">
               <Button className="w-full gap-2" onClick={handleViewTicket}>
                 <Ticket className="w-4 h-4" />
-                View My Ticket
+                {t("register.viewTicket")}
               </Button>
               <Button variant="outline" className="w-full" onClick={onClose}>
-                Close
+                {t("common.close")}
               </Button>
             </div>
           </div>
@@ -162,9 +220,9 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md">
         <DialogHeader>
-          <DialogTitle>Register for Event</DialogTitle>
+          <DialogTitle>{t("register.title")}</DialogTitle>
           <DialogDescription>
-            Fill in your details to register for {event.title}
+            {t("register.description", { title: event.title })}
           </DialogDescription>
         </DialogHeader>
 
@@ -174,11 +232,12 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
             <p className="font-semibold">{event.title}</p>
             <p className="text-sm text-muted-foreground">
               {event.ticketType === "free" ? (
-                "Free Event"
+                t("register.freeEvent")
               ) : (
                 <span>
-                  Price: ₦{event.ticketPrice}{" "}
-                  <span className="text-xs">(Pay at venue)</span>
+                  {t("register.priceAtVenue", {
+                    price: priceLabel ?? "",
+                  })}
                 </span>
               )}
             </p>
@@ -186,7 +245,7 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
 
           {/* Ticket holder (from the signed-in account) */}
           <div className="space-y-2">
-            <p className="text-sm font-medium">Ticket holder</p>
+            <p className="text-sm font-medium">{t("register.holder")}</p>
             <div className="rounded-md border bg-muted/40 px-3 py-2 text-sm">
               <p className="font-medium">{attendeeName}</p>
               {attendeeEmail && (
@@ -194,14 +253,147 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
               )}
             </div>
             <p className="text-xs text-muted-foreground">
-              Your ticket is issued to your signed-in account.
+              {t("register.holderHint")}
             </p>
           </div>
 
+          {questions.length > 0 && (
+            <fieldset
+              className="space-y-4"
+              aria-describedby="registration-privacy-note"
+            >
+              <legend className="text-sm font-medium">
+                {t("register.questionsTitle")}
+              </legend>
+              <p
+                id="registration-privacy-note"
+                className="text-xs text-muted-foreground"
+              >
+                {t("register.privacyNote")}
+              </p>
+              {questions.map((question) => {
+                const value = answers[question.id] ?? "";
+                const inputId = `question-${question.id}`;
+                const helpId = `question-help-${question.id}`;
+
+                return (
+                  <div key={question.id} className="space-y-1.5">
+                    <Label htmlFor={inputId}>
+                      {question.label}
+                      {question.required && (
+                        <span className="ml-1 text-destructive" aria-hidden="true">
+                          *
+                        </span>
+                      )}
+                    </Label>
+                    {question.helpText && (
+                      <p id={helpId} className="text-xs text-muted-foreground">
+                        {question.helpText}
+                      </p>
+                    )}
+
+                    {question.type === "long_text" ? (
+                      <Textarea
+                        id={inputId}
+                        value={typeof value === "string" ? value : ""}
+                        onChange={(event) =>
+                          setAnswers((current) => ({
+                            ...current,
+                            [question.id]: event.target.value,
+                          }))
+                        }
+                        required={question.required}
+                        aria-describedby={question.helpText ? helpId : undefined}
+                        rows={3}
+                      />
+                    ) : question.type === "single_select" ? (
+                      <select
+                        id={inputId}
+                        value={typeof value === "string" ? value : ""}
+                        onChange={(event) =>
+                          setAnswers((current) => ({
+                            ...current,
+                            [question.id]: event.target.value,
+                          }))
+                        }
+                        required={question.required}
+                        aria-describedby={question.helpText ? helpId : undefined}
+                        className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+                      >
+                        <option value="">—</option>
+                        {(question.options ?? []).map((option) => (
+                          <option key={option} value={option}>
+                            {option}
+                          </option>
+                        ))}
+                      </select>
+                    ) : question.type === "multi_select" ? (
+                      <div className="space-y-1.5">
+                        {(question.options ?? []).map((option) => {
+                          const selected = Array.isArray(value)
+                            ? value.includes(option)
+                            : false;
+                          return (
+                            <label
+                              key={option}
+                              className="flex items-center gap-2 text-sm"
+                            >
+                              <input
+                                type="checkbox"
+                                checked={selected}
+                                onChange={(event) =>
+                                  setAnswers((current) => {
+                                    const currentValue = Array.isArray(
+                                      current[question.id]
+                                    )
+                                      ? (current[question.id] as string[])
+                                      : [];
+                                    return {
+                                      ...current,
+                                      [question.id]: event.target.checked
+                                        ? [...currentValue, option]
+                                        : currentValue.filter(
+                                            (item) => item !== option
+                                          ),
+                                    };
+                                  })
+                                }
+                              />
+                              {option}
+                            </label>
+                          );
+                        })}
+                      </div>
+                    ) : (
+                      <Input
+                        id={inputId}
+                        type={
+                          question.type === "number"
+                            ? "number"
+                            : question.type === "date"
+                              ? "date"
+                              : "text"
+                        }
+                        value={typeof value === "string" ? value : ""}
+                        onChange={(event) =>
+                          setAnswers((current) => ({
+                            ...current,
+                            [question.id]: event.target.value,
+                          }))
+                        }
+                        required={question.required}
+                        aria-describedby={question.helpText ? helpId : undefined}
+                      />
+                    )}
+                  </div>
+                );
+              })}
+            </fieldset>
+          )}
+
           {/* Terms */}
           <p className="text-xs text-muted-foreground">
-            By registering, you agree to receive event updates and reminders via
-            email.
+            {t("register.terms")}
           </p>
 
           {/* Inline, announced failure reason (AC-004, AC-005) */}
@@ -220,18 +412,18 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
               className="flex-1"
               disabled={isSubmitting}
             >
-              Cancel
+              {t("common.cancel")}
             </Button>
             <Button type="submit" className="flex-1 gap-2" disabled={isSubmitting}>
               {isSubmitting ? (
                 <>
                   <Loader2 className="w-4 h-4 animate-spin" />
-                  Registering...
+                  {t("register.submitting")}
                 </>
               ) : (
                 <>
                   <Ticket className="w-4 h-4" />
-                  Register
+                  {t("event.register")}
                 </>
               )}
             </Button>
