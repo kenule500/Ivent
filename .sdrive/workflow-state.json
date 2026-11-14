@@ -504,6 +504,12 @@
               "from": "backlog",
               "to": "ongoing",
               "timestamp": "2026-11-11T16:51:41.072Z"
+            },
+            {
+              "event": "implementation_completed",
+              "by": "sdrive:apply",
+              "timestamp": "2026-11-14T15:40:00.000Z",
+              "reason": "Closed the eight failing acceptance criteria in production code (AC-002, AC-005, AC-021, AC-022, AC-023, AC-024, AC-026, AC-029, AC-034). Feature suite is green at 34/34 and test-evidence.json records exitCode 0. sdrive verify is WARN with 0 missing and 85 pre-existing extras. T7.3 (manual responsive/keyboard/French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) remain deferred to /sdrive:test."
             }
           ]
         }

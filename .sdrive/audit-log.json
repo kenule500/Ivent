@@ -585,6 +585,28 @@
       "event": "test_failed",
       "prevHash": "644734ddf57626607a0a15b19a3f5067cec1e2d5dadb7bafca2c95b941af992c",
       "hash": "c32dfcb842acc961eae73e193de7e5c3683aa05767a3883e8da93dc35a30275a"
+    },
+    {
+      "timestamp": "2026-11-14T15:17:11.719Z",
+      "actor": "kenule500",
+      "feature": "event-platform-expansion",
+      "version": "v1",
+      "exitCode": 1,
+      "failed": 11,
+      "event": "test_failed",
+      "prevHash": "c32dfcb842acc961eae73e193de7e5c3683aa05767a3883e8da93dc35a30275a",
+      "hash": "c5de7b817e831ca6b28fa7c0fc427c7545c38ac202343237b276fdfb01fe1df5"
+    },
+    {
+      "timestamp": "2026-11-14T15:18:50.142Z",
+      "actor": "kenule500",
+      "feature": "event-platform-expansion",
+      "version": "v1",
+      "total": 34,
+      "durationMs": 23608,
+      "event": "test_passed",
+      "prevHash": "c5de7b817e831ca6b28fa7c0fc427c7545c38ac202343237b276fdfb01fe1df5",
+      "hash": "9db3e0cbe7dc06d035f4e40059dec812033dae07e553dd7c93415a4b4584c2aa"
     }
   ]
 }

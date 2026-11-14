@@ -1,13 +1,18 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-14T12:40:00.000Z",
-  "by": "sdrive:test",
+  "recordedAt": "2026-11-14T15:40:00.000Z",
+  "by": "sdrive:apply",
   "steps": [
     {
-      "command": "/sdrive:apply event-platform-expansion",
+      "command": "/sdrive:test event-platform-expansion",
       "kind": "slash",
-      "why": "Fix the eight failing acceptance criteria identified in the test report, then rerun /sdrive:test event-platform-expansion."
+      "why": "The feature suite is green (34/34, test-evidence exitCode 0) and sdrive verify is WARN with 0 missing. Review the test run, then approve implementation. Manual responsive/keyboard/French QA (T7.3) and deployment HTTPS/HSTS plus PWA confirmation (T7.4) are still deferred and need a human pass."
+    },
+    {
+      "command": "/sdrive:review event-platform-expansion",
+      "kind": "slash",
+      "why": "Optional next gate after implementation approval. Note the 31 pre-existing cross-feature test failures and the share-card.test.tsx:180 lint error, both owned by other features' test plans."
     }
   ]
 }

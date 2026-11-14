@@ -26,7 +26,9 @@
         "T2.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-055"
+      ]
     },
     {
       "requirementId": "FR-003",
@@ -73,6 +75,7 @@
       ],
       "status": "complete",
       "testIds": [
+        "TEST-058",
         "TEST-059"
       ]
     },
@@ -319,6 +322,7 @@
       "status": "complete",
       "testIds": [
         "TEST-076",
+        "TEST-077",
         "TEST-078"
       ]
     },
@@ -333,7 +337,9 @@
         "T5.2"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-074"
+      ]
     },
     {
       "requirementId": "FR-023",
@@ -345,7 +351,9 @@
         "T5.4"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-075"
+      ]
     },
     {
       "requirementId": "FR-024",
@@ -377,6 +385,7 @@
       ],
       "status": "complete",
       "testIds": [
+        "TEST-079",
         "TEST-083"
       ]
     },
@@ -426,7 +435,9 @@
         "T6.3"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-082"
+      ]
     },
     {
       "requirementId": "FR-029",
@@ -460,7 +471,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-085"
+        "TEST-085",
+        "TEST-087"
       ]
     },
     {
@@ -495,7 +507,8 @@
       "status": "complete",
       "testIds": [
         "TEST-062",
-        "TEST-073"
+        "TEST-073",
+        "TEST-075"
       ]
     },
     {
@@ -586,7 +599,11 @@
         "T7.1"
       ],
       "status": "complete",
-      "testIds": []
+      "testIds": [
+        "TEST-058",
+        "TEST-075",
+        "TEST-077"
+      ]
     },
     {
       "requirementId": "NFR-007",
@@ -601,7 +618,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-054"
+        "TEST-054",
+        "TEST-055"
       ]
     },
     {
@@ -643,6 +661,7 @@
       "status": "complete",
       "testIds": [
         "TEST-076",
+        "TEST-077",
         "TEST-085"
       ]
     },
@@ -663,6 +682,7 @@
       ],
       "status": "complete",
       "testIds": [
+        "TEST-079",
         "TEST-080",
         "TEST-083"
       ]
@@ -683,7 +703,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-084"
+        "TEST-084",
+        "TEST-087"
       ]
     },
     {
@@ -718,8 +739,10 @@
       ],
       "status": "complete",
       "testIds": [
+        "TEST-058",
         "TEST-070",
-        "TEST-073"
+        "TEST-073",
+        "TEST-079"
       ]
     },
     {
@@ -737,7 +760,8 @@
       ],
       "status": "complete",
       "testIds": [
-        "TEST-065"
+        "TEST-065",
+        "TEST-075"
       ]
     }
   ]
