@@ -1,13 +1,13 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-12T08:16:32.074Z",
-  "by": "sdrive:apply",
+  "recordedAt": "2026-11-14T12:40:00.000Z",
+  "by": "sdrive:test",
   "steps": [
     {
-      "command": "/sdrive:test event-platform-expansion",
+      "command": "/sdrive:apply event-platform-expansion",
       "kind": "slash",
-      "why": "Generate and run tests, then record test-evidence.json for the implementation gate."
+      "why": "Fix the eight failing acceptance criteria identified in the test report, then rerun /sdrive:test event-platform-expansion."
     }
   ]
 }

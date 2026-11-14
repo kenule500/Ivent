@@ -28,7 +28,10 @@ const run = spawnSync(command, {
 });
 
 if (run.status !== 0) {
-  process.exit(typeof run.status === "number" ? run.status : 1);
+  // Vitest writes its JSON report before exiting non-zero. Keep going so the
+  // summary and AC IDs are still printed for a failing run; the exit code below
+  // remains Vitest's own success flag.
+  console.error(`Vitest exited with code ${run.status ?? 1}.`);
 }
 
 let report;

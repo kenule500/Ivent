@@ -552,6 +552,39 @@
       "event": "feature_archived",
       "prevHash": "127203b37b5f6bcce19a952f8373683db75194607fa453904f8df2ead825c44c",
       "hash": "34268b875756333c2248abb46bfa31a0e8029a01510b49620dd78a160d2622d5"
+    },
+    {
+      "timestamp": "2026-11-14T12:33:37.775Z",
+      "actor": "kenule500",
+      "feature": "event-platform-expansion",
+      "version": "v1",
+      "exitCode": 1,
+      "failed": 0,
+      "event": "test_failed",
+      "prevHash": "34268b875756333c2248abb46bfa31a0e8029a01510b49620dd78a160d2622d5",
+      "hash": "dd69af61f242940606922e0872f242aadc9907ff9c10569db496c9fac145854c"
+    },
+    {
+      "timestamp": "2026-11-14T12:34:16.710Z",
+      "actor": "kenule500",
+      "feature": "event-platform-expansion",
+      "version": "v1",
+      "exitCode": 1,
+      "failed": 8,
+      "event": "test_failed",
+      "prevHash": "dd69af61f242940606922e0872f242aadc9907ff9c10569db496c9fac145854c",
+      "hash": "644734ddf57626607a0a15b19a3f5067cec1e2d5dadb7bafca2c95b941af992c"
+    },
+    {
+      "timestamp": "2026-11-14T12:37:08.336Z",
+      "actor": "kenule500",
+      "feature": "event-platform-expansion",
+      "version": "v1",
+      "exitCode": 1,
+      "failed": 8,
+      "event": "test_failed",
+      "prevHash": "644734ddf57626607a0a15b19a3f5067cec1e2d5dadb7bafca2c95b941af992c",
+      "hash": "c32dfcb842acc961eae73e193de7e5c3683aa05767a3883e8da93dc35a30275a"
     }
   ]
 }
