@@ -64,6 +64,7 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
   const [isSuccess, setIsSuccess] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+  const [fieldErrors, setFieldErrors] = useState<Record<string, string>>({});
   const [answers, setAnswers] = useState<Record<string, string | string[]>>({});
   const announce = useAnnounce();
 
@@ -128,6 +129,7 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
     if (isSubmitting) return;
 
     setErrorMessage(null);
+    setFieldErrors({});
     setIsSubmitting(true);
 
     try {
@@ -167,6 +169,17 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
         error instanceof Error
           ? error.message
           : t("register.failed");
+      // Point the error at the question it belongs to, so the message is not
+      // only a global banner: the field itself is marked invalid and described
+      // by the message (AC-024). The typed values are preserved so the attendee
+      // can correct a single field instead of retyping the form.
+      const culprit = questions.find((question) =>
+        message.includes(`"${question.label}"`) ||
+        message.startsWith(`${question.label} `)
+      );
+      if (culprit) {
+        setFieldErrors({ [culprit.id]: message });
+      }
       // Show the reason inline and announce it, so the failure is not a
       // transient toast that a screen reader never reaches (AC-004, AC-005).
       setErrorMessage(message);
@@ -275,6 +288,15 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
                 const value = answers[question.id] ?? "";
                 const inputId = `question-${question.id}`;
                 const helpId = `question-help-${question.id}`;
+                const errorId = `question-error-${question.id}`;
+                const fieldError = fieldErrors[question.id];
+                const describedBy =
+                  [
+                    question.helpText ? helpId : null,
+                    fieldError ? errorId : null,
+                  ]
+                    .filter(Boolean)
+                    .join(" ") || undefined;
 
                 return (
                   <div key={question.id} className="space-y-1.5">
@@ -303,7 +325,8 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
                           }))
                         }
                         required={question.required}
-                        aria-describedby={question.helpText ? helpId : undefined}
+                        aria-invalid={fieldError ? true : undefined}
+                        aria-describedby={describedBy}
                         rows={3}
                       />
                     ) : question.type === "single_select" ? (
@@ -317,8 +340,9 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
                           }))
                         }
                         required={question.required}
-                        aria-describedby={question.helpText ? helpId : undefined}
-                        className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm"
+                        aria-invalid={fieldError ? true : undefined}
+                        aria-describedby={describedBy}
+                        className="h-9 w-full rounded-md border border-input bg-transparent px-3 text-sm aria-invalid:border-destructive"
                       >
                         <option value="">—</option>
                         {(question.options ?? []).map((option) => (
@@ -328,7 +352,13 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
                         ))}
                       </select>
                     ) : question.type === "multi_select" ? (
-                      <div className="space-y-1.5">
+                      <div
+                        className="space-y-1.5"
+                        role="group"
+                        aria-label={question.label}
+                        aria-invalid={fieldError ? true : undefined}
+                        aria-describedby={describedBy}
+                      >
                         {(question.options ?? []).map((option) => {
                           const selected = Array.isArray(value)
                             ? value.includes(option)
@@ -382,8 +412,14 @@ export default function RegisterModal({ event, isOpen, onClose }: RegisterModalP
                           }))
                         }
                         required={question.required}
-                        aria-describedby={question.helpText ? helpId : undefined}
+                        aria-invalid={fieldError ? true : undefined}
+                        aria-describedby={describedBy}
                       />
+                    )}
+                    {fieldError && (
+                      <p id={errorId} className="text-xs text-destructive">
+                        {fieldError}
+                      </p>
                     )}
                   </div>
                 );

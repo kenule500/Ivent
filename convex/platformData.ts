@@ -1,6 +1,10 @@
 import { v } from "convex/values";
 import { MutationCtx, QueryCtx } from "./_generated/server";
-import { SUPPORTED_LOCALES, type SupportedLocale } from "./validators";
+import {
+  SUPPORTED_CURRENCIES,
+  SUPPORTED_LOCALES,
+  type SupportedLocale,
+} from "./validators";
 
 /**
  * Platform settings data and shared helpers (FR-023 to FR-026).
@@ -36,22 +40,6 @@ export const DEFAULT_MAINTENANCE_MESSAGE =
 
 export const PLATFORM_LOCALES = SUPPORTED_LOCALES;
 
-export const FALLBACK_CURRENCIES = [
-  "USD",
-  "EUR",
-  "GBP",
-  "NGN",
-  "GHS",
-  "KES",
-  "ZAR",
-  "CAD",
-  "AUD",
-  "INR",
-  "JPY",
-  "BRL",
-  "AED",
-];
-
 export const FALLBACK_TIMEZONES = [
   "UTC",
   "Africa/Lagos",
@@ -73,12 +61,14 @@ export const FALLBACK_TIMEZONES = [
   "Australia/Sydney",
 ];
 
+/**
+ * The currencies the platform actually supports, in display order (FR-031,
+ * AC-026). An allowlist, not `Intl.supportedValuesOf("currency")`: only these
+ * four can be stored, formatted, and settled, so the picker must not offer
+ * anything else.
+ */
 export function supportedCurrencies(): string[] {
-  try {
-    return Intl.supportedValuesOf("currency");
-  } catch {
-    return FALLBACK_CURRENCIES;
-  }
+  return [...SUPPORTED_CURRENCIES];
 }
 
 export function supportedTimezones(): string[] {

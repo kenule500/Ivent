@@ -110,8 +110,10 @@ function registrationColumns(
     { key: "checkedIn", header: "Checked in", value: (row) => (row.checkedIn ? "yes" : "no") },
     { key: "registered", header: "Registered", value: (row) => iso(row.registeredAt) },
     { key: "checkedInAt", header: "Checked in at", value: (row) => iso(row.checkedInAt) },
-    // One column per active custom question (FR-023). Archived questions keep
-    // their stored answers but stop adding new export columns.
+    // One column per custom question, active or archived (FR-023, AC-022).
+    // Archived questions must keep their column: their answers are still stored
+    // on registrations, and dropping the column would silently discard data the
+    // organizer needs to export once a question is retired.
     ...questions.map((question) => ({
       key: `question_${question.id}`,
       header: question.label,
@@ -322,7 +324,11 @@ export const generate = mutation({
         if (!event) continue;
         titles.set(eventId, event.title);
         for (const question of event.registrationQuestions ?? []) {
-          if (question.archived === true) continue;
+          const existing = questionMap.get(question.id);
+          // An archived definition still owns a column, because its answers are
+          // still stored on registrations (FR-023, AC-022). A current definition
+          // of the same id wins so the header shows the label in use today.
+          if (existing && question.archived === true) continue;
           questionMap.set(question.id, {
             id: question.id,
             label: question.label,

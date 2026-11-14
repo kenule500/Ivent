@@ -41,6 +41,9 @@ export default async function OpenGraphImage({
       })
     : "Discover events on Ivent";
   const location = event ? formatEventLocation(event) : "ivent";
+  // The organizer name is part of the share card so a card shared outside the
+  // site still credits who is running the event (FR-001, AC-002).
+  const organizer = event?.organizerName?.trim() || null;
 
   return new ImageResponse(
     (
@@ -128,6 +131,9 @@ export default async function OpenGraphImage({
           </div>
           <div style={{ fontSize: 30, opacity: 0.92 }}>{date}</div>
           <div style={{ fontSize: 26, opacity: 0.8 }}>{location}</div>
+          {organizer ? (
+            <div style={{ fontSize: 24, opacity: 0.75 }}>{organizer}</div>
+          ) : null}
         </div>
       </div>
     ),

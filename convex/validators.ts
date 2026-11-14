@@ -176,6 +176,17 @@ export function validateSponsorArray(
       throw new Error(`Sponsor "${name}" needs a logo.`);
     }
 
+    // A sponsor website must be an absolute http(s) URL. Sanitising silently to
+    // `undefined` would accept a `javascript:` link and drop it, so an invalid
+    // value is rejected with a message the organizer can act on (FR-002, AC-005).
+    if (sponsor.websiteUrl !== undefined && sponsor.websiteUrl.trim() !== "") {
+      if (!safeWebsiteUrl(sponsor.websiteUrl)) {
+        throw new Error(
+          `Sponsor "${name}" needs a website URL that starts with http:// or https://.`
+        );
+      }
+    }
+
     if (!Number.isInteger(sponsor.order) || sponsor.order < 0) {
       throw new Error("Sponsor order must be a non-negative integer.");
     }
@@ -194,23 +205,23 @@ export function validateSponsorArray(
   }));
 }
 
+export type QuestionDefinition = {
+  id: string;
+  label: string;
+  type: QuestionType;
+  required: boolean;
+  helpText?: string;
+  options?: string[];
+  archived?: boolean;
+  version?: number;
+};
+
 /**
  * Validate the question definition array. This covers structural rules only;
  * answers are validated against a snapshot of these definitions at registration
  * time.
  */
-export function validateQuestionArray(
-  questions: Array<{
-    id: string;
-    label: string;
-    type: QuestionType;
-    required: boolean;
-    helpText?: string;
-    options?: string[];
-    archived?: boolean;
-    version?: number;
-  }>
-) {
+export function validateQuestionArray(questions: QuestionDefinition[]) {
   const active = questions.filter((question) => question.archived !== true);
   if (active.length > MAX_REGISTRATION_QUESTIONS) {
     throw new Error(
@@ -226,8 +237,12 @@ export function validateQuestionArray(
     const label = question.label.trim();
 
     if (!id) throw new Error("Each question needs an id.");
-    if (ids.has(id)) throw new Error("Question ids must be unique.");
-    ids.add(id);
+    // Only current definitions need a unique id. Archived history deliberately
+    // repeats the id of the version it replaced so old answers stay readable.
+    if (question.archived !== true) {
+      if (ids.has(id)) throw new Error("Question ids must be unique.");
+      ids.add(id);
+    }
 
     if (!label) throw new Error("Each question needs a label.");
     if (label.length > MAX_QUESTION_LABEL) {
@@ -292,6 +307,83 @@ export function validateQuestionArray(
       .filter(Boolean),
     version: question.version ?? 1,
   }));
+}
+
+/**
+ * Comparable shape of a definition, ignoring the version counter: a version
+ * bump on its own is bookkeeping, not an edit worth archiving.
+ */
+function questionShape(question: QuestionDefinition) {
+  return JSON.stringify({
+    label: question.label,
+    type: question.type,
+    required: question.required,
+    helpText: question.helpText ?? "",
+    options: question.options ?? [],
+  });
+}
+
+/**
+ * Merge the organizer's submitted definitions with the ones already stored,
+ * archiving any version a new edit replaces (FR-020, AC-021).
+ *
+ * Answers reference a question by its stable id, so an edited question keeps the
+ * id and gains a version while the previous definition stays behind marked
+ * `archived`. That keeps historical answers readable and keeps registration and
+ * export working from one list.
+ */
+export function supersedeQuestionDefinitions(
+  previous: QuestionDefinition[],
+  next: QuestionDefinition[]
+): QuestionDefinition[] {
+  const current = next
+    .filter((question) => question.archived !== true)
+    // `archived: false` rather than `undefined` so "is this current?" reads the
+    // same way for every stored definition.
+    .map((question) => ({
+      ...question,
+      archived: false,
+      version: question.version ?? 1,
+    }));
+  const retired = next.filter((question) => question.archived === true);
+
+  const archived: QuestionDefinition[] = [...retired];
+  const seen = new Set(
+    retired.map((question) => `${question.id}@${question.version ?? 1}`)
+  );
+
+  const keepArchived = (question: QuestionDefinition) => {
+    // One entry per id and version, so repeated saves cannot duplicate history.
+    const key = `${question.id}@${question.version ?? 1}`;
+    if (seen.has(key)) return;
+    seen.add(key);
+    archived.push({
+      ...question,
+      archived: true,
+      version: question.version ?? 1,
+    });
+  };
+
+  for (const before of previous) {
+    if (before.archived === true) {
+      // Older versions already in history stay put.
+      keepArchived(before);
+      continue;
+    }
+
+    const after = current.find((question) => question.id === before.id);
+    // A dropped question is archived too: its answers are already stored on
+    // registrations, so the definition must survive to keep them readable.
+    if (!after) {
+      keepArchived(before);
+      continue;
+    }
+    if (questionShape(before) === questionShape(after)) continue;
+
+    keepArchived(before);
+  }
+
+  return [...current, ...archived];
 }
 
 /**

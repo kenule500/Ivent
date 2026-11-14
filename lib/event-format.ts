@@ -1,4 +1,5 @@
 import { normalizeLocale, type Locale } from "@/lib/i18n";
+import { normalizeCurrency } from "@/convex/validators";
 
 /**
  * Event-aware formatting (BP-014).
@@ -56,15 +57,40 @@ export function formatEventTime(
   }).format(new Date(timestamp));
 }
 
+/**
+ * Readable label for an event's timezone ("WAT", "GMT+1"), derived from the
+ * event's own timestamp so a future event in a DST zone shows the offset that
+ * will actually apply. Falls back to the raw IANA id (AC-029).
+ */
+function timezoneLabel(timestamp: number, context: EventFormatContext) {
+  const timezone = safeTimezone(context.timezone);
+  try {
+    const label = new Intl.DateTimeFormat(localeTag(context.locale), {
+      hour: "numeric",
+      timeZone: timezone,
+      timeZoneName: "short",
+    })
+      .formatToParts(new Date(timestamp))
+      .find((part) => part.type === "timeZoneName")?.value;
+    return label?.trim() || timezone;
+  } catch {
+    return timezone;
+  }
+}
+
 export function formatEventDateTime(
   timestamp: number,
   context: EventFormatContext
 ) {
-  return new Intl.DateTimeFormat(localeTag(context.locale), {
+  const formatted = new Intl.DateTimeFormat(localeTag(context.locale), {
     dateStyle: "medium",
     timeStyle: "short",
     timeZone: safeTimezone(context.timezone),
   }).format(new Date(timestamp));
+
+  // The zone is spelled out so an attendee does not read the event time as
+  // their own local time (AC-029).
+  return `${formatted} (${timezoneLabel(timestamp, context)})`;
 }
 
 export function formatEventDateRange(
@@ -117,9 +143,12 @@ export function formatEventTimeRange(
 
   const startTime = formatEventTime(startDate, context);
   const endTime = formatEventTime(endDate, context);
+  // Same reasoning as `formatEventDateTime`: name the zone instead of relying on
+  // the reader to know where the event is (AC-029).
+  const zone = timezoneLabel(startDate, context);
 
   if (dayKey(new Date(startDate)) === dayKey(new Date(endDate))) {
-    return `${startTime} – ${endTime}`;
+    return `${startTime} – ${endTime} (${zone})`;
   }
 
   return `${startTime} – ${new Intl.DateTimeFormat(locale, {
@@ -128,7 +157,7 @@ export function formatEventTimeRange(
     hour: "numeric",
     minute: "2-digit",
     timeZone: timezone,
-  }).format(new Date(endDate))}`;
+  }).format(new Date(endDate))} (${zone})`;
 }
 
 export function formatEventPrice(
@@ -140,7 +169,9 @@ export function formatEventPrice(
     return null;
   }
 
-  const currency = (context.currency ?? "USD").toUpperCase();
+  // Fall back to USD for anything outside the supported allowlist so an
+  // unknown code never reaches `Intl` and never renders as a raw code (AC-034).
+  const currency = normalizeCurrency(context.currency);
   try {
     return new Intl.NumberFormat(localeTag(context.locale), {
       style: "currency",

@@ -21,6 +21,7 @@ import {
   normalizeLocale,
   questionDefinitionValidator,
   sponsorValidator,
+  supersedeQuestionDefinitions,
   validateQuestionArray,
   validateSponsorArray,
 } from "./validators";
@@ -256,8 +257,7 @@ export const updateEventSettings = secureMutation({
     registrationQuestions: v.optional(v.array(questionDefinitionValidator)),
     walletEnabled: v.optional(v.boolean()),
     doorModeEnabled: v.optional(v.boolean()),
-  },
-  handler: async (ctx, args) => {
+  },  handler: async (ctx, args) => {
     const { user, event } = await requireEventOrganizer(ctx, args.eventId);
 
     const bucket =
@@ -393,8 +393,14 @@ export const updateEventSettings = secureMutation({
     }
 
     if (args.registrationQuestions !== undefined) {
+      // The organizer submits the current definitions; the server derives the
+      // archive so a replaced version cannot be lost by a client that only bumps
+      // the version number (FR-020, AC-021).
       patch.registrationQuestions = validateQuestionArray(
-        args.registrationQuestions
+        supersedeQuestionDefinitions(
+          event.registrationQuestions ?? [],
+          args.registrationQuestions
+        )
       );
       await logAdminAction(
         ctx,
