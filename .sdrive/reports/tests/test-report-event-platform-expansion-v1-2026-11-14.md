@@ -76,8 +76,16 @@ production code only; no test file was created, edited, or deleted by the implem
 
 ### Full repository suite
 The full suite still exits 1: **226 passed, 31 failed, 0 skipped, 257 total**. None of the 31
-failures are in `test/event-platform-expansion`. They are pre-existing cross-feature fixture
-debt, catalogued here so review can see exactly what the feature changed and what it did not:
+failures are in `test/event-platform-expansion`.
+
+> **Correction (2026-11-15):** this report originally called these failures "pre-existing
+> cross-feature fixture debt". They are not. A clean worktree at the branch point (`47794a6`)
+> passes all 11 failing files, and each failure reproduces in isolation on the branch — so this
+> branch introduced them. See
+> `test-report-event-platform-expansion-v1-2026-11-15.md` §3.1 and §4.1 for the evidence. The
+> root-cause table below is still accurate.
+
+Catalogued here so review can see exactly what the feature changed and what it did not:
 
 | File | Failures | Cause |
 |------|----------|-------|
@@ -132,5 +140,7 @@ another feature's tests. `/sdrive:review` should decide whether they are accepte
   `convex/**`, `lib/**`, and `components/**` is clean (0 errors), so every production file this
   feature touched passes CON-204. The test-file error is reported, not fixed, because the
   implementation agent must not edit test files.
+  **Update (2026-11-15, Test Agent):** the Test Agent has since fixed it by typing the parsed
+  JSON-LD payload. `npx eslint` now exits `0` with 20 warnings and 0 errors.
 - Traceability now records test IDs for all 34 ACs. Rows whose criteria span archived and active
   questions, or that share an AC across requirements, link every applicable `TEST-0xx`.

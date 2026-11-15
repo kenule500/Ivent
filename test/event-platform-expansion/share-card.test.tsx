@@ -36,6 +36,24 @@ import OpenGraphImage from "@/app/(public)/events/[slug]/opengraph-image";
 const startDate = Date.UTC(2027, 4, 12, 9, 0);
 const endDate = Date.UTC(2027, 4, 12, 17, 0);
 
+/** The subset of the emitted schema.org/Event payload this suite asserts on. */
+type JsonLdEvent = {
+  "@context": string;
+  "@type": string;
+  name: string;
+  startDate: string;
+  endDate: string;
+  eventStatus: string;
+  image?: string[];
+  location: {
+    "@type": string;
+    name: string;
+    address: { addressLocality?: string; addressCountry?: string };
+  };
+  organizer: { "@type": string; name: string };
+  offers: { "@type": string; price: string; priceCurrency: string };
+};
+
 function makeEvent(overrides: Record<string, unknown> = {}) {
   return {
     _id: "event_123",
@@ -177,7 +195,7 @@ describe("AC-003: event JSON-LD", () => {
     );
     expect(match).not.toBeNull();
 
-    const data = JSON.parse(match![1]) as Record<string, any>;
+    const data = JSON.parse(match![1]) as JsonLdEvent;
 
     expect(data["@context"]).toBe("https://schema.org");
     expect(data["@type"]).toBe("Event");

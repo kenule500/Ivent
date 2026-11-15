@@ -510,6 +510,12 @@
               "by": "sdrive:apply",
               "timestamp": "2026-11-14T15:40:00.000Z",
               "reason": "Closed the eight failing acceptance criteria in production code (AC-002, AC-005, AC-021, AC-022, AC-023, AC-024, AC-026, AC-029, AC-034). Feature suite is green at 34/34 and test-evidence.json records exitCode 0. sdrive verify is WARN with 0 missing and 85 pre-existing extras. T7.3 (manual responsive/keyboard/French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) remain deferred to /sdrive:test."
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-11-15T07:25:00.000Z",
+              "reason": "Verified all 34 ACs (AC-001..AC-034) have tests; feature suite green at 34/34 with test-evidence.json re-recorded at HEAD d369a1d. Fixed two test-only lint defects (share-card.test.tsx no-explicit-any, questions-server.test.ts unused import) so repo-wide eslint now exits 0 with 0 errors, satisfying CON-204. sdrive verify is WARN with 0 missing and 85 extras; governance validator clean. Corrected the prior report's claim that the 31 cross-feature failures were pre-existing: a worktree at branch point 47794a6 passes all 11 failing files, so this branch introduced them via the LocaleProvider requirement, required route params, platform.getSettings query, defaultLocale field, and split QR rejection outcome. T7.3 and T7.4 remain deferred pending human/host access."
             }
           ]
         }

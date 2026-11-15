@@ -1,18 +1,23 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-14T15:40:00.000Z",
-  "by": "sdrive:apply",
+  "recordedAt": "2026-11-15T07:25:00.000Z",
+  "by": "sdrive:test",
   "steps": [
     {
-      "command": "/sdrive:test event-platform-expansion",
-      "kind": "slash",
-      "why": "The feature suite is green (34/34, test-evidence exitCode 0) and sdrive verify is WARN with 0 missing. Review the test run, then approve implementation. Manual responsive/keyboard/French QA (T7.3) and deployment HTTPS/HSTS plus PWA confirmation (T7.4) are still deferred and need a human pass."
+      "command": "sdrive approve event-platform-expansion implementation",
+      "kind": "cli",
+      "why": "Test phase is complete and the feature suite is green: 34/34 passing, every AC-001…AC-034 mapped, sdrive verify WARN with 0 missing, governance validator clean, and test-evidence.json now recorded against HEAD d369a1d. This gate is the user's to approve - no agent can advance it."
     },
     {
       "command": "/sdrive:review event-platform-expansion",
       "kind": "slash",
-      "why": "Optional next gate after implementation approval. Note the 31 pre-existing cross-feature test failures and the share-card.test.tsx:180 lint error, both owned by other features' test plans."
+      "why": "Runs after implementation is approved. Review must triage the 31 cross-feature failures in section 3.1 of the 2026-11-15 test report: 10 files need mechanical fixture updates because this branch added a LocaleProvider requirement, a required route params prop, a platform.getSettings query, a defaultLocale field, and a split QR rejection outcome. check-in.test.ts is the one case that needs the owning feature's sign-off rather than a silent fixture rewrite."
+    },
+    {
+      "command": "/sdrive:test event-platform-expansion",
+      "kind": "slash",
+      "why": "Re-run only if the cross-feature fixtures are repaired on this branch, so the recorded suite total reflects the whole repo rather than the feature alone."
     }
   ]
 }

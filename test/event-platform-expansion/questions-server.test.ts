@@ -1,7 +1,6 @@
 // @vitest-environment node
 import { describe, expect, test } from "vitest";
 import { api } from "@/convex/_generated/api";
-import type { Id } from "@/convex/_generated/dataModel";
 import { createConvexTest, identityFor } from "../helpers/convex";
 import { seedEvent, seedRegistration, seedUser } from "../helpers/seed";
 
