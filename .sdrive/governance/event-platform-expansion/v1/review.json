@@ -1,0 +1,221 @@
+{
+  "feature": "event-platform-expansion",
+  "version": "v1",
+  "status": "FAIL",
+  "commit": "90f79f4673495075f765dd3b8515080def9fda90",
+  "base": "main",
+  "branch": "feature/event-platform-expansion",
+  "reviewedBy": "kenule500",
+  "reviewedAt": "2026-11-15T08:52:09+01:00",
+  "coverage": 100,
+  "criteria": [
+    {
+      "id": "AC-1",
+      "status": "pass",
+      "detail": "All 34 acceptance criteria (AC-001..AC-034) are exercised by the feature suite and pass 34/34. No criterion is withdrawn."
+    },
+    {
+      "id": "AC-2",
+      "status": "warn",
+      "detail": "33 of 35 tasks are completed in tasks.json and tasks.md. T7.3 (manual responsive/keyboard/French pass) and T7.4 (HTTPS/HSTS and PWA deployment prerequisites) remain unchecked with stated deferral reasons requiring a human or a running deployment."
+    },
+    {
+      "id": "AC-3",
+      "status": "pass",
+      "detail": "traceability.json has 45 rows, all status complete, zero gaps. Every AC carries at least one TEST-### id (TEST-054..TEST-087)."
+    },
+    {
+      "id": "AC-4",
+      "status": "pass",
+      "detail": "Coverage = (34 tested ACs / 34 in-scope ACs) x 100 = 100%. Zero withdrawn criteria."
+    },
+    {
+      "id": "AC-5",
+      "status": "pass",
+      "detail": ".sdrive/reports/tests/test-report-event-platform-expansion-v1-2026-11-15.md exists and is newer than both spec.md (2026-11-11) and plan.md (2026-11-11)."
+    },
+    {
+      "id": "AC-6",
+      "status": "pass",
+      "detail": "test-evidence.json records exitCode 0, summary.failed 0, summary.total 34, and commit 90f79f4 === HEAD."
+    },
+    {
+      "id": "AC-7",
+      "status": "fail",
+      "detail": "Diff 47794a6...HEAD is 92 files, +15718/-560 across 14 commits, all attributable to this feature's plan; branch is based on the recorded base and no other feature's commits are present. FAIL because criterion 7 also requires a clean working tree and the full suite to be unaffected: the branch introduces 31 failures in six other approved suites."
+    },
+    {
+      "id": "AC-8",
+      "status": "pass",
+      "detail": "No .only, xit, xdescribe, or unjustified skip in any of the 13 feature test files. All 34 AC IDs appear in test names (68 AC references). Red/green is not required: .sdrive/config.json declares no governance.requireRedGreen."
+    },
+    {
+      "id": "AC-9",
+      "status": "fail",
+      "detail": "npm run lint passes (0 errors, 20 warnings; CON-204 satisfied) but npx tsc --noEmit exits 1 with 8 TS2741 errors in test/event-discovery-and-registration/event-detail.test.tsx, caused by this branch changing EventPageProps to require params: Promise<{slug: string}>."
+    },
+    {
+      "id": "AC-10",
+      "status": "pass",
+      "detail": "No hardcoded secrets in the diff, no .env* file tracked, no secret-pattern hit. npm audit --omit=dev reports 0 critical, 0 high, 0 moderate, 0 low. All REQUIRED CON-51x controls are wired: CON-511/512 secure wrappers and requireAdmin, CON-514 rate limiter on wallet/door/events/registrations, CON-515 validators, CON-517 JSON-LD escapes <,>,&,U+2028,U+2029, CON-519 env-only secrets."
+    },
+    {
+      "id": "AC-11",
+      "status": "fail",
+      "detail": "Feature suite is green (34/34), but the repository suite is red: 226 passed, 31 failed, 257 total across 11 files, none of them owned by this feature."
+    },
+    {
+      "id": "AC-12",
+      "status": "warn",
+      "detail": "README.md updated (+18 lines) and documents PWA, wallet, and deployment prerequisites. CHANGELOG.md exists but was not updated for these user-facing changes."
+    },
+    {
+      "id": "AC-13",
+      "status": "fail",
+      "detail": "NFR-007 (metadata p95 1.5s/3s), NFR-008 (2s live count, 150ms offline ack, 5s sync batch), and NFR-009 (WCAG 2.1 AA) declare measurable targets, but no performance or accessibility report exists for this feature under .sdrive/reports/. Cannot be recorded as verified."
+    },
+    {
+      "id": "AC-14",
+      "status": "warn",
+      "detail": "Constitution contains no explicit Definition of Done checklist section; the DoD is evaluated as the union of CON-2xx/3xx/5xx/7xx rules. CON-204 and CON-207 hold; CON-703 fails on the typecheck half. CON-705 satisfied: the params Promise signature matches node_modules/next/dist/docs/01-app/03-api-reference/03-file-conventions/page.md for Next 16.4.3."
+    },
+    {
+      "id": "AC-15",
+      "status": "pass",
+      "detail": "sdrive verify event-platform-expansion --json returns warn with matched 90, missing 0, renamed 0, extra 85, withdrawn 0. No missing mapping."
+    },
+    {
+      "id": "AC-16",
+      "status": "not_verified",
+      "detail": "CI not verified. The repository has no .github/workflows directory and gh run list --branch feature/event-platform-expansion returns no runs."
+    },
+    {
+      "id": "AC-17",
+      "status": "pass",
+      "detail": "node .sdrive/scripts/check-permission.js slash /sdrive:review reports user kenule500 (admin) is allowed."
+    },
+    {
+      "id": "AC-18",
+      "status": "pass",
+      "detail": "Reviewer kenule500 versus feature assignee (unset in workflow-state.json). No conflict to escalate."
+    }
+  ],
+  "findings": [
+    {
+      "severity": "high",
+      "issue": "This branch introduces 31 failing tests across 11 files in six other approved feature suites. Root causes are all in this branch's diff: (a) 18 tests in 7 files fail with 'useI18n must be used inside a LocaleProvider' because montage /my-events/[eventId] and other pages now call useI18n without a test render wrapper; (b) 8 tests in event-detail.test.tsx fail because EventPageProps now requires params; (c) 2 tests in check-in.test.ts assert the old combined 'Invalid or cancelled QR code' message that this branch split into 'Invalid QR code' and 'This registration was cancelled'; (d) 1 test in platform.test.ts expects the old getPublicStatus shape without defaultLocale.",
+      "location": "test/accessibility-and-performance-hardening/announcements.test.tsx, test/admin-dashboard-update/settings-page.test.tsx, test/admin-dashboard-update/platform.test.ts, test/event-management-and-check-in/{check-in,event-dashboard,create-event-form}, test/event-discovery-and-registration/{event-detail,my-tickets}, test/ai-event-creation/review-before-saving.test.tsx, test/registration-ux-polish/{optimistic-cancel,register-modal-pending}.test.tsx",
+      "fixRequired": true,
+      "acIds": ["AC-006", "AC-011", "AC-022", "AC-026", "AC-030", "AC-031"]
+    },
+    {
+      "severity": "high",
+      "issue": "npx tsc --noEmit exits 1 with 8 TS2741 errors. EventPageProps gained a required params: Promise<{slug: string}> to meet Next 16 conventions, but the existing test file still renders the page with no props.",
+      "location": "test/event-discovery-and-registration/event-detail.test.tsx:98,111,119,127,135,145,151,160",
+      "fixRequired": true,
+      "acIds": ["AC-002"]
+    },
+    {
+      "severity": "medium",
+      "issue": "NFR-007, NFR-008, and NFR-009 declare measurable performance and accessibility targets, but no performance or accessibility report exists for this feature. Accessibility is covered only by unit-level assertions, not a WCAG 2.1 AA audit.",
+      "location": ".sdrive/reports/performance, .sdrive/reports/accessibility",
+      "fixRequired": true,
+      "acIds": ["AC-014", "AC-023", "AC-032"]
+    },
+    {
+      "severity": "medium",
+      "issue": "T7.3 and T7.4 remain unchecked. T7.3 needs a human visual and keyboard pass at 360/768/1280 in English and French; T7.4 needs a running production host to confirm HTTPS/HSTS.",
+      "location": ".sdrive/specs/ongoing/event-platform-expansion/v1/tasks.md:59,61",
+      "fixRequired": false,
+      "acIds": ["AC-014", "AC-032"]
+    },
+    {
+      "severity": "low",
+      "issue": "CHANGELOG.md was not updated despite user-facing additions (sponsors, custom registration questions, offline door mode, Google Wallet, currency and locale switching).",
+      "location": "CHANGELOG.md",
+      "fixRequired": true,
+      "acIds": ["AC-026", "AC-031"]
+    },
+    {
+      "severity": "info",
+      "issue": "No deterministic secret scanner is installed (gitleaks and trufflehog both absent), so the secret scan was manual: diff regex sweep plus a tracked-file check. Install a scanner to make CON-519 evidence reproducible.",
+      "location": ".sdrive/config.json, CI",
+      "fixRequired": false,
+      "acIds": []
+    },
+    {
+      "severity": "info",
+      "issue": "CI not verified: no workflow directory and no runs for the branch.",
+      "location": ".github/workflows",
+      "fixRequired": false,
+      "acIds": []
+    }
+  ],
+  "evidence": {
+    "testEvidence": ".sdrive/governance/event-platform-expansion/v1/test-evidence.json",
+    "testReport": ".sdrive/reports/tests/test-report-event-platform-expansion-v1-2026-11-15.md",
+    "verification": ".sdrive/governance/event-platform-expansion/v1/verification.json",
+    "audit": ".sdrive/reports/tests/raw/review-full-suite.json"
+  },
+  "security": {
+    "status": "not_verified",
+    "reason": "No deterministic secret scanner is installed (gitleaks and trufflehog absent). Manual evidence is clean: no .env* file tracked, no secret-pattern hit in the diff, npm audit --omit=dev reports zero vulnerabilities, and every REQUIRED CON-51x control is wired. Recorded as not_verified because the scan itself could not be run by a tool.",
+    "secrets": "not_verified",
+    "dependencies": "clean",
+    "baseline": [
+      { "id": "CON-511", "status": "pass", "detail": "Clerk JWT validated by Convex; no new unauthenticated mutating path." },
+      { "id": "CON-512", "status": "pass", "detail": "No new raw query/mutation exports; secureQuery/secureMutation/requireAdmin used in events, platform, audit, exports, registrations, door." },
+      { "id": "CON-513", "status": "not_applicable", "detail": "Helmet is Express-specific; this project has no Express server." },
+      { "id": "CON-514", "status": "pass", "detail": "Shared rate limiter wired in wallet.ts, door.ts, events.ts, registrations.ts as NFR-005 requires." },
+      { "id": "CON-515", "status": "pass", "detail": "New fields declared with convex/values validators in convex/validators.ts and schema.ts." },
+      { "id": "CON-516", "status": "not_applicable", "detail": "Convex queries are typed and parameterized; no query strings assembled." },
+      { "id": "CON-517", "status": "pass", "detail": "dangerouslySetInnerHTML introduced only in event-json-ld.tsx after escaping <,>,&,U+2028,U+2029; sponsor URLs restricted to HTTP(S)." },
+      { "id": "CON-518", "status": "not_applicable", "detail": "State-changing calls are Convex mutations authenticated by a Clerk token, not cookie-driven form posts." },
+      { "id": "CON-519", "status": "pass", "detail": "Wallet signing material read only from server env (GOOGLE_WALLET_*); no .env* tracked or committed." }
+    ]
+  },
+  "performance": {
+    "status": "not_verified",
+    "reason": "NFR-007, NFR-008, and NFR-009 declare measurable targets but no performance or accessibility report exists for this feature. Nothing was measured, so nothing can be recorded as passed.",
+    "method": "not run",
+    "nfr": [
+      { "id": "NFR-007", "target": "cached OG image <= 1.5s p95, uncached <= 3s p95", "measured": "not measured", "status": "not_verified" },
+      { "id": "NFR-008", "target": "live count <= 2s p95, offline ack <= 150ms, 500-item sync <= 5s", "measured": "not measured", "status": "not_verified" },
+      { "id": "NFR-009", "target": "WCAG 2.1 AA", "measured": "unit-level assertions only; no axe or manual audit report", "status": "not_verified" }
+    ],
+    "seo": "pass"
+  },
+  "remediation": {
+    "round": 1,
+    "items": [
+      {
+        "id": "F1",
+        "finding": "31 cross-feature test failures introduced by this branch, including 18 LocaleProvider context errors, 8 missing-params errors, 2 QR message assertions, and 1 getPublicStatus shape assertion.",
+        "severity": "high",
+        "fixWith": "/sdrive:test",
+        "task": "T8.1"
+      },
+      {
+        "id": "F2",
+        "finding": "npx tsc --noEmit fails with 8 TS2741 errors in event-detail.test.tsx after EventPageProps began requiring params.",
+        "severity": "high",
+        "fixWith": "/sdrive:test",
+        "task": "T8.1"
+      },
+      {
+        "id": "F3",
+        "finding": "NFR-007, NFR-008, and NFR-009 have no measured evidence; no performance or accessibility report exists for this feature.",
+        "severity": "medium",
+        "fixWith": "/sdrive:performance",
+        "task": "T8.2"
+      },
+      {
+        "id": "F4",
+        "finding": "CHANGELOG.md not updated for user-facing additions.",
+        "severity": "low",
+        "fixWith": "/sdrive:apply",
+        "task": "T8.3"
+      }
+    ]
+  }
+}

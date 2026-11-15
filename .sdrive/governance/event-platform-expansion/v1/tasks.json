@@ -610,6 +610,62 @@
           }
         }
       ]
+    },
+    {
+      "phaseId": "P7",
+      "name": "Review remediation (round 1)",
+      "dependencies": [
+        "P6"
+      ],
+      "tasks": [
+        {
+          "id": "T8.1",
+          "title": "Repair the 31 cross-feature regressions and the typecheck failure",
+          "description": "Update the six affected suites so they wrap rendered pages in LocaleProvider, pass params to EventPageProps, and assert the split QR check-in messages and the getPublicStatus shape that now includes defaultLocale. Do not weaken assertions: assert the new intended behaviour. npx tsc --noEmit must exit 0 and the full vitest run must be green.",
+          "linkedRequirements": [
+            "NFR-009",
+            "NFR-010"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-006",
+            "AC-011",
+            "AC-022",
+            "AC-026",
+            "AC-030",
+            "AC-031"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T8.2",
+          "title": "Produce performance and accessibility evidence for NFR-007, NFR-008, and NFR-009",
+          "description": "Measure cached and uncached OG image timing, door-mode live count and offline acknowledgement latency, and a 500-item sync batch; run an accessibility audit for the new and changed surfaces. Record the results as reports under .sdrive/reports/.",
+          "linkedRequirements": [
+            "NFR-007",
+            "NFR-008",
+            "NFR-009"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-014",
+            "AC-023",
+            "AC-032"
+          ],
+          "completed": false
+        },
+        {
+          "id": "T8.3",
+          "title": "Record the user-facing additions in CHANGELOG.md",
+          "description": "Add an entry covering sponsors, custom registration questions, offline door mode, Google Wallet passes, and currency and locale support.",
+          "linkedRequirements": [
+            "NFR-011"
+          ],
+          "linkedAcceptanceCriteria": [
+            "AC-026",
+            "AC-031"
+          ],
+          "completed": false
+        }
+      ]
     }
   ]
 }

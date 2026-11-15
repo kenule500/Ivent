@@ -60,3 +60,11 @@
   - Deferred: requires a human visual and keyboard pass at 360/768/1280 in English and French against a running deployment; scheduled for review.
 - [ ] **T7.4** Confirm HTTPS/HSTS and PWA deployment prerequisites — NFR-012 / AC-014
   - Deferred: HTTPS/HSTS is set by the production host and cannot be confirmed from this checkout. PWA prerequisites and wallet credential availability are documented in `README.md`.
+
+## P7 — Review remediation (round 1)
+
+- [ ] **T8.1** Repair the 31 cross-feature regressions and the typecheck failure — NFR-009, NFR-010 / AC-006, AC-011, AC-022, AC-026, AC-030, AC-031
+  - Blocking. Six approved suites fail on this branch: 18 `LocaleProvider` context errors, 8 missing-`params` errors in `event-detail.test.tsx`, 2 QR message assertions in `check-in.test.ts`, and 1 `getPublicStatus` shape assertion in `platform.test.ts`. `npx tsc --noEmit` exits 1. Assert the new intended behaviour; do not weaken the assertions.
+- [ ] **T8.2** Produce performance and accessibility evidence for NFR-007, NFR-008, and NFR-009 — AC-014, AC-023, AC-032
+  - Blocking for NFR evidence. Measure OG image timing, door-mode latency, and a 500-item sync batch; run an accessibility audit on the new and changed surfaces.
+- [ ] **T8.3** Record the user-facing additions in `CHANGELOG.md` — NFR-011 / AC-026, AC-031
