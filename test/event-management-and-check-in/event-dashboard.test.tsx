@@ -2,6 +2,7 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
@@ -24,6 +25,10 @@ vi.mock("@/hooks/useConvexQuery", () => ({
   useConvexQuery: mocks.useConvexQuery,
   useConvexMutation: () => ({ mutate: mocks.mutate, isLoading: false }),
 }));
+// The settings, door and sponsor panels call convex/react directly.
+vi.mock("convex/react", () => ({
+  useMutation: () => Object.assign(vi.fn(async () => undefined), {}),
+}));
 vi.mock("@/convex/_generated/api", () => ({
   api: {
     dashboard: { getEventDashboard: { __apiName: "dashboard.getEventDashboard" } },
@@ -31,7 +36,16 @@ vi.mock("@/convex/_generated/api", () => ({
       getEventRegistrations: { __apiName: "registrations.getEventRegistrations" },
       checkInAttendee: { __apiName: "registrations.checkInAttendee" },
     },
-    events: { deleteEvent: { __apiName: "events.deleteEvent" } },
+    events: {
+      deleteEvent: { __apiName: "events.deleteEvent" },
+      updateEventSettings: { __apiName: "events.updateEventSettings" },
+      generateUploadUrl: { __apiName: "events.generateUploadUrl" },
+      getImageUrl: { __apiName: "events.getImageUrl" },
+    },
+    door: {
+      getDoorSnapshot: { __apiName: "door.getDoorSnapshot" },
+      syncOfflineCheckIns: { __apiName: "door.syncOfflineCheckIns" },
+    },
   },
 }));
 vi.mock("next/image", () => ({
@@ -133,7 +147,11 @@ beforeEach(() => {
 
 describe("AC-006: attendance statistics", () => {
   test("AC-006: confirmed, checked-in, pending, capacity, rate and time-until are shown", () => {
-    render(<EventDashboardPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDashboardPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByText("3/10")).toBeInTheDocument();
     expect(screen.getByText("Checked In")).toBeInTheDocument();
@@ -154,7 +172,11 @@ describe("AC-008: attendee CSV export", () => {
     });
     vi.stubGlobal("URL", { ...URL, createObjectURL, revokeObjectURL: vi.fn() });
 
-    render(<EventDashboardPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDashboardPage />
+      </LocaleProvider>
+    );
     await user.click(screen.getByRole("button", { name: /export csv/i }));
 
     expect(createObjectURL).toHaveBeenCalledOnce();
@@ -177,7 +199,11 @@ describe("AC-008: attendee CSV export", () => {
       return { data: [], isLoading: false };
     });
 
-    render(<EventDashboardPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDashboardPage />
+      </LocaleProvider>
+    );
     await user.click(screen.getByRole("button", { name: /export csv/i }));
 
     expect(mocks.toastError).toHaveBeenCalledWith("No registrations to export");
@@ -187,7 +213,11 @@ describe("AC-008: attendee CSV export", () => {
 describe("AC-009: attendee tabs and search", () => {
   test("AC-009: tabs separate all, checked-in and pending registrations", async () => {
     const user = userEvent.setup();
-    render(<EventDashboardPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDashboardPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByText("Ada Lovelace")).toBeInTheDocument();
     expect(screen.getByText("Bob Stone")).toBeInTheDocument();
@@ -204,7 +234,11 @@ describe("AC-009: attendee tabs and search", () => {
 
   test("AC-009: the search box matches name, email or QR code", async () => {
     const user = userEvent.setup();
-    render(<EventDashboardPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDashboardPage />
+      </LocaleProvider>
+    );
 
     const list = screen.getByText("Ada Lovelace").closest("[data-slot='card']") as HTMLElement;
     expect(list).toBeTruthy();

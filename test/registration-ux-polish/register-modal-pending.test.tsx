@@ -4,6 +4,7 @@ import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LiveRegionProvider } from "@/components/a11y/live-region";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   register: vi.fn(),
@@ -58,12 +59,14 @@ describe("AC-002: the dialog cannot be double-submitted", () => {
     );
 
     render(
-      <LiveRegionProvider>
-        <RegisterModal event={event} isOpen onClose={() => {}} />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <RegisterModal event={event} isOpen onClose={() => {}} />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
-    await user.click(screen.getByRole("button", { name: /^register$/i }));
+    await user.click(screen.getByRole("button", { name: /register for event/i }));
 
     const pending = await screen.findByRole("button", { name: /registering/i });
     expect(pending).toBeDisabled();
@@ -78,9 +81,11 @@ describe("AC-002: the dialog cannot be double-submitted", () => {
 describe("AC-003: the ticket appears before the server confirms", () => {
   const renderModal = () =>
     render(
-      <LiveRegionProvider>
-        <RegisterModal event={event} isOpen onClose={() => {}} />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <RegisterModal event={event} isOpen onClose={() => {}} />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
   test("AC-003: the optimistic updater inserts a confirmed ticket into the cache", () => {

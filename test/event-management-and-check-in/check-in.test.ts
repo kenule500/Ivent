@@ -57,7 +57,7 @@ describe("AC-007: QR check-in", () => {
       { qrCode: "EVT-UNKNOWN" }
     );
     expect(unknown.success).toBe(false);
-    expect(unknown.message).toMatch(/invalid or cancelled/i);
+    expect(unknown.message).toMatch(/invalid qr code/i);
 
     await t.run((ctx) => ctx.db.patch(registrationId, { status: "cancelled" }));
 
@@ -66,7 +66,7 @@ describe("AC-007: QR check-in", () => {
       { qrCode: "EVT-1-ABCD1234" }
     );
     expect(cancelled.success).toBe(false);
-    expect(cancelled.message).toMatch(/invalid or cancelled/i);
+    expect(cancelled.message).toMatch(/cancelled/i);
   });
 
   test("AC-007: a second scan reports that the attendee is already checked in", async () => {
@@ -123,7 +123,7 @@ describe("AC-007: QR check-in", () => {
         { qrCode: `EVT-GUESS-${i}` }
       );
       expect(result.success).toBe(false);
-      expect(result.message).toMatch(/invalid or cancelled/i);
+      expect(result.message).toMatch(/invalid qr code/i);
     }
 
     // Invalid scans return a committed failure, so their tokens persist and a

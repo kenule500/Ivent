@@ -2,6 +2,7 @@
 import { describe, expect, test, vi, beforeEach, afterEach } from "vitest";
 import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
@@ -70,7 +71,11 @@ describe("AC-004: review before saving", () => {
       }),
     });
 
-    render(<CreateEventPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <CreateEventPage />
+      </LocaleProvider>
+    );
 
     await user.click(screen.getAllByRole("button", { name: /generate with ai/i })[0]);
     await user.type(screen.getByPlaceholderText(/tech meetup about react 19/i), "A summit");

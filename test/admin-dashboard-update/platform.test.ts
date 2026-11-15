@@ -213,8 +213,10 @@ describe("platform settings", () => {
     expect(publicStatus).toEqual({
       maintenanceMode: true,
       maintenanceMessage: "We are upgrading the ticketing service.",
+      defaultLocale: "en",
     });
     expect(Object.keys(publicStatus).sort()).toEqual([
+      "defaultLocale",
       "maintenanceMessage",
       "maintenanceMode",
     ]);

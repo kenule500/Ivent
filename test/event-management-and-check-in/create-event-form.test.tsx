@@ -2,6 +2,7 @@
 import { describe, expect, test, vi, beforeEach } from "vitest";
 import { fireEvent, render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   push: vi.fn(),
@@ -59,7 +60,11 @@ function timeInputs() {
 describe("AC-001: create-event validation", () => {
   test("AC-001: required fields are enforced", async () => {
     const user = userEvent.setup();
-    render(<CreateEventPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <CreateEventPage />
+      </LocaleProvider>
+    );
 
     await user.click(screen.getByRole("button", { name: "Create Event" }));
 
@@ -73,7 +78,11 @@ describe("AC-001: create-event validation", () => {
 
   test("AC-001: short values, zero capacity and a non-URL venue are rejected", async () => {
     const user = userEvent.setup();
-    const { container } = render(<CreateEventPage />);
+    const { container } = render(
+      <LocaleProvider initialLocale="en">
+        <CreateEventPage />
+      </LocaleProvider>
+    );
 
     await user.type(screen.getByPlaceholderText("Event Name"), "abc");
     await user.type(screen.getByPlaceholderText(/tell people about your event/i), "short");
@@ -100,7 +109,11 @@ describe("AC-001: create-event validation", () => {
 describe("AC-003: Pro gating in the form", () => {
   test("AC-003: a free account is prompted to upgrade for a custom theme colour", async () => {
     const user = userEvent.setup();
-    render(<CreateEventPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <CreateEventPage />
+      </LocaleProvider>
+    );
 
     await user.click(screen.getByTitle("Unlock more colors with Pro"));
 

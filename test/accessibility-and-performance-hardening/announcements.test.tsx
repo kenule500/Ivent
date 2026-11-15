@@ -4,6 +4,7 @@ import * as React from "react";
 import { fireEvent, render, screen, waitFor } from "@testing-library/react";
 
 import { LiveRegionProvider } from "@/components/a11y/live-region";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   register: vi.fn(),
@@ -60,9 +61,11 @@ describe("AC-004 / AC-005: registration outcomes are announced and inline", () =
     mocks.register.mockRejectedValueOnce(new Error("This event is full"));
 
     render(
-      <LiveRegionProvider>
-        <RegisterModal event={event} isOpen onClose={() => {}} />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <RegisterModal event={event} isOpen onClose={() => {}} />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));
@@ -79,9 +82,11 @@ describe("AC-004 / AC-005: registration outcomes are announced and inline", () =
     mocks.register.mockResolvedValueOnce({ ok: true });
 
     render(
-      <LiveRegionProvider>
-        <RegisterModal event={event} isOpen onClose={() => {}} />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <RegisterModal event={event} isOpen onClose={() => {}} />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
     fireEvent.click(screen.getByRole("button", { name: /register/i }));

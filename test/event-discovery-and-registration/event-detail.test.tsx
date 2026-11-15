@@ -1,6 +1,8 @@
 // @vitest-environment jsdom
-import { describe, expect, test, vi, beforeEach } from "vitest";import { render, screen } from "@testing-library/react";
+import { describe, expect, test, vi, beforeEach } from "vitest";
+import { render, screen } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   params: { slug: "tech-summit-123" } as Record<string, string>,
@@ -15,7 +17,11 @@ const mocks = vi.hoisted(() => ({
 
 vi.mock("next/navigation", () => ({
   useParams: () => mocks.params,
-  useRouter: () => ({ push: mocks.push }),
+  useRouter: () => ({
+    push: mocks.push,
+    replace: vi.fn(),
+    refresh: vi.fn(),
+  }),
   notFound: () => {
     throw new Error("NEXT_NOT_FOUND");
   },
@@ -52,7 +58,9 @@ vi.mock("@/app/(public)/events/[slug]/_components/register-modal", () => ({
   default: () => <div data-testid="register-modal" />,
 }));
 
-import EventDetailPage from "@/app/(public)/events/[slug]/page";
+// The route segment is a Server Component that owns metadata and not-found;
+// the interactive detail UI lives in the sibling client component.
+import EventDetailPage from "@/app/(public)/events/[slug]/event-detail";
 
 const now = Date.now();
 
@@ -93,14 +101,27 @@ beforeEach(() => {
 
 describe("AC-005: public event details", () => {
   test("AC-005: a valid slug renders every required detail", () => {
-    mocks.event = makeEvent({ ticketType: "paid", ticketPrice: 5000 });
+    mocks.event = makeEvent({
+      ticketType: "paid",
+      ticketPrice: 5000,
+      currency: "NGN",
+    });
 
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("heading", { name: "Tech Summit" })).toBeInTheDocument();
     expect(screen.getByText("A full day of talks about building products.")).toBeInTheDocument();
     expect(screen.getByText("Ada Organizer")).toBeInTheDocument();
-    expect(screen.getByText("₦5000")).toBeInTheDocument();
+    // The price is rendered through the event's own currency, so the ICU
+    // symbol form is environment-dependent; assert the formatted amount and
+    // that a currency marker accompanies it.
+    const price = screen.getByText(/5,000\.00/);
+    expect(price).toBeInTheDocument();
+    expect(price.textContent).toMatch(/NGN|₦/);
     expect(screen.getByText("3 / 10")).toBeInTheDocument();
     expect(screen.getByText(/Port Harcourt, Rivers/)).toBeInTheDocument();
   });
@@ -108,7 +129,13 @@ describe("AC-005: public event details", () => {
   test("AC-005: an unknown slug renders not-found", () => {
     mocks.event = null;
 
-    expect(() => render(<EventDetailPage />)).toThrow("NEXT_NOT_FOUND");
+    expect(() =>
+      render(
+        <LocaleProvider initialLocale="en">
+          <EventDetailPage />
+        </LocaleProvider>
+      )
+    ).toThrow("NEXT_NOT_FOUND");
   });
 });
 
@@ -116,7 +143,11 @@ describe("AC-006: sidebar call to action", () => {
   test("AC-006: a registered attendee sees View Ticket", () => {
     mocks.registration = { status: "confirmed" };
 
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("button", { name: /view ticket/i })).toBeInTheDocument();
   });
@@ -124,7 +155,11 @@ describe("AC-006: sidebar call to action", () => {
   test("AC-006: a past event shows a disabled Event Ended button", () => {
     mocks.event = makeEvent({ endDate: now - 1000 });
 
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("button", { name: "Event Ended" })).toBeDisabled();
   });
@@ -132,7 +167,11 @@ describe("AC-006: sidebar call to action", () => {
   test("AC-006: a full event shows a disabled Event Full button", () => {
     mocks.event = makeEvent({ registrationCount: 10, capacity: 10 });
 
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("button", { name: "Event Full" })).toBeDisabled();
   });
@@ -142,13 +181,21 @@ describe("AC-006: sidebar call to action", () => {
     mocks.currentUser = { _id: "jd7convexUserId" };
     mocks.event = makeEvent({ organizerId: "jd7convexUserId" });
 
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("button", { name: /manage event/i })).toBeInTheDocument();
   });
 
   test("AC-006: everyone else sees Register for Event", () => {
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     expect(screen.getByRole("button", { name: /register for event/i })).toBeInTheDocument();
   });
@@ -157,7 +204,11 @@ describe("AC-006: sidebar call to action", () => {
 describe("AC-007: registration requires sign-in", () => {
   test("AC-007: a signed-out visitor is told to sign in and no registration modal opens", async () => {
     const user = userEvent.setup();
-    render(<EventDetailPage />);
+    render(
+      <LocaleProvider initialLocale="en">
+        <EventDetailPage />
+      </LocaleProvider>
+    );
 
     await user.click(screen.getByRole("button", { name: /register for event/i }));
 

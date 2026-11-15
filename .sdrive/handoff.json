@@ -1,20 +1,15 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-15T08:56:00.000Z",
-  "by": "sdrive:review",
+  "recordedAt": "2026-11-15T09:05:00.000Z",
+  "by": "sdrive:test",
   "verdict": "FAIL",
   "remediationRound": 1,
   "steps": [
     {
-      "command": "/sdrive:test event-platform-expansion",
-      "kind": "slash",
-      "why": "Review failed (round 1 of 3). T8.1 is blocking: this branch introduced 31 failing tests across 11 files in six other approved feature suites, and npx tsc --noEmit exits 1 with 8 TS2741 errors. Four root causes, all test-side: (1) 18 tests in 7 files render pages that now call useI18n without a LocaleProvider wrapper; (2) 8 tests in event-detail.test.tsx render EventPageProps without the now-required params Promise; (3) 2 tests in check-in.test.ts assert the old combined QR message that convex/registrations.ts split into 'Invalid QR code' and 'This registration was cancelled'; (4) 1 test in platform.test.ts deep-equals getPublicStatus without defaultLocale. Fix the fixtures to assert the new intended behaviour; do not weaken assertions and do not revert the Next 16 params signature (CON-705). Done when tsc exits 0 and the full vitest run is green."
-    },
-    {
       "command": "/sdrive:performance event-platform-expansion",
       "kind": "slash",
-      "why": "T8.2: NFR-007 (cached OG <=1.5s p95, uncached <=3s), NFR-008 (live count <=2s p95, offline ack <=150ms, 500-item sync <=5s), and NFR-009 (WCAG 2.1 AA) declare measurable targets but no performance or accessibility report exists for this feature. Record reports under .sdrive/reports/."
+      "why": "T8.2 (the only remaining blocking remediation item): NFR-007 (cached OG <=1.5s p95, uncached <=3s), NFR-008 (live count <=2s p95, offline ack <=150ms, 500-item sync <=5s), and NFR-009 (WCAG 2.1 AA) declare measurable targets but no performance or accessibility report exists for this feature. Record reports under .sdrive/reports/."
     },
     {
       "command": "/sdrive:apply event-platform-expansion",
@@ -24,7 +19,7 @@
     {
       "command": "/sdrive:review event-platform-expansion",
       "kind": "slash",
-      "why": "Re-run review at remediation round 2 once T8.1, T8.2, and T8.3 are complete. Review.md currently reads Status: FAIL."
+      "why": "Re-run review at remediation round 2 once T8.2 and T8.3 are complete. Review.md currently reads Status: FAIL. T8.1 is done: the full suite is 257/257 with exit 0 and tsc exits 0."
     },
     {
       "command": "sdrive approve event-platform-expansion review",

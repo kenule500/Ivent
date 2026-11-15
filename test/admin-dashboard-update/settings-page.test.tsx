@@ -27,6 +27,10 @@ vi.mock("@/convex/_generated/api", () => ({
       getMyProfile: { __apiName: "settings.getMyProfile" },
       updateMyPreferences: { __apiName: "settings.updateMyPreferences" },
     },
+    // Admins also read platform settings on this page (FR-034).
+    platform: {
+      getSettings: { __apiName: "platform.getSettings" },
+    },
   },
 }));
 vi.mock("sonner", () => ({

@@ -523,6 +523,12 @@
               "actor": "kenule500",
               "previousValue": "pending",
               "timestamp": "2026-11-15T07:26:12.952Z"
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-11-15T09:05:00.000Z",
+              "reason": "Review remediation T8.1. Repaired the 31 cross-feature regressions introduced by this branch across 11 files in six other approved feature suites, and cleared all 8 tsc errors. Full suite now 257/257 exit 0 and npx tsc --noEmit exit 0; lint exit 0 (0 errors, 20 warnings); governance valid; sdrive verify WARN with 0 missing. All fixes were test-side: LocaleProvider and convex/react fixture drift, the Server Component split of the event route, currency-aware price formatting, and the defaultLocale and split QR rejection contracts. No production code was modified and no assertion was weakened. T7.3 and T7.4 remain deferred pending human/host access."
             }
           ]
         }

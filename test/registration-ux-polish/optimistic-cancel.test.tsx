@@ -5,6 +5,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 
 import { LiveRegionProvider } from "@/components/a11y/live-region";
+import { LocaleProvider } from "@/components/locale-provider";
 
 const mocks = vi.hoisted(() => ({
   useConvexQuery: vi.fn(),
@@ -27,6 +28,7 @@ vi.mock("convex/react", () => ({
     });
     return mutation;
   },
+  useAction: () => vi.fn(async () => undefined),
 }));
 vi.mock("@/convex/_generated/api", () => ({
   api: {
@@ -34,9 +36,17 @@ vi.mock("@/convex/_generated/api", () => ({
       getMyRegistrations: { __apiName: "registrations.getMyRegistrations" },
       cancelRegistration: { __apiName: "registrations.cancelRegistration" },
     },
+    wallet: { issueWalletPass: { __apiName: "wallet.issueWalletPass" } },
   },
 }));
 vi.mock("sonner", () => ({ toast: { success: vi.fn(), error: vi.fn() } }));
+// LocaleProvider refreshes through the App Router; a stub keeps the render
+// hermetic while preserving the provider contract.
+vi.mock("next/navigation", () => ({
+  useRouter: () => ({ push: vi.fn(), replace: vi.fn(), refresh: vi.fn() }),
+  usePathname: () => "/my-tickets",
+  useSearchParams: () => new URLSearchParams(),
+}));
 vi.mock("next/link", () => ({
   default: ({ href, children }: { href: string; children: React.ReactNode }) => (
     <a href={href}>{children}</a>
@@ -86,9 +96,11 @@ describe("AC-004: cancellation is optimistic and reversible", () => {
     });
 
     render(
-      <LiveRegionProvider>
-        <MyTicketsPage />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <MyTicketsPage />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
     expect(mocks.optimistic).not.toBeNull();
@@ -117,9 +129,11 @@ describe("AC-004: cancellation is optimistic and reversible", () => {
     vi.spyOn(window, "confirm").mockReturnValue(true);
 
     render(
-      <LiveRegionProvider>
-        <MyTicketsPage />
-      </LiveRegionProvider>
+      <LocaleProvider initialLocale="en">
+        <LiveRegionProvider>
+          <MyTicketsPage />
+        </LiveRegionProvider>
+      </LocaleProvider>
     );
 
     await userEvent.click(screen.getAllByRole("button", { name: /cancel/i })[0]);
