@@ -470,7 +470,7 @@
           "gates": {
             "specification": "approved",
             "planning": "approved",
-            "implementation": "pending",
+            "implementation": "approved",
             "review": "pending"
           },
           "history": [
@@ -516,6 +516,13 @@
               "by": "sdrive:test",
               "timestamp": "2026-11-15T07:25:00.000Z",
               "reason": "Verified all 34 ACs (AC-001..AC-034) have tests; feature suite green at 34/34 with test-evidence.json re-recorded at HEAD d369a1d. Fixed two test-only lint defects (share-card.test.tsx no-explicit-any, questions-server.test.ts unused import) so repo-wide eslint now exits 0 with 0 errors, satisfying CON-204. sdrive verify is WARN with 0 missing and 85 extras; governance validator clean. Corrected the prior report's claim that the 31 cross-feature failures were pre-existing: a worktree at branch point 47794a6 passes all 11 failing files, so this branch introduced them via the LocaleProvider requirement, required route params, platform.getSettings query, defaultLocale field, and split QR rejection outcome. T7.3 and T7.4 remain deferred pending human/host access."
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-15T07:26:12.952Z"
             }
           ]
         }

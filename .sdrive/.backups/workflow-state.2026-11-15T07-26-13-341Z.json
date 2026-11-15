@@ -11,13 +11,13 @@
       "versions": [
         {
           "id": "v1",
-          "phase": "ongoing",
+          "phase": "completed",
           "currentStep": "specification",
           "gates": {
             "specification": "approved",
-            "planning": "pending",
+            "planning": "approved",
             "implementation": "approved",
-            "review": "pending"
+            "review": "approved"
           },
           "history": [
             {
@@ -93,6 +93,28 @@
               "actor": "kenule500",
               "previousValue": "pending",
               "timestamp": "2026-11-10T14:03:55.421Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T14:04:02.437Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T15:07:06.625Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "a530b77",
+              "timestamp": "2026-11-10T15:23:26.549Z"
             }
           ]
         }
@@ -283,6 +305,217 @@
               "event": "feature_documented_retroactively",
               "by": "onboarding",
               "timestamp": "2026-10-18T13:58:00.158Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "registration-ux-polish",
+      "branch": "feature/backlog-wave-2",
+      "base": "main",
+      "productItems": [
+        "BP-016"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "planning",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "approved"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:00:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T16:20:03.552Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-10T16:30:00.000Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-10T16:32:12.053Z"
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T10:19:27.958Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T11:17:42.579Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "87be2cc",
+              "timestamp": "2026-11-11T11:18:24.346Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "lifecycle-emails",
+      "branch": "feature/backlog-wave-3",
+      "base": "main",
+      "productItems": [
+        "BP-001"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "completed",
+          "currentStep": "planning",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "approved",
+            "review": "approved"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T12:00:00.000Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T11:36:21.018Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T12:45:00.000Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T11:38:51.959Z"
+            },
+            {
+              "event": "implementation_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T12:20:00.023Z"
+            },
+            {
+              "event": "review_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T13:52:56.510Z"
+            },
+            {
+              "event": "feature_archived",
+              "by": "kenule500",
+              "from": "ongoing",
+              "version": "v1",
+              "mergeCommit": "7f1552e",
+              "timestamp": "2026-11-11T13:56:57.281Z"
+            }
+          ]
+        }
+      ]
+    },
+    {
+      "name": "event-platform-expansion",
+      "branch": "feature/event-platform-expansion",
+      "base": "main",
+      "productItems": [
+        "BP-005",
+        "BP-004",
+        "BP-003",
+        "BP-007",
+        "BP-014"
+      ],
+      "currentVersion": "v1",
+      "versions": [
+        {
+          "id": "v1",
+          "phase": "ongoing",
+          "currentStep": "implementation",
+          "gates": {
+            "specification": "approved",
+            "planning": "approved",
+            "implementation": "pending",
+            "review": "pending"
+          },
+          "history": [
+            {
+              "event": "spec_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T15:14:46.476Z"
+            },
+            {
+              "event": "specification_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T16:30:00.000Z"
+            },
+            {
+              "event": "plan_and_tasks_drafted",
+              "by": "sdrive:propose",
+              "timestamp": "2026-11-11T16:44:46.626Z"
+            },
+            {
+              "event": "planning_approved",
+              "by": "kenule500",
+              "actor": "kenule500",
+              "previousValue": "pending",
+              "timestamp": "2026-11-11T16:46:00.000Z"
+            },
+            {
+              "event": "implementation_started",
+              "by": "sdrive:apply",
+              "from": "backlog",
+              "to": "ongoing",
+              "timestamp": "2026-11-11T16:51:41.072Z"
+            },
+            {
+              "event": "implementation_completed",
+              "by": "sdrive:apply",
+              "timestamp": "2026-11-14T15:40:00.000Z",
+              "reason": "Closed the eight failing acceptance criteria in production code (AC-002, AC-005, AC-021, AC-022, AC-023, AC-024, AC-026, AC-029, AC-034). Feature suite is green at 34/34 and test-evidence.json records exitCode 0. sdrive verify is WARN with 0 missing and 85 pre-existing extras. T7.3 (manual responsive/keyboard/French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) remain deferred to /sdrive:test."
+            },
+            {
+              "event": "tests_completed",
+              "by": "sdrive:test",
+              "timestamp": "2026-11-15T07:25:00.000Z",
+              "reason": "Verified all 34 ACs (AC-001..AC-034) have tests; feature suite green at 34/34 with test-evidence.json re-recorded at HEAD d369a1d. Fixed two test-only lint defects (share-card.test.tsx no-explicit-any, questions-server.test.ts unused import) so repo-wide eslint now exits 0 with 0 errors, satisfying CON-204. sdrive verify is WARN with 0 missing and 85 extras; governance validator clean. Corrected the prior report's claim that the 31 cross-feature failures were pre-existing: a worktree at branch point 47794a6 passes all 11 failing files, so this branch introduced them via the LocaleProvider requirement, required route params, platform.getSettings query, defaultLocale field, and split QR rejection outcome. T7.3 and T7.4 remain deferred pending human/host access."
             }
           ]
         }
