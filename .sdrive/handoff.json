@@ -1,30 +1,25 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-17T12:00:00.000Z",
-  "by": "sdrive:review",
-  "verdict": "FAIL",
+  "recordedAt": "2026-11-17T14:55:00.000Z",
+  "by": "sdrive:apply",
+  "verdict": "PARTIAL",
   "remediationRound": 2,
   "steps": [
     {
       "command": "/sdrive:test event-platform-expansion",
       "kind": "slash",
-      "why": "F1 (high). test-evidence.json records commit e722562 while HEAD is d1aa0a3, so it does not describe the released tree. The run is not wrong about the code it measured (e722562 to 1beea8b differs only in governance JSON, and d1aa0a3 touches no app, components, convex or lib file), but the Commit Binding Rule requires commit === HEAD. Root cause is the self-referential trap: evidence records the commit it ran against and evidence is itself committed, so a record inside a commit can never equal that commit's SHA. Re-recording the same way moves HEAD again and leaves it stale. Fix the recording in this command, and settle the template so it stops recurring: either record HEAD after the artefacts are committed and accept a documented follow-up commit, or record HEAD at run start with a tree hash a reviewer can verify is unchanged. Do not hand-edit the value."
+      "why": "F1 (high) is still open. test-evidence.json was rewritten at 2026-11-17T14:49:43Z and now records commit 9861ac1, which was HEAD when the run started, but HEAD has since moved. Re-recording the same way will move HEAD again and leave it stale, so do not re-run this blindly: resolve the Commit Binding Rule in the recording template first (record HEAD plus a tree hash and a documented evidence commit, or run the suite after the documentation commits land and make the evidence the only remaining commit). Do not hand-edit the commit value. The evidence's summary is also misleading and worth fixing while you are there: its own outputTail shows vitest running, but the captured summary reads 0 passed / 0 failed / 0 total while package.json exits 0, because vitest mistakes the npm info banner on stderr for an empty report and exits 0. The repository has a working wrapper that parses real counts -- .sdrive/reports/tests/run-feature-evidence.js -- and it should be the recorded test command."
     },
     {
       "command": "/sdrive:performance event-platform-expansion",
       "kind": "slash",
-      "why": "F2 and F3. F2 (high): NFR-008's 500-item sync budget has no measuring evidence. The in-memory convex-test harness swings from 3.51 s (pass) to 5.01 s and 10.30 s (fail) at 3,500 rows and 14.87-21.19 s at 15,000 rows with a byte-identical batch argument, so it neither proves nor refutes the 5 s budget. The handler does one indexed .unique() per item and one patch; the untested explanation is the simulator. Measure against a real Convex dev deployment, 500 vs 15,000 registrations, 10 runs each, p50 and p95. Do NOT change convex/door.ts before that number exists. F3 (medium): NFR-009 has no accessibility evidence; run an axe pass over the door console, register modal and custom questions, sponsor strip and wallet save button. This command owns the traceability NFR rows: NFR-008 and NFR-009 are in_progress."
-    },
-    {
-      "command": "/sdrive:apply event-platform-expansion",
-      "kind": "slash",
-      "why": "F4 and T8.3. CHANGELOG.md is unchanged on this branch; its Unreleased section names none of sponsors, Google Wallet passes, offline door mode, custom registration questions or locale switching. The one existing match, currency, is an older published entry. A source-tree doc change belongs to this command."
+      "why": "F2 and F3, and T8.2. F2 (high): NFR-008's 500-item sync budget still has no deployed number. The in-memory convex-test harness swings from 3.51 s (pass) to 5.01 s and 10.30 s (fail) at 3,500 rows with a byte-identical argument, so it neither proves nor refutes the 5 s budget. Measure against a real Convex dev deployment, 500 vs 15,000 registrations, 10 runs each, p50 and p95. Do NOT change convex/door.ts before that number exists. F3 (medium): NFR-009 still has no axe pass over the door console, register modal and custom questions, sponsor strip and wallet save button."
     },
     {
       "command": "/sdrive:review event-platform-expansion",
       "kind": "slash",
-      "why": "Re-run review at remediation round 3 once F1 to F4 are cleared. This is the last round: if round 3 fails on the same finding, stop and hand it to a human, because F1 and F2 are process and measurement disputes rather than code defects to grind against a harness."
+      "why": "Round 3 of 3 is the last review round. Round 2 left F1 and F2 as process and measurement disputes rather than code defects, and F4 is now cleared (CHANGELOG.md committed as 0077545, task closed in 9861ac1). If F1 and F2 cannot be cleared before round 3, hand them to a human instead of re-running them."
     },
     {
       "command": "sdrive approve event-platform-expansion review",
@@ -36,5 +31,10 @@
       "kind": "cli",
       "why": "Once every gate is approved, check archiving. T7.3 (manual responsive, keyboard and French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) remain deferred and need a human at a browser against a live deployment."
     }
-  ]
+  ],
+  "notes": {
+    "tasks": "37 of 38 complete. Open: P6/T7.3 (manual responsive, keyboard and French QA), P6/T7.4 (HTTPS/HSTS and PWA deployment confirmation) and P7/T8.2 (NFR evidence). P7/T8.3 is complete.",
+    "testEvidence": "Recording raises F1 rather than clearing it: commit 9861ac1 equals HEAD at run start but not at rest, summary is 0/0/0, and acIds lists 25 of 34. The verifiable green run in this session was npx vitest run: 75 files, 257 tests, 0 failed, exit 0.",
+    "verification": "sdrive verify returns warn: 90 matched, 0 missing, 0 withdrawn, 0 renamed, 85 pre-existing extra."
+  }
 }

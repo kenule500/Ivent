@@ -52,8 +52,8 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
   device — with no network needed to keep checking people in — and queued
   check-ins sync idempotently once connectivity returns. The cache is cleared on
   sign-out, 24 hours after the event ends, or on demand. Installing the app adds a
-  web manifest and a service worker that caches the door shell — never API
-  responses.
+  web manifest and a service worker that keeps the door shell available offline
+  when the network drops — it never caches API responses.
 - **Google Wallet event tickets (BP-003).** Confirmed registrations for an
   event with wallet enabled can be added to Google Wallet as an event ticket with
   a scannable barcode. Repeated requests reuse the same pass, and cancelling a
