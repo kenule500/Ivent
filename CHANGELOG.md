@@ -36,6 +36,57 @@ project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 - **Admin invites** — create, resend, revoke, and delete admin invitations, with a
   7-day expiry and a daily cron that marks expired invites.
 - **Admin settings** — the signed-in admin's profile and notification preferences.
+- **Share-ready event pages (BP-005).** A public event is now a server-rendered page
+  with its own title, description, canonical URL, and Open Graph/Twitter tags,
+  plus a generated 1200×630 social card (a branded fallback is used when the event
+  has no cover image) and escaped `schema.org/Event` JSON-LD. Organizers can add up
+  to six sponsors — name, logo, alt text, and an optional link — and reorder or
+  remove them; the sponsor strip is absent when there are none.
+- **Live door mode and offline check-in (BP-004).** A dedicated door screen per
+  event shows the checked-in count, confirmed total, check-in rate, last check-in
+  time, connection state, and the ten most recent check-ins, and stays current
+  within about two seconds of a check-in on another device. Organizers can check
+  people in by QR scan, ticket code, or attendee name, and a repeat scan reports
+  "already checked in" with the original timestamp instead of double counting.
+  Enabling offline mode caches that one event's confirmed attendee list on the
+  device — with no network needed to keep checking people in — and queued
+  check-ins sync idempotently once connectivity returns. The cache is cleared on
+  sign-out, 24 hours after the event ends, or on demand. Installing the app adds a
+  web manifest and a service worker that caches the door shell — never API
+  responses.
+- **Google Wallet event tickets (BP-003).** Confirmed registrations for an
+  event with wallet enabled can be added to Google Wallet as an event ticket with
+  a scannable barcode. Repeated requests reuse the same pass, and cancelling a
+  registration or deleting the event expires it. Issuance is rate-limited and
+  audited, and a wallet outage never affects the in-app QR ticket. Apple
+  Wallet is not offered: no Pass Type ID credentials exist, so the wallet surface
+  reports Apple as unavailable.
+- **Custom registration questions (BP-007).** Organizers can define up to ten
+  ordered questions per event — short text, long text, single select, multi select,
+  number, or date — mark each required or optional, add help text and options, and
+  preview the attendee form before publishing. The registration dialog renders
+  them in order with required markers and a privacy note, and validates answers in
+  the browser and again on the server. Answers belong to the attendee, the event's
+  organizer, and administrators. Editing a question with existing answers versions
+  it and archives the old definition, so historical answers stay readable and
+  exportable; removing one requires confirmation. Registration exports add one
+  column per current and archived question.
+- **Event currency, international locations, and English/French UI (BP-014).**
+  Events now store a currency (`NGN`, `USD`, `GBP`, `EUR`), a full
+  country/state/city location, and an IANA timezone, and every price and date on
+  the public page, ticket, registration form, door mode, and exports is formatted
+  for that event — so a `$5,000` event no longer renders with a hardcoded naira
+  symbol, and dates are shown in the event's timezone, labelled, rather
+  than the viewer's. Product copy is available in English and French via a
+  switcher that persists for a year and drives system lifecycle email. The
+  interface resolves locale from the user's choice, then a persisted cookie, then
+  the platform default, then `Accept-Language`. An unsupported locale or currency
+  falls back to the platform default with a non-blocking notice instead of a raw
+  key or a blank price. Organizer-entered content is shown exactly as entered and
+  never machine-translated.
+- **Platform locale and currency defaults.** Platform settings gain a default
+  locale (`en` or `fr`) alongside the default country, currency, and timezone, and
+  the currency is now validated against the four supported values.
 
 ### Changed
 
