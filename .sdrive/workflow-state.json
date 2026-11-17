@@ -529,6 +529,12 @@
               "by": "sdrive:test",
               "timestamp": "2026-11-15T09:05:00.000Z",
               "reason": "Review remediation T8.1. Repaired the 31 cross-feature regressions introduced by this branch across 11 files in six other approved feature suites, and cleared all 8 tsc errors. Full suite now 257/257 exit 0 and npx tsc --noEmit exit 0; lint exit 0 (0 errors, 20 warnings); governance valid; sdrive verify WARN with 0 missing. All fixes were test-side: LocaleProvider and convex/react fixture drift, the Server Component split of the event route, currency-aware price formatting, and the defaultLocale and split QR rejection contracts. No production code was modified and no assertion was weakened. T7.3 and T7.4 remain deferred pending human/host access."
+            },
+            {
+              "event": "performance_partial",
+              "by": "sdrive:performance",
+              "timestamp": "2026-11-17T10:50:00.000Z",
+              "reason": "T8.2 partial. NFR-007 measured PASS (public event read 2.0 ms p50 at 500 rows, 9.9 ms p50 at 15,000 rows; 1,500 ms p95 budget). NFR-008 reads measured PASS (getDoorSnapshot 192 ms p50 / 234 ms p95; attendee search 65 ms p50 / 97 ms p95 at 15,000 rows; 2,000 ms budget). NFR-008 500-item sync batch BLOCKED, not passed and not established as failed: in the in-memory convex-test harness it exceeds 5 s above a few thousand stored rows, but with a byte-identical batch argument the same job varies more than 2x between runs (3,500 rows: 3.51 s pass, then 5.01 s and 10.30 s fail; 500 rows: 0.55 s, then 1.18 s). That variance exceeds the margin to budget, so a deployed measurement is required before any code change; convex/door.ts was deliberately left untouched. NFR-008 offline acknowledgement (150 ms) and NFR-009 WCAG 2.1 AA (axe) are NOT measured. traceability.json set NFR-008 and NFR-009 to in_progress; NFR-007 left complete. T8.2 remains unchecked. Report: .sdrive/reports/performance/performance-report-event-platform-expansion-v1-2026-11-15.md"
             }
           ]
         }

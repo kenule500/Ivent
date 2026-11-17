@@ -1,35 +1,40 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-15T09:05:00.000Z",
-  "by": "sdrive:test",
+  "recordedAt": "2026-11-17T10:52:00.000Z",
+  "by": "sdrive:performance",
   "verdict": "FAIL",
   "remediationRound": 1,
   "steps": [
     {
+      "command": "Seed a dev Convex deployment with 500 and then 15,000 registrations and re-measure the 500-item `syncOfflineCheckIns` batch (10 runs, p50/p95) to settle NFR-008",
+      "kind": "manual",
+      "why": "T8.2 is blocked on this one measurement Nobody else can unblock it by reading code. The in-memory `convex-test` harness says the 500-item sync batch exceeds its 5 s budget above a few thousand stored rows (3,500 rows: 5.01 s and 10.30 s; 15,000 rows: 14.9-21.2 s), but with a byte-identical batch argument the same job varies by more than 2x between runs and passed once at 3,500 rows (3.51 s). That variance is larger than the margin to budget, so the harness cannot establish a breach; a deployed index seek is the only way to know. Record p50/p95 per volume alongside questions/problems. Do NOT change `convex/door.ts` on the strength of the simulation. If deployed p50 is flat and under 5 s, close NFR-008 as met and mark the harness numbers a simulation artefact."
+    },
+    {
       "command": "/sdrive:performance event-platform-expansion",
       "kind": "slash",
-      "why": "T8.2 (the only remaining blocking remediation item): NFR-007 (cached OG <=1.5s p95, uncached <=3s), NFR-008 (live count <=2s p95, offline ack <=150ms, 500-item sync <=5s), and NFR-009 (WCAG 2.1 AA) declare measurable targets but no performance or accessibility report exists for this feature. Record reports under .sdrive/reports/."
+      "why": "Re-run once the deployed sync numbers exist z and once an axe audit covers the changed surfaces. That pass should resolve NFR-008's sync clause (PASS or a real, profiled FAIL), run NFR-009 axe over the door console, register modal and custom questions, sponsor strip and wallet save button, and measure the 150 ms offline acknowledgement in a browser-capable runcopy (jsdom with fake IndexedDB, or Playwright with the network offline). It owns the traceability NFR rows: NFR-008 and NFR-009 are currently `in_progress`. Augusztus"
     },
     {
       "command": "/sdrive:apply event-platform-expansion",
       "kind": "slash",
-      "why": "T8.3: CHANGELOG.md was not updated for user-facing additions (sponsors, custom registration questions, offline door mode, Google Wallet passes, currency and locale switching). The entry is written manually; /sdrive:apply is the right owner for a source-tree doc change."
+      "why": "T8.3: CHANGELOG.md was not updated for user-facing additions (sponsors, custom registration questions, offline door mode, Google Wallet passes, currency and locale switching). The entry is written manually; /sdrive:apply owns source-tree doc changes. Independent of the above."
     },
     {
       "command": "/sdrive:review event-platform-expansion",
       "kind": "slash",
-      "why": "Re-run review at remediation round 2 once T8.2 and T8.3 are complete. Review.md currently reads Status: FAIL. T8.1 is done: the full suite is 257/257 with exit 0 and tsc exits 0."
+      "why": "Re-run review at remediation round 2 once T8.2 and T8.3 are settled. review.md still reads Status: FAIL from round 1, and its F3 finding (NFR-007/008/009 have no measured evidence) is only partly answered: NFR-007 and the NFR-008 read paths now have numbers."
     },
     {
       "command": "sdrive approve event-platform-expansion review",
       "kind": "cli",
-      "why": "Only after a review returns PASS. This gate is the user's to approve; no agent can advance it. Do not approve while review.md reads FAIL."
+      "why": "Only after a review returns PASS. This gate is the user's alone; no agent can advance it. Do not approve while review.md reads FAIL."
     },
     {
       "command": "sdrive archive:check event-platform-expansion",
       "kind": "cli",
-      "why": "Once every gate is approved, check archiving. T7.3 (manual responsive, keyboard, and French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) are deferred and still need a human at a browser against a live deployment."
+      "why": "Once every gate is approved, check archiving. T7.3 (manual responsive, keyboard and French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) are deferred and still need a human at a browser against a live deployment."
     }
   ]
 }
