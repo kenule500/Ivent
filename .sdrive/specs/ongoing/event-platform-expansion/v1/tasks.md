@@ -73,4 +73,4 @@
     - NFR-008 — **500-item sync batch BLOCKED**, not passed and not established as failed. In the in-memory harness it exceeds 5 s above a few thousand stored rows, but the same job with a byte-identical argument varies by more than 2x between runs (3,500 rows: 3.51 s pass, then 5.01 s and 10.30 s fail; 500 rows: 0.55 s, then 1.18 s). That variance exceeds the margin to the budget, so the harness cannot establish the breach. Needs a deployed measurement before any code change; `convex/door.ts` was deliberately left untouched.
     - NFR-009 — **not run**. No axe pass exists over the feature's surfaces. Still `deferred` with T7.3.
   - Do not check this task off until the sync batch and axe items are resolved.
-- [ ] **T8.3** Record the user-facing additions in `CHANGELOG.md` — NFR-011 / AC-026, AC-031
+- [x] **T8.3** Record the user-facing additions in `CHANGELOG.md` — NFR-011 / AC-026, AC-031

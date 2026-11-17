@@ -693,13 +693,14 @@
         "AC-031",
         "AC-034"
       ],
-      "planSection": "P0 — Foundation, schema, and shared contracts; P5 — Currency, locations, and localization; P6 — Verification and governance",
+      "planSection": "P0 — Foundation, schema, and shared contracts; P5 — Currency, locations, and localization; P6 — Verification and governance; P7 — Review remediation (round 1)",
       "taskIds": [
         "T1.4",
         "T6.4",
         "T6.5",
         "T6.6",
-        "T7.3"
+        "T7.3",
+        "T8.3"
       ],
       "status": "complete",
       "testIds": [
