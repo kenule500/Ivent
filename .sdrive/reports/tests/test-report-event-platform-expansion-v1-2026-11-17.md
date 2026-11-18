@@ -75,32 +75,51 @@ did not survive contact with the code:
   the display path does not implement. That is a spec-wording question, not a
   test-authoring one.
 
-The only genuine hole was F1 itself, and closing it needed a guard, not a new AC.
+The only genuine hole was F1 itself, and closing it needed a fix in the recording
+path, not a new AC.
 
-### 4.2 The structural trap behind F1, and why a guard now covers it
+### 4.2 The structural trap behind F1 (guard removed; F1 resolved at the source)
 Evidence must name the commit it ran against, and evidence is committed, so a
 record can never name the commit that carries it. "Record HEAD, then commit"
-yields `commit !== HEAD` on every single round, forever. That is why F1 has now
-been raised twice and would have been raised a third time.
+yields `commit !== HEAD` on every single round, forever.
 
-`test/governance/evidence-integrity.test.ts` therefore treats the recorded SHA
-as a claim to check rather than a field to fill in, and passes it when either holds:
+An earlier attempt added `test/governance/evidence-integrity.test.ts` to police
+that drift. It was withdrawn in `73b3002` because it was self-sealing: it treated
+`test/` as a product-path fence, so committing the guard file itself satisfied the
+failing branch and flipped the check it was written to perform. It passed only
+while untracked, so it never described a committable state. This report previously
+described that guard as passing; it does not exist, and that claim is corrected
+here rather than left standing.
 
-- recorded commit equals HEAD; or
-- every file between the recorded commit and HEAD is a governance/artifact file
-  under `.sdrive/`, meaning the scored run measured exactly the product code
-  HEAD ships and only the paperwork moved.
+**F1's actual root cause was in the recording path, not the paperwork.** The
+`sdrive test` evidence parser reads a Jest-style summary with a colon,
+`Tests: 1 failed, 12 passed, 13 total`. Vitest prints `Tests  34 passed (34)`
+with no colon, so the parser matched nothing, recorded
+`0 passed / 0 failed / 0 total`, and the run was reported as
+`📝 Audit: test_failed` with exit 8. The zero was never a measurement of the
+suite; it was a format mismatch.
 
-The second branch is the one this commit exercises: 18 files differ between
-`e722562` and HEAD, and the guard confirmed all 18 live under `.sdrive/`, so no
-`app/`, `components/`, `convex/`, `lib/` or `test/` file changed after the
-recorded run. It reports that as `EVIDENCE-DRIFT` on stderr rather than passing
-silently, because the weaker claim should be visible to whoever reads the
-verdict. If a product file ever changes after a recorded run, the guard fails and
-names the file. That is the condition a reviewer actually cares about.
+The project already ships the correct bridge,
+`.sdrive/reports/tests/run-feature-evidence.js`, which runs Vitest through the
+JSON reporter and prints the parsed summary plus the harvested AC IDs. Four of
+the five features with recorded evidence in this repository used it as an
+explicit `--cmd`; event-platform-expansion was the only one left on bare
+`npm test`. Recording through the bridge produced `34 passed, 0 failed` and
+`📝 Audit: test_passed` with exit 0.
 
-The guard lives in `test/governance/`, not `test/event-platform-expansion/`, so
-it is not counted as feature coverage for AC-001..AC-034.
+Two properties of that bridge were reinforced while closing this finding:
+
+- It deletes any previous report before invoking Vitest. Vitest does not rewrite
+  the JSON file when it matches no test files, so a surviving file would be
+  parsed as this run's result and report an old run's counts as a false green.
+  Removing it makes "no report" observable; verified by running the bridge
+  against a nonexistent feature, which now reports `0 total` and exits 1.
+- It recounts nothing by hand. The numbers come from the reporter, and the AC IDs
+  from test titles, so the record cannot overstate what ran.
+
+The residual mismatch is inherent and is reported rather than papered over: the
+recorded SHA is the commit the run measured, and the commit that carries the
+record is necessarily its child. Reviewer's ruling to make.
 
 ### 4.3 NFR-002 boundary confirmed, not newly tested
 Review round 2's finding that wallet credentials never cross to the client is
@@ -115,13 +134,19 @@ one a browser receives.
 ### 4.4 Verification
 - Feature suite: `npx vitest run test/event-platform-expansion` -> exit 0,
   34 passed, 0 failed, 0 skipped, 13 files.
-- Integrity guard: `npx vitest run test/governance` -> exit 0, 1 passed.
+- Evidence recording: `npx sdrive test event-platform-expansion --cmd
+  "node .sdrive/reports/tests/run-feature-evidence.js event-platform-expansion"`
+  -> `📝 Audit: test_passed`, exit 0, 34 passed, 0 failed, 0 skipped.
+- Evidence content: `test-evidence.json` summary `34/34`, `acIds` 34
+  (AC-001..AC-034), `exitCode` 0.
+- Bridge negative control: run against a nonexistent feature -> `0 total`, exit 1.
 - `npx tsc --noEmit` -> exit 0.
 - `npm run lint` -> exit 0, 0 errors, 20 warnings.
 - `node .sdrive/scripts/validate-governance.js` -> all files valid.
 - `npx sdrive verify event-platform-expansion` -> exit 0, warn,
   matched 90, missing 0, renamed 0, extra 85, withdrawn 0.
-- `sdrive audit:verify` -> ok, 63 hashed events, brokenAt null.
+- `sdrive audit:verify` -> ok, 66 hashed events verified, brokenAt null. (This
+  count grows by one per recorded audit event, so it is a floor, not a constant.)
 
 ### 4.5 Withdrawn Criteria
 None. All 34 criteria in `spec.json` remain in scope.

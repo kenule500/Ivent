@@ -20,6 +20,12 @@ const outputFile = path.join(__dirname, "raw", `${feature}-vitest.json`);
 
 fs.mkdirSync(path.dirname(outputFile), { recursive: true });
 
+// Delete any report from a previous run first. Vitest does not rewrite the file
+// when it matches no test files or dies before reporting, so a surviving file
+// would be parsed as though it were this run's result - a false green carrying
+// an old run's counts. Removing it makes "no report" observable instead.
+fs.rmSync(outputFile, { force: true });
+
 const command = `npx vitest run "${testDir}" --reporter=json --outputFile="${outputFile}"`;
 const run = spawnSync(command, {
   cwd: projectRoot,
