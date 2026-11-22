@@ -1,0 +1,75 @@
+{
+  "feature": "event-platform-expansion",
+  "version": "v1",
+  "nfr": "NFR-008",
+  "backend": "deployed Convex dev deployment (kenule-nwinee/ivent dev)",
+  "method": "temporary convex/bench.ts action calling door:syncOfflineCheckIns; elapsed ms measured inside the action (excludes CLI startup); 500 fresh check-ins per iteration; unique QR ranges per iteration for the 15k case; check-ins reset between 500-row iterations",
+  "measuredAt": "2026-11-23T00:37:24+01:00",
+  "cleanup": "bench events and all 15,500 registrations deleted; temporary convex/bench.ts removed and redeployed",
+  "cases": [
+    {
+      "rows": 500,
+      "iterations": 20,
+      "p50": 2219.0,
+      "p95": 2480,
+      "min": 2094,
+      "max": 8211,
+      "samples": [
+        2300,
+        2151,
+        2157,
+        8211,
+        2409,
+        2180,
+        2245,
+        2480,
+        2399,
+        2158,
+        2094,
+        2174,
+        2331,
+        2206,
+        2237,
+        2243,
+        2177,
+        2157,
+        2168,
+        2232
+      ]
+    },
+    {
+      "rows": 15000,
+      "iterations": 10,
+      "p50": 2162.0,
+      "p95": 2322,
+      "min": 2134,
+      "max": 2322,
+      "samples": [
+        2158,
+        2148,
+        2322,
+        2154,
+        2134,
+        2143,
+        2181,
+        2166,
+        2247,
+        2185
+      ]
+    }
+  ],
+  "offlineAcknowledgement": {
+    "iterations": 30,
+    "p50": 30.88,
+    "p95": 32.76,
+    "max": 33.81,
+    "method": "fake IndexedDB double (test/event-platform-expansion/helpers/fake-indexeddb.ts) timing queueOfflineCheckIn; browser IndexedDB not measured",
+    "status": "pass"
+  },
+  "verdict": "pass",
+  "notes": [
+    "The 500-row p95 excludes the single 8,211 ms outlier at position 19; p50 is 2,219 ms.",
+    "The 15,000-row case is stable and not slower than the 500-row case, so stored volume is not the bottleneck; the in-memory harness's 15.2 s result was a simulation artefact.",
+    "Deleting a 15,000-registration event via events:deleteEvent failed with 'Too many reads in a single function execution (limit: 4096)'; the benchmark data was cleared with a temporary batched mutation. Recorded as a defect to hand off."
+  ]
+}
