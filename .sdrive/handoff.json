@@ -1,40 +1,73 @@
 {
   "feature": "event-platform-expansion",
   "version": "v1",
-  "recordedAt": "2026-11-17T14:55:00.000Z",
-  "by": "sdrive:apply",
-  "verdict": "PARTIAL",
-  "remediationRound": 2,
+  "recordedAt": "2026-11-22T21:03:36.266Z",
+  "by": null,
   "steps": [
+    {
+      "command": "sdrive update",
+      "kind": "cli",
+      "why": "high severity, round 3 of 3: sdrive check exits 4: doctor/permissions has no rule for review:cold; installed framework files 1.0.0 vs CLI 1.1.0-next.3."
+    },
     {
       "command": "/sdrive:test event-platform-expansion",
       "kind": "slash",
-      "why": "F1 (high) is still open. test-evidence.json was rewritten at 2026-11-17T14:49:43Z and now records commit 9861ac1, which was HEAD when the run started, but HEAD has since moved. Re-recording the same way will move HEAD again and leave it stale, so do not re-run this blindly: resolve the Commit Binding Rule in the recording template first (record HEAD plus a tree hash and a documented evidence commit, or run the suite after the documentation commits land and make the evidence the only remaining commit). Do not hand-edit the commit value. The evidence's summary is also misleading and worth fixing while you are there: its own outputTail shows vitest running, but the captured summary reads 0 passed / 0 failed / 0 total while package.json exits 0, because vitest mistakes the npm info banner on stderr for an empty report and exits 0. The repository has a working wrapper that parses real counts -- .sdrive/reports/tests/run-feature-evidence.js -- and it should be the recorded test command."
+      "why": "high severity, round 3 of 3: test-evidence.json records commit e6a5d2d but HEAD is 60c5c2e; the evidence self-reference trap is unresolved."
+    },
+    {
+      "command": "human: add .perch/ to .gitignore or relocate it",
+      "kind": "cli",
+      "why": "high severity, round 3 of 3: The working tree is dirty: untracked .perch/ fails the clean-tree clause."
     },
     {
       "command": "/sdrive:performance event-platform-expansion",
       "kind": "slash",
-      "why": "F2 and F3, and T8.2. F2 (high): NFR-008's 500-item sync budget still has no deployed number. The in-memory convex-test harness swings from 3.51 s (pass) to 5.01 s and 10.30 s (fail) at 3,500 rows with a byte-identical argument, so it neither proves nor refutes the 5 s budget. Measure against a real Convex dev deployment, 500 vs 15,000 registrations, 10 runs each, p50 and p95. Do NOT change convex/door.ts before that number exists. F3 (medium): NFR-009 still has no axe pass over the door console, register modal and custom questions, sponsor strip and wallet save button."
+      "why": "high severity, round 3 of 3: NFR-008's 500-item sync budget has no deployed measurement; the in-memory harness swings from 3.51 s to 10.30 s on identical input."
+    },
+    {
+      "command": "/sdrive:test event-platform-expansion",
+      "kind": "slash",
+      "why": "high severity, round 3 of 3: T7.3 and T7.4 are open: manual responsive/keyboard/French QA and deployed HTTPS/HSTS/PWA confirmation."
+    },
+    {
+      "command": "/sdrive:performance event-platform-expansion",
+      "kind": "slash",
+      "why": "medium severity, round 3 of 3: NFR-009 has no accessibility evidence; no axe pass ran over the feature surfaces."
+    },
+    {
+      "command": "/sdrive:secure event-platform-expansion",
+      "kind": "slash",
+      "why": "medium severity, round 3 of 3: next 16.4.3 is vulnerable and the first production build is aborted by the framework security guard; dev tooling has 2 critical and 5 high advisories."
+    },
+    {
+      "command": "human: name the feature in future commit subjects",
+      "kind": "cli",
+      "why": "low severity, round 3 of 3: Ten commit subjects use only task IDs and do not name the feature."
+    },
+    {
+      "command": "/sdrive:secure event-platform-expansion",
+      "kind": "slash",
+      "why": "low severity, round 3 of 3: Dockerfile uses npm install and .dockerignore does not exclude .env.production."
+    },
+    {
+      "command": "sdrive update",
+      "kind": "cli",
+      "why": "info severity, round 3 of 3: sdrive doctor warns about 5 unverified adapter paths and a 1.0.0 vs 1.1.0-next.3 manifest mismatch."
+    },
+    {
+      "command": "sdrive test event-platform-expansion",
+      "kind": "cli",
+      "why": "A fix moves HEAD, so the test record must be re-stamped before review can read it."
+    },
+    {
+      "command": "sdrive approve event-platform-expansion implementation",
+      "kind": "human",
+      "why": "New fix tasks leave the implementation sign-off unsatisfied until it is given again."
     },
     {
       "command": "/sdrive:review event-platform-expansion",
       "kind": "slash",
-      "why": "Round 3 of 3 is the last review round. Round 2 left F1 and F2 as process and measurement disputes rather than code defects, and F4 is now cleared (CHANGELOG.md committed as 0077545, task closed in 9861ac1). If F1 and F2 cannot be cleared before round 3, hand them to a human instead of re-running them."
-    },
-    {
-      "command": "sdrive approve event-platform-expansion review",
-      "kind": "cli",
-      "why": "Only after a review returns PASS. This gate is the user's alone; no agent can advance it. Do not approve while review.md reads FAIL."
-    },
-    {
-      "command": "sdrive archive:check event-platform-expansion",
-      "kind": "cli",
-      "why": "Once every gate is approved, check archiving. T7.3 (manual responsive, keyboard and French QA) and T7.4 (HTTPS/HSTS and PWA deployment confirmation) remain deferred and need a human at a browser against a live deployment."
+      "why": "Review re-audits the new commit and clears the verdict."
     }
-  ],
-  "notes": {
-    "tasks": "37 of 38 complete. Open: P6/T7.3 (manual responsive, keyboard and French QA), P6/T7.4 (HTTPS/HSTS and PWA deployment confirmation) and P7/T8.2 (NFR evidence). P7/T8.3 is complete.",
-    "testEvidence": "Recording raises F1 rather than clearing it: commit 9861ac1 equals HEAD at run start but not at rest, summary is 0/0/0, and acIds lists 25 of 34. The verifiable green run in this session was npx vitest run: 75 files, 257 tests, 0 failed, exit 0.",
-    "verification": "sdrive verify returns warn: 90 matched, 0 missing, 0 withdrawn, 0 renamed, 85 pre-existing extra."
-  }
+  ]
 }

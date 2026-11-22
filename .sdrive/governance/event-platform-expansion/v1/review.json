@@ -2,110 +2,332 @@
   "feature": "event-platform-expansion",
   "version": "v1",
   "status": "FAIL",
-  "commit": "d1aa0a35616805e68d5924e929b08c6674730891",
+  "commit": "60c5c2e2863393c2db2927bef0f3d0439c086030",
   "base": "main",
   "branch": "feature/event-platform-expansion",
   "reviewedBy": "kenule500",
-  "reviewedAt": "2026-11-17T11:55:00+01:00",
+  "reviewedAt": "2026-11-22T21:55:00+01:00",
   "coverage": 100,
   "criteria": [
-    { "id": "spec_convergence", "status": "pass", "detail": "All 34 ACs have tests; the feature suite exercises AC-001 to AC-034 and none are withdrawn." },
-    { "id": "task_completion", "status": "fail", "detail": "34 of 38 tasks complete. Open: P6/T7.3 and P6/T7.4, deferred to human and host access, plus P7/T8.2 and P7/T8.3, the round-1 remediation items, which are unfinished rather than deferred." },
-    { "id": "traceability", "status": "fail", "detail": "43 of 45 rows complete. NFR-008 and NFR-009 are in_progress because their sync-batch and axe clauses have no measurement." },
-    { "id": "coverage", "status": "pass", "detail": "100 percent: 34 of 34 in-scope ACs tested, 0 withdrawn, 34 of 34 tests passing." },
-    { "id": "test_report", "status": "pass", "detail": "test-report-event-platform-expansion-v1-2026-11-15.md exists with the version in its filename and postdates spec.md and plan.md." },
-    { "id": "test_evidence", "status": "fail", "detail": "exitCode 0, summary.failed 0 and summary.total 34 all hold, but commit is e722562 while HEAD is d1aa0a3; the Commit Binding Rule requires commit === HEAD." },
-    { "id": "change_scope", "status": "pass", "detail": "19 commits, all naming this feature; no other in-flight feature present; merge-base 47794a6 is on main, so the branch is based on its recorded base; working tree clean." },
-    { "id": "test_quality", "status": "pass", "detail": "No .only, xit or .skip selector and no commented-out assertion in the feature tests; 68 AC-ID occurrences name the AC each test covers." },
-    { "id": "code_quality", "status": "pass", "detail": "tsc --noEmit exit 0; eslint exit 0 with 0 errors and 20 warnings." },
-    { "id": "security", "status": "pass", "detail": "No tracked .env files; no secret pattern in the branch diff; 0 high and 0 critical advisories, 1 moderate next advisory recorded as non-blocking." },
-    { "id": "testing", "status": "pass", "detail": "34 of 34 feature tests and 257 of 257 repo-wide tests pass, exit 0." },
-    { "id": "documentation", "status": "fail", "detail": "CHANGELOG.md is unchanged on this branch and its Unreleased section names none of sponsors, Wallet passes, offline door mode, registration questions or locale switching. That is T8.3, still unticked." },
-    { "id": "nfr_evidence", "status": "fail", "detail": "NFR-007 measured pass. NFR-008 reads measured pass, but the 500-item sync clause is not_verified because the in-memory harness swings from 3.5 s to 10.3 s on identical input. NFR-009 is not_verified because no axe pass ran." },
-    { "id": "definition_of_done", "status": "fail", "detail": "T8.2 and T8.3 are open and the recorded evidence does not match HEAD." },
-    { "id": "spec_to_code_verification", "status": "warn", "detail": "sdrive verify returns warn, not fail: matched 90, missing 0, renamed 0, withdrawn 0, extra 85 pre-existing." },
-    { "id": "ci", "status": "not_verified", "detail": "No CI configuration exists in the repository, so no run exists to record for HEAD." },
-    { "id": "permission", "status": "pass", "detail": "check-permission.js allowed kenule500 (admin) to run /sdrive:review." },
-    { "id": "reviewer_independence", "status": "pass", "detail": "feature.assignee is unset, so no self-approval conflict arises." }
+    {
+      "id": "spec_convergence",
+      "status": "pass",
+      "detail": "All 34 ACs (AC-001 to AC-034) are implemented and exercised; none withdrawn."
+    },
+    {
+      "id": "task_completion",
+      "status": "fail",
+      "detail": "35 of 38 tasks complete. Open: P7/T8.2 (NFR evidence), P6/T7.3 (manual responsive/keyboard/French QA) and P6/T7.4 (HTTPS/HSTS and PWA deployment confirmation)."
+    },
+    {
+      "id": "traceability",
+      "status": "fail",
+      "detail": "43 of 45 rows complete. NFR-008 and NFR-009 remain in_progress; their sync-batch and axe clauses have no measurement."
+    },
+    {
+      "id": "coverage",
+      "status": "pass",
+      "detail": "100 percent: 34 of 34 in-scope ACs have a linked test, 0 withdrawn, 34 of 34 feature tests passing."
+    },
+    {
+      "id": "test_report",
+      "status": "pass",
+      "detail": "test-report-event-platform-expansion-v1-2026-11-17.md exists with the version in its filename and postdates spec.md and plan.md."
+    },
+    {
+      "id": "test_evidence",
+      "status": "fail",
+      "detail": "exitCode 0, summary.failed 0, summary.total 34 and 34 AC IDs all hold, but commit is e6a5d2d while HEAD is 60c5c2e; the Commit Binding Rule requires commit === HEAD. The residual mismatch is left visible in the 60c5c2e message for a reviewer to rule on."
+    },
+    {
+      "id": "change_scope",
+      "status": "fail",
+      "detail": "115 files changed, all on this feature branch; no application file is unplanned and no other-feature commit is present. The working tree is dirty (untracked .perch/), which fails the clean-tree clause. Ten commit subjects use task IDs without naming the feature; the task IDs still identify it."
+    },
+    {
+      "id": "test_quality",
+      "status": "pass",
+      "detail": "No .only, xit, xdescribe, .skip or .todo; no commented-out assertions; no tautological assertions; all 34 ACs appear in test titles (68 AC-ID occurrences)."
+    },
+    {
+      "id": "code_quality",
+      "status": "pass",
+      "detail": "tsc --noEmit exit 0; eslint exit 0 with 0 errors and 20 pre-existing warnings. The first production build is aborted by the framework security guard; see finding F7."
+    },
+    {
+      "id": "security",
+      "status": "fail",
+      "detail": "Secrets are clean, but next 16.4.3 is in a vulnerable range with one moderate production advisory, and the full tree reports 2 critical and 5 high advisories in dev-only tooling. The feature's CON-51x code controls pass; CON-520 is not_verified because T7.4 is open."
+    },
+    {
+      "id": "testing",
+      "status": "pass",
+      "detail": "34 of 34 feature tests and 257 of 257 repo-wide tests pass, exit 0."
+    },
+    {
+      "id": "documentation",
+      "status": "pass",
+      "detail": "CHANGELOG.md and README.md record this wave, including Wallet env vars and PWA/HSTS prerequisites. T8.3 is closed."
+    },
+    {
+      "id": "nfr_evidence",
+      "status": "fail",
+      "detail": "NFR-007 measured pass. NFR-008 reads pass, but its 500-item sync clause is not_verified because the in-memory harness swings from 3.51 s to 10.30 s on identical input. NFR-009 is not_verified because no axe pass ran. SEO is not_verified because there is no deployment to crawl."
+    },
+    {
+      "id": "definition_of_done",
+      "status": "fail",
+      "detail": "T8.2, T7.3 and T7.4 are open, the evidence does not match HEAD, the working tree is dirty, and sdrive check exits 4."
+    },
+    {
+      "id": "spec_to_code_verification",
+      "status": "warn",
+      "detail": "sdrive verify returns warn, not fail: matched 90, missing 0, renamed 0, withdrawn 0, extra 85 pre-existing."
+    },
+    {
+      "id": "ci",
+      "status": "not_verified",
+      "detail": "No CI configuration exists in the repository, so no run exists to record for HEAD."
+    },
+    {
+      "id": "permission",
+      "status": "pass",
+      "detail": "check-permission.js allowed kenule500 (admin) to run /sdrive:review."
+    },
+    {
+      "id": "reviewer_independence",
+      "status": "pass",
+      "detail": "feature.assignee is unset, so no self-approval conflict arises."
+    },
+    {
+      "id": "governance_checks",
+      "status": "fail",
+      "detail": "sdrive check exits 4 with doctor/permissions: No rule for mutating command(s): review:cold. Installed framework files are 1.0.0 while the CLI is 1.1.0-next.3; sdrive permissions:check also lists migrate, amend and reopen as unknown CLI rules."
+    }
   ],
   "findings": [
     {
       "severity": "high",
-      "issue": "Test evidence records commit e722562 but HEAD is d1aa0a3, so it does not describe the tree being released. The recorded run is not wrong about the code it measured: e722562 to 1beea8b differs only in governance JSON, and d1aa0a3 touches no app, components, convex or lib file. But the requirement is commit === HEAD. The self-referential trap is the root cause: evidence must record the commit it ran against, and evidence is itself committed, so a record inside a commit can never equal that commit's SHA. Re-running the same sequence moves HEAD again and stays stale. Settle it in the recording template: either record HEAD after the artefacts are committed and accept a documented follow-up commit, or record HEAD at run start with a tree hash a reviewer can verify is unchanged.",
+      "issue": "sdrive check exits 4: the doctor reports no permission rule for the review:cold command. Installed framework files are 1.0.0 while the CLI is 1.1.0-next.3, so the governance gate is red before feature evidence is read. This blocks the review independently of the feature.",
+      "location": ".sdrive/ (permissions rules)",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "test-evidence.json records commit e6a5d2d but HEAD is 60c5c2e, so the evidence does not describe the tree being released. The recorded run is healthy and the code is unchanged between the two commits (60c5c2e touches only governance, report and evidence-bridge files), but the rule is commit === HEAD. The self-referential trap recurs on every re-run: evidence is committed, so a record inside a commit cannot equal that commit's own SHA. The 60c5c2e message leaves the residual mismatch visible for the reviewer rather than hand-editing the value.",
       "location": ".sdrive/governance/event-platform-expansion/v1/test-evidence.json",
       "fixRequired": true
     },
     {
       "severity": "high",
-      "issue": "NFR-008's 500-item sync budget has no measuring evidence. The read paths pass with wide margins, but the write path swings from 3.51 s (pass) to 5.01 s and 10.30 s (fail) at 3,500 rows, and 14.87 s to 21.19 s at 15,000 rows, all with a byte-identical batch argument. That variance exceeds the margin to the 5 s budget, so no verdict can be read from it in either direction. The handler does one indexed .unique() per item and one patch, so no missing index explains it; the untested explanation is the in-memory convex-test simulation.",
+      "issue": "The working tree is not clean: untracked .perch/ (a tool directory, not application code) makes git status --porcelain non-empty. The Commit Binding Rule requires a clean tree.",
+      "location": ".perch/",
+      "fixRequired": true
+    },
+    {
+      "severity": "high",
+      "issue": "T8.2 is open and NFR-008's 500-item sync budget has no deployed measurement. The in-memory convex-test harness swings from 3.51 s (pass) to 5.01 s and 10.30 s (fail) at 3,500 rows and 14.9 s to 21.2 s at 15,000 rows on a byte-identical argument, so it neither proves nor refutes the 5 s budget. No production code change is justified before that number exists.",
       "location": "convex/door.ts:119",
-      "fixRequired": true
+      "fixRequired": true,
+      "acIds": ["AC-012"]
+    },
+    {
+      "severity": "high",
+      "issue": "T7.3 and T7.4 remain open: no manual responsive/keyboard/French pass and no deployed HTTPS/HSTS and PWA confirmation. Both need a human at a browser and a live host.",
+      "location": ".sdrive/specs/ongoing/event-platform-expansion/v1/tasks.md",
+      "fixRequired": true,
+      "acIds": ["AC-014", "AC-032"]
     },
     {
       "severity": "medium",
-      "issue": "NFR-009 has no accessibility evidence. No axe pass ran over the feature surfaces, so the WCAG 2.1 AA claim rests only on unit-level screen assertions.",
+      "issue": "NFR-009 has no accessibility evidence. No axe pass ran over the door console, register modal and custom questions, sponsor strip or wallet save control, so the WCAG 2.1 AA claim rests on unit-level screen assertions.",
       "location": ".sdrive/governance/event-platform-expansion/v1/traceability.json",
-      "fixRequired": true
+      "fixRequired": true,
+      "acIds": ["AC-023", "AC-024", "AC-032"]
     },
     {
       "severity": "medium",
-      "issue": "CHANGELOG.md is unchanged on this branch and its Unreleased section names none of sponsors, Wallet passes, offline door mode, registration questions or locale switching. This is T8.3, raised in round 1 and still unticked.",
-      "location": "CHANGELOG.md",
+      "issue": "next 16.4.3 is in a vulnerable range (7 advisories, one moderate in production). The framework now aborts the first npm run build with SecurityFatalError and only succeeds on a retry, so a clean CI or Docker build is not reproducible. The full audit also reports 2 critical and 5 high advisories in dev-only tooling (tinypool via vitest).",
+      "location": "package.json",
       "fixRequired": true
     },
     {
       "severity": "low",
-      "issue": "One moderate advisory in a direct dependency: GHSA-mfr8-8qww-v76h, information disclosure across root params when a use cache function is called through unstable_cache, affecting next 16.3.0 to 16.4.4 with 16.4.3 installed. No high or critical advisory. Non-blocking: the app is not known to call unstable_cache through use cache, and the remedy is a Next.js patch bump owned by /sdrive:secure.",
-      "location": "package.json",
+      "issue": "Ten commit subjects use only task IDs (T1.x to T8.3) and do not name the feature, so CON-611 evidence depends on the task IDs rather than the subject line.",
+      "location": "git log main..HEAD",
+      "fixRequired": false
+    },
+    {
+      "severity": "low",
+      "issue": "The Dockerfile uses npm install instead of npm ci, and .dockerignore excludes .env, .env.local and .env.*.local but not .env.production. The current .env.production values are placeholders, but a future real value would be baked into the image layer.",
+      "location": "Dockerfile,.dockerignore",
       "fixRequired": false
     },
     {
       "severity": "info",
-      "issue": "Three benchmark runs overwrote each other's raw JSON before the volume-tagged files were added. The tagged set is complete and the report numbers come from a summarise pass over all four. Keep one file per volume.",
-      "location": ".sdrive/reports/performance/benchmarks/",
+      "issue": "sdrive doctor warns that 5 adapter paths are unverified and that installed files are 1.0.0 while the CLI is 1.1.0-next.3.",
+      "location": ".sdrive/",
       "fixRequired": false
     }
   ],
   "evidence": {
     "testEvidence": ".sdrive/governance/event-platform-expansion/v1/test-evidence.json",
-    "testReport": ".sdrive/reports/tests/test-report-event-platform-expansion-v1-2026-11-15.md",
-    "verification": ".sdrive/governance/event-platform-expansion/v1/verification.json"
+    "testReport": ".sdrive/reports/tests/test-report-event-platform-expansion-v1-2026-11-17.md",
+    "verification": ".sdrive/governance/event-platform-expansion/v1/verification.json",
+    "audit": ".sdrive/audit-log.json"
   },
   "security": {
-    "status": "pass",
+    "status": "fail",
+    "reason": "Secrets are clean: no tracked .env file and no secret pattern in the branch diff (gitleaks and trufflehog are not installed, so this was a manual scan). Dependencies are not clean: next 16.4.3 is in a vulnerable range with one moderate production advisory and the first production build is aborted by the framework guard; the full tree has 2 critical and 5 high dev-only advisories. The feature's CON-51x controls pass, but CON-520 (HTTPS/HSTS) is not_verified because T7.4 is open.",
     "secrets": "clean",
-    "dependencies": "clean",
+    "dependencies": "vulnerable",
     "baseline": [
-      { "id": "CON-511", "status": "pass", "detail": "Clerk JWT issuer configured in convex/auth.config.ts; helpers.getAuthenticatedUser rejects a missing identity." },
-      { "id": "CON-512", "status": "pass", "detail": "No raw query or mutation export added to events, platform, audit, exports or registrations; door and wallet use secureQuery and secureMutation with requireEventOrganizer." },
-      { "id": "CON-513", "status": "not_applicable", "detail": "Helmet is Express-only and this project has no Express server." },
-      { "id": "CON-514", "status": "pass", "detail": "doorSyncRateLimit and walletIssueRateLimit buckets are consumed before work in the door and wallet mutations." },
-      { "id": "CON-515", "status": "pass", "detail": "Convex validators declared on every door and wallet args block." },
-      { "id": "CON-516", "status": "not_applicable", "detail": "Convex queries are typed and parameterized; the project assembles no query strings." },
-      { "id": "CON-517", "status": "pass", "detail": "JSON-LD escapes less-than before embedding. The only dangerouslySetInnerHTML is the pre-existing shadcn chart component, not added by this branch." },
-      { "id": "CON-518", "status": "not_applicable", "detail": "State-changing calls are Convex mutations authenticated by a Clerk token, not cookie-driven form posts." },
-      { "id": "CON-519", "status": "pass", "detail": "No tracked dot-env files and .gitignore ignores them." }
+      {
+        "id": "CON-511",
+        "status": "pass",
+        "detail": "Clerk JWT issuer is configured in convex/auth.config.ts; helpers.getAuthenticatedUser rejects a missing identity."
+      },
+      {
+        "id": "CON-512",
+        "status": "pass",
+        "detail": "Door and wallet use secureQuery/secureMutation with requireEventOrganizer; no raw query or mutation export was added to events, platform, audit, exports or registrations."
+      },
+      {
+        "id": "CON-513",
+        "status": "not_applicable",
+        "detail": "Helmet is Express-only and this project has no Express server."
+      },
+      {
+        "id": "CON-514",
+        "status": "pass",
+        "detail": "doorSyncRateLimit and walletIssueRateLimit buckets are consumed before work in the door and wallet mutations; the settings, sponsor and question buckets are also wired."
+      },
+      {
+        "id": "CON-515",
+        "status": "pass",
+        "detail": "Convex validators are declared on every new args block, and the new inputs are validated server-side in validators.ts."
+      },
+      {
+        "id": "CON-516",
+        "status": "not_applicable",
+        "detail": "Convex queries are typed and parameterized; the project assembles no query strings."
+      },
+      {
+        "id": "CON-517",
+        "status": "pass",
+        "detail": "The new JSON-LD component is the one new dangerouslySetInnerHTML use, and it escapes <, >, & and the line separators before embedding. All other new rendering uses React escaping."
+      },
+      {
+        "id": "CON-518",
+        "status": "not_applicable",
+        "detail": "State-changing calls are Convex mutations authenticated by a Clerk token, not cookie-driven form posts."
+      },
+      {
+        "id": "CON-519",
+        "status": "pass",
+        "detail": "No tracked dot-env files; .gitignore ignores them."
+      },
+      {
+        "id": "CON-520",
+        "status": "not_verified",
+        "detail": "HSTS is a hosting-layer control and T7.4 (deployed HTTPS/HSTS and PWA confirmation) is still open."
+      }
     ]
   },
   "performance": {
     "status": "not_verified",
-    "reason": "NFR-007 measured pass. NFR-008 reads measured pass, but its 500-item sync clause is not_verified: the only available harness is the in-memory convex-test simulation, which swings more than 2x between runs of an identical batch argument from 3.5 s to 10.3 s above a few thousand stored rows, so it neither proves nor refutes the 5 s budget. NFR-009 not_verified: no axe pass ran over the feature surfaces.",
-    "method": "Project harness under .sdrive/reports/performance/benchmarks: esbuild bundle of convex run under convex-test in-memory backend with the rate-limiter component registered; a fresh backend seeded per iteration; 7 iterations per case; highest and lowest discarded; p50 of the remaining 5, p95 over all 7.",
+    "reason": "NFR-007 measured pass. NFR-008 reads measured pass, but its 500-item sync clause is not_verified: the only available harness is the in-memory convex-test simulation, which swings from 3.51 s to 10.30 s on an identical argument above a few thousand stored rows. NFR-009 is not_verified: no axe pass ran over the feature surfaces. SEO is not_verified: there is no deployment to crawl.",
+    "method": "Project harness under .sdrive/reports/performance/benchmarks: esbuild bundle of the Convex functions run under convex-test in an in-memory backend with the rate-limiter component registered; a fresh backend seeded per iteration; 7 iterations per case; highest and lowest discarded; p50 of the remaining 5, p95 over all 7.",
     "nfr": [
-      { "id": "NFR-007", "target": "cached OG image <= 1500 ms p95; uncached <= 3000 ms p95", "measured": "public event read 2.0 ms p50 at 500 rows; 2.3 ms p50 at 3500 rows; 9.9 ms p50 at 15000 rows", "status": "pass" },
-      { "id": "NFR-008", "target": "live counts <= 2000 ms p95; offline ack <= 150 ms; 500-item sync <= 5000 ms", "measured": "door snapshot 192 ms p50 and 234 ms p95, attendee search 65 ms p50 and 97 ms p95 at 15000 rows; 500-item sync unstable between 3.51 s and 10.30 s; offline ack not observable in Node", "status": "not_verified" },
-      { "id": "NFR-009", "target": "WCAG 2.1 AA on all new and changed surfaces", "measured": "no axe pass ran over the feature surfaces", "status": "not_verified" }
+      {
+        "id": "NFR-007",
+        "target": "cached OG image <= 1500 ms p95; uncached <= 3000 ms p95",
+        "measured": "public event read 2.0 ms p50 at 500 rows; 2.3 ms p50 at 3500 rows; 9.9 ms p50 at 15000 rows",
+        "status": "pass"
+      },
+      {
+        "id": "NFR-008",
+        "target": "live counts <= 2000 ms p95; offline ack <= 150 ms; 500-item sync <= 5000 ms",
+        "measured": "door snapshot 192 ms p50 and 234 ms p95, attendee search 65 ms p50 and 97 ms p95 at 15000 rows; 500-item sync unstable between 3.51 s and 10.30 s; offline ack not observable in Node",
+        "status": "not_verified"
+      },
+      {
+        "id": "NFR-009",
+        "target": "WCAG 2.1 AA on all new and changed surfaces",
+        "measured": "no axe pass ran over the feature surfaces",
+        "status": "not_verified"
+      }
     ],
     "seo": "not_verified",
     "report": ".sdrive/reports/performance/performance-report-event-platform-expansion-v1-2026-11-15.md"
   },
   "remediation": {
-    "round": 2,
+    "round": 3,
     "items": [
-      { "finding": "Test evidence records commit e722562 but HEAD is d1aa0a3. The self-referential trap recurs on every re-run.", "severity": "high", "fixWith": "/sdrive:test event-platform-expansion", "task": "T8.2" },
-      { "finding": "NFR-008's 500-item sync budget has no measuring evidence; the in-memory harness swings from 3.51 s to 10.30 s on identical input.", "severity": "high", "fixWith": "/sdrive:performance event-platform-expansion", "task": "T8.2" },
-      { "finding": "NFR-009 has no accessibility evidence; no axe pass ran over the feature surfaces.", "severity": "medium", "fixWith": "/sdrive:performance event-platform-expansion", "task": "T8.2" },
-      { "finding": "CHANGELOG.md does not record this branch's user-facing additions.", "severity": "medium", "fixWith": "/sdrive:apply event-platform-expansion", "task": "T8.3" }
+      {
+        "finding": "sdrive check exits 4: doctor/permissions has no rule for review:cold; installed framework files 1.0.0 vs CLI 1.1.0-next.3.",
+        "severity": "high",
+        "fixWith": "sdrive update",
+        "roundsFailed": 1
+      },
+      {
+        "finding": "test-evidence.json records commit e6a5d2d but HEAD is 60c5c2e; the evidence self-reference trap is unresolved.",
+        "severity": "high",
+        "fixWith": "/sdrive:test event-platform-expansion",
+        "task": "T8.1",
+        "roundsFailed": 3
+      },
+      {
+        "finding": "The working tree is dirty: untracked .perch/ fails the clean-tree clause.",
+        "severity": "high",
+        "fixWith": "human: add .perch/ to .gitignore or relocate it",
+        "roundsFailed": 1
+      },
+      {
+        "finding": "NFR-008's 500-item sync budget has no deployed measurement; the in-memory harness swings from 3.51 s to 10.30 s on identical input.",
+        "severity": "high",
+        "fixWith": "/sdrive:performance event-platform-expansion",
+        "task": "T8.2",
+        "roundsFailed": 3
+      },
+      {
+        "finding": "T7.3 and T7.4 are open: manual responsive/keyboard/French QA and deployed HTTPS/HSTS/PWA confirmation.",
+        "severity": "high",
+        "fixWith": "/sdrive:test event-platform-expansion",
+        "task": "T7.3, T7.4",
+        "roundsFailed": 3
+      },
+      {
+        "finding": "NFR-009 has no accessibility evidence; no axe pass ran over the feature surfaces.",
+        "severity": "medium",
+        "fixWith": "/sdrive:performance event-platform-expansion",
+        "task": "T8.2",
+        "roundsFailed": 3
+      },
+      {
+        "finding": "next 16.4.3 is vulnerable and the first production build is aborted by the framework security guard; dev tooling has 2 critical and 5 high advisories.",
+        "severity": "medium",
+        "fixWith": "/sdrive:secure event-platform-expansion",
+        "roundsFailed": 1
+      },
+      {
+        "finding": "Ten commit subjects use only task IDs and do not name the feature.",
+        "severity": "low",
+        "fixWith": "human: name the feature in future commit subjects",
+        "roundsFailed": 1
+      },
+      {
+        "finding": "Dockerfile uses npm install and .dockerignore does not exclude .env.production.",
+        "severity": "low",
+        "fixWith": "/sdrive:secure event-platform-expansion",
+        "roundsFailed": 1
+      },
+      {
+        "finding": "sdrive doctor warns about 5 unverified adapter paths and a 1.0.0 vs 1.1.0-next.3 manifest mismatch.",
+        "severity": "info",
+        "fixWith": "sdrive update",
+        "roundsFailed": 1
+      }
     ]
   }
 }
