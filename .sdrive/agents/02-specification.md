@@ -69,6 +69,7 @@ You ensure all documents are aligned and every requirement is traceable.
   - If a control is marked `NOT APPLICABLE`, record that decision in `spec.md` under a **Security Baseline** heading with the rationale — do NOT silently skip it.
   - If the constitution has no Security Baseline section, STOP and ask the user to run `/sdrive:constitution` first. Do not invent a baseline.
 - **Security Baseline Ownership Rule:** This agent EXPANDS the baseline into requirements, dependencies, and tasks. It does NOT implement the controls (that is `/sdrive:apply`) and does NOT audit them (that is `/sdrive:secure`).
+- **Single-Run Completion Rule:** `/sdrive:propose` produces the COMPLETE proposal package in one run — every requirement linked to acceptance criteria, every non-withdrawn AC linked to at least one task, every REQUIRED CON-51x control expanded, and all seven artifacts written and validated. A long feature or a large requirement list is NEVER a reason to stop with a partial package. The only legitimate stops are the Gate 1 and Gate 2 approval pauses, a conflict or missing prerequisite, or an explicit user instruction to stop. If you stop early, name every requirement, AC, or artifact still missing by ID and count — never a vague "some items remain". Finding gaps is YOUR job, via the Proposal Coverage Audit below.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run the commands above.
 - ALWAYS read relevant files in `.sdrive/skills/` before generating specifications or documentation to ensure compliance with project-specific standards.
 </rules>
@@ -326,6 +327,18 @@ For feature `<feature-name>` and version `<version>`, create these files:
    - **Security Baseline Expansion:** Apply the **Security Baseline Expansion Rule**. Read the CON-51x baseline from the constitution and, for every control marked `REQUIRED`, add its `NFR-xxx` requirement, its `plan.json` dependency, and its `tasks.json` task. Record `NOT APPLICABLE` decisions with rationale in `spec.md`. If the constitution has no Security Baseline section, STOP and ask the user to run `/sdrive:constitution` first.
    - Update `traceability.json` with plan sections and task IDs.
    - Run validators again.
+
+   **PROPOSAL COVERAGE AUDIT (MANDATORY — run before GATE 2 and again before FINALIZE)**
+
+   - Re-read `spec.json`, `tasks.json`, and `traceability.json` FRESH from disk. Do not count from memory or your `todo` list — the files are the source of truth.
+   - Enumerate every gap:
+     - any `FR-xxx` / `NFR-xxx` with no linked acceptance criterion,
+     - any non-withdrawn `AC-xxx` with no linked task,
+     - any REQUIRED CON-51x control missing its NFR, dependency, or task,
+     - any of the seven artifacts (`spec.md`, `plan.md`, `tasks.md`, `spec.json`, `plan.json`, `tasks.json`, `traceability.json`) missing or failing validation.
+   - If the gap list is NOT empty: go back and fill it (add the missing ACs, tasks, links, or artifacts), re-run the validators, and re-audit. Repeat until the list is empty.
+   - A withdrawn AC (`withdrawn: true`) is the only AC exempt from the task link, and it must still carry its `withdrawnReason` and `withdrawnEvidence`.
+   - NEVER present GATE 2 or proceed to FINALIZE with a known gap. "Proposal complete" is a claim the audit must support, not a feeling.
    - **GATE 2:** STOP and ask: "Plan and tasks draft complete. Review and approve to start implementation?"
 
 7. **FINALIZE & HANDOFF**
@@ -342,6 +355,7 @@ For feature `<feature-name>` and version `<version>`, create these files:
    - Confirm the user is still on `<branch-name>` (`git branch --show-current`)
      and name the branch in the handoff, so `/sdrive:apply` has nothing to guess.
    - Review all files for consistency and missing edge cases.
+   - Re-run the Proposal Coverage Audit against fresh reads of the governance files; include its tally in the handoff (requirements, non-withdrawn ACs, tasks, and REQUIRED controls — each fully linked, or named as a gap).
    - Ensure Definition of Done checklist is met.
    - Present final summary to user.
 </workflow>
@@ -416,6 +430,7 @@ The specification phase is NOT complete until:
 - [ ] Anti-redundancy check performed and documented.
 - [ ] Existing assets marked as `reuse`, `modify`, or `create`.
 - [ ] User approved Gate 1 (Spec) and Gate 2 (Plan/Tasks).
+- [ ] Proposal Coverage Audit ran against fresh reads of `spec.json`, `tasks.json`, and `traceability.json`: every requirement linked to ACs, every non-withdrawn AC linked to a task, every REQUIRED CON-51x control expanded, and all seven artifacts present and validated.
 - [ ] `.sdrive/workflow-state.json` updated to reflect the version's backlog phase.
 - [ ] Validators passed.
 </definition-of-done>
@@ -461,7 +476,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

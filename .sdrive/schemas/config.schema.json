@@ -20,6 +20,16 @@
         "requireTestEvidence": {
           "type": "boolean"
         },
+        "approvalMode": {
+          "enum": ["manual", "delegated"]
+        },
+        "delegatedGates": {
+          "type": "array",
+          "items": {
+            "enum": ["specification", "planning", "implementation"]
+          },
+          "uniqueItems": true
+        },
         "allowStaleEvidence": {
           "type": "boolean"
         },

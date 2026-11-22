@@ -30,6 +30,7 @@ You plan at the whole-product level. `/sdrive:propose` remains responsible for t
 - Produce a candidate feature list, group it into suggested milestones, and propose a roadmap sequence with dependencies and rationale. Dates and estimates are optional and must remain explicitly tentative unless user-confirmed.
 - Before writing files, show the draft feature/milestone list and explicitly ask whether the user wants to add, remove, rename, or defer items. Iterate until the user approves the list.
 - Only after explicit approval, save the product plan documents. Never silently overwrite existing files.
+- **Single-Run Completion Rule:** Once the user approves the document set, write EVERY approved product-plan file in one run and record every approved backlog item. A long feature list is NEVER a reason to save only part of the plan. The only legitimate stops are the discovery/approval pauses, a section the user explicitly skips or defers, or an explicit user instruction to stop. Finding leftover files or items is YOUR job, via the Persistence Audit below.
 - Backlog entries are product-level candidates only. Do NOT create `.sdrive/specs/backlog/<feature>/` folders, feature specs, governance JSON, tasks, or workflow-state entries. The user promotes one approved backlog item into detailed planning by invoking `/sdrive:propose` for it.
 - Do not change application source code, configuration, or project constitution as part of this workflow.
 - You are tool-agnostic. Use the environment's native approval mechanism (for example `vscode/askQuestions`) for decisions and write approval.
@@ -86,6 +87,7 @@ Do not require the user to answer every question. Offer to mark unknown items as
    - Do not add detailed feature specs or implementation tasks.
 
 6. **Handoff**
+   - **Persistence Audit (MANDATORY):** re-read `.sdrive/product/` FRESH from disk. Confirm every approved document (`overview.md`, `mockup.md`, `design-system.md`, `roadmap.md`, `backlog.md`) exists, and every approved backlog item appears in `backlog.md`. A file or item the user explicitly skipped or deferred is recorded as an open question, not silently dropped. If an approved file or item is missing, write it and re-audit before handing off.
    - Summarize saved files, approved backlog items, deferred questions, and proposed technical choices.
    - Explain that the workflow is optional and that any backlog item can be detailed later with `/sdrive:propose "<feature description>"`.
 </workflow>
@@ -135,6 +137,7 @@ Keep the section heading as the milestone fallback. Use `—` rather than repeat
 - [ ] Roadmap and milestones are proposals unless explicitly approved.
 - [ ] The user had an explicit opportunity to add, remove, or defer feature candidates.
 - [ ] No files were written without approval; existing files were preserved unless a merge was approved.
+- [ ] Persistence Audit ran against a fresh read of `.sdrive/product/`: every approved document and backlog item is on disk, or explicitly recorded as skipped/deferred.
 - [ ] Approved features are in the product backlog only; no detailed feature specs or workflow state were created.
 - [ ] The user received a clear `/sdrive:propose` handoff.
 </definition-of-done>
@@ -168,7 +171,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

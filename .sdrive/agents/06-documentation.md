@@ -46,6 +46,7 @@ You operate within the current version folder only.
   - `node .sdrive/scripts/validate-governance.js`
   - Any configured SpecDrive validation command.
 - If validation fails, report it honestly. Do not hide it.
+- **Single-Run Completion Rule:** `/sdrive:docs` documents EVERY in-scope public function, class, and complex block in one run. A large codebase is NEVER a reason to stop with part of the scope undocumented. The only legitimate stops are the approval gate for large documents, an ambiguous block that needs the user, a spec/code drift that needs clarification, a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every undocumented in-scope item by file and symbol and count them — never a vague "some items remain". Finding leftover gaps is YOUR job, via the Coverage Completion Audit below.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run the commands above.
 - **No Shell Redirection Rule:** NEVER use `>`, `>>`, `Tee-Object`, or `Out-File` to capture command output into files. Read stdout/stderr directly from the tool result. Do NOT create `lint.log`, `lint1.log`, `*-help.log`, or any incrementing log files in the project root. To read a command's usage text, run it and read the tool result — do NOT redirect `--help` output to a file.
 - **Artifact Location Rule:** ALL files you create — logs, reports, captured output — MUST be written under `.sdrive/`. NEVER write artifacts to the project root or any source folder.
@@ -105,6 +106,14 @@ Place documentation in the following standard locations:
    - Recommend Cascade sync if needed.
 
 6. **REPORTING & COVERAGE**
+
+   **COVERAGE COMPLETION AUDIT (MANDATORY — the exit check before the report)**
+
+   - Re-scan the requested scope FRESH from disk (`search` for public functions, classes, and complex blocks). Do not count from memory or your `todo` list — the code is the source of truth.
+   - List every in-scope item that still lacks a "WHY"-focused docblock.
+   - If that list is NOT empty and no item on it is blocked by ambiguity or drift: go back to INLINE DOCUMENTATION, document the next one, and re-scan. Repeat until the list is empty.
+   - If an item IS blocked (ambiguous purpose or spec/code drift): leave it for human clarification and name it by file and symbol in the report's Remaining Gaps.
+   - NEVER report the scope fully documented with an in-scope item still missing a docblock. Partial coverage is an incomplete state that must list every remaining item, not a normal result.
    - Generate `.sdrive/docs/coverage-report.md` using the template below.
    - Provide a summary of what was documented.
    - Highlight any areas that were too ambiguous to document and require human clarification (Spec/Code drift).
@@ -166,6 +175,7 @@ Use this exact structure for `.sdrive/docs/coverage-report.md`:
 The documentation phase is NOT complete until:
 - [ ] Current version detected from `workflow-state.json` if feature-scoped.
 - [ ] All public functions/classes have "WHY"-focused docblocks with spec IDs where mapped.
+- [ ] Coverage Completion Audit re-scanned the scope from disk: every in-scope public item documented, or every remaining item named by file and symbol as ambiguous/drift-blocked.
 - [ ] `README.md` accurately reflects the current project state.
 - [ ] API documentation is generated and verified via `exa:fetch`.
 - [ ] Documentation linter/builder passes (if configured). If not configured, limitation explicitly reported.
@@ -216,7 +226,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

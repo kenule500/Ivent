@@ -53,6 +53,36 @@ function getFeature(featureName) {
 
 const GATE_APPROVED = "approved";
 
+// Review is deliberately excluded. Delegated approval exists to remove repetitive
+// terminal sign-offs for mechanical phases, not to automate the verdict that
+// accepts the work.
+const DELEGATABLE_GATES = ["specification", "planning", "implementation"];
+
+function approvalPolicy(root = projectRoot) {
+  const configPath = path.join(root, ".sdrive", "config.json");
+  let config = {};
+
+  try {
+    config = JSON.parse(fs.readFileSync(configPath, "utf8"));
+  } catch (error) {
+    config = {};
+  }
+
+  const governance = config.governance || {};
+  const mode = governance.approvalMode === "delegated" ? "delegated" : "manual";
+  const configured = Array.isArray(governance.delegatedGates)
+    ? governance.delegatedGates
+    : DELEGATABLE_GATES;
+  const gates = configured.filter((gate) => DELEGATABLE_GATES.includes(gate));
+
+  return { mode, gates };
+}
+
+function canDelegateGate(root, gate) {
+  const policy = approvalPolicy(root);
+  return policy.mode === "delegated" && policy.gates.includes(gate);
+}
+
 function gateStatusFor(version, gate) {
   if (!version) {
     return "pending";
@@ -1005,6 +1035,9 @@ module.exports = {
   approveGate,
   isGateApproved,
   GATE_ORDER,
+  DELEGATABLE_GATES,
+  approvalPolicy,
+  canDelegateGate,
   SPEC_STAGES,
   findSpecLocation,
   collectAcceptanceCriteria,

@@ -267,6 +267,11 @@
       "admin",
       "reviewer",
       "developer"
+    ],
+    "review:cold": [
+      "admin",
+      "reviewer",
+      "developer"
     ]
   }
 }

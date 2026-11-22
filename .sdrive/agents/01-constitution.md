@@ -15,7 +15,8 @@ You extract prescriptive rules, standards, and constraints from the discovered c
 
 <rules>
 - ALWAYS read `.sdrive/constitution.md` first if it exists to preserve existing rules and structure.
-- When detecting the project's test framework, populate CON-401 through CON-403 automatically from `package.json`, `requirements.txt`, `pyproject.toml`, `go.mod`, `pubspec.yaml`, or similar files.
+- When detecting the project's test framework, populate CON-401 through CON-403 automatically from `package.json`, `requirements.txt`, `pyproject.toml`, `go.mod`, `Cargo.toml`, `pubspec.yaml`, or similar files.
+- **Test Framework Detection Rule:** never ask the user which test framework the project uses when the answer is discoverable, and never leave CON-401 to CON-403 blank when it is. Detect it, record it with its source, and ask only when no artifact executes tests at all — in which case mark CON-401 as `none (no executable tests yet)` and say so in the constitution, rather than guessing a runtime.
 - NEVER overwrite or delete an existing rule without explicit user approval.
 - If `.sdrive/constitution.md` exists, PRESERVE its existing structure and merge new rules into the appropriate sections. Do not force a full template rewrite. Only apply the full template when creating a new constitution from scratch.
 - Use your available file reading and search tools to discover project facts:
@@ -161,6 +162,7 @@ This document is the single source of truth for all project standards, rules, an
 
 ## 4. Testing & Quality (CON-4xx)
 - **CON-401:** Test framework is [FRAMEWORK]. <!-- source: .sdrive/context/code-standards.md -->
+  - When no artifact in the project executes tests, this rule reads `none (no executable tests yet)` and CON-402/CON-403/CON-406 do not apply. A docs-only feature carries `testFramework: "none"` in its report rather than an invented runtime.
 - **CON-402:** Run tests with [COMMAND]. <!-- source: .sdrive/context/code-standards.md -->
 - **CON-403:** Tests live in [FOLDER]. <!-- source: .sdrive/context/code-standards.md -->
 - **CON-404:** Every acceptance criterion MUST have at least one test. <!-- source: SpecDrive -->
@@ -212,7 +214,7 @@ Every feature that touches authentication, user input, or an HTTP surface MUST a
 ## 7. AI Agent Rules (CON-7xx)
 - **CON-701:** [Rule text] <!-- source: .sdrive/context/ai-workflow-rules.md -->
 - **CON-714:** An agent MUST NEVER read, print, copy, or edit a credential file — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc` — and MUST verify configuration by variable NAME (an example file, the config schema, or `process.env` usage) rather than by value. A finding involving a secret MUST cite the variable name and its location, redacted. A leaked value MUST be rotated, never rewritten in place: editing or deleting it does not undo the exposure. <!-- source: SpecDrive Secret Handling Policy -->
-- **CON-715:** An agent MUST run every deterministic step itself rather than instructing the user to run it. `sdrive verify`, `sdrive test`, `sdrive check`, `sdrive validate`, `sdrive next` and similar are scripts; an agent holding a terminal that tells the user to type one has transferred work for no reason. An agent MUST NOT run, and MUST ask the user for: `sdrive approve` (a sign-off recorded as governance), `/sdrive:*` commands it cannot launch (no agent may start another), credential rotation, and any merge decision. When a session ends, the next step MUST be recorded in `.sdrive/handoff.json` via `sdrive next <feature> --write` so it survives the conversation. <!-- source: SpecDrive Agent Autonomy Policy -->
+- **CON-715:** An agent MUST run every deterministic step itself rather than instructing the user to run it. `sdrive verify`, `sdrive test`, `sdrive check`, `sdrive validate`, `sdrive next` and similar are scripts; an agent holding a terminal that tells the user to type one has transferred work for no reason. An agent MUST NOT run, and MUST ask the user for: `sdrive approve` (a sign-off recorded as governance) UNLESS the project has `governance.approvalMode: delegated` and the gate is listed in `governance.delegatedGates`; in that case the agent runs `sdrive approve <feature> <gate> --delegated --reason "..."` itself after `sdrive check` passes. `review` and `archive` always require the human. The same restriction applies to `/sdrive:*` commands it cannot launch (no agent may start another), credential rotation, and any merge decision. When a session ends, the next step MUST be recorded in `.sdrive/handoff.json` via `sdrive next <feature> --write` so it survives the conversation. <!-- source: SpecDrive Agent Autonomy Policy -->
 - **CON-716:** Every command MUST end by naming the next action and where it runs: `Next Action: <command>` followed by `where: on the <chat|terminal>`. A `/sdrive:*` command is sent from the chat; an `sdrive ...` command runs in the terminal. An agent MUST run the terminal steps itself and name only the one action that comes next — never a menu of possibilities. <!-- source: SpecDrive Next Action Policy -->
 
 ---
@@ -280,7 +282,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

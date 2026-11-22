@@ -60,6 +60,7 @@ You operate within the current version folder only.
 - NEVER commit hardcoded secrets, API keys, or passwords. Use environment variables.
 - NEVER guess API parameters or library behaviors. ALWAYS use the **Context7 MCP** to fetch up-to-date, version-specific documentation and code examples for any library defined in `package.json`. Use `exa:search` only for broader architectural patterns, security standards, or finding community resources.
 - If a task is blocked or ambiguous, STOP and use your tool's approval mechanism. NEVER guess.
+- **Single-Run Completion Rule:** `/sdrive:apply` implements EVERY in-scope task in one run. A long run, a large task list, or "the rest can wait until next time" is NEVER a reason to stop. The only legitimate early exits are a blocked or ambiguous task, a missing prerequisite, or an explicit user instruction to stop. If you exit early, name every remaining task by ID and count, and say which blocker stopped you — never a vague "some tasks remain". The user must not have to re-run `/sdrive:apply` and point out leftover tasks; finding them is YOUR job, via the Completion Audit below.
 - NEVER modify `spec.md` or `plan.md`. Only update `tasks.md` checkboxes, `tasks.json` completion status, and `traceability.json` status column — all inside the current version folder.
 - For secret scanning, use deterministic tools where available (`gitleaks`, `trufflehog`, or equivalent). If none available, use `search` for common patterns (`AKIA`, `BEGIN PRIVATE KEY`, `password =`). If no automated scan is possible, explicitly report: "Manual secret scan required." Never claim a scan passed without running it.
 - Run validators before every commit:
@@ -154,7 +155,7 @@ You operate within the current version folder only.
 
 3. **Repeat**
 
-   - Continue until all tasks complete.
+   - Continue until all tasks complete. After each task, pick the next unchecked one — do not end the run while unchecked in-scope tasks remain. The Completion Audit in the workflow is the exit check, not your impression of progress.
 
 </git-workflow>
 
@@ -199,6 +200,14 @@ You operate within the current version folder only.
      - Commit and push atomically.
      - Update `tasks.md`, `tasks.json`, `traceability.json` in the current version folder.
 
+   **COMPLETION AUDIT (MANDATORY — the only exit from this step)**
+
+   - Re-read `tasks.json` FRESH from disk. Do not count from memory, from your `todo` list, or from what you believe you finished — the file is the source of truth.
+   - List every task that is neither `completed: true`, nor resolved with a recorded `resolution`, nor deferred to `/sdrive:test` by the Task Filter Rule.
+   - If that list is NOT empty and no task on it is blocked: go back to the top of EXECUTE TASKS and implement the next one. Repeat until the list is empty.
+   - If a task on it IS blocked: STOP per the blocked-task rule, and report the exact IDs and count of everything still open.
+   - NEVER proceed to the security gate, verification, or FINALIZE with an in-scope task still open. "Implementation complete" is a claim the audit must support, not a feeling.
+
 4. **FINAL SECURITY GATE**
 
    - Run secret detection. Report honestly if not available.
@@ -222,7 +231,9 @@ You operate within the current version folder only.
      `/sdrive:propose <feature>`. Never ask
      the user to pick or confirm a merge target here.
    - Report: "Implementation complete on `<feature.branch>`, based on
-     `<feature.base>`."
+     `<feature.base>`." Include the Completion Audit tally: tasks completed,
+     deferred to `/sdrive:test`, descoped, and still open (must be zero unless a
+     blocker stopped the run).
    - **Run the mechanical close-out yourself. Do not ask the user to type it.**
      `sdrive verify <feature>` and `sdrive test <feature>` are scripts, not prompts, so
      an agent with a terminal has no reason to hand them over:
@@ -286,6 +297,7 @@ The implementation phase is NOT complete until:
 - [ ] `workflow-state.json` `phase` set to `ongoing` and `currentStep` set to `implementation`.
 - [ ] All feature and governance files read from the current version folder.
 - [ ] All non-test tasks implemented within scope.
+- [ ] Completion Audit ran against a fresh read of `tasks.json`: zero in-scope tasks open, or every open task is blocked/descoped and reported by ID.
 - [ ] No tests were written, edited, or run (that is the Test Agent's job).
 - [ ] No test-runner command was executed in ANY phase — including verification-phase tasks such as "Run `bun run test`".
 - [ ] Test-related tasks were deferred and reported under "Deferred to `/sdrive:test`".
@@ -345,7 +357,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

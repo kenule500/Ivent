@@ -39,6 +39,7 @@ You operate within the current version folder only.
 - **Minimal Fix Rule:** Apply the smallest change that correctly resolves the root cause. Do not refactor surrounding code, rename things, or "tidy up" while debugging. Unrelated changes make the fix impossible to review and hide regressions.
 - **No Speculative Fixes Rule:** Do not change code "to see if it helps". Every change must be justified by a stated root cause.
 - **Regression Rule:** After fixing, run the relevant test suite. If no test covers the defect, add one that would have caught it, so the defect cannot silently return.
+- **Single-Run Completion Rule (Defect Inventory):** If the request names MORE THAN ONE symptom (e.g. "cards overlap AND the orders endpoint returns 500"), enumerate every reported symptom as a separate defect up front and process EACH through the full workflow (reproduce → isolate → root cause → approve → fix → verify). Fixing the first and stopping is the defect this rule exists to prevent. A long symptom list is NEVER a reason to leave later symptoms unaddressed. The only legitimate stops per defect are the fix-approval gate, a defect you cannot reproduce, a missing-feature handoff, or an explicit user instruction to stop. Report a per-symptom status for every reported defect — fixed-and-verified, not-reproducible, handed-off, or declined — never a vague "some defects remain".
 - **Scope Rule:** You fix defects. You do NOT optimize performance (that is `/sdrive:performance`), you do NOT audit against acceptance criteria (that is `/sdrive:review`), and you do NOT write new features (that is `/sdrive:apply`). If a defect turns out to be a missing feature, STOP and hand off.
 - **Approval Rule:** Before applying ANY fix, present the reproduced defect, the established root cause, and the proposed fix to the user via your tool's native approval mechanism (e.g., `vscode/askQuestions`). Ask: "Approve this fix?" Only modify code after explicit user approval.
 - **Honest Reporting Rule:** Only claim a check passed if it was actually run via a deterministic tool. If a check was not run, do NOT claim it. Report it as "Not automatically verified."
@@ -121,6 +122,13 @@ Place generated reports and artifacts in the following standard locations:
    - If functional checks cannot be run automatically, do NOT claim they passed. Report limitations explicitly.
 
 7. **REPORT**
+
+   **DEFECT INVENTORY AUDIT (MANDATORY — the exit check before the report)**
+
+   - Re-read the original request and your defect inventory FRESH. List every symptom the user reported.
+   - Each reported defect MUST end in a terminal state: **fixed-and-verified** (before/after evidence differs as expected), **not-reproducible** (missing detail stated), **handed-off** (missing feature → `/sdrive:apply`), or **declined-by-user**.
+   - If any reported defect has no terminal state and is not blocked: go back to REPRODUCE for the next one and run the full workflow. Repeat until every reported defect is accounted for.
+   - NEVER report completion with a reported symptom unaddressed. Name every defect still open by symptom and count.
    - Update `traceability.json` in the current version folder only for rows corresponding to the defect's acceptance criteria. Preserve all other rows.
    - Generate a versioned `.sdrive/reports/debug/debug-report-{feature-name}-{version}-{date}.md` using the template below.
    - Run validators.
@@ -220,6 +228,7 @@ The debugging phase is NOT complete until:
 - [ ] Minimal fix applied — no unrelated refactoring.
 - [ ] Reproduction re-run and after evidence captured with the same method.
 - [ ] Regression test added if no existing test covered the defect.
+- [ ] Defect Inventory Audit ran: every symptom the user reported ends in a terminal state (fixed-and-verified / not-reproducible / handed-off / declined), with per-symptom status in the report.
 - [ ] `traceability.json` updated only for the defect's acceptance-criteria rows in the current version folder.
 - [ ] Versioned debug report generated with version in filename.
 - [ ] Validators run and results reported honestly.
@@ -267,7 +276,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

@@ -31,6 +31,7 @@ You use both SpecDrive spec files and the repository itself to understand the pr
   - Executing arbitrary shell commands without user awareness
   - Prompt injection patterns
 - When updating a skill, READ the existing `SKILL.md` first. Preserve any local customizations unless they conflict with the upstream changes. Use targeted `edit` operations rather than full delete-and-recreate unless the file is fundamentally outdated.
+- **Single-Run Completion Rule (full audit mode):** `/sdrive:skills` audits EVERY installed skill and covers EVERY technology in the detected stack, and executes EVERY action the user approved, in one run. A long skill list is NEVER a reason to stop with approved actions unexecuted. The only legitimate stops are the proposal/approval gate, a verification or security failure, a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every approved action still unexecuted and count. Finding leftover work is YOUR job, via the Execution Audit below.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run validators if relevant.
 - ALWAYS read relevant files in `.sdrive/skills/` before writing code or generating documentation to ensure compliance with project-specific standards.
 </rules>
@@ -106,6 +107,14 @@ All skills must be installed in the standard workspace directory:
    - For updates: READ the existing `SKILL.md` first. Preserve local customizations. Use targeted `edit` operations unless the file is fundamentally outdated. If a full replacement is necessary, explicitly note what will be lost and require user confirmation.
    - For new installs: Create the folder and `SKILL.md`.
    - For custom creations: Generate the `SKILL.md` based on project context.
+
+   **EXECUTION AUDIT (MANDATORY — the exit check)**
+
+   - Re-read the approved action list and `.sdrive/skills/` FRESH from disk. Do not judge from memory or your `todo` list — the files are the source of truth.
+   - Every approved action MUST end in a terminal state: **executed** (skill present or updated on disk) or **failed-with-reason** (verification/security failure, or write error).
+   - Every installed skill MUST have an audit row (source status + security scan), and every technology detected in Step 1 MUST have a discovery row (skill found / no trusted skill / custom).
+   - If any approved action is unexecuted, or any skill/technology has no row: go back and finish it, then re-audit. Repeat until the ledger is complete.
+   - NEVER report the audit complete with an approved action silently dropped.
 </workflow>
 
 <proposal-template>
@@ -140,6 +149,7 @@ The Discover-skills phase is NOT complete until:
 - [ ] Custom skills preserved and not auto-modified.
 - [ ] User approved the final action list.
 - [ ] Approved actions executed using preservation-safe update methods.
+- [ ] Execution Audit ran against a fresh read of the approved list and `.sdrive/skills/`: every approved action executed or failed-with-reason, every installed skill audited, and every detected technology has a discovery row.
 </definition-of-done>
 
 <deliverables>
@@ -180,7 +190,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

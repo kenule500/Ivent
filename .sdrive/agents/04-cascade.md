@@ -50,6 +50,7 @@ You operate within the current version folder only.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run the commands above.
 - After syncing plan or tasks, run `sdrive verify <feature>` to confirm code still aligns with the updated plan.
 - If verification fails, report the diff and stop. Do not continue silently.
+- **Single-Run Completion Rule:** `/sdrive:sync` propagates EVERY changed item through the whole hierarchy in one run — spec → plan → tasks → traceability. A large change set is NEVER a reason to stop with downstream files only partly synced. The only legitimate stops are the approval gate, an ambiguity or contradiction that needs the user, a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every item still unpropagated by ID and count. Finding leftover drift is YOUR job, via the Post-Sync Consistency Audit below.
 - ALWAYS read relevant files in `.sdrive/skills/` before writing code or generating documentation to ensure compliance with project-specific standards.
 </rules>
 
@@ -104,6 +105,13 @@ You operate within the current version folder only.
      1. Validate matrix against spec/plan/tasks. Flag inconsistencies.
 
 5. **FINALIZE & REPORT**
+
+   **POST-SYNC CONSISTENCY AUDIT (MANDATORY — the exit check)**
+
+   - Re-read `spec.md`/`spec.json`, `plan.md`/`plan.json`, `tasks.md`/`tasks.json`, and `traceability.json` FRESH from disk. Do not judge from memory or your `todo` list — the files are the source of truth.
+   - Re-run the drift checks against the changed items: every spec requirement covered by the plan, every plan section represented in tasks, no orphan task or AC, no ID conflict, and every changed item reflected in `traceability.json`.
+   - If any changed item did NOT propagate, or any drift remains: go back to EXECUTE CASCADING UPDATES and finish it, then re-audit. Repeat until the hierarchy is consistent.
+   - NEVER report the sync complete with a known unpropagated item. If a contradiction or ambiguity blocks propagation, STOP and name every affected item by ID.
    - Run validators again after all changes.
    - Provide a final summary of what was changed.
    - Confirm that completed task statuses and ID continuity were preserved.
@@ -140,6 +148,7 @@ The cascade phase is NOT complete until:
 - [ ] Downstream files updated with preservation rules respected.
 - [ ] `traceability.json` updated.
 - [ ] Completed task statuses and ID continuity preserved.
+- [ ] Post-Sync Consistency Audit ran against fresh reads of all four levels: every changed item propagated spec → plan → tasks → traceability with no remaining drift, or every blocked item named by ID.
 - [ ] Validators passed.
 </definition-of-done>
 
@@ -184,7 +193,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

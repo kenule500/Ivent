@@ -68,6 +68,7 @@ You operate within the current version folder only.
   - `node .sdrive/scripts/validate-governance.js`
   - Any configured SpecDrive validation command.
 - If validation fails, report it honestly.
+- **Single-Run Completion Rule:** `/sdrive:performance` accounts for EVERY speed and SEO finding it surfaces in one run. A long findings list is NEVER a reason to stop with approved fixes unapplied or findings unverified. The only legitimate stops are the optimization/SEO approval gates, a major architectural change needing approval, a handed-off correctness defect, a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every finding still open by ID/location and count. Finding leftover work is YOUR job, via the Findings Ledger Audit below.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run the commands above.
 - ALWAYS read relevant files in `.sdrive/skills/` before analyzing code or applying optimizations to ensure compliance with project-specific standards.
 - **`--all` Mode Rule:** If the user invokes this command with `--all` (e.g. `/sdrive:performance --all`), you MUST process EVERY feature currently in `ongoing/`, one after the other, in a single run. See the `<all-mode>` section for the exact procedure. In `--all` mode, the per-feature rules above still apply to each feature individually — you simply repeat the full workflow for each one.
@@ -146,6 +147,17 @@ Place generated reports and artifacts in the following standard locations:
    - If functional/security/readability checks cannot be run automatically, do NOT claim they passed. Report limitations explicitly.
 
 7. **TRACEABILITY & REPORTING**
+
+   **FINDINGS LEDGER AUDIT (MANDATORY — the exit check before the report)**
+
+   - Re-read the findings you recorded in Steps 2–3 and the current code FRESH from disk. Do not judge from memory or your `todo` list.
+   - Build a ledger of every speed finding and every SEO finding. Each MUST end in exactly one terminal state:
+     - **fixed-and-verified** — the approved fix is applied AND the same benchmark/SEO check that found it now passes,
+     - **declined-by-user** — the user explicitly chose not to fix it (recorded),
+     - **handed-off** — a correctness defect routed to `/sdrive:debug` or a code-quality observation routed to `/sdrive:review`,
+     - **blocked-with-reason** — could not be fixed or verified, with the blocker named.
+   - If any approved fix is NOT yet applied, or any finding has no terminal state: go back to OPTIMIZATION EXECUTION / VERIFICATION and finish it, then re-audit. Repeat until every finding is accounted for.
+   - Every performance NFR in scope MUST have a measured after-value (or an explicit "not measured" limitation). NEVER report completion with an approved fix unapplied or a finding silently dropped.
    - Update `traceability.json` in the current version folder only for rows corresponding to performance NFRs. Preserve all other rows.
    - Generate a versioned `.sdrive/reports/performance/performance-report-{feature-name}-{version}-{date}.md` using the template below.
    - Run validators.
@@ -236,6 +248,7 @@ The performance optimization phase is NOT complete until:
 - [ ] Any correctness defects found were handed off to `/sdrive:debug`, not fixed here.
 - [ ] Any code-quality observations were handed off to `/sdrive:review`, not fixed here.
 - [ ] Functional regression tests run or limitation explicitly reported.
+- [ ] Findings Ledger Audit ran: every speed and SEO finding ends in a terminal state (fixed-and-verified / declined-by-user / handed-off / blocked-with-reason), every approved fix applied and re-verified, and every in-scope NFR has a measured after-value or a stated limitation.
 - [ ] `traceability.json` updated only for performance NFR rows in the current version folder.
 - [ ] Versioned performance report generated with version in filename.
 - [ ] Validators run and results reported honestly.
@@ -284,7 +297,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

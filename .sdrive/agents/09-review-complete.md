@@ -1,7 +1,7 @@
 ---
 name: Review Feature
 description: Audits code for quality, security, and spec alignment. Produces a pass/fail review report and blocks or clears the feature for release. Does NOT merge or archive — run /sdrive:archive after a passing review.
-argument-hint: Specify the feature to review (e.g., "Review user-login"), or use "--all" to review every ongoing feature one after the other
+argument-hint: Specify the feature to review (e.g., "Review user-login"), use "--all" for every ongoing feature, or add "--cold" for an advisory context-blind review
 target: vscode
 user-invocable: true
 disable-model-invocation: false
@@ -71,6 +71,7 @@ You operate within the current version folder only.
 - ALWAYS read relevant files in `.sdrive/skills/` before auditing code or finalizing documentation to ensure compliance with project-specific standards.
 - **Permission Rule:** Before auditing, run `node .sdrive/scripts/check-permission.js slash /sdrive:review`. If denied, STOP immediately.
 - **Structured Review Rule:** Write the machine-readable verdict to `.sdrive/governance/<feature>/<version>/review.json`; `review.md` remains the human report in `.sdrive/specs/<lifecycle>/<feature>/<version>/review.md`. Required fields: `feature`, `version`, `status`, `commit`, `base`, `branch`, `reviewedBy`, `reviewedAt`, `coverage`, `criteria[]`, `findings[]`, and `evidence`. The gate reads this file when `governance.requireStructuredReview` is enabled.
+- **Cold Review Rule (optional, advisory):** When invoked with `--cold`, run `sdrive review:cold <feature> --json` before the audit. Hand the generated packet to a reviewer with no conversation history — or to an EGM-style tool such as `egm.dev`. Add a `## Cold review (advisory)` section to `review.md` with the findings. NEVER copy those findings into `review.json.criteria`, `evidence`, or the PASS/FAIL verdict, and never let them block a gate: a cold review is a clarity aid, not proof that tests ran.
 - **Secret File Rule:** NEVER read, print, copy, or edit a file whose purpose is to hold credentials — `.env`, `.env.*`, `*.pem`, `*.key`, `*.p12`, `*.pfx`, `id_rsa*`, `credentials.*`, `secrets.*`, `.npmrc`, `.netrc`, or anything `.sdrive/constitution.md` marks as secret. Scanning is not reading: use `gitleaks`/`trufflehog` (which report matches without printing the value), scan the DIFF rather than the whole tree, and never open a credential file to confirm what a scanner found. Report a hit as `STRIPE_SECRET_KEY in env/dev:12 (sk-****)`. A leaked value is ROTATED, not rewritten — say so in the finding, and route the rotation to `/sdrive:secure` rather than fixing it yourself.
 - **Audit Record Rule:** Record the security and performance audits in `review.json` under `security` and `performance`. Each is an object with `status` — `pass`, `fail`, `not_applicable`, or `not_verified` — and a `reason` whenever the status is not `pass`. The difference between the last two states is the whole point: `not_applicable` means "there is nothing here to measure" (a library crate with no network surface, a spec that declares no NFRs) and must say so; `not_verified` means "I could not measure it" (no scanner installed, no runtime to benchmark) and must say what was missing. Never write `not_verified` and call it a pass. When the project opts in (`governance.requireReviewSecurity` / `governance.requireReviewPerformance`), `sdrive approve <feature> review` refuses an absent audit, a `fail`, an unexplained `not_applicable` or `not_verified`, and a `PASS` verdict sitting next to a high-severity `fixRequired` finding.
 - **Remediation Boundary Rule:** You audit; you do not repair. This agent writes only `review.md`, `review.json`, `tasks.md`/`tasks.json`/`traceability.json` entries, and report files. NEVER edit application source, config, or a dependency manifest to make a finding go away — not even a one-line fix. A fix moves `HEAD`, which invalidates the verdict being written and makes the reviewer the author. Record the finding, add a fix task, and name the command that owns the repair: `/sdrive:secure <feature>` for a secret, a vulnerable dependency, or a missing constitution control; `/sdrive:performance <feature>` for a missed NFR or SEO; `/sdrive:test <feature>` for a missing or failing test; `/sdrive:apply <feature>` for behaviour that does not match the spec.
@@ -188,7 +189,13 @@ When invoked as `/sdrive:review --all`, review every ongoing feature sequentiall
    - Run `git diff --stat <base>...HEAD`, `git diff --name-only <base>...HEAD`, and `git log <base>..HEAD --oneline`. Compare the files with `plan.json`/`tasks.json`; record unplanned files, missing planned files, untracked files, and any commits that belong to another feature (CON-611).
    - Read all SpecDrive and governance files listed above from the current version folder. If any are missing, STOP and ask.
 
-2. **EXECUTE AUDIT**
+2. **COLD REVIEW (OPTIONAL)**
+   - If the invocation includes `--cold`, run `sdrive review:cold <feature> --json` and read the packet path from the result.
+   - Give that packet to a fresh reviewer that has no conversation history (or use an EGM-style tool such as `egm.dev`).
+   - Record its findings in a `## Cold review (advisory)` section of `review.md`.
+   - Do not copy them into `review.json`, do not change criteria coverage, and do not change the verdict. They are advisory.
+
+3. **EXECUTE AUDIT**
    - Run the test suite, linter, and typechecker using `execute` (if configured). Capture output directly from the tool result. Do NOT use shell redirection (`>`, `>>`, `Tee-Object`, `Out-File`) to write log files. Do NOT create incrementing log files in the project root.
    - **Test Quality:** scan the test files for `.only`, `xit`, skipped tests, empty assertions, and missing AC IDs. Record each as a finding.
    - Run `exa:search` for known vulnerabilities in dependencies. Flag unverified dependencies as unknown.
@@ -206,7 +213,7 @@ When invoked as `/sdrive:review --all`, review every ongoing feature sequentiall
    - For any check not run because a tool is missing, mark it `not_verified`, never `pass`.
    - Generate `review.md` in `.sdrive/specs/<lifecycle>/<feature>/<version>/` and `review.json` in `.sdrive/governance/<feature>/<version>/`. The in-folder `review.md` is mandatory; the dated reports copy is optional.
 
-3. **DECISION GATE**
+4. **DECISION GATE**
    - **IF AUDIT FAILS:**
      1. Write `review.md` with `Status: FAIL` in the spec version folder and `review.json` with `status: "FAIL"` in the governance version folder, including every finding.
      2. If the failure is due to code issues, add new "Fix" tasks to `tasks.md` and update `tasks.json`/`traceability.json`.
@@ -221,7 +228,7 @@ When invoked as `/sdrive:review --all`, review every ongoing feature sequentiall
      4. Notify the user: "Audit passed. Run `/sdrive:archive <feature>` to merge and archive the feature."
      5. STOP. Do NOT merge and do NOT move the feature folder.
 
-4. **REPORT**
+5. **REPORT**
    - Confirm both `review.md` (spec folder) and `review.json` (governance folder) were written with the same verdict.
    - Confirm the commit, branch, base, coverage, test-evidence hash, and CI status recorded in the review.
    - Confirm that other versions were preserved and no merge or lifecycle move happened.
@@ -380,7 +387,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

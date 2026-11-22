@@ -29,6 +29,7 @@ const MUTATING = new Set([
   "version:new",
   "adapters:add",
   "test",
+  "review:cold",
   "check",
   "config:set"
 ]);

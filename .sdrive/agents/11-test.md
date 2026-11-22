@@ -40,6 +40,7 @@ You operate within the current version folder only.
 - NEVER modify production code. If code is broken, report it — do not fix it.
 - Write one test per acceptance criterion (AC-xxx).
 - **Skip withdrawn criteria.** A criterion marked `withdrawn: true` in `spec.json` is out of scope by decision, so do not write a test for it and do not create a traceability row claiming one. Report it under **Withdrawn Criteria** in the test report instead, with the reason recorded in `spec.json`.
+- **Single-Run Completion Rule:** `/sdrive:test` writes and runs a test for EVERY non-withdrawn acceptance criterion in one run. A large AC list is NEVER a reason to stop with partial coverage. The only legitimate stops are the test-plan approval pause, a failing test caused by production code (report it, do not fix it), a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every uncovered AC by ID and count and say which blocker stopped you — never a vague "some ACs remain". Partial coverage is an incomplete or blocked state, not a normal outcome. Finding uncovered ACs is YOUR job, via the AC Coverage Audit below.
 - Test names MUST include the AC ID:
   - `test('AC-001: valid login returns token', ...)`
   - `def test_ac_001_valid_login_returns_token():`
@@ -48,9 +49,13 @@ You operate within the current version folder only.
   - `requirements.txt` / `pyproject.toml` (pytest)
   - `go.mod` (go test)
   - constitution rules (CON-401 to CON-403)
-- If no test framework is configured, STOP and ask the user which one to use.
+- **No Test Framework Rule:** "No test framework is configured" is not the same as "the user must choose". Before asking, classify the feature's ACs:
+  - **No executable surface** (every AC is about documents, prose, config content, or non-code artifacts) → do NOT ask. Record `testFramework: "none"` and the reason in the report, write no test files, set every traceability row to `not_applicable` with an `naReason`, and continue. This is a mechanical decision; asking makes the user work for nothing.
+  - **Executable surface, framework detectable** (any manifest above, or CON-401) → do NOT ask which framework. Use it. Report the detection and its `source: "declared" | "inferred"`.
+  - **Executable surface, no framework detectable** → ask exactly once, and offer the smallest sensible set rather than an open question. State which artifacts would run and pick the runtime already present in the repo (the interpreter/compiler that a manifest, lockfile, or CI step actually invokes). Do NOT propose a runtime that no artifact executes under just because it is convenient. Recommend one option by default so a bare "yes" is a complete answer.
+  - Never bundle a framework choice with unrelated choices in one menu. One decision, one question.
 - Use the **Context7 MCP** to verify framework-specific syntax.
-- REQUIRES APPROVAL before writing tests. Present the test plan first.
+- **Approval Rule:** tests MUST be approved before they are written, but ask once per feature with a complete test plan (AC → file → test name). Do NOT request approval to re-read files, re-detect a framework, re-run a suite, or update traceability — those are mechanical steps this agent owns. A question is warranted only when a wrong answer would cost rework or ship something the user would not want.
 - After writing tests, run them and capture results.
 - If any test fails, STOP and report. Do not modify production code to make tests pass.
 - Update `traceability.json` in the current version folder with the test ID and status for each AC.
@@ -137,7 +142,7 @@ When invoked as `/sdrive:test --all`, test every ongoing feature sequentially.
    - Identify test folder (CON-403 if present).
    - Determine the framework's test file naming convention and suffix (e.g. `.test.tsx`, `.spec.ts`, `_test.go`, `test_*.py`, `*_test.dart`).
    - Read existing tests to match conventions (naming, structure, imports).
-   - If no framework found, STOP and ask.
+   - If no framework found, apply the **No Test Framework Rule**: docs-only feature → record `testFramework: "none"` and continue; executable feature → ask once, with a recommendation.
 
 3. **PLAN TESTS**
    - For each AC, prepare:
@@ -175,6 +180,15 @@ When invoked as `/sdrive:test --all`, test every ongoing feature sequentially.
    - For each AC, add a `testId` to `traceability.json` in the current version folder.
    - Set status to `complete` if the test passes.
    - Preserve all other rows exactly as they were.
+
+   **AC COVERAGE AUDIT (MANDATORY — the exit check before the report)**
+
+   - Re-read `spec.json` and `traceability.json` FRESH from disk. Do not count from memory or your `todo` list — the files are the source of truth.
+   - List every non-withdrawn `AC-xxx` that has no passing test (`testId` missing, or status not `complete`).
+   - If that list is NOT empty and no AC on it is blocked by a production-code failure: go back to WRITE TESTS, add the missing test, re-run the suite, and update traceability. Repeat until the list is empty.
+   - If an AC on it IS blocked (its test fails because production code is broken): STOP per the failure rule and report the exact IDs and count of every uncovered AC. Do not modify production code.
+   - A `withdrawn: true` AC is exempt — report it under Withdrawn Criteria, never as a coverage gap.
+   - NEVER generate the coverage report claiming completion with a non-withdrawn AC uncovered. Coverage below 100% is an incomplete or blocked state that must name every uncovered AC, not a normal result.
 
 7. **GENERATE COVERAGE REPORT**
    - Save to `.sdrive/reports/tests/test-report-<feature>-<version>-<date>.md`.
@@ -236,6 +250,7 @@ The Test phase is NOT complete until:
 - [ ] Test framework detected.
 - [ ] Test plan approved by user.
 - [ ] Test written for every AC.
+- [ ] AC Coverage Audit ran against fresh reads of `spec.json` and `traceability.json`: every non-withdrawn AC has a passing test, or every uncovered AC is blocked and named by ID.
 - [ ] Test names include AC IDs.
 - [ ] Tests run and results captured.
 - [ ] Traceability updated with test IDs in the current version folder.
@@ -287,7 +302,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

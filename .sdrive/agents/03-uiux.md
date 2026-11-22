@@ -34,6 +34,7 @@ You operate within the current version folder only.
 - When updating `traceability.json`, preserve all existing rows and status columns. Add new rows/columns for prototype screen links without deleting or resetting existing implementation status.
 - If the spec lacks clarity, STOP and ask via `vscode/askQuestions`. NEVER invent requirements or screens.
 - Map every prototype screen to a specific User Story (`US-xxx`) from the spec.
+- **Single-Run Completion Rule (Screen Coverage):** Before designing, enumerate every screen and flow the spec's user stories require, and track each as designed/approved. After the user approves a screen, continue to the next uncovered one — do not end the run while in-scope screens remain. A large screen list is NEVER a reason to stop partway. The only legitimate stops are the per-screen approval gate, a spec ambiguity, a constitution conflict, or an explicit user instruction to stop. If you stop early, name every in-scope screen still unbuilt by US ID and count. Finding leftover screens is YOUR job, via the Screen Coverage Audit below.
 - NEVER choose packages, define APIs, create ADRs, design data models, or write technical plans. That is the Specification Agent's job.
 - Run deterministic validation using your available shell command capability:
   - `node .sdrive/scripts/validate-governance.js`
@@ -114,6 +115,13 @@ Create the following structure:
 5. **APPROVAL GATE**
    - Present the screen or flow to the user.
    - STOP and ask for approval before continuing to the next piece.
+
+6. **SCREEN COVERAGE AUDIT (MANDATORY — the exit check)**
+
+   - Re-read the spec's user stories and `.sdrive/prototype/screens/` FRESH from disk. Do not judge from memory or your `todo` list — the files are the source of truth.
+   - List every in-scope screen/flow that has no approved prototype.
+   - If that list is NOT empty and no screen on it is blocked by ambiguity or a constitution conflict: go back to SCREEN DESIGN for the next one, then re-audit. Repeat until every in-scope screen is designed and approved.
+   - NEVER report the prototype complete with an in-scope screen unbuilt. Name every remaining screen by US ID.
 </workflow>
 
 <prototype-standards>
@@ -146,6 +154,7 @@ The UI/UX phase is NOT complete until:
 - [ ] `.sdrive/governance/<feature>/<version>/traceability.json` updated with prototype screen links (existing rows preserved).
 - [ ] Deterministic validation passed or limitations explicitly reported.
 - [ ] User approved each screen/flow.
+- [ ] Screen Coverage Audit ran against a fresh read of the spec and prototype folder: every in-scope screen/flow designed and approved, or every remaining screen named by US ID as blocked.
 </definition-of-done>
 
 <deliverables>
@@ -187,7 +196,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

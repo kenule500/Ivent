@@ -57,6 +57,7 @@ You ensure all documents remain aligned and every new requirement is traceable.
   - You are responsible for cascading the new requirements all the way down the hierarchy yourself.
   - Do NOT tell the user to run `/sdrive:sync` afterward — that would be redundant and could cause drift.
   - `/sdrive:sync` is ONLY for when a user has manually hand-edited a single file (e.g. edited `spec.md` by hand) and needs the downstream files re-synced. It is NOT part of this workflow.
+- **Single-Run Completion Rule:** `/sdrive:update-propose` cascades EVERY new requirement, story, and AC all the way down the hierarchy in one run — each new requirement linked to ACs, each new non-withdrawn AC linked to a task, and every new item reflected in `traceability.json`. A large extension is NEVER a reason to stop with a partly-synced package. The only legitimate stops are the Gate 1 and Gate 2 approval pauses, a conflict or missing prerequisite, or an explicit user instruction to stop. If you stop early, name every new item still unlinked by ID and count. Finding gaps is YOUR job, via the Extension Coverage Audit below.
 - NEVER write any document without first clarifying the requested change via your tool's native approval mechanism (e.g., `vscode/askQuestions`).
 - Use RFC 2119 keywords: MUST, MUST NOT, SHALL, SHOULD, MAY.
 - Update `traceability.json` to link the NEW requirements → ACs → plan sections → tasks. Leave existing rows untouched.
@@ -175,6 +176,16 @@ For existing feature `<feature-name>` and version `<version>`, UPDATE these file
    - **Dependency Recording Rule:** Record every new third-party dependency in `plan.json` `dependencies[]` with `name`, `type`, `action` (`add`/`update`/`remove`/`no_change`), and `notes`. For each `action: "add"`, note whether a skill is expected (e.g. `"skill: framer-motion"`). Do NOT install packages or skills here.
    - APPEND new rows to `traceability.json` linking new plan sections and task IDs.
    - Run validators again.
+
+   **EXTENSION COVERAGE AUDIT (MANDATORY — run before GATE 2 and again before FINALIZE)**
+
+   - Re-read `spec.json`, `tasks.json`, and `traceability.json` FRESH from disk. Do not count from memory or your `todo` list — the files are the source of truth.
+   - Enumerate every gap among the NEW items only (existing rows must stay untouched):
+     - any new `FR-xxx` / `NFR-xxx` with no linked acceptance criterion,
+     - any new non-withdrawn `AC-xxx` with no linked task,
+     - any new requirement, AC, plan section, or task missing its `traceability.json` row.
+   - If the gap list is NOT empty: append the missing ACs, tasks, or links, re-run the validators, and re-audit. Repeat until the list is empty.
+   - NEVER present GATE 2 or proceed to FINALIZE with a known gap in the new content. Existing IDs and rows are preserved exactly; the audit only checks that the extension is complete.
    - **GATE 2:** STOP and ask: "Plan and tasks update draft complete. Review and approve to start implementation?"
 
 8. **FINALIZE & HANDOFF**
@@ -187,6 +198,7 @@ For existing feature `<feature-name>` and version `<version>`, UPDATE these file
        { "event": "spec_updated", "timestamp": "<ISO>", "summary": "<what was added>" }
        ```
    - Review all files for consistency and missing edge cases.
+   - Re-run the Extension Coverage Audit against fresh reads of the governance files; include its tally in the handoff (new requirements, new non-withdrawn ACs, new tasks — each fully linked, or named as a gap).
    - Present final summary to user, including:
      - Which IDs were added.
      - Which gate was reset.
@@ -232,6 +244,7 @@ The update-propose phase is NOT complete until:
 - [ ] Governance JSON files updated in the version folder and validated.
 - [ ] Anti-redundancy check performed and documented.
 - [ ] User approved Gate 1 (Spec) and Gate 2 (Plan/Tasks).
+- [ ] Extension Coverage Audit ran against fresh reads of `spec.json`, `tasks.json`, and `traceability.json`: every new requirement linked to ACs, every new non-withdrawn AC linked to a task, and every new item present in traceability — with existing rows untouched.
 - [ ] `specification` gate reset to `pending` in `workflow-state.json`.
 - [ ] Version history records the `spec_updated` event.
 - [ ] Validators passed.
@@ -279,7 +292,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.

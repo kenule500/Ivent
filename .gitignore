@@ -51,3 +51,9 @@ pm run lighthouse\; keep only the analysed report.
 # Lighthouse CI default output directory (raw traces, regenerated).
 .lighthouseci/
 
+
+# Perch tool workspace (local)
+.perch/
+
+# SpecDrive framework update backups
+.sdrive/.backups/

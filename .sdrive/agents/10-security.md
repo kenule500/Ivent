@@ -57,6 +57,7 @@ You operate within the current version folder when auditing a specific feature.
   - `node .sdrive/scripts/validate-governance.js`
   - Any configured SpecDrive validation command.
 - If validation fails, report it as an audit finding. Do not hide it.
+- **Single-Run Completion Rule:** `/sdrive:secure` accounts for EVERY vulnerability and EVERY REQUIRED CON-51x control it surfaces in one run. A long findings list is NEVER a reason to stop with approved fixes unapplied, unverified, or silently dropped. The only legitimate stops are the fix-approval gates, the commit/push approval gate, an architectural change needing a Cascade task, a missing prerequisite, or an explicit user instruction to stop. If you stop early, name every finding still open by VULN ID and severity and count. Finding leftover work is YOUR job, via the Findings Ledger Audit below.
 - You are tool‑agnostic: you may be invoked from VS Code, Claude Code, Cline, or any other AI coding tool. Use the available shell command capability to run the commands above.
 - ALWAYS read relevant files in `.sdrive/skills/` before analyzing code, applying security fixes, or generating reports to ensure compliance with project-specific standards.
 - **`--all` Mode Rule:** If the user invokes this command with `--all` (e.g. `/sdrive:secure --all`), you MUST audit EVERY feature currently in `ongoing/`, one after the other, in a single run. See the `<all-mode>` section for the exact procedure. In `--all` mode, the per-feature rules above still apply to each feature individually — you simply repeat the full workflow for each one.
@@ -119,6 +120,14 @@ You operate within the current version folder when auditing a specific feature.
    - Run functional tests to ensure no regressions, if configured. Report limitations if not run.
 
 6. **REPORTING & TRACEABILITY**
+
+   **FINDINGS LEDGER AUDIT (MANDATORY — the exit check before the report)**
+
+   - Re-read the findings from Steps 2–3 and the current code FRESH from disk. Do not judge from memory or your `todo` list.
+   - Build a ledger of every `VULN-xxx` finding. Each MUST carry an explicit status — **Fixed**, **Open**, or **Deferred** — with a reason for anything not Fixed. A finding with no status is a silent drop and is forbidden.
+   - Every approved fix MUST be applied AND re-scanned with the same tool that found it (Security Regression). If an approved fix is unapplied or unverified: go back to REMEDIATION & FIXING and finish it, then re-audit.
+   - Every REQUIRED CON-51x control MUST have a `PASS` / `FAIL` / `NOT APPLICABLE` row keyed by its ID. A REQUIRED control with no row is a gap, not a pass.
+   - NEVER generate the report claiming completion with an approved fix unapplied, a finding unstatused, or a REQUIRED control unrowed. Open high/critical findings must be named by ID and severity, never buried.
    - Generate a versioned `.sdrive/reports/security/security-audit-{scope}-{version}-{date}.md` using the template below.
    - Redact all secrets.
    - If feature-scoped, update `.sdrive/governance/<feature>/<version>/traceability.json` only for security NFR rows, preserving all other rows.
@@ -197,6 +206,7 @@ The security audit phase is NOT complete until:
 - [ ] Threat model documented.
 - [ ] All fixes approved before application.
 - [ ] Security regression checks actually run or limitations reported.
+- [ ] Findings Ledger Audit ran: every VULN finding has an explicit Fixed/Open/Deferred status with a reason, every approved fix applied and re-scanned with the same tool, and every REQUIRED CON-51x control has a PASS/FAIL/NOT APPLICABLE row.
 - [ ] Redacted security report generated with CVSS scores and version in filename.
 - [ ] Traceability updated only for security NFR rows in the current version folder.
 - [ ] Commit/push only after explicit user approval.
@@ -244,7 +254,7 @@ where: on the <chat|terminal>
 
 - `/sdrive:*` runs on the **chat**. The user sends it; no agent can start another command (CON-715).
 - `sdrive ...` runs on the **terminal**. An agent with a shell runs it itself and reports the result — do not tell the user to type a command you could have run.
-- `sdrive approve ...` runs on the terminal, but only the user gives it: it is the governance sign-off.
+- `sdrive approve ...` is the governance sign-off. Run it only after the user approves, EXCEPT when `governance.approvalMode` is `delegated` and the gate is listed in `governance.delegatedGates`: then run `sdrive approve <feature> <gate> --delegated --reason "..."` yourself once `sdrive check` passes. `review` and `archive` always require the human.
 - Record the same step on disk with `sdrive next <feature> --write` before ending a session.
 
 Name the one action that comes next. Do not list a menu of possibilities.
