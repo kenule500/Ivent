@@ -658,7 +658,7 @@
         "T7.1",
         "T7.3"
       ],
-      "status": "in_progress",
+      "status": "complete",
       "testIds": [
         "TEST-076",
         "TEST-077",
