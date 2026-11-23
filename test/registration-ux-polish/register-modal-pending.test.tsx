@@ -54,9 +54,7 @@ const event = {
 describe("AC-002: the dialog cannot be double-submitted", () => {
   test("AC-002: submitting shows progress and disables the control until it settles", async () => {
     const user = userEvent.setup();
-    mocks.register.mockImplementation(
-      () => new Promise((resolve) => setTimeout(() => resolve({ ok: true }), 100))
-    );
+    mocks.register.mockImplementation(() => new Promise(() => {}));
 
     render(
       <LocaleProvider initialLocale="en">

@@ -122,9 +122,12 @@ describe("AC-002: dialogs take and return focus", () => {
     const dialog = await screen.findByRole("dialog");
 
     // The accessible name comes from DialogTitle, and focus lands inside the
-    // popup rather than staying on the page behind it.
+    // popup rather than staying on the page behind it. Base UI 1.9.0 moves
+    // focus in an effect, so wait for the focus trap to settle.
     expect(dialog).toHaveAccessibleName(/register for event/i);
-    expect(dialog.contains(document.activeElement)).toBe(true);
+    await waitFor(() => {
+      expect(dialog.contains(document.activeElement)).toBe(true);
+    });
   });
 });
 
