@@ -662,7 +662,12 @@
       "testIds": [
         "TEST-076",
         "TEST-077",
-        "TEST-085"
+        "TEST-085",
+        "TEST-088",
+        "TEST-089",
+        "TEST-090",
+        "TEST-091",
+        "TEST-092"
       ]
     },
     {

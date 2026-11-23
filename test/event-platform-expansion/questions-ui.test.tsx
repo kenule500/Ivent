@@ -44,6 +44,7 @@ import { LocaleProvider } from "@/components/locale-provider";
 import { QuestionBuilder, type QuestionDraft } from "@/app/(main)/my-events/[eventId]/_components/question-builder";
 import RegisterModal from "@/app/(public)/events/[slug]/_components/register-modal";
 import { validateAnswers, validateQuestionArray } from "@/convex/validators";
+import { violationsFor } from "./helpers/axe";
 
 function wrap(children: React.ReactNode) {
   return <LocaleProvider initialLocale="en">{children}</LocaleProvider>;
@@ -353,5 +354,40 @@ describe("AC-024: registration answer validation", () => {
         { questionId: "arrival", value: "not-a-date" },
       ])
     ).toThrow(/valid date/i);
+  });
+});
+
+describe("NFR-009: registration surface accessibility", () => {
+  test("AC-023/NFR-009: the open registration form with custom questions has no WCAG 2.1 A/AA violations", async () => {
+    render(
+      wrap(
+        <RegisterModal
+          event={{
+            _id: "event-a11y" as never,
+            title: "Accessible Event",
+            ticketType: "free",
+            registrationQuestions: questions,
+            locale: "en",
+            timezone: "Africa/Lagos",
+            currency: "NGN",
+          }}
+          isOpen
+          onClose={mocks.onClose}
+        />
+      )
+    );
+
+    expect(
+      await screen.findByText("A few questions from the organizer")
+    ).toBeInTheDocument();
+    expect(await violationsFor(document.body)).toEqual([]);
+  });
+
+  test("AC-020/NFR-009: the question builder has no WCAG 2.1 A/AA violations", async () => {
+    const { container } = render(
+      wrap(<BuilderHarness initial={questions} />)
+    );
+
+    expect(await violationsFor(container)).toEqual([]);
   });
 });

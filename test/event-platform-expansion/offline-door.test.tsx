@@ -60,6 +60,7 @@ import {
   type CachedDoorSnapshot,
 } from "@/lib/offline/db";
 import { installFakeIndexedDB } from "./helpers/fake-indexeddb";
+import { violationsFor } from "./helpers/axe";
 
 function wrap(children: ReactNode) {
   return <LocaleProvider initialLocale="en">{children}</LocaleProvider>;
@@ -273,5 +274,14 @@ describe("AC-013: offline retention and wipe", () => {
       expect(await isDoorOfflineEnabled("event-a")).toBe(false)
     );
     expect(await readDoorSnapshot("event-a")).toBeNull();
+  });
+});
+
+describe("NFR-009: door console accessibility", () => {
+  test("AC-007/NFR-009: the door console has no WCAG 2.1 A/AA violations", async () => {
+    const { container } = render(wrap(<DoorDashboard />));
+
+    expect(await screen.findByText("Offline Event")).toBeInTheDocument();
+    expect(await violationsFor(container)).toEqual([]);
   });
 });

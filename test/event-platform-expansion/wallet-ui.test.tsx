@@ -54,6 +54,7 @@ vi.mock("react-qr-code", () => ({
 
 import MyTicketsPage from "@/app/(main)/my-tickets/page";
 import { LocaleProvider } from "@/components/locale-provider";
+import { violationsFor } from "./helpers/axe";
 
 const start = Date.now() + 86_400_000;
 
@@ -134,5 +135,20 @@ describe("AC-019: Apple Wallet availability", () => {
     expect(
       screen.getByText("This pass is in your Google Wallet.")
     ).toBeInTheDocument();
+  });
+});
+
+describe("NFR-009: wallet surface accessibility", () => {
+  test("AC-019/NFR-009: the ticket screen with the Google Wallet control has no WCAG 2.1 A/AA violations", async () => {
+    const user = userEvent.setup();
+    const { container } = render(
+      <LocaleProvider initialLocale="en">
+        <MyTicketsPage />
+      </LocaleProvider>
+    );
+
+    await user.click(screen.getByRole("button", { name: "Wallet Event" }));
+    expect(await screen.findByText("Your Ticket")).toBeInTheDocument();
+    expect(await violationsFor(container)).toEqual([]);
   });
 });

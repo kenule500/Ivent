@@ -33,6 +33,7 @@ vi.mock("@/components/locale-provider", () => ({
 }));
 
 import { SponsorStrip } from "@/app/(public)/events/[slug]/_components/sponsor-strip";
+import { violationsFor } from "./helpers/axe";
 
 const sponsors = Array.from({ length: 6 }, (_, index) => ({
   id: `sponsor-${index + 1}`,
@@ -73,5 +74,15 @@ describe("AC-004: public sponsor strip", () => {
     const empty = render(<SponsorStrip sponsors={[]} />);
     expect(empty.container).toBeEmptyDOMElement();
     expect(container.querySelectorAll("a")).toHaveLength(6);
+  });
+});
+
+describe("NFR-009: sponsor strip accessibility", () => {
+  test("AC-004/NFR-009: the sponsor strip has no WCAG 2.1 A/AA violations", async () => {
+    const { container } = render(
+      <SponsorStrip sponsors={sponsors} themeColor="#1e3a8a" />
+    );
+
+    expect(await violationsFor(container)).toEqual([]);
   });
 });
