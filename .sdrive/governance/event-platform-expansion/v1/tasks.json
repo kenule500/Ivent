@@ -639,7 +639,7 @@
         {
           "id": "T8.2",
           "title": "Produce performance and accessibility evidence for NFR-007, NFR-008, and NFR-009",
-          "description": "Measure cached and uncached OG image timing, door-mode live count and offline acknowledgement latency, and a 500-item sync batch; run an accessibility audit for the new and changed surfaces. Record the results as reports under .sdrive/reports/. [PARTIAL 2026-11-15: NFR-007 measured PASS; NFR-008 reads PASS but the 500-item sync batch is BLOCKED on a deployed measurement (in-memory variance > 2x); NFR-009 axe not run. Report: .sdrive/reports/performance/performance-report-event-platform-expansion-v1-2026-11-15.md]",
+          "description": "Measure cached and uncached OG image timing, door-mode live count and offline acknowledgement latency, and a 500-item sync batch; run an accessibility audit for the new and changed surfaces. Record the results as reports under .sdrive/reports/. [COMPLETE 2026-11-23: NFR-007 pass; NFR-008 reads pass and the deployed 500-item sync passed at 500 rows (p50 2,219 ms / p95 2,480 ms) and 15,000 rows (p50 2,162 ms / p95 2,322 ms) against 5,000 ms; offline ack p95 32.76 ms against 150 ms; NFR-009 axe 5/5. Reports: performance-report-event-platform-expansion-v1-2026-11-22.md, benchmarks/nfr-008-deployed.json, test-report-event-platform-expansion-v1-2026-11-23.md]",
           "linkedRequirements": [
             "NFR-007",
             "NFR-008",
@@ -650,7 +650,7 @@
             "AC-023",
             "AC-032"
           ],
-          "completed": false
+          "completed": true
         },
         {
           "id": "T8.3",

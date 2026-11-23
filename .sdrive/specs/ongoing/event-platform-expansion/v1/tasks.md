@@ -65,12 +65,6 @@
 
 - [x] **T8.1** Repair the 31 cross-feature regressions and the typecheck failure — NFR-009, NFR-010 / AC-006, AC-011, AC-022, AC-026, AC-030, AC-031
   - Blocking. Six approved suites fail on this branch: 18 `LocaleProvider` context errors, 8 missing-`params` errors in `event-detail.test.tsx`, 2 QR message assertions in `check-in.test.ts`, and 1 `getPublicStatus` shape assertion in `platform.test.ts`. `npx tsc --noEmit` exits 1. Assert the new intended behaviour; do not weaken the assertions.
-- [ ] **T8.2** Produce performance and accessibility evidence for NFR-007, NFR-008, and NFR-009 — AC-014, AC-023, AC-032
-  - Blocking for NFR evidence. Measure OG image timing, door-mode latency, and a 500-item sync batch; run an accessibility audit on the new and changed surfaces.
-  - **Partial.** Report: `.sdrive/reports/performance/performance-report-event-platform-expansion-v1-2026-11-15.md`.
-    - NFR-007 — measured PASS. Public event read 2.0 ms p50 at 500 rows, 9.9 ms p50 at 15,000 rows, against a 1,500 ms p95 budget. Unchanged.
-    - NFR-008 — **reads** measured PASS: `getDoorSnapshot` 192 ms p50 / 234 ms p95 and attendee search 65 ms p50 / 97 ms p95 at 15,000 rows, against 2,000 ms. **Offline scan acknowledgement (150 ms) NOT measured** — it is a client IndexedDB write with no Node equivalent.
-    - NFR-008 — **500-item sync batch BLOCKED**, not passed and not established as failed. In the in-memory harness it exceeds 5 s above a few thousand stored rows, but the same job with a byte-identical argument varies by more than 2x between runs (3,500 rows: 3.51 s pass, then 5.01 s and 10.30 s fail; 500 rows: 0.55 s, then 1.18 s). That variance exceeds the margin to the budget, so the harness cannot establish the breach. Needs a deployed measurement before any code change; `convex/door.ts` was deliberately left untouched.
-    - NFR-009 — **not run**. No axe pass exists over the feature's surfaces. Still `deferred` with T7.3.
-  - Do not check this task off until the sync batch and axe items are resolved.
+- [x] **T8.2** Produce performance and accessibility evidence for NFR-007, NFR-008, and NFR-009 — AC-014, AC-023, AC-032
+  - **Complete 2026-11-23.** NFR-007 measured PASS. NFR-008 reads PASS; the 500-item sync passed on the deployed dev deployment (500 rows p50 2,219 ms / p95 2,480 ms; 15,000 rows p50 2,162 ms / p95 2,322 ms, under 5,000 ms); offline acknowledgement p95 32.76 ms against 150 ms (fake IndexedDB). NFR-009 axe 5/5 on the door console, register modal, question builder, sponsor strip and wallet screen. Reports: `.sdrive/reports/performance/performance-report-event-platform-expansion-v1-2026-11-22.md`, `.sdrive/reports/performance/benchmarks/nfr-008-deployed.json`, `.sdrive/reports/tests/test-report-event-platform-expansion-v1-2026-11-23.md`.
 - [x] **T8.3** Record the user-facing additions in `CHANGELOG.md` — NFR-011 / AC-026, AC-031
